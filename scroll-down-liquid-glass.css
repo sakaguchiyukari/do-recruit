@@ -1,0 +1,434 @@
+/* ================================================
+   Liquid Glass Scroll Indicator
+   Apple iOS 26 inspired — SWELL WordPress theme
+   ================================================ */
+
+/* ---------- 配置 ---------- */
+.lg-scroll-indicator {
+  position: absolute;
+  bottom: clamp(24px, 5vh, 48px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  /* フェードイン */
+  animation: lg-entrance 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 1.5s both;
+}
+
+@keyframes lg-entrance {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.85); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0)     scale(1);    }
+}
+
+/* ---------- SVGフィルター（非表示） ---------- */
+.lg-svg-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ---------- カプセル外殻 ---------- */
+.lg-capsule {
+  position: relative;
+  width: 72px;
+  height: 120px;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lg-scroll-indicator:hover .lg-capsule {
+  transform: scale(1.08);
+}
+
+.lg-scroll-indicator:active .lg-capsule {
+  transform: scale(0.95);
+}
+
+/* ---------- 背景屈折レイヤー ---------- */
+.lg-refraction-layer {
+  position: absolute;
+  inset: -4px;
+  border-radius: 40px;
+  /* backdrop-filter で背景を屈折させる最強設定 */
+  backdrop-filter:
+    blur(0.5px)
+    saturate(180%)
+    brightness(1.05);
+  -webkit-backdrop-filter:
+    blur(0.5px)
+    saturate(180%)
+    brightness(1.05);
+  /* 微妙な歪みをbox-shadowで表現 */
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+  z-index: 0;
+  overflow: hidden;
+  /* SVGフィルターで屈折 */
+  filter: url(#lg-refraction);
+}
+
+/* ---------- ガラス本体 ---------- */
+.lg-glass-body {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* 奥行き: 背面ガラス（影） */
+.lg-depth-back {
+  position: absolute;
+  inset: 3px;
+  border-radius: 38px;
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transform: translateY(4px) scale(0.97);
+  filter: blur(6px);
+}
+
+/* ---------- メインガラス面 ---------- */
+.lg-glass-surface {
+  position: absolute;
+  inset: 0;
+  border-radius: 40px;
+  overflow: hidden;
+
+  /* 核心: Liquid Glass の多層backdrop-filter */
+  backdrop-filter:
+    blur(24px)
+    saturate(200%)
+    brightness(1.1)
+    contrast(1.02);
+  -webkit-backdrop-filter:
+    blur(24px)
+    saturate(200%)
+    brightness(1.1)
+    contrast(1.02);
+
+  /* 多層の半透明ガラス表現 */
+  background:
+    /* 最前面: 上部の光反射 */
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.06) 40%,
+      rgba(255, 255, 255, 0.02) 60%,
+      rgba(255, 255, 255, 0.10) 100%
+    ),
+    /* 中層: ガラスの色調 */
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(240, 248, 255, 0.10) 50%,
+      rgba(220, 235, 255, 0.15) 100%
+    );
+
+  /* 縁のリム */
+  border: 1px solid transparent;
+  background-clip: padding-box;
+
+  /* 物理的な深さを表現するボックスシャドウ */
+  box-shadow:
+    /* 外側のドロップシャドウ（浮遊感） */
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.10),
+    /* 内側の光 */
+    inset 0 1px 0 rgba(255, 255, 255, 0.60),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.15),
+    inset 1px 0 0 rgba(255, 255, 255, 0.30),
+    inset -1px 0 0 rgba(255, 255, 255, 0.15),
+    /* 内側の深み */
+    inset 0 4px 20px rgba(255, 255, 255, 0.08),
+    inset 0 -4px 12px rgba(0, 0, 100, 0.04);
+
+  /* 浮遊アニメーション */
+  animation: lg-float 4s ease-in-out infinite;
+}
+
+@keyframes lg-float {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-6px); }
+}
+
+/* ホバー時: 液体が盛り上がるような変形 */
+.lg-scroll-indicator:hover .lg-glass-surface {
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.38) 0%,
+      rgba(255, 255, 255, 0.10) 40%,
+      rgba(255, 255, 255, 0.04) 60%,
+      rgba(255, 255, 255, 0.18) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(240, 248, 255, 0.15) 50%,
+      rgba(220, 235, 255, 0.22) 100%
+    );
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.30),
+    0 12px 32px rgba(0, 0, 0, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.80),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.20),
+    inset 1px 0 0 rgba(255, 255, 255, 0.40),
+    inset -1px 0 0 rgba(255, 255, 255, 0.20),
+    inset 0 4px 24px rgba(255, 255, 255, 0.12),
+    inset 0 -4px 16px rgba(0, 0, 100, 0.06);
+  transition:
+    background 0.3s ease,
+    box-shadow  0.3s ease;
+}
+
+/* ---------- 上部ハイライト（光の映り込み） ---------- */
+.lg-highlight-top {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  right: 8px;
+  height: 32px;
+  border-radius: 32px 32px 50% 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0.0)
+  );
+  /* ガラスのスペキュラ感 */
+  filter: blur(1px);
+  animation: lg-highlight-shimmer 6s ease-in-out infinite;
+}
+
+@keyframes lg-highlight-shimmer {
+  0%, 100% { opacity: 0.8; transform: scaleX(1);    }
+  50%       { opacity: 1.0; transform: scaleX(1.05); }
+}
+
+/* ---------- 側面のリムライト ---------- */
+.lg-rim-left,
+.lg-rim-right {
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+}
+
+.lg-rim-left {
+  left: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.0),
+    rgba(255, 255, 255, 0.6) 30%,
+    rgba(255, 255, 255, 0.4) 70%,
+    rgba(255, 255, 255, 0.0)
+  );
+}
+
+.lg-rim-right {
+  right: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.0),
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.0)
+  );
+}
+
+/* ---------- SCROLLラベル ---------- */
+.lg-label {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 0 12px rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---------- 矢印コンテナ ---------- */
+.lg-arrow-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.lg-arrow {
+  width: 16px;
+  height: 10px;
+  color: rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4))
+          drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+}
+
+.lg-arrow svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* 2段の矢印アニメーション（液体が流れ落ちる感覚） */
+.lg-arrow-1 {
+  animation: lg-arrow-cascade 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.lg-arrow-2 {
+  animation: lg-arrow-cascade 2.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s infinite;
+  opacity: 0;
+}
+
+@keyframes lg-arrow-cascade {
+  0%   { opacity: 0;    transform: translateY(-4px); }
+  20%  { opacity: 0.9; transform: translateY(0px);  }
+  60%  { opacity: 0.9; transform: translateY(3px);  }
+  100% { opacity: 0;    transform: translateY(8px);  }
+}
+
+/* ---------- 光の粒子 ---------- */
+.lg-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.lg-p1 {
+  width: 3px; height: 3px;
+  top: 35%; left: 20%;
+  animation: lg-particle-drift 5s ease-in-out 0s infinite;
+}
+.lg-p2 {
+  width: 2px; height: 2px;
+  top: 55%; left: 75%;
+  animation: lg-particle-drift 7s ease-in-out 1.5s infinite;
+}
+.lg-p3 {
+  width: 2px; height: 2px;
+  top: 45%; left: 50%;
+  animation: lg-particle-drift 6s ease-in-out 3s infinite;
+}
+
+@keyframes lg-particle-drift {
+  0%, 100% { opacity: 0;   transform: translate(0, 0);     }
+  25%       { opacity: 0.8; transform: translate(3px, -5px);  }
+  50%       { opacity: 0.4; transform: translate(-2px, -10px); }
+  75%       { opacity: 0.6; transform: translate(4px, -15px); }
+}
+
+/* ---------- 底面ハイライト ---------- */
+.lg-highlight-bottom {
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  right: 12px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  filter: blur(3px);
+}
+
+/* ---------- 外側グロー ---------- */
+.lg-outer-glow {
+  position: absolute;
+  inset: -12px;
+  border-radius: 52px;
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(200, 220, 255, 0.06) 50%,
+    transparent 70%
+  );
+  animation: lg-glow-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes lg-glow-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1);    }
+  50%       { opacity: 1.0; transform: scale(1.08); }
+}
+
+/* ---------- リップルキャンバス ---------- */
+.lg-ripple-canvas {
+  position: absolute;
+  inset: -30px;
+  pointer-events: none;
+  border-radius: 70px;
+  opacity: 0.6;
+}
+
+/* ---------- スクロール後フェードアウト ---------- */
+.lg-scroll-indicator.is-hidden {
+  animation: lg-fadeout 0.6s cubic-bezier(0.4, 0, 1, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes lg-fadeout {
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(16px) scale(0.9);
+  }
+}
+
+/* ---------- ダークモード対応 ---------- */
+@media (prefers-color-scheme: dark) {
+  .lg-glass-surface {
+    background:
+      linear-gradient(
+        160deg,
+        rgba(255, 255, 255, 0.20) 0%,
+        rgba(255, 255, 255, 0.04) 40%,
+        rgba(255, 255, 255, 0.01) 60%,
+        rgba(255, 255, 255, 0.08) 100%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(200, 210, 255, 0.12) 0%,
+        rgba(180, 200, 255, 0.06) 50%,
+        rgba(160, 190, 255, 0.10) 100%
+      );
+  }
+}
+
+/* ---------- モバイル対応 ---------- */
+@media (max-width: 768px) {
+  .lg-capsule {
+    width: 60px;
+    height: 100px;
+  }
+  .lg-label {
+    font-size: 6.5px;
+    top: 16px;
+  }
+}
+
+/* ---------- アクセシビリティ: モーション無効 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .lg-glass-surface,
+  .lg-arrow-1,
+  .lg-arrow-2,
+  .lg-outer-glow,
+  .lg-highlight-top,
+  .lg-particle,
+  .lg-scroll-indicator {
+    animation: none !important;
+  }
+  .lg-arrow-1 { opacity: 0.9; }
+  .lg-arrow-2 { opacity: 0.5; }
+}
