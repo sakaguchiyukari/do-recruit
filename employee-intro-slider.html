@@ -1,384 +1,221 @@
-<!-- 社員紹介スライダー -->
-<style>
-.employee-slider-section {
-  padding: 60px 20px;
-  background: #fff;
-}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社員紹介 | グループ採用サイト</title>
 
-.employee-slider-section .section-title {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 8px;
-  letter-spacing: 0.05em;
-}
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
-.employee-slider-section .section-subtitle {
-  text-align: center;
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 48px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
+  <!-- Component CSS -->
+  <link rel="stylesheet" href="employee-intro-slider.css">
+</head>
+<body>
 
-.employee-swiper-wrapper {
-  position: relative;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 50px;
-}
+  <!-- ============================================
+    社員紹介セクション
+  ============================================ -->
+  <section class="employee-section js-fade-section">
+    <div class="employee-section__inner">
 
-.employee-swiper {
-  overflow: hidden;
-}
+      <!-- セクションヘッダー -->
+      <header class="employee-section__header">
+        <p class="employee-section__label">Employee Interview</p>
+        <h2 class="employee-section__title">社員紹介</h2>
+      </header>
 
-.employee-card {
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+      <!-- スライダー本体 -->
+      <div class="employee-slider-wrap">
 
-.employee-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-}
+        <!-- Swiper -->
+        <div class="swiper employee-slider">
+          <div class="swiper-wrapper">
 
-.employee-card__img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-  background: #f0f0f0;
-}
-
-.employee-card__body {
-  padding: 20px 20px 24px;
-}
-
-.employee-card__company {
-  font-size: 13px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 4px;
-}
-
-.employee-card__dept {
-  font-size: 12px;
-  color: #4a9eff;
-  margin-bottom: 10px;
-}
-
-.employee-card__name {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 12px;
-}
-
-.employee-card__name span {
-  font-size: 12px;
-  font-weight: 400;
-  margin-left: 2px;
-}
-
-.employee-card__tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.employee-card__tag {
-  font-size: 11px;
-  color: #4a9eff;
-  border: 1px solid #4a9eff;
-  border-radius: 20px;
-  padding: 2px 10px;
-  line-height: 1.6;
-}
-
-.employee-card__text {
-  font-size: 13px;
-  color: #555;
-  line-height: 1.7;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Swiper ナビゲーション */
-.employee-swiper-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: #fff;
-  border: 2px solid #e0e0e0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  transition: border-color 0.2s, background 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.employee-swiper-btn:hover {
-  border-color: #4a9eff;
-  background: #4a9eff;
-}
-
-.employee-swiper-btn:hover svg path {
-  stroke: #fff;
-}
-
-.employee-swiper-btn svg {
-  width: 18px;
-  height: 18px;
-}
-
-.employee-swiper-btn svg path {
-  stroke: #555;
-  transition: stroke 0.2s;
-}
-
-.employee-swiper-prev {
-  left: 0;
-}
-
-.employee-swiper-next {
-  right: 0;
-}
-
-/* ページネーション */
-.employee-swiper-pagination {
-  text-align: center;
-  margin-top: 28px;
-}
-
-.employee-swiper-pagination .swiper-pagination-bullet {
-  width: 8px;
-  height: 8px;
-  background: #ccc;
-  opacity: 1;
-  margin: 0 4px;
-  border-radius: 50%;
-  display: inline-block;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.employee-swiper-pagination .swiper-pagination-bullet-active {
-  background: #4a9eff;
-  transform: scale(1.3);
-}
-
-/* もっと見るボタン */
-.employee-more-btn-wrap {
-  text-align: center;
-  margin-top: 40px;
-}
-
-.employee-more-btn {
-  display: inline-block;
-  padding: 14px 48px;
-  border: 2px solid #1a1a1a;
-  border-radius: 40px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #1a1a1a;
-  text-decoration: none;
-  letter-spacing: 0.05em;
-  transition: background 0.2s, color 0.2s;
-}
-
-.employee-more-btn:hover {
-  background: #1a1a1a;
-  color: #fff;
-  text-decoration: none;
-}
-
-@media (max-width: 768px) {
-  .employee-slider-section {
-    padding: 48px 16px;
-  }
-
-  .employee-slider-section .section-title {
-    font-size: 22px;
-  }
-
-  .employee-swiper-wrapper {
-    padding: 0 36px;
-  }
-
-  .employee-swiper-btn {
-    width: 36px;
-    height: 36px;
-  }
-}
-</style>
-
-<section class="employee-slider-section">
-  <p class="section-subtitle">Employee Interview</p>
-  <h2 class="section-title">社員紹介</h2>
-
-  <div class="employee-swiper-wrapper">
-    <div class="swiper employee-swiper">
-      <div class="swiper-wrapper">
-
-        <!-- カード1 -->
-        <div class="swiper-slide">
-          <div class="employee-card">
-            <img class="employee-card__img"
-                 src="https://placehold.co/400x533/f0f0f0/aaa?text=Photo"
-                 alt="社員写真">
-            <div class="employee-card__body">
-              <p class="employee-card__company">株式会社DNS</p>
-              <p class="employee-card__dept">ドコモショップ</p>
-              <p class="employee-card__name">I.U<span>さん</span></p>
-              <div class="employee-card__tag-list">
-                <span class="employee-card__tag">接客・販売</span>
-                <span class="employee-card__tag">2022年入社</span>
-              </div>
-              <p class="employee-card__text">お客様の笑顔が一番のやりがい。入社後すぐに先輩がしっかりサポートしてくれたので安心して働けました。</p>
+            <!-- ─── カード 1 ─── -->
+            <div class="swiper-slide">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img
+                    class="employee-card__image"
+                    src="img/employee-01-iu.jpg"
+                    alt="株式会社DNS ドコモショップ I.Uさん"
+                    width="400"
+                    height="533"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社DNS</p>
+                    <p class="employee-card__dept">ドコモショップ</p>
+                  </div>
+                  <p class="employee-card__name">I.U<span class="employee-card__name-suffix">さん</span></p>
+                  <ul class="employee-card__tags">
+                    <li class="employee-card__tag">接客・販売</li>
+                  </ul>
+                  <p class="employee-card__comment">
+                    お客様の笑顔が一番のやりがいです。先輩がしっかりサポートしてくれたので、入社後すぐに自信を持って働けました。
+                  </p>
+                </div>
+              </article>
             </div>
-          </div>
-        </div>
 
-        <!-- カード2 -->
-        <div class="swiper-slide">
-          <div class="employee-card">
-            <img class="employee-card__img"
-                 src="https://placehold.co/400x533/f0f0f0/aaa?text=Photo"
-                 alt="社員写真">
-            <div class="employee-card__body">
-              <p class="employee-card__company">株式会社ドゥ.ヨネザワ</p>
-              <p class="employee-card__dept">飲食事業部</p>
-              <p class="employee-card__name">S.S<span>さん</span></p>
-              <div class="employee-card__tag-list">
-                <span class="employee-card__tag">ホール</span>
-                <span class="employee-card__tag">2021年入社</span>
-              </div>
-              <p class="employee-card__text">チームで一緒に作り上げる達成感が好きです。グループ内で異動もあり、キャリアの幅が広がりました。</p>
+            <!-- ─── カード 2 ─── -->
+            <div class="swiper-slide">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img
+                    class="employee-card__image"
+                    src="img/employee-02-ss.jpg"
+                    alt="株式会社ドゥ.ヨネザワ 飲食事業部 S.Sさん"
+                    width="400"
+                    height="533"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社ドゥ.ヨネザワ</p>
+                    <p class="employee-card__dept">飲食事業部</p>
+                  </div>
+                  <p class="employee-card__name">S.S<span class="employee-card__name-suffix">さん</span></p>
+                  <ul class="employee-card__tags">
+                    <li class="employee-card__tag">ホール</li>
+                  </ul>
+                  <p class="employee-card__comment">
+                    チームで一体となって作り上げる達成感が好きです。グループ内での異動もあり、自分のキャリアの幅が広がりました。
+                  </p>
+                </div>
+              </article>
             </div>
-          </div>
-        </div>
 
-        <!-- カード3 -->
-        <div class="swiper-slide">
-          <div class="employee-card">
-            <img class="employee-card__img"
-                 src="https://placehold.co/400x533/f0f0f0/aaa?text=Photo"
-                 alt="社員写真">
-            <div class="employee-card__body">
-              <p class="employee-card__company">株式会社モトーレンフロイデ</p>
-              <p class="employee-card__dept">BMW下通店</p>
-              <p class="employee-card__name">M.Y<span>さん</span></p>
-              <div class="employee-card__tag-list">
-                <span class="employee-card__tag">営業</span>
-                <span class="employee-card__tag">2020年入社</span>
-              </div>
-              <p class="employee-card__text">好きな車に囲まれて働ける環境です。お客様と長くお付き合いできることがこの仕事の魅力だと思っています。</p>
+            <!-- ─── カード 3 ─── -->
+            <div class="swiper-slide">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img
+                    class="employee-card__image"
+                    src="img/employee-03-my.jpg"
+                    alt="株式会社モトーレンフロイデ BMW下通店 M.Yさん"
+                    width="400"
+                    height="533"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社モトーレンフロイデ</p>
+                    <p class="employee-card__dept">BMW下通店</p>
+                  </div>
+                  <p class="employee-card__name">M.Y<span class="employee-card__name-suffix">さん</span></p>
+                  <ul class="employee-card__tags">
+                    <li class="employee-card__tag">営業</li>
+                  </ul>
+                  <p class="employee-card__comment">
+                    好きな車に囲まれて働ける環境が最高です。お客様と長くお付き合いできることがこの仕事の一番の魅力だと感じています。
+                  </p>
+                </div>
+              </article>
             </div>
-          </div>
-        </div>
 
-        <!-- カード4（必要に応じて追加・削除） -->
-        <div class="swiper-slide">
-          <div class="employee-card">
-            <img class="employee-card__img"
-                 src="https://placehold.co/400x533/f0f0f0/aaa?text=Photo"
-                 alt="社員写真">
-            <div class="employee-card__body">
-              <p class="employee-card__company">株式会社ドゥ.ヨネザワ</p>
-              <p class="employee-card__dept">総務部</p>
-              <p class="employee-card__name">K.T<span>さん</span></p>
-              <div class="employee-card__tag-list">
-                <span class="employee-card__tag">事務</span>
-                <span class="employee-card__tag">2023年入社</span>
-              </div>
-              <p class="employee-card__text">入社前は不安でしたが、研修制度が充実していて安心しました。先輩が親身に相談に乗ってくれる環境です。</p>
+            <!-- ─── カード 4 ─── -->
+            <div class="swiper-slide">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img
+                    class="employee-card__image"
+                    src="img/employee-04-kt.jpg"
+                    alt="株式会社ドゥ.ヨネザワ 総務部 K.Tさん"
+                    width="400"
+                    height="533"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社ドゥ.ヨネザワ</p>
+                    <p class="employee-card__dept">総務部</p>
+                  </div>
+                  <p class="employee-card__name">K.T<span class="employee-card__name-suffix">さん</span></p>
+                  <ul class="employee-card__tags">
+                    <li class="employee-card__tag">事務・管理</li>
+                  </ul>
+                  <p class="employee-card__comment">
+                    入社前は不安でしたが、研修制度が充実していて安心できました。先輩がいつでも相談に乗ってくれる温かい職場です。
+                  </p>
+                </div>
+              </article>
             </div>
-          </div>
-        </div>
 
-        <!-- カード5 -->
-        <div class="swiper-slide">
-          <div class="employee-card">
-            <img class="employee-card__img"
-                 src="https://placehold.co/400x533/f0f0f0/aaa?text=Photo"
-                 alt="社員写真">
-            <div class="employee-card__body">
-              <p class="employee-card__company">株式会社DNS</p>
-              <p class="employee-card__dept">法人営業部</p>
-              <p class="employee-card__name">R.O<span>さん</span></p>
-              <div class="employee-card__tag-list">
-                <span class="employee-card__tag">法人営業</span>
-                <span class="employee-card__tag">2019年入社</span>
-              </div>
-              <p class="employee-card__text">法人のお客様と深い信頼関係を築けることが醍醐味。大きな契約が決まった瞬間は本当にやりがいを感じます。</p>
+            <!-- ─── カード 5 ─── -->
+            <div class="swiper-slide">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img
+                    class="employee-card__image"
+                    src="img/employee-05-ro.jpg"
+                    alt="株式会社DNS 法人営業部 R.Oさん"
+                    width="400"
+                    height="533"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社DNS</p>
+                    <p class="employee-card__dept">法人営業部</p>
+                  </div>
+                  <p class="employee-card__name">R.O<span class="employee-card__name-suffix">さん</span></p>
+                  <ul class="employee-card__tags">
+                    <li class="employee-card__tag">法人営業</li>
+                  </ul>
+                  <p class="employee-card__comment">
+                    法人のお客様と深い信頼関係を築くことが醍醐味です。大型案件が決まった瞬間は本当に大きなやりがいを感じます。
+                  </p>
+                </div>
+              </article>
             </div>
-          </div>
-        </div>
 
-      </div><!-- /.swiper-wrapper -->
-    </div><!-- /.swiper -->
+          </div><!-- /.swiper-wrapper -->
+        </div><!-- /.swiper.employee-slider -->
 
-    <button class="employee-swiper-btn employee-swiper-prev" aria-label="前へ">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-    <button class="employee-swiper-btn employee-swiper-next" aria-label="次へ">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-  </div><!-- /.employee-swiper-wrapper -->
+        <!-- ナビゲーションボタン -->
+        <button class="employee-slider__btn employee-slider__btn--prev" aria-label="前のスライドへ">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="employee-slider__btn employee-slider__btn--next" aria-label="次のスライドへ">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
 
-  <div class="employee-swiper-pagination"></div>
+      </div><!-- /.employee-slider-wrap -->
 
-  <div class="employee-more-btn-wrap">
-    <a href="#" class="employee-more-btn">社員紹介をもっと見る</a>
-  </div>
-</section>
+      <!-- ページネーション -->
+      <div class="employee-slider__pagination"></div>
 
-<!-- Swiper CSS & JS (CDN) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+      <!-- CTAボタン -->
+      <div class="employee-section__cta">
+        <a href="#" class="employee-btn">
+          社員紹介をもっと見る
+          <svg class="employee-btn__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
 
-<script>
-(function() {
-  var swiper = new Swiper('.employee-swiper', {
-    slidesPerView: 1,
-    spaceBetween: 24,
-    loop: true,
-    navigation: {
-      prevEl: '.employee-swiper-prev',
-      nextEl: '.employee-swiper-next',
-    },
-    pagination: {
-      el: '.employee-swiper-pagination',
-      clickable: true,
-    },
-    breakpoints: {
-      600: {
-        slidesPerView: 2,
-        spaceBetween: 20,
-      },
-      900: {
-        slidesPerView: 3,
-        spaceBetween: 24,
-      },
-    },
-  });
-})();
-</script>
+    </div><!-- /.employee-section__inner -->
+  </section>
+  <!-- /社員紹介セクション -->
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+
+  <!-- Component JS -->
+  <script src="employee-intro-slider.js" defer></script>
+
+</body>
+</html>

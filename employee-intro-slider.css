@@ -1,0 +1,414 @@
+/* ============================================
+  CSS Variables
+============================================ */
+:root {
+  --color-primary:     #4A9EFF;
+  --color-primary-dk:  #2a7fdf;
+  --color-text-dark:   #1A1A1A;
+  --color-text-mid:    #555555;
+  --color-text-light:  #888888;
+  --color-border:      #E8E8E8;
+  --color-card-bg:     #FFFFFF;
+  --color-tag-bg:      #EEF5FF;
+  --color-tag-text:    #4A9EFF;
+
+  --shadow-card:  0 4px 24px rgba(0, 0, 0, 0.07);
+  --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.13);
+
+  --radius-card: 16px;
+  --radius-tag:  20px;
+  --radius-btn:  50px;
+
+  --transition-base: 0.3s ease;
+}
+
+/* ============================================
+  Base Reset（スコープ限定）
+============================================ */
+.employee-section *,
+.employee-section *::before,
+.employee-section *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.employee-section ul {
+  list-style: none;
+}
+
+.employee-section img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ============================================
+  Section Layout
+============================================ */
+.employee-section {
+  padding: clamp(48px, 8vw, 96px) clamp(16px, 4vw, 40px);
+  /* 背景色なし（親テーマの背景を継承） */
+}
+
+.employee-section__inner {
+  max-width: 1120px;
+  margin-inline: auto;
+}
+
+/* ============================================
+  Section Header
+============================================ */
+.employee-section__header {
+  text-align: center;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+
+/* 英語ラベル */
+.employee-section__label {
+  display: inline-block;
+  font-size: clamp(11px, 1.2vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+  position: relative;
+}
+
+/* ラベル左右の装飾線 */
+.employee-section__label::before,
+.employee-section__label::after {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--color-primary);
+  vertical-align: middle;
+  opacity: 0.5;
+}
+
+.employee-section__label::before { margin-right: 10px; }
+.employee-section__label::after  { margin-left:  10px; }
+
+/* セクションタイトル */
+.employee-section__title {
+  font-size: clamp(22px, 3.5vw, 34px);
+  font-weight: 800;
+  color: var(--color-text-dark);
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+
+/* ============================================
+  Slider Wrapper（ナビボタン用のpaddingを確保）
+============================================ */
+.employee-slider-wrap {
+  position: relative;
+  padding-inline: clamp(36px, 5vw, 56px);
+}
+
+/* ============================================
+  Swiper Override
+============================================ */
+.employee-slider {
+  overflow: hidden;
+}
+
+/* ============================================
+  Employee Card（BEM）
+============================================ */
+.employee-card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+  height: 100%; /* Swiperの高さ揃えに必要 */
+
+  /* フェードイン初期状態 */
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease,
+    box-shadow var(--transition-base);
+}
+
+/* フェードイン完了状態（JSで付与） */
+.employee-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ホバー（is-visible と組み合わせてもtransitionは動く） */
+.employee-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* ── 画像エリア ── */
+.employee-card__image-wrap {
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background: #f0f0f0;
+}
+
+.employee-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.5s ease;
+}
+
+.employee-card:hover .employee-card__image {
+  transform: scale(1.04);
+}
+
+/* ── テキストエリア ── */
+.employee-card__body {
+  padding: clamp(16px, 2.5vw, 24px);
+}
+
+/* ── 会社名・部署 ── */
+.employee-card__meta {
+  margin-bottom: 10px;
+}
+
+.employee-card__company {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  line-height: 1.4;
+  margin-bottom: 3px;
+}
+
+.employee-card__dept {
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* ── 名前 ── */
+.employee-card__name {
+  font-size: clamp(17px, 2vw, 20px);
+  font-weight: 800;
+  color: var(--color-text-dark);
+  letter-spacing: 0.03em;
+  margin-bottom: 12px;
+}
+
+.employee-card__name-suffix {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-mid);
+  margin-left: 3px;
+}
+
+/* ── タグ ── */
+.employee-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.employee-card__tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-tag-text);
+  background: var(--color-tag-bg);
+  border-radius: var(--radius-tag);
+  padding: 3px 12px;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+/* ── コメント ── */
+.employee-card__comment {
+  font-size: 13px;
+  color: var(--color-text-mid);
+  line-height: 1.8;
+  /* 3行で省略 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================
+  Slider Navigation Buttons
+============================================ */
+.employee-slider__btn {
+  position: absolute;
+  top: 38%; /* 画像の中央あたり */
+  transform: translateY(-50%);
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: clamp(36px, 4vw, 48px);
+  height: clamp(36px, 4vw, 48px);
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background: var(--color-card-bg);
+  color: var(--color-text-mid);
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+  transition:
+    border-color var(--transition-base),
+    background var(--transition-base),
+    color var(--transition-base),
+    transform var(--transition-base);
+}
+
+.employee-slider__btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.employee-slider__btn--prev { left: 0; }
+.employee-slider__btn--next { right: 0; }
+
+/* Swiperが付与するdisabled状態 */
+.employee-slider__btn.swiper-button-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ============================================
+  Pagination
+============================================ */
+.employee-slider__pagination {
+  text-align: center;
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+/* Swiperのbulletをカスタム */
+.employee-slider__pagination .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: var(--color-border);
+  border-radius: 50%;
+  opacity: 1;
+  margin: 0 5px;
+  cursor: pointer;
+  transition:
+    background var(--transition-base),
+    transform var(--transition-base),
+    width var(--transition-base);
+  display: inline-block;
+}
+
+.employee-slider__pagination .swiper-pagination-bullet-active {
+  background: var(--color-primary);
+  width: 24px;
+  border-radius: 4px;
+  transform: none;
+}
+
+/* ============================================
+  CTA Button
+============================================ */
+.employee-section__cta {
+  text-align: center;
+  margin-top: clamp(36px, 5vw, 56px);
+}
+
+.employee-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 15px clamp(32px, 4vw, 48px);
+  border-radius: var(--radius-btn);
+  border: 2px solid var(--color-text-dark);
+
+  font-size: clamp(13px, 1.4vw, 15px);
+  font-weight: 700;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+
+  transition:
+    background var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base),
+    gap var(--transition-base);
+}
+
+.employee-btn:hover {
+  background: var(--color-text-dark);
+  color: #fff;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.employee-btn__icon {
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+}
+
+.employee-btn:hover .employee-btn__icon {
+  transform: translateX(3px);
+}
+
+/* ============================================
+  Fade-in（IntersectionObserver連携）
+  セクション自体のフェードイン
+============================================ */
+.js-fade-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.js-fade-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+  Responsive
+============================================ */
+
+/* タブレット */
+@media (max-width: 900px) {
+  .employee-slider__btn {
+    top: 35%;
+  }
+}
+
+/* スマホ */
+@media (max-width: 600px) {
+  .employee-slider-wrap {
+    padding-inline: 32px;
+  }
+
+  .employee-slider__btn {
+    top: 32%;
+  }
+
+  .employee-card__comment {
+    -webkit-line-clamp: 4;
+  }
+}
+
+@media (max-width: 380px) {
+  .employee-slider-wrap {
+    padding-inline: 28px;
+  }
+
+  .employee-slider__btn {
+    width: 32px;
+    height: 32px;
+  }
+}
