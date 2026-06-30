@@ -12,21 +12,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const swiperEl = document.querySelector(".employee-slider");
 
   if (swiperEl) {
-    new Swiper(".employee-slider", {
+    // ナビボタンをSwiper初期化前に取得
+    const prevBtn = document.querySelector(".employee-slider__btn--prev");
+    const nextBtn = document.querySelector(".employee-slider__btn--next");
+
+    const swiper = new Swiper(".employee-slider", {
       // ループ再生
       loop: true,
 
       // スライド間の余白
       spaceBetween: 24,
 
-      // 高さを揃える
-      autoHeight: false,
-
-      // ナビゲーションボタン
-      navigation: {
-        prevEl: ".employee-slider__btn--prev",
-        nextEl: ".employee-slider__btn--next",
+      // 自動再生（4秒ごと・ゆっくり切り替え）
+      autoplay: {
+        delay: 4000,
+        disableOnInteraction: false, // 手動操作後も自動再生を継続
+        pauseOnMouseEnter: true,     // ホバー中は一時停止
       },
+
+      // スライド切り替えのスピード（ms）
+      speed: 800,
 
       // ページネーション
       pagination: {
@@ -55,6 +60,20 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       },
     });
+
+    // 矢印ボタンを手動でSwiperに接続
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        swiper.slidePrev();
+        swiper.autoplay.start(); // クリック後も自動再生を維持
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        swiper.slideNext();
+        swiper.autoplay.start();
+      });
+    }
   }
 
   /* ============================================
