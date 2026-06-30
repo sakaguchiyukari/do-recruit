@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>社員紹介 | グループ採用サイト</title>
 
-  <!-- Swiper CSS -->
+  <!-- Swiper CSS・Component CSS は </head> 直前に貼る -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-
-  <!-- Component CSS -->
   <link rel="stylesheet" href="employee-intro-slider.css">
 </head>
 <body>
@@ -18,12 +16,6 @@
   ============================================ -->
   <section class="employee-section js-fade-section">
     <div class="employee-section__inner">
-
-      <!-- セクションヘッダー -->
-      <header class="employee-section__header">
-        <p class="employee-section__label">Employee Interview</p>
-        <h2 class="employee-section__title">社員紹介</h2>
-      </header>
 
       <!-- スライダー本体 -->
       <div class="employee-slider-wrap">
@@ -51,9 +43,6 @@
                     <p class="employee-card__dept">ドコモショップ</p>
                   </div>
                   <p class="employee-card__name">I.U<span class="employee-card__name-suffix">さん</span></p>
-                  <ul class="employee-card__tags">
-                    <li class="employee-card__tag">接客・販売</li>
-                  </ul>
                   <p class="employee-card__comment">
                     お客様の笑顔が一番のやりがいです。先輩がしっかりサポートしてくれたので、入社後すぐに自信を持って働けました。
                   </p>
@@ -80,9 +69,6 @@
                     <p class="employee-card__dept">飲食事業部</p>
                   </div>
                   <p class="employee-card__name">S.S<span class="employee-card__name-suffix">さん</span></p>
-                  <ul class="employee-card__tags">
-                    <li class="employee-card__tag">ホール</li>
-                  </ul>
                   <p class="employee-card__comment">
                     チームで一体となって作り上げる達成感が好きです。グループ内での異動もあり、自分のキャリアの幅が広がりました。
                   </p>
@@ -109,9 +95,6 @@
                     <p class="employee-card__dept">BMW下通店</p>
                   </div>
                   <p class="employee-card__name">M.Y<span class="employee-card__name-suffix">さん</span></p>
-                  <ul class="employee-card__tags">
-                    <li class="employee-card__tag">営業</li>
-                  </ul>
                   <p class="employee-card__comment">
                     好きな車に囲まれて働ける環境が最高です。お客様と長くお付き合いできることがこの仕事の一番の魅力だと感じています。
                   </p>
@@ -138,9 +121,6 @@
                     <p class="employee-card__dept">総務部</p>
                   </div>
                   <p class="employee-card__name">K.T<span class="employee-card__name-suffix">さん</span></p>
-                  <ul class="employee-card__tags">
-                    <li class="employee-card__tag">事務・管理</li>
-                  </ul>
                   <p class="employee-card__comment">
                     入社前は不安でしたが、研修制度が充実していて安心できました。先輩がいつでも相談に乗ってくれる温かい職場です。
                   </p>
@@ -167,9 +147,6 @@
                     <p class="employee-card__dept">法人営業部</p>
                   </div>
                   <p class="employee-card__name">R.O<span class="employee-card__name-suffix">さん</span></p>
-                  <ul class="employee-card__tags">
-                    <li class="employee-card__tag">法人営業</li>
-                  </ul>
                   <p class="employee-card__comment">
                     法人のお客様と深い信頼関係を築くことが醍醐味です。大型案件が決まった瞬間は本当に大きなやりがいを感じます。
                   </p>
@@ -197,24 +174,12 @@
       <!-- ページネーション -->
       <div class="employee-slider__pagination"></div>
 
-      <!-- CTAボタン -->
-      <div class="employee-section__cta">
-        <a href="#" class="employee-btn">
-          社員紹介をもっと見る
-          <svg class="employee-btn__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
-
     </div><!-- /.employee-section__inner -->
   </section>
   <!-- /社員紹介セクション -->
 
-  <!-- Swiper JS -->
+  <!-- Swiper JS・Component JS は </body> 直前に貼る -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
-
-  <!-- Component JS -->
   <script src="employee-intro-slider.js" defer></script>
 
 </body>
