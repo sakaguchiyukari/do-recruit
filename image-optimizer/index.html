@@ -139,39 +139,8 @@
           <option value="75">いちばん軽い（画質は少し低下）</option>
         </select>
       </div>
-      <div class="field">
-        <label>リネーム プレフィックス</label>
-        <div style="display:flex;gap:6px">
-          <input type="text" id="prefix" value="image" list="prefix-presets" style="width:150px">
-          <select id="prefix-select" style="max-width:160px">
-            <option value="">候補から選ぶ</option>
-            <optgroup label="トップ・メインビジュアル">
-              <option>fv</option><option>fv-hero</option><option>mv</option><option>main-visual</option><option>hero</option><option>top</option>
-            </optgroup>
-            <optgroup label="会社紹介">
-              <option>about</option><option>about-office</option><option>company</option><option>company-office</option><option>company-exterior</option><option>company-interior</option><option>greeting</option><option>message</option><option>philosophy</option><option>history</option><option>access</option>
-            </optgroup>
-            <optgroup label="採用">
-              <option>recruit</option><option>recruit-fv</option><option>staff</option><option>member</option><option>interview</option><option>voice</option><option>entry</option><option>benefit</option><option>workstyle</option>
-            </optgroup>
-            <optgroup label="コンテンツ">
-              <option>service</option><option>works</option><option>product</option><option>item</option><option>menu</option><option>price</option><option>plan</option><option>flow</option><option>faq</option><option>case</option><option>gallery</option><option>campaign</option><option>event</option><option>news</option><option>blog</option><option>column</option><option>shop</option><option>contact</option>
-            </optgroup>
-            <optgroup label="パーツ">
-              <option>logo</option><option>icon</option><option>banner</option><option>bnr</option><option>ogp</option><option>thumb</option><option>bg</option><option>cta</option><option>feature</option><option>merit</option><option>reason</option>
-            </optgroup>
-          </select>
-        </div>
-        <datalist id="prefix-presets"></datalist>
-      </div>
-      <div class="field">
-        <label>連番</label>
-        <select id="numbering">
-          <option value="type" selected>分類ごとに連番</option>
-          <option value="all">全体で連番</option>
-        </select>
-      </div>
-      <div class="hint" style="width:100%">※ 元画像より大きくは変換しません（拡大なし）。分類・形式・ファイル名・altは一覧で個別に変更でき、手動で変更した名前とaltはプレフィックスを変えてもそのまま維持されます。</div>
+      <div class="hint" style="width:100%">※ 元画像より大きくは変換しません（拡大なし）。<br>
+      ※ ファイル名は分類ごとに自動で付きます（photo-01 など）。一覧のファイル名欄に<b>日本語で入力すると自動で英語ファイル名に変換</b>されます（例：「オフィス外観」→ office-exterior、「スタッフ紹介」→ staff-intro）。入力した日本語はalt候補にもセットされます。</div>
     </div>
   </div>
 
@@ -335,6 +304,108 @@ function defaultFormat(type){
   return webp ? "webp" : "jpeg";
 }
 
+/* ================= 日本語 → 英語ファイル名変換 ================= */
+const JP_DICT = {
+  // 会社・オフィス
+  "オフィス":"office","事務所":"office","会社":"company","企業":"company","社屋":"building","本社":"head-office","支店":"branch",
+  "外観":"exterior","内観":"interior","内装":"interior","受付":"reception","エントランス":"entrance","会議室":"meeting-room","会議":"meeting",
+  "工場":"factory","倉庫":"warehouse","店舗":"shop","店内":"shop-interior","お店":"shop","風景":"view","様子":"scene","雰囲気":"atmosphere",
+  // 人・採用
+  "スタッフ":"staff","社員":"staff","従業員":"staff","メンバー":"member","チーム":"team","集合写真":"group-photo","集合":"group",
+  "代表":"ceo","社長":"president","部長":"manager","店長":"manager","先輩":"senior","新卒":"new-graduate","中途":"mid-career",
+  "採用":"recruit","求人":"recruit","募集":"recruit","面接":"interview","インタビュー":"interview","座談会":"talk","対談":"talk",
+  "研修":"training","福利厚生":"benefit","働き方":"workstyle","仕事":"work","一日":"day","職場":"workplace","エントリー":"entry",
+  // ページ・セクション
+  "紹介":"intro","挨拶":"greeting","メッセージ":"message","理念":"philosophy","ビジョン":"vision","沿革":"history","歴史":"history",
+  "概要":"overview","アクセス":"access","地図":"map","お問い合わせ":"contact","問い合わせ":"contact","お知らせ":"news",
+  "よくある質問":"faq","質問":"faq","ニュース":"news","ブログ":"blog","コラム":"column","キャンペーン":"campaign","イベント":"event",
+  "ギャラリー":"gallery","特徴":"feature","強み":"strength","メリット":"merit","理由":"reason","流れ":"flow","ステップ":"step",
+  // 事業・商品
+  "サービス":"service","事業":"business","商品":"product","製品":"product","実績":"works","制作実績":"works","事例":"case",
+  "お客様の声":"voice","お客様":"customer","声":"voice","料金":"price","価格":"price","プラン":"plan","メニュー":"menu",
+  // パーツ・素材
+  "トップ":"top","メインビジュアル":"main-visual","メイン":"main","ファーストビュー":"fv","ヒーロー":"hero","背景":"bg",
+  "ロゴ":"logo","アイコン":"icon","バナー":"banner","ボタン":"button","イラスト":"illust","図解":"diagram","写真":"photo",
+  "画像":"image","動画":"movie","サムネイル":"thumbnail","サムネ":"thumb","見出し":"heading","装飾":"deco","矢印":"arrow",
+  // よくある姓
+  "佐藤":"sato","鈴木":"suzuki","高橋":"takahashi","田中":"tanaka","伊藤":"ito","渡辺":"watanabe","山本":"yamamoto",
+  "中村":"nakamura","小林":"kobayashi","加藤":"kato","吉田":"yoshida","山田":"yamada","佐々木":"sasaki","山口":"yamaguchi",
+  "松本":"matsumoto","井上":"inoue","木村":"kimura","林":"hayashi","斎藤":"saito","斉藤":"saito","清水":"shimizu",
+  "山崎":"yamazaki","森":"mori","池田":"ikeda","橋本":"hashimoto","阿部":"abe","石川":"ishikawa","中島":"nakajima",
+  "前田":"maeda","藤田":"fujita","後藤":"goto","岡田":"okada","長谷川":"hasegawa","村上":"murakami","近藤":"kondo",
+  "石井":"ishii","坂本":"sakamoto","遠藤":"endo","青木":"aoki","藤井":"fujii","西村":"nishimura","福田":"fukuda",
+  "太田":"ota","三浦":"miura","岡本":"okamoto","松田":"matsuda","中川":"nakagawa","中野":"nakano","原田":"harada","小川":"ogawa",
+  // 色・季節
+  "ホワイト":"white","ブラック":"black","レッド":"red","ブルー":"blue","グリーン":"green","イエロー":"yellow",
+  "ピンク":"pink","オレンジ":"orange","パープル":"purple","グレー":"gray","ゴールド":"gold","シルバー":"silver",
+  "白":"white","黒":"black","赤":"red","青":"blue","緑":"green","黄色":"yellow","春":"spring","夏":"summer","秋":"autumn","冬":"winter",
+  // 位置・番号など
+  "さん":"san","様":"sama","その":"","の":"","上":"top","下":"bottom","左":"left","右":"right","新":"new"
+};
+const DICT_KEYS = Object.keys(JP_DICT).sort((a, b) => b.length - a.length);
+
+const KANA = {
+  "ア":"a","イ":"i","ウ":"u","エ":"e","オ":"o","カ":"ka","キ":"ki","ク":"ku","ケ":"ke","コ":"ko",
+  "サ":"sa","シ":"shi","ス":"su","セ":"se","ソ":"so","タ":"ta","チ":"chi","ツ":"tsu","テ":"te","ト":"to",
+  "ナ":"na","ニ":"ni","ヌ":"nu","ネ":"ne","ノ":"no","ハ":"ha","ヒ":"hi","フ":"fu","ヘ":"he","ホ":"ho",
+  "マ":"ma","ミ":"mi","ム":"mu","メ":"me","モ":"mo","ヤ":"ya","ユ":"yu","ヨ":"yo",
+  "ラ":"ra","リ":"ri","ル":"ru","レ":"re","ロ":"ro","ワ":"wa","ヲ":"o","ン":"n",
+  "ガ":"ga","ギ":"gi","グ":"gu","ゲ":"ge","ゴ":"go","ザ":"za","ジ":"ji","ズ":"zu","ゼ":"ze","ゾ":"zo",
+  "ダ":"da","ヂ":"ji","ヅ":"zu","デ":"de","ド":"do","バ":"ba","ビ":"bi","ブ":"bu","ベ":"be","ボ":"bo",
+  "パ":"pa","ピ":"pi","プ":"pu","ペ":"pe","ポ":"po","ヴ":"vu",
+  "ァ":"a","ィ":"i","ゥ":"u","ェ":"e","ォ":"o","ャ":"ya","ュ":"yu","ョ":"yo","ヮ":"wa"
+};
+const DIGRAPH = {
+  "キャ":"kya","キュ":"kyu","キョ":"kyo","シャ":"sha","シュ":"shu","ショ":"sho","シェ":"she",
+  "チャ":"cha","チュ":"chu","チョ":"cho","チェ":"che","ニャ":"nya","ニュ":"nyu","ニョ":"nyo",
+  "ヒャ":"hya","ヒュ":"hyu","ヒョ":"hyo","ミャ":"mya","ミュ":"myu","ミョ":"myo","リャ":"rya","リュ":"ryu","リョ":"ryo",
+  "ギャ":"gya","ギュ":"gyu","ギョ":"gyo","ジャ":"ja","ジュ":"ju","ジョ":"jo","ジェ":"je",
+  "ビャ":"bya","ビュ":"byu","ビョ":"byo","ピャ":"pya","ピュ":"pyu","ピョ":"pyo",
+  "ファ":"fa","フィ":"fi","フェ":"fe","フォ":"fo","ウィ":"wi","ウェ":"we","ウォ":"wo",
+  "ティ":"ti","トゥ":"tu","ディ":"di","ドゥ":"du","ヴァ":"va","ヴィ":"vi","ヴェ":"ve","ヴォ":"vo",
+  "ツァ":"tsa","ツェ":"tse","ツォ":"tso","イェ":"ye"
+};
+function kanaToRomaji(str){
+  const s = str.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)); // ひらがな→カタカナ
+  let out = "";
+  for (let i = 0; i < s.length; i++) {
+    const two = s.substr(i, 2);
+    if (DIGRAPH[two]) { out += DIGRAPH[two]; i++; continue; }
+    const c = s[i];
+    if (c === "ッ") { const nxt = DIGRAPH[s.substr(i+1, 2)] || KANA[s[i+1]]; if (nxt) out += nxt[0] === "c" ? "t" : nxt[0]; continue; }
+    if (c === "ー") continue;
+    if (KANA[c]) { out += KANA[c]; continue; }
+  }
+  return out;
+}
+// 日本語テキストを英語スラッグに変換（辞書優先 → かなはローマ字化 → 変換不能な漢字はスキップ）
+function jpToSlug(input){
+  const s = String(input).normalize("NFKC").trim();
+  if (!/[^\x00-\x7F]/.test(s)) return s; // すべて半角ならそのまま
+  const tokens = [];
+  let ascii = "", kana = "";
+  const flushAscii = () => { if (ascii) { tokens.push(ascii); ascii = ""; } };
+  const flushKana  = () => { if (kana) { const r = kanaToRomaji(kana); if (r) tokens.push(r); kana = ""; } };
+  let i = 0;
+  outer: while (i < s.length) {
+    for (const k of DICT_KEYS) {
+      if (s.startsWith(k, i)) {
+        flushAscii(); flushKana();
+        if (JP_DICT[k]) tokens.push(JP_DICT[k]);
+        i += k.length;
+        continue outer;
+      }
+    }
+    const ch = s[i];
+    if (/[a-zA-Z0-9]/.test(ch))            { flushKana(); ascii += ch; }
+    else if (/[ぁ-ゖァ-ヺー]/.test(ch))     { flushAscii(); kana += ch; }
+    else                                    { flushAscii(); flushKana(); }
+    i++;
+  }
+  flushAscii(); flushKana();
+  return tokens.filter(Boolean).join("-");
+}
+
 /* ================= 命名 ================= */
 function sanitizeName(name){
   let n = name.normalize("NFKC");
@@ -347,17 +418,13 @@ function sanitizeName(name){
 }
 
 function applyNames(){
-  const prefix = sanitizeName($("prefix").value || "image");
-  const perType = $("numbering").value === "type";
   const counters = {};
   for (const item of items) {
     if (item.error) continue;
     // 手動で編集したファイル名・altは上書きしない
     if (!item.nameEdited) {
-      const key = perType ? item.type : "_all";
-      counters[key] = (counters[key] || 0) + 1;
-      const seq = String(counters[key]).padStart(2, "0");
-      item.baseName = perType ? `${prefix}-${item.type}-${seq}` : `${prefix}-${seq}`;
+      counters[item.type] = (counters[item.type] || 0) + 1;
+      item.baseName = `${item.type}-${String(counters[item.type]).padStart(2, "0")}`;
     }
     if ($("opt-alt").checked && !item.altEdited) {
       item.alt = TYPE_ALT[item.type];
@@ -396,7 +463,7 @@ function renderRow(item){
     </td>
     <td><select class="sel-type">${typeOpts}</select></td>
     <td><select class="sel-format">${fmtOpts}</select></td>
-    <td><div class="name-cell"><input type="text" class="inp-name" value="${esc(item.baseName)}"><span class="ext">.${item.format}</span></div></td>
+    <td><div class="name-cell"><input type="text" class="inp-name" value="${esc(item.baseName)}" placeholder="日本語で入力OK" title="日本語で入力すると英語ファイル名に自動変換されます"><span class="ext">.${item.format}</span></div></td>
     <td><input type="text" class="alt-input inp-alt" value="${esc(item.alt)}" placeholder="alt"></td>
     <td style="text-align:center"><input type="checkbox" class="inp-ogp" ${item.ogp ? "checked" : ""} title="1200×630のOGP画像も生成"></td>
     <td>${resultCell(item)}</td>
@@ -409,7 +476,15 @@ function renderRow(item){
     applyNames();
   };
   tr.querySelector(".sel-format").onchange = e => { item.format = e.target.value; renderRow(item); invalidate(); };
-  tr.querySelector(".inp-name").onchange = e => { item.baseName = sanitizeName(e.target.value); item.nameEdited = true; e.target.value = item.baseName; invalidate(); };
+  tr.querySelector(".inp-name").onchange = e => {
+    const raw = e.target.value;
+    const hadJapanese = /[^\x00-\x7F]/.test(raw);
+    item.baseName = sanitizeName(jpToSlug(raw));
+    item.nameEdited = true;
+    if (hadJapanese && raw.trim() && !item.altEdited) { item.alt = raw.trim(); item.altEdited = true; }
+    renderRow(item);
+    invalidate();
+  };
   tr.querySelector(".inp-alt").oninput = e => { item.alt = e.target.value; item.altEdited = true; };
   tr.querySelector(".inp-ogp").onchange = e => { item.ogp = e.target.checked; invalidate(); };
   tr.querySelector(".del").onclick = () => removeItem(item.id);
@@ -464,24 +539,13 @@ function refreshUI(){
 }
 
 /* 設定変更で再変換が必要に */
-["max-size","custom-size","size-basis","quality","numbering","opt-webp","opt-keep-original",
+["max-size","custom-size","size-basis","quality","opt-webp","opt-keep-original",
  "opt-lowercase","opt-ascii","opt-nospace","opt-nojp","opt-alt","opt-favicon"]
   .forEach(id => $(id).addEventListener("change", () => {
     if (id === "max-size") $("custom-size-field").style.display = $("max-size").value === "custom" ? "" : "none";
-    if (["opt-lowercase","opt-ascii","opt-nospace","opt-nojp","opt-alt","numbering"].includes(id)) { items.forEach(i => i.altEdited = i.altEdited && id !== "opt-alt"); applyNames(); }
+    if (["opt-lowercase","opt-ascii","opt-nospace","opt-nojp","opt-alt"].includes(id)) { items.forEach(i => i.altEdited = i.altEdited && id !== "opt-alt"); applyNames(); }
     invalidate();
   }));
-$("prefix").addEventListener("change", applyNames);
-$("prefix-select").addEventListener("change", e => {
-  if (!e.target.value) return;
-  $("prefix").value = e.target.value;
-  e.target.value = "";
-  applyNames();
-});
-/* datalist にも全候補を反映（入力補完用） */
-$("prefix-presets").innerHTML =
-  [...document.querySelectorAll("#prefix-select option")].map(o => o.value).filter(Boolean)
-  .map(v => `<option value="${v}"></option>`).join("");
 $("clear-btn").addEventListener("click", () => { items = []; list.innerHTML = ""; converted = false; refreshUI(); });
 
 /* ================= 変換 ================= */
