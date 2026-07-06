@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>採用日程管理</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #dbeafe;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --warning: #d97706;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-sub: #64748b;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.05);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea { font-family: inherit; font-size: 16px; }
+
+  /* ===== 認証画面 ===== */
+  .auth-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%);
+  }
+  .auth-card {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.25);
+    width: 100%;
+    max-width: 420px;
+    padding: 36px 32px;
+  }
+  .auth-logo { text-align: center; margin-bottom: 24px; }
+  .auth-logo .mark { font-size: 40px; }
+  .auth-logo h1 { font-size: 22px; margin-top: 8px; letter-spacing: .05em; }
+  .auth-logo p { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
+  .auth-tabs {
+    display: flex;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 24px;
+  }
+  .auth-tabs button {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-sub);
+    transition: all .2s;
+  }
+  .auth-tabs button.active {
+    background: var(--card);
+    color: var(--primary);
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .field label .req {
+    color: var(--danger);
+    font-size: 11px;
+    margin-left: 4px;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .2s;
+    background: #fff;
+    color: var(--text);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--primary);
+  }
+  .field .hint { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all .2s;
+  }
+  .btn-primary { background: var(--primary); color: #fff; width: 100%; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-secondary { background: var(--bg); color: var(--text); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-danger-ghost { background: transparent; color: var(--danger); font-size: 13px; padding: 8px 12px; }
+  .btn-danger-ghost:hover { background: #fef2f2; }
+  .auth-error {
+    background: #fef2f2;
+    color: var(--danger);
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .auth-error.show { display: block; }
+  .auth-note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-sub);
+    background: var(--bg);
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+
+  /* ===== メイン画面 ===== */
+  .app { display: none; }
+  .app.show { display: block; }
+  header.topbar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar-inner .brand {
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar-inner .user-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .user-chip {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .icon-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .icon-btn:hover { background: var(--bg); }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filters button {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--text-sub);
+    font-weight: 500;
+  }
+  .filters button.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+  .btn-new {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+  }
+  .btn-new:hover { background: var(--primary-dark); }
+
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-sub);
+  }
+  .empty .mark { font-size: 44px; margin-bottom: 12px; }
+
+  .day-group { margin-bottom: 24px; }
+  .day-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-sub);
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+  .day-label.today { color: var(--primary); }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    border-left: 4px solid var(--primary);
+    transition: transform .15s;
+  }
+  .card:hover { transform: translateY(-1px); }
+  .card.done { border-left-color: var(--success); opacity: .75; }
+  .card.cancelled { border-left-color: #94a3b8; opacity: .6; }
+  .card.cancelled .card-title { text-decoration: line-through; }
+  .card-time {
+    min-width: 82px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--primary-dark);
+    background: var(--primary-light);
+    border-radius: 8px;
+    padding: 8px 6px;
+    line-height: 1.4;
+  }
+  .card-time small { display: block; font-weight: 500; font-size: 11px; color: var(--primary); }
+  .card-body { flex: 1; min-width: 0; }
+  .card-title { font-size: 16px; font-weight: 700; word-break: break-word; }
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    font-size: 12.5px;
+    color: var(--text-sub);
+    margin-top: 4px;
+  }
+  .card-memo {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-top: 6px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .status-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    margin-left: 8px;
+    vertical-align: 2px;
+  }
+  .status-badge.scheduled { background: var(--primary-light); color: var(--primary-dark); }
+  .status-badge.done { background: #dcfce7; color: var(--success); }
+  .status-badge.cancelled { background: #f1f5f9; color: var(--text-sub); }
+  .card-actions { display: flex; flex-direction: column; gap: 6px; }
+  .card-actions button {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: var(--text-sub);
+    white-space: nowrap;
+  }
+  .card-actions button:hover { background: var(--bg); }
+
+  /* ===== モーダル ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,.5);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;
+    padding: 28px 26px;
+    margin: auto 0;
+    box-shadow: 0 24px 60px rgba(0,0,0,.3);
+  }
+  .modal h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal .row { display: flex; gap: 12px; }
+  .modal .row .field { flex: 1; }
+  .modal-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .modal-footer .btn { flex: 1; }
+  .modal .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1e293b;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    transition: transform .3s;
+    z-index: 200;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 560px) {
+    .card { flex-wrap: wrap; }
+    .card-actions { flex-direction: row; width: 100%; justify-content: flex-end; }
+    .modal .row { flex-direction: column; gap: 0; }
+    .topbar-inner .brand span.text { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 認証画面 ============ -->
+<div class="auth-wrap" id="authView">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="mark">📅</div>
+      <h1>採用日程管理</h1>
+      <p>担当者ごとにアカウントを作成して利用できます</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button id="tabLogin" class="active" onclick="switchAuthTab('login')">ログイン</button>
+      <button id="tabRegister" onclick="switchAuthTab('register')">新規登録</button>
+    </div>
+
+    <div class="auth-error" id="authError"></div>
+
+    <!-- ログイン -->
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="field">
+        <label>担当者名</label>
+        <input type="text" id="loginName" placeholder="例:坂口" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label>パスワード</label>
+        <input type="password" id="loginPass" placeholder="パスワードを入力" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">ログイン</button>
+    </form>
+
+    <!-- 新規登録 -->
+    <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
+      <div class="field">
+        <label>担当者名<span class="req">必須</span></label>
+        <input type="text" id="regName" placeholder="例:坂口" autocomplete="username" required>
+        <div class="hint">ログイン時に使用する名前です</div>
+      </div>
+      <div class="field">
+        <label>パスワード<span class="req">必須</span></label>
+        <input type="password" id="regPass" placeholder="4文字以上で自由に設定" autocomplete="new-password" minlength="4" required>
+        <div class="hint">自分だけのパスワードを設定してください(あとから変更できます)</div>
+      </div>
+      <div class="field">
+        <label>パスワード(確認)<span class="req">必須</span></label>
+        <input type="password" id="regPass2" placeholder="もう一度入力" autocomplete="new-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">アカウントを作成</button>
+    </form>
+
+    <div class="auth-note">
+      💡 初めての方は「新規登録」からアカウントを作成してください。パスワードは各担当者が自分で設定・管理します。
+    </div>
+  </div>
+</div>
+
+<!-- ============ メイン画面 ============ -->
+<div class="app" id="appView">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">📅 <span class="text">採用日程管理</span></div>
+      <div class="user-area">
+        <span class="user-chip" id="currentUserName"></span>
+        <button class="icon-btn" onclick="openPasswordModal()">パスワード変更</button>
+        <button class="icon-btn" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <div class="filters">
+        <button class="active" data-filter="upcoming" onclick="setFilter('upcoming', this)">今後の予定</button>
+        <button data-filter="mine" onclick="setFilter('mine', this)">自分の担当</button>
+        <button data-filter="all" onclick="setFilter('all', this)">すべて</button>
+      </div>
+      <button class="btn-new" onclick="openScheduleModal()">+ 日程を作成</button>
+    </div>
+    <div id="scheduleList"></div>
+  </main>
+</div>
+
+<!-- ============ 日程作成・編集モーダル ============ -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal">
+    <h2 id="scheduleModalTitle">📝 日程を作成</h2>
+    <form id="scheduleForm" onsubmit="saveSchedule(event)">
+      <input type="hidden" id="schedId">
+      <div class="field">
+        <label>タイトル<span class="req">必須</span></label>
+        <input type="text" id="schedTitle" placeholder="例:一次面接(山田さん)/ 会社説明会" required maxlength="60">
+        <div class="hint">日程の内容がわかるタイトルを自由に入力できます</div>
+      </div>
+      <div class="field">
+        <label>日付<span class="req">必須</span></label>
+        <input type="date" id="schedDate" required>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>開始時刻</label>
+          <input type="time" id="schedStart">
+        </div>
+        <div class="field">
+          <label>終了時刻</label>
+          <input type="time" id="schedEnd">
+        </div>
+      </div>
+      <div class="field">
+        <label>場所・方法</label>
+        <input type="text" id="schedLocation" placeholder="例:本社会議室A / Zoom" maxlength="60">
+      </div>
+      <div class="field">
+        <label>ステータス</label>
+        <select id="schedStatus">
+          <option value="scheduled">予定</option>
+          <option value="done">完了</option>
+          <option value="cancelled">キャンセル</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>メモ</label>
+        <textarea id="schedMemo" rows="3" placeholder="応募者情報、持ち物、担当メモなど"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeScheduleModal()">キャンセル</button>
+        <button type="submit" class="btn btn-primary">保存する</button>
+      </div>
+      <div style="text-align:center; margin-top:10px;">
+        <button type="button" class="btn-danger-ghost" id="btnDeleteSchedule" style="display:none" onclick="deleteSchedule()">この日程を削除する</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ パスワード変更モーダル ============ -->
+<div class="modal-overlay" id="passwordModal">
+  <div class="modal">
+    <h2>🔑 パスワード変更</h2>
+    <div class="auth-error" id="passError"></div>
+    <form onsubmit="changePassword(event)">
+      <div class="field">
+        <label>現在のパスワード</label>
+        <input type="password" id="curPass" autocomplete="current-password" required>
+      </div>
+      <div class="field">
+        <label>新しいパスワード</label>
+        <input type="password" id="newPass" minlength="4" autocomplete="new-password" required>
+        <div class="hint">4文字以上で設定してください</div>
+      </div>
+      <div class="field">
+        <label>新しいパスワード(確認)</label>
+        <input type="password" id="newPass2" autocomplete="new-password" required>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">キャンセル</button>
+        <button type="submit" class="btn btn-primary">変更する</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== ストレージ =====================
+const KEY_USERS = 'recruitApp_users';
+const KEY_SCHEDULES = 'recruitApp_schedules';
+const KEY_SESSION = 'recruitApp_session';
+
+function loadUsers() { return JSON.parse(localStorage.getItem(KEY_USERS) || '[]'); }
+function saveUsers(users) { localStorage.setItem(KEY_USERS, JSON.stringify(users)); }
+function loadSchedules() { return JSON.parse(localStorage.getItem(KEY_SCHEDULES) || '[]'); }
+function saveSchedules(items) { localStorage.setItem(KEY_SCHEDULES, JSON.stringify(items)); }
+
+let currentUser = null;
+let currentFilter = 'upcoming';
+
+// ===================== ユーティリティ =====================
+async function hashPassword(password) {
+  // crypto.subtle は HTTPS 環境で利用可能(Netlify は HTTPS)
+  if (window.crypto && crypto.subtle) {
+    const data = new TextEncoder().encode('recruit-app::' + password);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  // フォールバック(非HTTPS環境用の簡易ハッシュ)
+  let h = 0;
+  const s = 'recruit-app::' + password;
+  for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) >>> 0; }
+  return 'fb_' + h.toString(16);
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+function showAuthError(message) {
+  const el = document.getElementById('authError');
+  el.textContent = message;
+  el.classList.add('show');
+}
+function clearAuthError() {
+  document.getElementById('authError').classList.remove('show');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ===================== 認証 =====================
+function switchAuthTab(tab) {
+  clearAuthError();
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? '' : 'none';
+}
+
+async function handleRegister(event) {
+  event.preventDefault();
+  clearAuthError();
+  const name = document.getElementById('regName').value.trim();
+  const pass = document.getElementById('regPass').value;
+  const pass2 = document.getElementById('regPass2').value;
+
+  if (!name) { showAuthError('担当者名を入力してください。'); return; }
+  if (pass.length < 4) { showAuthError('パスワードは4文字以上で設定してください。'); return; }
+  if (pass !== pass2) { showAuthError('確認用パスワードが一致しません。'); return; }
+
+  const users = loadUsers();
+  if (users.some(u => u.name === name)) {
+    showAuthError('この担当者名はすでに登録されています。別の名前を使うか、ログインしてください。');
+    return;
+  }
+
+  const user = { id: uid(), name, passHash: await hashPassword(pass), createdAt: new Date().toISOString() };
+  users.push(user);
+  saveUsers(users);
+  login(user);
+  showToast(`ようこそ、${name} さん!`);
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+  clearAuthError();
+  const name = document.getElementById('loginName').value.trim();
+  const pass = document.getElementById('loginPass').value;
+
+  const users = loadUsers();
+  const user = users.find(u => u.name === name);
+  if (!user || user.passHash !== await hashPassword(pass)) {
+    showAuthError('担当者名またはパスワードが正しくありません。');
+    return;
+  }
+  login(user);
+  showToast(`おかえりなさい、${name} さん!`);
+}
+
+function login(user) {
+  currentUser = user;
+  sessionStorage.setItem(KEY_SESSION, user.id);
+  document.getElementById('loginForm').reset();
+  document.getElementById('registerForm').reset();
+  document.getElementById('authView').style.display = 'none';
+  document.getElementById('appView').classList.add('show');
+  document.getElementById('currentUserName').textContent = user.name;
+  render();
+}
+
+function logout() {
+  currentUser = null;
+  sessionStorage.removeItem(KEY_SESSION);
+  document.getElementById('appView').classList.remove('show');
+  document.getElementById('authView').style.display = '';
+  switchAuthTab('login');
+}
+
+function restoreSession() {
+  const id = sessionStorage.getItem(KEY_SESSION);
+  if (!id) return;
+  const user = loadUsers().find(u => u.id === id);
+  if (user) login(user);
+}
+
+// ===================== パスワード変更 =====================
+function openPasswordModal() {
+  document.getElementById('passError').classList.remove('show');
+  document.querySelector('#passwordModal form').reset();
+  document.getElementById('passwordModal').classList.add('show');
+}
+function closePasswordModal() {
+  document.getElementById('passwordModal').classList.remove('show');
+}
+
+async function changePassword(event) {
+  event.preventDefault();
+  const errEl = document.getElementById('passError');
+  errEl.classList.remove('show');
+
+  const cur = document.getElementById('curPass').value;
+  const next = document.getElementById('newPass').value;
+  const next2 = document.getElementById('newPass2').value;
+
+  if (currentUser.passHash !== await hashPassword(cur)) {
+    errEl.textContent = '現在のパスワードが正しくありません。';
+    errEl.classList.add('show');
+    return;
+  }
+  if (next.length < 4) {
+    errEl.textContent = '新しいパスワードは4文字以上で設定してください。';
+    errEl.classList.add('show');
+    return;
+  }
+  if (next !== next2) {
+    errEl.textContent = '確認用パスワードが一致しません。';
+    errEl.classList.add('show');
+    return;
+  }
+
+  const users = loadUsers();
+  const user = users.find(u => u.id === currentUser.id);
+  user.passHash = await hashPassword(next);
+  saveUsers(users);
+  currentUser = user;
+  closePasswordModal();
+  showToast('パスワードを変更しました');
+}
+
+// ===================== 日程 CRUD =====================
+function openScheduleModal(id) {
+  const form = document.getElementById('scheduleForm');
+  form.reset();
+  document.getElementById('schedId').value = '';
+  document.getElementById('btnDeleteSchedule').style.display = 'none';
+  document.getElementById('scheduleModalTitle').textContent = '📝 日程を作成';
+
+  if (id) {
+    const item = loadSchedules().find(s => s.id === id);
+    if (item) {
+      document.getElementById('scheduleModalTitle').textContent = '✏️ 日程を編集';
+      document.getElementById('schedId').value = item.id;
+      document.getElementById('schedTitle').value = item.title;
+      document.getElementById('schedDate').value = item.date;
+      document.getElementById('schedStart').value = item.startTime || '';
+      document.getElementById('schedEnd').value = item.endTime || '';
+      document.getElementById('schedLocation').value = item.location || '';
+      document.getElementById('schedStatus').value = item.status || 'scheduled';
+      document.getElementById('schedMemo').value = item.memo || '';
+      document.getElementById('btnDeleteSchedule').style.display = '';
+    }
+  } else {
+    document.getElementById('schedDate').value = new Date().toISOString().slice(0, 10);
+  }
+  document.getElementById('scheduleModal').classList.add('show');
+  setTimeout(() => document.getElementById('schedTitle').focus(), 50);
+}
+
+function closeScheduleModal() {
+  document.getElementById('scheduleModal').classList.remove('show');
+}
+
+function saveSchedule(event) {
+  event.preventDefault();
+  const id = document.getElementById('schedId').value;
+  const items = loadSchedules();
+
+  const data = {
+    title: document.getElementById('schedTitle').value.trim(),
+    date: document.getElementById('schedDate').value,
+    startTime: document.getElementById('schedStart').value,
+    endTime: document.getElementById('schedEnd').value,
+    location: document.getElementById('schedLocation').value.trim(),
+    status: document.getElementById('schedStatus').value,
+    memo: document.getElementById('schedMemo').value.trim(),
+  };
+  if (!data.title || !data.date) return;
+
+  if (id) {
+    const item = items.find(s => s.id === id);
+    Object.assign(item, data, { updatedAt: new Date().toISOString() });
+    showToast('日程を更新しました');
+  } else {
+    items.push({
+      id: uid(),
+      ...data,
+      createdBy: currentUser.id,
+      createdByName: currentUser.name,
+      createdAt: new Date().toISOString(),
+    });
+    showToast('日程を作成しました');
+  }
+  saveSchedules(items);
+  closeScheduleModal();
+  render();
+}
+
+function deleteSchedule() {
+  const id = document.getElementById('schedId').value;
+  if (!id) return;
+  if (!confirm('この日程を削除しますか?')) return;
+  saveSchedules(loadSchedules().filter(s => s.id !== id));
+  closeScheduleModal();
+  showToast('日程を削除しました');
+  render();
+}
+
+function toggleStatus(id) {
+  const items = loadSchedules();
+  const item = items.find(s => s.id === id);
+  if (!item) return;
+  item.status = item.status === 'done' ? 'scheduled' : 'done';
+  saveSchedules(items);
+  render();
+}
+
+// ===================== 表示 =====================
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function formatDayLabel(dateString) {
+  const date = new Date(dateString + 'T00:00:00');
+  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+  return `${date.getMonth() + 1}月${date.getDate()}日(${weekdays[date.getDay()]})`;
+}
+
+function render() {
+  const listEl = document.getElementById('scheduleList');
+  let items = loadSchedules();
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (currentFilter === 'upcoming') {
+    items = items.filter(s => s.date >= today && s.status !== 'cancelled');
+  } else if (currentFilter === 'mine') {
+    items = items.filter(s => s.createdBy === currentUser.id);
+  }
+
+  items.sort((a, b) => (a.date + (a.startTime || '')).localeCompare(b.date + (b.startTime || '')));
+
+  if (items.length === 0) {
+    const messages = {
+      upcoming: '今後の予定はありません。<br>「+ 日程を作成」からタイトルを付けて日程を登録しましょう。',
+      mine: 'あなたが作成した日程はまだありません。',
+      all: '登録された日程はまだありません。',
+    };
+    listEl.innerHTML = `<div class="empty"><div class="mark">🗓️</div><p>${messages[currentFilter]}</p></div>`;
+    return;
+  }
+
+  // 日付ごとにグループ化
+  const groups = {};
+  for (const item of items) {
+    (groups[item.date] = groups[item.date] || []).push(item);
+  }
+
+  const statusLabels = { scheduled: '予定', done: '完了', cancelled: 'キャンセル' };
+  let html = '';
+  for (const date of Object.keys(groups).sort()) {
+    const isToday = date === today;
+    html += `<div class="day-group">
+      <div class="day-label ${isToday ? 'today' : ''}">${formatDayLabel(date)}${isToday ? ' ・今日' : ''}</div>`;
+    for (const item of groups[date]) {
+      const status = item.status || 'scheduled';
+      const time = item.startTime
+        ? `${item.startTime}${item.endTime ? `<small>〜${item.endTime}</small>` : ''}`
+        : '<small>時刻未定</small>';
+      html += `<div class="card ${status}">
+        <div class="card-time">${time}</div>
+        <div class="card-body">
+          <div class="card-title">${escapeHtml(item.title)}<span class="status-badge ${status}">${statusLabels[status]}</span></div>
+          <div class="card-meta">
+            ${item.location ? `<span>📍 ${escapeHtml(item.location)}</span>` : ''}
+            <span>👤 作成:${escapeHtml(item.createdByName || '不明')}</span>
+          </div>
+          ${item.memo ? `<div class="card-memo">${escapeHtml(item.memo)}</div>` : ''}
+        </div>
+        <div class="card-actions">
+          <button onclick="openScheduleModal('${item.id}')">編集</button>
+          <button onclick="toggleStatus('${item.id}')">${status === 'done' ? '予定に戻す' : '完了にする'}</button>
+        </div>
+      </div>`;
+    }
+    html += '</div>';
+  }
+  listEl.innerHTML = html;
+}
+
+// モーダル外クリックで閉じる
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', event => {
+    if (event.target === overlay) overlay.classList.remove('show');
+  });
+});
+
+restoreSession();
+</script>
+</body>
+</html>
