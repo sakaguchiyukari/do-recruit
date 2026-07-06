@@ -69,6 +69,7 @@
   td input[type=text]{font-size:12.5px;padding:5px 8px}
   .name-cell{display:flex;align-items:center;gap:4px}
   .name-cell input{width:150px}
+  .name-preview{font-size:11px;color:var(--accent);font-weight:700;margin-top:3px;display:none}
   .ext{font-size:12px;color:var(--muted);font-weight:600}
   .alt-input{width:160px}
   .status{font-size:12px;white-space:nowrap}
@@ -463,7 +464,7 @@ function renderRow(item){
     </td>
     <td><select class="sel-type">${typeOpts}</select></td>
     <td><select class="sel-format">${fmtOpts}</select></td>
-    <td><div class="name-cell"><input type="text" class="inp-name" value="${esc(item.baseName)}" placeholder="日本語で入力OK" title="日本語で入力すると英語ファイル名に自動変換されます"><span class="ext">.${item.format}</span></div></td>
+    <td><div class="name-cell"><input type="text" class="inp-name" value="${esc(item.baseName)}" placeholder="日本語で入力OK" title="日本語で入力すると英語ファイル名に自動変換されます（Enterまたは欄の外クリックで確定）"><span class="ext">.${item.format}</span></div><div class="name-preview"></div></td>
     <td><input type="text" class="alt-input inp-alt" value="${esc(item.alt)}" placeholder="alt"></td>
     <td style="text-align:center"><input type="checkbox" class="inp-ogp" ${item.ogp ? "checked" : ""} title="1200×630のOGP画像も生成"></td>
     <td>${resultCell(item)}</td>
@@ -476,8 +477,12 @@ function renderRow(item){
     applyNames();
   };
   tr.querySelector(".sel-format").onchange = e => { item.format = e.target.value; renderRow(item); invalidate(); };
-  tr.querySelector(".inp-name").onchange = e => {
-    const raw = e.target.value;
+  const nameInput = tr.querySelector(".inp-name");
+  const namePreview = tr.querySelector(".name-preview");
+  let nameCommitted = false;
+  const commitName = raw => {
+    if (nameCommitted) return;
+    nameCommitted = true;
     const hadJapanese = /[^\x00-\x7F]/.test(raw);
     item.baseName = sanitizeName(jpToSlug(raw));
     item.nameEdited = true;
@@ -485,6 +490,21 @@ function renderRow(item){
     renderRow(item);
     invalidate();
   };
+  // 入力中は変換結果をリアルタイムでプレビュー表示
+  nameInput.addEventListener("input", e => {
+    const raw = e.target.value;
+    if (/[^\x00-\x7F]/.test(raw)) {
+      namePreview.textContent = "→ " + sanitizeName(jpToSlug(raw)) + "." + item.format + " に変換されます";
+      namePreview.style.display = "block";
+    } else {
+      namePreview.style.display = "none";
+    }
+  });
+  // Enterキー（IME確定中を除く）でも即変換
+  nameInput.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); commitName(e.target.value); }
+  });
+  nameInput.addEventListener("change", e => commitName(e.target.value));
   tr.querySelector(".inp-alt").oninput = e => { item.alt = e.target.value; item.altEdited = true; };
   tr.querySelector(".inp-ogp").onchange = e => { item.ogp = e.target.checked; invalidate(); };
   tr.querySelector(".del").onclick = () => removeItem(item.id);
