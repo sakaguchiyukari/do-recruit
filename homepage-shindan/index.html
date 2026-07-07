@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="URLを入れるだけ。AIがサイトを調査し、SEO・導線・採用ページを診断。改善リストと記事案、記事原稿まで無料で生成します。">
+  <title>ホームページ集客診断AI｜URLを入れるだけの無料サイト健診</title>
+
+  <!-- ========================================
+       フォント読み込み
+       見出し: Shippori Mincho（レポート感のある明朝）
+       本文:   Zen Kaku Gothic New（可読性の高いゴシック）
+  ========================================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========================================
+       1. デザイントークン（CSS変数でカラー管理）
+    ========================================= */
+    :root {
+      /* カラー */
+      --color-paper: #F6F5F1;      /* 背景（紙） */
+      --color-white: #FFFFFF;      /* カード面 */
+      --color-ink: #1C2420;        /* 基本文字色 */
+      --color-ink-soft: #5C665F;   /* 補助文字色 */
+      --color-pine: #14684E;       /* メイン（深緑） */
+      --color-pine-dark: #0E4E3B;  /* ホバー用 */
+      --color-pine-soft: #E4EFE9;  /* 淡い緑面 */
+      --color-amber: #C98F1F;      /* 注意スコア */
+      --color-alert: #BC5540;      /* 低スコア */
+      --color-line: #DDDCD4;       /* 罫線 */
+
+      /* タイポグラフィ */
+      --font-display: "Shippori Mincho", "Hiragino Mincho ProN", serif;
+      --font-body: "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", sans-serif;
+
+      /* 余白（clamp で自然に可変） */
+      --space-section: clamp(4rem, 10vw, 7.5rem);
+      --space-block: clamp(2rem, 5vw, 3.5rem);
+      --space-card: clamp(1.25rem, 3vw, 2rem);
+
+      /* レイアウト */
+      --width-content: 1080px;
+      --width-narrow: 760px;
+      --radius-card: 14px;
+
+      /* 影 */
+      --shadow-card: 0 1px 2px rgba(28, 36, 32, 0.05), 0 8px 24px rgba(28, 36, 32, 0.07);
+      --shadow-hover: 0 2px 4px rgba(28, 36, 32, 0.06), 0 14px 34px rgba(28, 36, 32, 0.12);
+    }
+
+    /* ========================================
+       2. リセット・ベース
+    ========================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-ink);
+      background-color: var(--color-paper);
+      line-height: 1.8;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: var(--color-pine);
+    }
+
+    /* 動きを減らす設定のユーザーへの配慮 */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ========================================
+       3. 共通レイアウト
+    ========================================= */
+    .l-container {
+      width: min(100% - clamp(2rem, 6vw, 4rem), var(--width-content));
+      margin-inline: auto;
+    }
+
+    .l-narrow {
+      width: min(100% - clamp(2rem, 6vw, 4rem), var(--width-narrow));
+      margin-inline: auto;
+    }
+
+    /* フェードイン（IntersectionObserver で .is-visible を付与） */
+    .js-fade {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .js-fade.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ========================================
+       4. ヘッダー
+    ========================================= */
+    .header {
+      border-bottom: 1px solid var(--color-line);
+      background-color: var(--color-paper);
+    }
+
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: 1.1rem;
+    }
+
+    .header__logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+    }
+
+    .header__logo-mark {
+      color: var(--color-pine);
+      margin-right: 0.35em;
+    }
+
+    .header__note {
+      font-size: 0.78rem;
+      color: var(--color-ink-soft);
+      letter-spacing: 0.05em;
+    }
+
+    /* ========================================
+       5. ヒーロー
+    ========================================= */
+    .hero {
+      padding-block: var(--space-section) var(--space-block);
+      text-align: center;
+    }
+
+    .hero__eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      letter-spacing: 0.22em;
+      color: var(--color-pine);
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      padding: 0.3em 1.2em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero__title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.7rem, 5.2vw, 3rem);
+      line-height: 1.45;
+      letter-spacing: 0.04em;
+    }
+
+    .hero__title-em {
+      color: var(--color-pine);
+      font-style: normal;
+    }
+
+    .hero__lead {
+      margin-top: 1.25rem;
+      color: var(--color-ink-soft);
+      font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+      line-height: 2;
+    }
+
+    /* ========================================
+       6. 診断フォーム（CTA：スマホでも埋もれない位置）
+    ========================================= */
+    .diagnose-form {
+      margin-top: clamp(1.75rem, 4vw, 2.75rem);
+    }
+
+    .diagnose-form__group {
+      display: flex;
+      gap: 0.75rem;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-card);
+      padding: 0.6rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    .diagnose-form__input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      padding: 0.6rem 0.8rem;
+      color: var(--color-ink);
+    }
+
+    .diagnose-form__input:focus {
+      outline: none;
+    }
+
+    .diagnose-form__group:focus-within {
+      border-color: var(--color-pine);
+      box-shadow: 0 0 0 3px var(--color-pine-soft), var(--shadow-card);
+    }
+
+    .diagnose-form__submit {
+      flex-shrink: 0;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      color: var(--color-white);
+      background-color: var(--color-pine);
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem 1.6rem;
+      cursor: pointer;
+      transition: background-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .diagnose-form__submit:hover:not(:disabled) {
+      background-color: var(--color-pine-dark);
+      transform: translateY(-1px);
+    }
+
+    .diagnose-form__submit:focus-visible {
+      outline: 3px solid var(--color-pine-soft);
+      outline-offset: 2px;
+    }
+
+    .diagnose-form__submit:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .diagnose-form__hint {
+      margin-top: 0.9rem;
+      font-size: 0.78rem;
+      color: var(--color-ink-soft);
+      letter-spacing: 0.03em;
+    }
+
+    /* スマホ：縦積みにして CTA を全幅に */
+    @media (max-width: 560px) {
+      .diagnose-form__group {
+        flex-direction: column;
+        padding: 0.75rem;
+      }
+      .diagnose-form__submit {
+        width: 100%;
+        padding-block: 1rem;
+      }
+    }
+
+    /* ========================================
+       7. 特徴（検査項目の予告）
+    ========================================= */
+    .features {
+      padding-block: var(--space-block) var(--space-section);
+    }
+
+    .features__list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(0.9rem, 2vw, 1.4rem);
+    }
+
+    .features__item {
+      background-color: var(--color-white);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-card);
+      padding: var(--space-card);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .features__item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .features__label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--color-pine);
+      margin-bottom: 0.5rem;
+    }
+
+    .features__title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .features__text {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--color-ink-soft);
+    }
+
+    @media (max-width: 900px) {
+      .features__list { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .features__list { grid-template-columns: 1fr; }
+    }
+
+    /* ========================================
+       8. ローディング表示
+    ========================================= */
+    .loading {
+      display: none;
+      padding-block: var(--space-block);
+      text-align: center;
+    }
+
+    .loading.is-active {
+      display: block;
+    }
+
+    .loading__spinner {
+      width: 46px;
+      height: 46px;
+      margin-inline: auto;
+      border: 3px solid var(--color-pine-soft);
+      border-top-color: var(--color-pine);
+      border-radius: 50%;
+      animation: loading-spin 0.9s linear infinite;
+    }
+
+    @keyframes loading-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading__text {
+      margin-top: 1.1rem;
+      font-size: 0.9rem;
+      color: var(--color-ink-soft);
+      letter-spacing: 0.05em;
+    }
+
+    /* ========================================
+       9. エラー表示
+    ========================================= */
+    .error {
+      display: none;
+      margin-top: 1.25rem;
+      background-color: #FBEFEC;
+      border: 1px solid #E5BFB4;
+      border-radius: var(--radius-card);
+      padding: 1rem 1.25rem;
+      font-size: 0.88rem;
+      color: var(--color-alert);
+      text-align: left;
+    }
+
+    .error.is-active {
+      display: block;
+    }
+
+    /* ========================================
+       10. 診断結果 共通
+    ========================================= */
+    .result {
+      display: none;
+      padding-bottom: var(--space-section);
+    }
+
+    .result.is-active {
+      display: block;
+    }
+
+    .result__head {
+      text-align: center;
+      padding-block: var(--space-block);
+      border-top: 1px solid var(--color-line);
+    }
+
+    .result__site {
+      font-size: 0.85rem;
+      color: var(--color-ink-soft);
+      word-break: break-all;
+    }
+
+    .result__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700;
+      margin-top: 0.4rem;
+      letter-spacing: 0.05em;
+    }
+
+    .result__summary {
+      margin-top: 1rem;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 2;
+      color: var(--color-ink);
+      background-color: var(--color-pine-soft);
+      border-radius: var(--radius-card);
+      padding: var(--space-card);
+    }
+
+    .result__disclaimer {
+      margin-top: 0.8rem;
+      font-size: 0.75rem;
+      color: var(--color-ink-soft);
+      text-align: left;
+    }
+
+    /* セクション見出し（検査票風） */
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.9rem;
+      border-bottom: 2px solid var(--color-ink);
+      padding-bottom: 0.6rem;
+      margin-top: var(--space-block);
+      margin-bottom: clamp(1.25rem, 3vw, 2rem);
+    }
+
+    .section-head__no {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      color: var(--color-pine);
+      flex-shrink: 0;
+    }
+
+    .section-head__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.15rem, 3vw, 1.5rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* ========================================
+       11. スコアカード（円形ゲージ）
+    ========================================= */
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: clamp(0.75rem, 1.6vw, 1.1rem);
+    }
+
+    .score-card {
+      background-color: var(--color-white);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-card);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .score-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .score-card__gauge {
+      width: 92px;
+      height: 92px;
+      margin-inline: auto;
+      position: relative;
+    }
+
+    .score-card__svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .score-card__track {
+      fill: none;
+      stroke: var(--color-paper);
+      stroke-width: 8;
+    }
+
+    .score-card__bar {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.2s ease;
+    }
+
+    .score-card__value {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .score-card__label {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .score-card__comment {
+      margin-top: 0.4rem;
+      font-size: 0.75rem;
+      line-height: 1.7;
+      color: var(--color-ink-soft);
+      text-align: left;
+    }
+
+    @media (max-width: 900px) {
+      .score-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .score-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ========================================
+       12. 改善リスト（優先順位付き）
+    ========================================= */
+    .action-list {
+      list-style: none;
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .action-list__item {
+      display: flex;
+      gap: 1.1rem;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-card);
+      padding: var(--space-card);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .action-list__item:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .action-list__rank {
+      flex-shrink: 0;
+      width: 2.4rem;
+      height: 2.4rem;
+      display: grid;
+      place-content: center;
+      background-color: var(--color-pine);
+      color: var(--color-white);
+      font-family: var(--font-display);
+      font-weight: 700;
+      border-radius: 8px;
+    }
+
+    .action-list__title {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .action-list__impact {
+      display: inline-block;
+      margin-left: 0.6em;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--color-pine);
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      padding: 0.05em 0.5em;
+      vertical-align: middle;
+    }
+
+    .action-list__detail {
+      margin-top: 0.35rem;
+      font-size: 0.85rem;
+      color: var(--color-ink-soft);
+      line-height: 1.9;
+    }
+
+    /* ========================================
+       13. キーワード・差別化テーマ
+    ========================================= */
+    .keyword-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.9rem;
+    }
+
+    .keyword-card {
+      background-color: var(--color-white);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-card);
+      padding: 1.1rem 1.25rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .keyword-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .keyword-card__word {
+      font-weight: 700;
+      font-size: 0.98rem;
+    }
+
+    .keyword-card__intent {
+      display: inline-block;
+      margin-left: 0.5em;
+      font-size: 0.7rem;
+      color: var(--color-pine);
+      background-color: var(--color-pine-soft);
+      border-radius: 4px;
+      padding: 0.1em 0.55em;
+      vertical-align: middle;
+    }
+
+    .keyword-card__reason {
+      margin-top: 0.35rem;
+      font-size: 0.82rem;
+      color: var(--color-ink-soft);
+      line-height: 1.8;
+    }
+
+    @media (max-width: 700px) {
+      .keyword-grid { grid-template-columns: 1fr; }
+    }
+
+    .theme-list {
+      list-style: none;
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .theme-list__item {
+      background-color: var(--color-white);
+      border-left: 4px solid var(--color-pine);
+      border-radius: 0 10px 10px 0;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.92rem;
+      line-height: 1.9;
+      box-shadow: var(--shadow-card);
+    }
+
+    /* ========================================
+       14. 記事アイデア（クリックで原稿生成）
+    ========================================= */
+    .idea-note {
+      font-size: 0.82rem;
+      color: var(--color-ink-soft);
+      margin-bottom: 1rem;
+    }
+
+    .idea-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .idea-list__button {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: left;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--color-ink);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-line);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      cursor: pointer;
+      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .idea-list__button:hover {
+      border-color: var(--color-pine);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .idea-list__button:focus-visible {
+      outline: 3px solid var(--color-pine-soft);
+      outline-offset: 2px;
+    }
+
+    .idea-list__arrow {
+      flex-shrink: 0;
+      color: var(--color-pine);
+      font-weight: 700;
+    }
+
+    @media (max-width: 700px) {
+      .idea-list { grid-template-columns: 1fr; }
+    }
+
+    /* ========================================
+       15. 生成された記事原稿
+    ========================================= */
+    .article {
+      display: none;
+      margin-top: var(--space-block);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-card);
+      padding: clamp(1.5rem, 4vw, 3rem);
+      box-shadow: var(--shadow-card);
+    }
+
+    .article.is-active {
+      display: block;
+    }
+
+    .article__badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--color-pine);
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      padding: 0.2em 1em;
+      margin-bottom: 1rem;
+    }
+
+    .article__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 3.4vw, 1.7rem);
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .article__meta {
+      margin-top: 1rem;
+      font-size: 0.83rem;
+      color: var(--color-ink-soft);
+      background-color: var(--color-paper);
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      line-height: 1.9;
+    }
+
+    .article__meta-label {
+      font-weight: 700;
+      color: var(--color-ink);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .article__body h2 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      margin-top: 2.2rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--color-pine-soft);
+      line-height: 1.6;
+    }
+
+    .article__body h3 {
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      padding-left: 0.7rem;
+      border-left: 3px solid var(--color-pine);
+      line-height: 1.6;
+    }
+
+    .article__body p {
+      margin-top: 0.8rem;
+      font-size: 0.93rem;
+      line-height: 2;
+    }
+
+    .article__faq {
+      margin-top: 2.2rem;
+    }
+
+    .article__faq-item {
+      border: 1px solid var(--color-line);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin-top: 0.7rem;
+    }
+
+    .article__faq-q {
+      font-weight: 700;
+      font-size: 0.93rem;
+    }
+
+    .article__faq-a {
+      margin-top: 0.4rem;
+      font-size: 0.88rem;
+      color: var(--color-ink-soft);
+      line-height: 1.9;
+    }
+
+    .article__copy {
+      margin-top: 2rem;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--color-pine);
+      background-color: var(--color-pine-soft);
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem 1.5rem;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+
+    .article__copy:hover {
+      background-color: #D3E6DC;
+    }
+
+    /* ========================================
+       16. フッター
+    ========================================= */
+    .footer {
+      border-top: 1px solid var(--color-line);
+      padding-block: 2rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--color-ink-soft);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================
+       ヘッダー
+  ========================================= -->
+  <header class="header">
+    <div class="l-container header__inner">
+      <p class="header__logo"><span class="header__logo-mark">●</span>ホームページ集客診断AI</p>
+      <p class="header__note">登録不要・無料</p>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ========================================
+         ヒーロー + 診断フォーム
+    ========================================= -->
+    <section class="hero">
+      <div class="l-narrow">
+        <p class="hero__eyebrow">WEBサイトの健康診断</p>
+        <h1 class="hero__title">
+          URLを入れるだけで、<br>
+          <em class="hero__title-em">「次に何をすべきか」</em>まで分かる。
+        </h1>
+        <p class="hero__lead">
+          AIがあなたのサイトを実際に調査し、SEO・スマホ対応・問い合わせ導線・採用ページを診断。<br>
+          改善の優先順位、狙うべきキーワード、書くべき記事案、さらに記事原稿の生成まで無料で行います。
+        </p>
+
+        <!-- 診断フォーム（required / type / placeholder / pattern を付与） -->
+        <form class="diagnose-form" id="diagnoseForm" novalidate>
+          <div class="diagnose-form__group">
+            <input
+              class="diagnose-form__input"
+              id="urlInput"
+              type="url"
+              name="siteUrl"
+              placeholder="https://example.com"
+              required
+              pattern="https?://.+"
+              inputmode="url"
+              autocomplete="url"
+              aria-label="診断したいサイトのURL"
+            >
+            <button class="diagnose-form__submit" id="submitButton" type="submit">
+              無料で診断する
+            </button>
+          </div>
+          <p class="diagnose-form__hint">※ 診断には30秒〜1分ほどかかります。会員登録は不要です。</p>
+          <div class="error" id="errorBox" role="alert"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========================================
+         特徴（診断項目の予告）
+    ========================================= -->
+    <section class="features">
+      <div class="l-container">
+        <ul class="features__list">
+          <li class="features__item js-fade">
+            <span class="features__label">CHECK 01</span>
+            <h2 class="features__title">5項目のスコア診断</h2>
+            <p class="features__text">SEO基礎・スマホ対応・表示速度・問い合わせ導線・採用ページをAIが採点します。</p>
+          </li>
+          <li class="features__item js-fade">
+            <span class="features__label">CHECK 02</span>
+            <h2 class="features__title">優先順位付き改善リスト</h2>
+            <p class="features__text">「診断して終わり」ではなく、効果が見込める順にやることを提示します。</p>
+          </li>
+          <li class="features__item js-fade">
+            <span class="features__label">CHECK 03</span>
+            <h2 class="features__title">記事原稿まで自動生成</h2>
+            <p class="features__text">狙うべきキーワードと記事案10本を提案。クリック1つで原稿を生成します。</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ========================================
+         ローディング
+    ========================================= -->
+    <div class="loading" id="loadingBox" aria-live="polite">
+      <div class="loading__spinner" aria-hidden="true"></div>
+      <p class="loading__text" id="loadingText">サイトを調査しています…</p>
+    </div>
+
+    <!-- ========================================
+         診断結果（JSで描画）
+    ========================================= -->
+    <section class="result" id="resultSection" aria-live="polite">
+      <div class="l-container">
+
+        <!-- 結果ヘッダー -->
+        <div class="result__head">
+          <p class="result__site" id="resultSite"></p>
+          <h2 class="result__title">診断結果レポート</h2>
+          <p class="result__summary" id="resultSummary"></p>
+          <p class="result__disclaimer">
+            ※ 本診断はAIがWeb上の公開情報を調査して作成した推定評価です。表示速度・スマホ対応のスコアは
+            Lighthouse等の実測値ではなく参考値としてご覧ください。
+          </p>
+        </div>
+
+        <!-- A. スコア -->
+        <div class="section-head js-fade">
+          <span class="section-head__no">検査 A</span>
+          <h3 class="section-head__title">サイト健康スコア</h3>
+        </div>
+        <div class="score-grid" id="scoreGrid"></div>
+
+        <!-- B. 改善リスト -->
+        <div class="section-head js-fade">
+          <span class="section-head__no">検査 B</span>
+          <h3 class="section-head__title">優先順位付き 改善リスト</h3>
+        </div>
+        <ol class="action-list" id="actionList"></ol>
+
+        <!-- C. キーワード -->
+        <div class="section-head js-fade">
+          <span class="section-head__no">検査 C</span>
+          <h3 class="section-head__title">今狙うべき検索キーワード</h3>
+        </div>
+        <div class="keyword-grid" id="keywordGrid"></div>
+
+        <!-- D. 差別化テーマ -->
+        <div class="section-head js-fade">
+          <span class="section-head__no">検査 D</span>
+          <h3 class="section-head__title">競合と差別化できるテーマ</h3>
+        </div>
+        <ul class="theme-list" id="themeList"></ul>
+
+        <!-- E. 記事アイデア -->
+        <div class="section-head js-fade">
+          <span class="section-head__no">検査 E</span>
+          <h3 class="section-head__title">ブログで書くべき記事 10本</h3>
+        </div>
+        <p class="idea-note">タイトルをクリックすると、SEO構成・本文・メタディスクリプション・FAQ付きの原稿を生成します。</p>
+        <ul class="idea-list" id="ideaList"></ul>
+
+        <!-- 生成された記事原稿 -->
+        <article class="article" id="articleBox">
+          <span class="article__badge">生成された記事原稿</span>
+          <h3 class="article__title" id="articleTitle"></h3>
+          <div class="article__meta">
+            <span class="article__meta-label">メタディスクリプション</span>
+            <span id="articleMeta"></span>
+          </div>
+          <div class="article__body" id="articleBody"></div>
+          <div class="article__faq" id="articleFaq"></div>
+          <button class="article__copy" id="copyButton" type="button">原稿をコピーする</button>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================
+       フッター
+  ========================================= -->
+  <footer class="footer">
+    <p>&copy; 2026 ホームページ集客診断AI — 診断結果はAIによる推定であり、成果を保証するものではありません。</p>
+  </footer>
+
+  <!-- ========================================
+       JavaScript（必要最低限 / var不使用）
+       ※ 単一ファイル構成のためインライン記述。
+         外部化する場合は <script defer src="assets/js/main.js"> としてください。
+  ========================================= -->
+  <script defer>
+    (() => {
+      "use strict";
+
+      /* ----------------------------------------
+         1. IntersectionObserver によるフェードイン
+      ---------------------------------------- */
+      const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            fadeObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      const observeFadeTargets = (root = document) => {
+        root.querySelectorAll(".js-fade:not(.is-visible)").forEach((el) => {
+          fadeObserver.observe(el);
+        });
+      };
+
+      observeFadeTargets();
+
+      /* ----------------------------------------
+         2. DOM参照
+      ---------------------------------------- */
+      const form = document.getElementById("diagnoseForm");
+      const urlInput = document.getElementById("urlInput");
+      const submitButton = document.getElementById("submitButton");
+      const loadingBox = document.getElementById("loadingBox");
+      const loadingText = document.getElementById("loadingText");
+      const errorBox = document.getElementById("errorBox");
+      const resultSection = document.getElementById("resultSection");
+
+      /* ----------------------------------------
+         3. ユーティリティ
+      ---------------------------------------- */
+
+      // XSS対策：テキストは必ずエスケープして挿入する
+      const escapeHtml = (str) => String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+      // Claude応答からJSON部分のみを安全に取り出す
+      const extractJson = (text) => {
+        const cleaned = text.replace(/```json|```/g, "").trim();
+        const start = cleaned.indexOf("{");
+        const end = cleaned.lastIndexOf("}");
+        if (start === -1 || end === -1) throw new Error("JSONが見つかりません");
+        return JSON.parse(cleaned.slice(start, end + 1));
+      };
+
+      // サーバー側プロキシ（claude-proxy.php）経由でClaude APIを呼び出す。
+      // APIキーはサーバー側にのみ保持し、ブラウザには一切露出させない。
+      const API_ENDPOINT = "./claude-proxy.php";
+
+      const callApi = async (payload) => {
+        const response = await fetch(API_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        let data = null;
+        try {
+          data = await response.json();
+        } catch {
+          /* JSONでないレスポンスは下のエラー処理へ */
+        }
+        if (!response.ok || !data || data.error) {
+          throw new Error(data?.error ?? `APIエラー（status: ${response.status}）`);
+        }
+        return data.text;
+      };
+
+      // ローディング文言をローテーション
+      const loadingMessages = [
+        "サイトを調査しています…",
+        "SEOと導線をチェックしています…",
+        "改善リストを作成しています…",
+        "キーワードと記事案をまとめています…"
+      ];
+      let loadingTimer = null;
+
+      const startLoading = () => {
+        let index = 0;
+        loadingBox.classList.add("is-active");
+        loadingText.textContent = loadingMessages[0];
+        loadingTimer = setInterval(() => {
+          index = (index + 1) % loadingMessages.length;
+          loadingText.textContent = loadingMessages[index];
+        }, 6000);
+      };
+
+      const stopLoading = () => {
+        clearInterval(loadingTimer);
+        loadingBox.classList.remove("is-active");
+      };
+
+      const showError = (message) => {
+        errorBox.textContent = message;
+        errorBox.classList.add("is-active");
+      };
+
+      /* ----------------------------------------
+         4. 結果の描画
+      ---------------------------------------- */
+      const scoreColor = (score) => {
+        if (score >= 70) return "var(--color-pine)";
+        if (score >= 45) return "var(--color-amber)";
+        return "var(--color-alert)";
+      };
+
+      const renderScores = (scores) => {
+        const grid = document.getElementById("scoreGrid");
+        const radius = 40;
+        const circumference = 2 * Math.PI * radius;
+
+        grid.innerHTML = scores.map((item) => {
+          const score = Math.max(0, Math.min(100, Number(item.score) || 0));
+          const offset = circumference * (1 - score / 100);
+          return `
+            <div class="score-card js-fade">
+              <div class="score-card__gauge">
+                <svg class="score-card__svg" viewBox="0 0 92 92" aria-hidden="true">
+                  <circle class="score-card__track" cx="46" cy="46" r="${radius}"></circle>
+                  <circle class="score-card__bar" cx="46" cy="46" r="${radius}"
+                    stroke="${scoreColor(score)}"
+                    stroke-dasharray="${circumference}"
+                    stroke-dashoffset="${offset}"></circle>
+                </svg>
+                <span class="score-card__value">${score}</span>
+              </div>
+              <p class="score-card__label">${escapeHtml(item.label)}</p>
+              <p class="score-card__comment">${escapeHtml(item.comment)}</p>
+            </div>`;
+        }).join("");
+      };
+
+      const renderActions = (actions) => {
+        document.getElementById("actionList").innerHTML = actions.map((item, index) => `
+          <li class="action-list__item js-fade">
+            <span class="action-list__rank">${index + 1}</span>
+            <div>
+              <p class="action-list__title">
+                ${escapeHtml(item.title)}
+                <span class="action-list__impact">効果 ${escapeHtml(item.impact)}</span>
+              </p>
+              <p class="action-list__detail">${escapeHtml(item.detail)}</p>
+            </div>
+          </li>`).join("");
+      };
+
+      const renderKeywords = (keywords) => {
+        document.getElementById("keywordGrid").innerHTML = keywords.map((item) => `
+          <div class="keyword-card js-fade">
+            <p class="keyword-card__word">
+              ${escapeHtml(item.keyword)}
+              <span class="keyword-card__intent">${escapeHtml(item.intent)}</span>
+            </p>
+            <p class="keyword-card__reason">${escapeHtml(item.reason)}</p>
+          </div>`).join("");
+      };
+
+      const renderThemes = (themes) => {
+        document.getElementById("themeList").innerHTML = themes.map((theme) => `
+          <li class="theme-list__item js-fade">${escapeHtml(theme)}</li>`).join("");
+      };
+
+      const renderIdeas = (ideas, siteName, siteUrl) => {
+        const list = document.getElementById("ideaList");
+        list.innerHTML = ideas.map((idea) => `
+          <li class="idea-list__item js-fade">
+            <button class="idea-list__button" type="button" data-title="${escapeHtml(idea)}">
+              <span>${escapeHtml(idea)}</span>
+              <span class="idea-list__arrow" aria-hidden="true">→</span>
+            </button>
+          </li>`).join("");
+
+        // 記事生成ボタンのイベント登録
+        list.querySelectorAll(".idea-list__button").forEach((button) => {
+          button.addEventListener("click", () => {
+            generateArticle(siteName, siteUrl, button.dataset.title, button);
+          });
+        });
+      };
+
+      /* ----------------------------------------
+         5. 記事原稿の生成・描画
+      ---------------------------------------- */
+      const generateArticle = async (siteName, siteUrl, title, button) => {
+        const articleBox = document.getElementById("articleBox");
+        button.disabled = true;
+        button.style.opacity = "0.5";
+        errorBox.classList.remove("is-active");
+        startLoading();
+        loadingText.textContent = "記事原稿を生成しています…";
+
+        try {
+          const text = await callApi({ action: "article", siteName, siteUrl, title });
+          const article = extractJson(text);
+
+          document.getElementById("articleTitle").textContent = article.title;
+          document.getElementById("articleMeta").textContent = article.metaDescription;
+
+          document.getElementById("articleBody").innerHTML = (article.sections || []).map((section) => {
+            const h3s = (section.h3 || []).map((h) => `<h3>${escapeHtml(h)}</h3>`).join("");
+            return `<h2>${escapeHtml(section.h2)}</h2>${h3s}<p>${escapeHtml(section.body)}</p>`;
+          }).join("");
+
+          document.getElementById("articleFaq").innerHTML =
+            `<h2 style="font-family: var(--font-display); font-size: 1.2rem;">よくある質問</h2>` +
+            (article.faq || []).map((item) => `
+              <div class="article__faq-item">
+                <p class="article__faq-q">Q. ${escapeHtml(item.q)}</p>
+                <p class="article__faq-a">A. ${escapeHtml(item.a)}</p>
+              </div>`).join("");
+
+          articleBox.classList.add("is-active");
+          articleBox.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (err) {
+          console.error(err);
+          showError("記事の生成に失敗しました。もう一度お試しください。");
+        } finally {
+          stopLoading();
+          button.disabled = false;
+          button.style.opacity = "";
+        }
+      };
+
+      // 原稿コピー
+      document.getElementById("copyButton").addEventListener("click", async (event) => {
+        const title = document.getElementById("articleTitle").textContent;
+        const meta = document.getElementById("articleMeta").textContent;
+        const body = document.getElementById("articleBody").innerText;
+        const faq = document.getElementById("articleFaq").innerText;
+        try {
+          await navigator.clipboard.writeText(
+            `# ${title}\n\n【メタディスクリプション】\n${meta}\n\n${body}\n\n${faq}`
+          );
+          event.target.textContent = "コピーしました ✓";
+          setTimeout(() => { event.target.textContent = "原稿をコピーする"; }, 2000);
+        } catch {
+          showError("コピーに失敗しました。手動で選択してコピーしてください。");
+        }
+      });
+
+      /* ----------------------------------------
+         6. 診断実行（フォーム送信）
+      ---------------------------------------- */
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        // HTMLバリデーション（required / pattern）を明示的に実行
+        if (!form.reportValidity()) return;
+
+        const siteUrl = urlInput.value.trim();
+        errorBox.classList.remove("is-active");
+        resultSection.classList.remove("is-active");
+        document.getElementById("articleBox").classList.remove("is-active");
+        submitButton.disabled = true;
+        startLoading();
+
+        try {
+          const text = await callApi({ action: "diagnose", url: siteUrl });
+          const result = extractJson(text);
+
+          // 各セクションを描画
+          document.getElementById("resultSite").textContent = `${result.siteName}｜${siteUrl}`;
+          document.getElementById("resultSummary").textContent = result.summary;
+          renderScores(result.scores || []);
+          renderActions(result.actions || []);
+          renderKeywords(result.keywords || []);
+          renderThemes(result.themes || []);
+          renderIdeas(result.blogIdeas || [], result.siteName, siteUrl);
+
+          resultSection.classList.add("is-active");
+          observeFadeTargets(resultSection); // 動的要素にもフェードインを適用
+          resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (err) {
+          console.error(err);
+          showError("診断に失敗しました。URLをご確認のうえ、もう一度お試しください。（通信状況によって失敗する場合があります）");
+        } finally {
+          stopLoading();
+          submitButton.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
