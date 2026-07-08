@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yukari Sakaguchi | Web制作ポートフォリオ</title>
+<meta name="description" content="WordPress（SWELL）を中心としたWebサイト制作のポートフォリオ。企業サイト・採用サイト・施設サイトなど、企画からデザイン、公開・運用まで一貫して対応します。">
+<meta property="og:title" content="Yukari Sakaguchi | Web制作ポートフォリオ">
+<meta property="og:description" content="WordPress（SWELL）を中心としたWebサイト制作のポートフォリオ。">
+<meta property="og:type" content="website">
+<style>
+/* ============================================
+   Reset & Base
+============================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-main: #5b7f6e;        /* 深緑：落ち着き・信頼 */
+  --color-main-dark: #40604f;
+  --color-accent: #d9a86c;      /* 柔らかいゴールド */
+  --color-bg: #faf8f4;          /* 生成り */
+  --color-bg-sub: #f0ece4;
+  --color-text: #3a3a38;
+  --color-text-light: #7d7a74;
+  --color-white: #ffffff;
+  --font-en: "Helvetica Neue", Arial, sans-serif;
+  --font-ja: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic Medium", "游ゴシック Medium", YuGothic, Meiryo, sans-serif;
+  --shadow-card: 0 4px 24px rgba(60, 60, 50, 0.08);
+  --radius: 12px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  font-family: var(--font-ja);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: bottom;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ============================================
+   Layout
+============================================ */
+.l-inner {
+  width: min(92%, 1080px);
+  margin-inline: auto;
+}
+
+.l-section {
+  padding-block: clamp(64px, 10vw, 112px);
+}
+
+.l-section--sub {
+  background-color: var(--color-bg-sub);
+}
+
+/* ============================================
+   Common: Section Heading
+============================================ */
+.c-heading {
+  text-align: center;
+  margin-bottom: clamp(40px, 6vw, 64px);
+}
+
+.c-heading__en {
+  display: block;
+  font-family: var(--font-en);
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-main);
+  line-height: 1.2;
+}
+
+.c-heading__ja {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.9375rem;
+  color: var(--color-text-light);
+}
+
+.c-heading__ja::before,
+.c-heading__ja::after {
+  content: "—";
+  margin-inline: 0.6em;
+  color: var(--color-accent);
+}
+
+/* ============================================
+   Common: Button
+============================================ */
+.c-button {
+  display: inline-block;
+  padding: 14px 48px;
+  border-radius: 999px;
+  background-color: var(--color-main);
+  color: var(--color-white);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.c-button:hover {
+  background-color: var(--color-main-dark);
+  transform: translateY(-2px);
+}
+
+.c-button--outline {
+  background-color: transparent;
+  border: 1.5px solid var(--color-main);
+  color: var(--color-main);
+}
+
+.c-button--outline:hover {
+  background-color: var(--color-main);
+  color: var(--color-white);
+}
+
+/* ============================================
+   Common: Fade-in Animation (IntersectionObserver)
+============================================ */
+.js-fade {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.js-fade.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.js-fade--delay-1 { transition-delay: 0.1s; }
+.js-fade--delay-2 { transition-delay: 0.2s; }
+.js-fade--delay-3 { transition-delay: 0.3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js-fade {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ============================================
+   Header
+============================================ */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  background-color: rgba(250, 248, 244, 0.92);
+  backdrop-filter: blur(8px);
+  transition: box-shadow 0.3s;
+}
+
+.header.is-scrolled {
+  box-shadow: 0 2px 12px rgba(60, 60, 50, 0.08);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  width: min(94%, 1160px);
+  margin-inline: auto;
+}
+
+.header__logo {
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.1em;
+  color: var(--color-main-dark);
+}
+
+.header__nav {
+  display: none;
+}
+
+.header__list {
+  display: flex;
+  gap: 32px;
+}
+
+.header__link {
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  position: relative;
+  padding-block: 4px;
+}
+
+.header__link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s;
+}
+
+.header__link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* --- Hamburger --- */
+.header__toggle {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  z-index: 110;
+}
+
+.header__toggle-line {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-text);
+  transition: background-color 0.3s;
+}
+
+.header__toggle-line::before,
+.header__toggle-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-text);
+  transition: transform 0.3s;
+}
+
+.header__toggle-line::before { top: -8px; }
+.header__toggle-line::after { top: 8px; }
+
+.header__toggle[aria-expanded="true"] .header__toggle-line {
+  background-color: transparent;
+}
+
+.header__toggle[aria-expanded="true"] .header__toggle-line::before {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.header__toggle[aria-expanded="true"] .header__toggle-line::after {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* --- Mobile Drawer ---
+   .header に backdrop-filter があると fixed の基準が
+   ヘッダーになるため、inset ではなくサイズを明示する */
+.header__drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background-color: var(--color-bg);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s, visibility 0.4s;
+}
+
+.header__drawer.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.header__drawer-list {
+  display: grid;
+  gap: 28px;
+  text-align: center;
+}
+
+.header__drawer-link {
+  font-family: var(--font-en);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-main-dark);
+}
+
+@media (min-width: 900px) {
+  .header__nav { display: block; }
+  .header__toggle,
+  .header__drawer { display: none; }
+}
+
+/* ============================================
+   Hero
+============================================ */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(160deg, #f6f2ea 0%, #e8ede7 55%, #dce7df 100%);
+}
+
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: 0.5;
+  animation: heroFloat 10s ease-in-out infinite alternate;
+}
+
+.hero::before {
+  width: 420px;
+  height: 420px;
+  right: -120px;
+  top: -80px;
+  background: radial-gradient(circle at 30% 30%, #d3e2d6, transparent 70%);
+}
+
+.hero::after {
+  width: 360px;
+  height: 360px;
+  left: -100px;
+  bottom: -60px;
+  background: radial-gradient(circle at 60% 40%, #ecdcc3, transparent 70%);
+  animation-delay: -5s;
+}
+
+@keyframes heroFloat {
+  from { transform: translateY(0); }
+  to { transform: translateY(28px); }
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding-inline: 6%;
+}
+
+.hero__catch {
+  font-size: clamp(1.5rem, 4.6vw, 2.625rem);
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--color-main-dark);
+}
+
+.hero__catch-accent {
+  color: var(--color-accent);
+}
+
+.hero__lead {
+  margin-top: 24px;
+  font-size: clamp(0.875rem, 2vw, 1.0625rem);
+  color: var(--color-text-light);
+}
+
+.hero__name {
+  margin-top: 40px;
+  font-family: var(--font-en);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: var(--color-main);
+  text-transform: uppercase;
+}
+
+.hero__scroll {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-en);
+  font-size: 0.6875rem;
+  letter-spacing: 0.24em;
+  color: var(--color-text-light);
+  padding-bottom: 48px;
+}
+
+.hero__scroll::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  height: 40px;
+  background-color: var(--color-main);
+  animation: scrollLine 2s ease-in-out infinite;
+  transform-origin: top;
+}
+
+@keyframes scrollLine {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ============================================
+   About
+============================================ */
+.about__body {
+  display: grid;
+  gap: 40px;
+}
+
+.about__text p + p {
+  margin-top: 1.2em;
+}
+
+.about__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.about__fact {
+  background-color: var(--color-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.about__fact-number {
+  font-family: var(--font-en);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-main);
+  line-height: 1.2;
+}
+
+.about__fact-unit {
+  font-size: 1rem;
+  color: var(--color-main);
+  font-weight: 700;
+}
+
+.about__fact-label {
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  color: var(--color-text-light);
+}
+
+@media (min-width: 900px) {
+  .about__body {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: start;
+    gap: 56px;
+  }
+  .about__facts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   Skills
+============================================ */
+.skills__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.skills__card {
+  background-color: var(--color-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 32px 28px;
+}
+
+.skills__card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-main-dark);
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid var(--color-bg-sub);
+}
+
+.skills__card-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background-color: var(--color-bg-sub);
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.skills__list li {
+  position: relative;
+  padding-left: 1.2em;
+  font-size: 0.9063rem;
+}
+
+.skills__list li + li {
+  margin-top: 6px;
+}
+
+.skills__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+}
+
+.skills__note {
+  margin-top: 32px;
+  padding: 24px 28px;
+  border-left: 4px solid var(--color-accent);
+  background-color: var(--color-white);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.9063rem;
+  color: var(--color-text-light);
+}
+
+/* ============================================
+   Works
+============================================ */
+.works__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 28px;
+}
+
+.works__card {
+  background-color: var(--color-white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.works__card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(60, 60, 50, 0.14);
+}
+
+/* サムネイル：スクリーンショット画像に差し替え可能。
+   <div class="works__thumb"> の中に <img> を入れると自動でそちらが表示されます */
+.works__thumb {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.works__thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.works__thumb--01 { background: linear-gradient(135deg, #4e6e52, #86a789); }
+.works__thumb--02 { background: linear-gradient(135deg, #34506e, #6d8fb0); }
+.works__thumb--03 { background: linear-gradient(135deg, #8a6d4f, #c2a583); }
+.works__thumb--04 { background: linear-gradient(135deg, #5f5544, #9d8f70); }
+.works__thumb--05 { background: linear-gradient(135deg, #46626e, #7d9aa5); }
+.works__thumb--06 { background: linear-gradient(135deg, #77726b, #a8a39b); }
+
+.works__thumb-title {
+  font-family: var(--font-en);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  padding-inline: 16px;
+}
+
+.works__body {
+  padding: 24px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.works__title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-main-dark);
+}
+
+.works__desc {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  flex-grow: 1;
+}
+
+.works__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.works__tag {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-main);
+  background-color: var(--color-bg-sub);
+  border-radius: 999px;
+  padding: 3px 12px;
+}
+
+.works__link {
+  margin-top: 18px;
+  align-self: flex-start;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.works__link::after {
+  content: "→";
+  transition: transform 0.3s;
+}
+
+.works__link:hover::after {
+  transform: translateX(4px);
+}
+
+.works__notice {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.8438rem;
+  color: var(--color-text-light);
+}
+
+/* ============================================
+   Flow
+============================================ */
+.flow__list {
+  display: grid;
+  gap: 0;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.flow__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 20px;
+  padding-bottom: 36px;
+}
+
+.flow__item:last-child {
+  padding-bottom: 0;
+}
+
+.flow__item::before {
+  content: "";
+  position: absolute;
+  left: 27px;
+  top: 56px;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--color-bg-sub);
+}
+
+.flow__item:last-child::before {
+  display: none;
+}
+
+.flow__number {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-main);
+  color: var(--color-white);
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.flow__title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-main-dark);
+  padding-top: 12px;
+}
+
+.flow__desc {
+  margin-top: 8px;
+  font-size: 0.9063rem;
+  color: var(--color-text-light);
+}
+
+/* ============================================
+   Contact
+============================================ */
+.contact {
+  text-align: center;
+}
+
+.contact__lead {
+  max-width: 640px;
+  margin-inline: auto;
+  font-size: 0.9375rem;
+}
+
+.contact__button {
+  margin-top: 40px;
+}
+
+/* ============================================
+   Footer
+============================================ */
+.footer {
+  background-color: var(--color-main-dark);
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  padding-block: 32px;
+}
+
+.footer__copy {
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
+/* ============================================
+   Page top button
+============================================ */
+.pagetop {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--color-main);
+  color: var(--color-white);
+  font-size: 1.125rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+  z-index: 90;
+}
+
+.pagetop.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pagetop:hover {
+  transform: translateY(-4px);
+}
+</style>
+</head>
+<body>
+
+<!-- ============ Header ============ -->
+<header class="header js-header">
+  <div class="header__inner">
+    <a href="#top" class="header__logo">Y.SAKAGUCHI</a>
+    <nav class="header__nav" aria-label="メインナビゲーション">
+      <ul class="header__list">
+        <li><a href="#about" class="header__link">ABOUT</a></li>
+        <li><a href="#skills" class="header__link">SKILLS</a></li>
+        <li><a href="#works" class="header__link">WORKS</a></li>
+        <li><a href="#flow" class="header__link">FLOW</a></li>
+        <li><a href="#contact" class="header__link">CONTACT</a></li>
+      </ul>
+    </nav>
+    <button class="header__toggle js-drawer-toggle" aria-expanded="false" aria-controls="drawer" aria-label="メニューを開く">
+      <span class="header__toggle-line"></span>
+    </button>
+  </div>
+  <div class="header__drawer js-drawer" id="drawer">
+    <ul class="header__drawer-list">
+      <li><a href="#about" class="header__drawer-link js-drawer-link">ABOUT</a></li>
+      <li><a href="#skills" class="header__drawer-link js-drawer-link">SKILLS</a></li>
+      <li><a href="#works" class="header__drawer-link js-drawer-link">WORKS</a></li>
+      <li><a href="#flow" class="header__drawer-link js-drawer-link">FLOW</a></li>
+      <li><a href="#contact" class="header__drawer-link js-drawer-link">CONTACT</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ Hero ============ -->
+  <section class="hero">
+    <div class="hero__inner">
+      <h1 class="hero__catch">
+        伝えたい想いを、<br>
+        <span class="hero__catch-accent">かたち</span>にするWebサイトを。
+      </h1>
+      <p class="hero__lead">
+        WordPress（SWELL）× 企業広報の現場経験を活かした、<br>
+        「作って終わり」にしないサイト制作。
+      </p>
+      <p class="hero__name">Yukari Sakaguchi — Web Creator</p>
+    </div>
+    <span class="hero__scroll" aria-hidden="true">SCROLL</span>
+  </section>
+
+  <!-- ============ About ============ -->
+  <section class="l-section" id="about">
+    <div class="l-inner">
+      <h2 class="c-heading js-fade">
+        <span class="c-heading__en">ABOUT</span>
+        <span class="c-heading__ja">わたしについて</span>
+      </h2>
+      <div class="about__body">
+        <div class="about__text js-fade">
+          <p>
+            企業の広報課に所属し、自社および関連施設のWebサイト制作・運用を担当しています。
+            この2年間で6つのサイトを企画から公開まで担当し、現在7サイト目を制作中です。
+          </p>
+          <p>
+            制作会社に依頼するのではなく「社内でつくる」からこそ求められる、
+            現場へのヒアリング、写真や原稿の準備、公開後の更新・改善まで、
+            サイトに関わる工程をひととおり経験してきました。
+          </p>
+          <p>
+            デザインやコーディングはWordPressテーマ「SWELL」を軸に、
+            AIツールも積極的に活用しながら、スピードと品質の両立を意識しています。
+            小学生2児の母として在宅で働きつつ、限られた時間の中で成果を出す
+            段取り力・コミュニケーション力も強みです。
+          </p>
+        </div>
+        <ul class="about__facts">
+          <li class="about__fact js-fade js-fade--delay-1">
+            <div class="about__fact-number">6<span class="about__fact-unit">サイト</span></div>
+            <p class="about__fact-label">2年間の制作実績（現在7件目を制作中）</p>
+          </li>
+          <li class="about__fact js-fade js-fade--delay-2">
+            <div class="about__fact-number">100<span class="about__fact-unit">%</span></div>
+            <p class="about__fact-label">企画〜公開〜運用まで一貫担当</p>
+          </li>
+          <li class="about__fact js-fade js-fade--delay-3">
+            <div class="about__fact-number">2<span class="about__fact-unit">年</span></div>
+            <p class="about__fact-label">企業広報でのWeb担当経験</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Skills ============ -->
+  <section class="l-section l-section--sub" id="skills">
+    <div class="l-inner">
+      <h2 class="c-heading js-fade">
+        <span class="c-heading__en">SKILLS</span>
+        <span class="c-heading__ja">できること</span>
+      </h2>
+      <div class="skills__grid">
+        <div class="skills__card js-fade">
+          <h3 class="skills__card-title"><span class="skills__card-icon" aria-hidden="true">🖥</span>サイト制作</h3>
+          <ul class="skills__list">
+            <li>WordPress（SWELL）のカスタマイズ</li>
+            <li>HTML / CSS（BEM設計）</li>
+            <li>JavaScript（Swiper・IntersectionObserver）</li>
+            <li>レスポンシブ対応</li>
+            <li>画像最適化（WebP・軽量化）</li>
+          </ul>
+        </div>
+        <div class="skills__card js-fade js-fade--delay-1">
+          <h3 class="skills__card-title"><span class="skills__card-icon" aria-hidden="true">🚀</span>公開・運用</h3>
+          <ul class="skills__list">
+            <li>サーバー設定（エックスサーバー）</li>
+            <li>ドメイン取得・DNS設定</li>
+            <li>SSL・Basic認証の設定</li>
+            <li>SEOの基本設定（メタ情報・構造化）</li>
+            <li>公開後の更新・保守運用</li>
+          </ul>
+        </div>
+        <div class="skills__card js-fade js-fade--delay-2">
+          <h3 class="skills__card-title"><span class="skills__card-icon" aria-hidden="true">🤝</span>仕組みづくり</h3>
+          <ul class="skills__list">
+            <li>Googleフォーム連携（応募・問い合わせ）</li>
+            <li>Google Apps Scriptによる自動化</li>
+            <li>社内ヒアリング・原稿ディレクション</li>
+            <li>AIツールを活用した効率的な制作フロー</li>
+          </ul>
+        </div>
+      </div>
+      <p class="skills__note js-fade">
+        WordPressテーマ「SWELL」をベースにした制作を得意としています。
+        フルスクラッチの大規模開発よりも、<strong>中小規模の企業サイト・採用サイト・施設サイトを、
+        スピーディーに・更新しやすく</strong>つくることが持ち味です。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ Works ============ -->
+  <section class="l-section" id="works">
+    <div class="l-inner">
+      <h2 class="c-heading js-fade">
+        <span class="c-heading__en">WORKS</span>
+        <span class="c-heading__ja">制作実績</span>
+      </h2>
+      <div class="works__grid">
+
+        <!-- 実績1 -->
+        <article class="works__card js-fade">
+          <div class="works__thumb works__thumb--01">
+            <!-- スクリーンショットに差し替える場合はここに <img src="images/katarunomori.jpg" alt="かたるの森 サイトのスクリーンショット"> -->
+            <p class="works__thumb-title">katarunomori.jp</p>
+          </div>
+          <div class="works__body">
+            <h3 class="works__title">かたるの森</h3>
+            <p class="works__desc">
+              施設の魅力が伝わるビジュアル重視の構成。写真を活かしたレイアウトと、
+              スマホでも見やすいレスポンシブ設計にこだわりました。
+            </p>
+            <ul class="works__tags">
+              <li class="works__tag">WordPress / SWELL</li>
+              <li class="works__tag">レスポンシブ</li>
+              <li class="works__tag">SEO設定</li>
+            </ul>
+            <a href="https://katarunomori.jp/" target="_blank" rel="noopener" class="works__link">サイトを見る</a>
+          </div>
+        </article>
+
+        <!-- 実績2 -->
+        <article class="works__card js-fade js-fade--delay-1">
+          <div class="works__thumb works__thumb--02">
+            <p class="works__thumb-title">dns-recruit.jp</p>
+          </div>
+          <div class="works__body">
+            <h3 class="works__title">採用サイト</h3>
+            <p class="works__desc">
+              求職者に「働くイメージ」が伝わることを重視した採用サイト。
+              Googleフォームと連携したエントリーの仕組みも構築しました。
+            </p>
+            <ul class="works__tags">
+              <li class="works__tag">WordPress / SWELL</li>
+              <li class="works__tag">Googleフォーム連携</li>
+              <li class="works__tag">GAS</li>
+            </ul>
+            <a href="https://dns-recruit.jp/" target="_blank" rel="noopener" class="works__link">サイトを見る</a>
+          </div>
+        </article>
+
+        <!-- 実績3 -->
+        <article class="works__card js-fade js-fade--delay-2">
+          <div class="works__thumb works__thumb--03">
+            <p class="works__thumb-title">stay-tomaru.com</p>
+          </div>
+          <div class="works__body">
+            <h3 class="works__title">宿泊施設サイト</h3>
+            <p class="works__desc">
+              施設の雰囲気や過ごし方が伝わるよう、Swiperによるスライダーで
+              写真を効果的に見せる構成にしました。
+            </p>
+            <ul class="works__tags">
+              <li class="works__tag">WordPress / SWELL</li>
+              <li class="works__tag">Swiper</li>
+              <li class="works__tag">画像最適化</li>
+            </ul>
+            <a href="https://stay-tomaru.com/" target="_blank" rel="noopener" class="works__link">サイトを見る</a>
+          </div>
+        </article>
+
+        <!-- 実績4 -->
+        <article class="works__card js-fade">
+          <div class="works__thumb works__thumb--04">
+            <p class="works__thumb-title">camprock.jp</p>
+          </div>
+          <div class="works__body">
+            <h3 class="works__title">キャンプ場サイト</h3>
+            <p class="works__desc">
+              アウトドアの世界観を大切にしたデザイン。スクロールに合わせた
+              アニメーション（IntersectionObserver）で楽しさを演出しています。
+            </p>
+            <ul class="works__tags">
+              <li class="works__tag">WordPress / SWELL</li>
+              <li class="works__tag">アニメーション</li>
+              <li class="works__tag">レスポンシブ</li>
+            </ul>
+            <a href="https://camprock.jp/" target="_blank" rel="noopener" class="works__link">サイトを見る</a>
+          </div>
+        </article>
+
+        <!-- 実績5 -->
+        <article class="works__card js-fade js-fade--delay-1">
+          <div class="works__thumb works__thumb--05">
+            <p class="works__thumb-title">dnsconnect.jp</p>
+          </div>
+          <div class="works__body">
+            <h3 class="works__title">コーポレートサイト</h3>
+            <p class="works__desc">
+              会社の信頼感が伝わる、シンプルで見やすい構成。
+              ドメイン取得からサーバー設定、公開までを一貫して担当しました。
+            </p>
+            <ul class="works__tags">
+              <li class="works__tag">WordPress / SWELL</li>
+              <li class="works__tag">ドメイン設定</li>
+              <li class="works__tag">エックスサーバー</li>
+            </ul>
+            <a href="https://dnsconnect.jp/" target="_blank" rel="noopener" class="works__link">サイトを見る</a>
+          </div>
+        </article>
+
+        <!-- 実績6（制作中） -->
+        <article class="works__card js-fade js-fade--delay-2">
+          <div class="works__thumb works__thumb--06">
+            <p class="works__thumb-title">COMING SOON</p>
+          </div>
+          <div class="works__body">
+            <h3 class="works__title">7サイト目 制作中</h3>
+            <p class="works__desc">
+              現在、新しいサイトを制作中です。これまでの経験を活かし、
+              企画段階からより良い見せ方を提案しています。
+            </p>
+            <ul class="works__tags">
+              <li class="works__tag">制作中</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+      <p class="works__notice js-fade">
+        ※ 上記はすべて所属企業・関連施設のサイトとして、企画・制作・公開・運用を担当したものです。<br>
+        ※ このほかに非公開の制作実績が1件あります。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ Flow ============ -->
+  <section class="l-section l-section--sub" id="flow">
+    <div class="l-inner">
+      <h2 class="c-heading js-fade">
+        <span class="c-heading__en">FLOW</span>
+        <span class="c-heading__ja">制作の流れ</span>
+      </h2>
+      <ol class="flow__list">
+        <li class="flow__item js-fade">
+          <span class="flow__number" aria-hidden="true">01</span>
+          <div>
+            <h3 class="flow__title">ヒアリング</h3>
+            <p class="flow__desc">サイトの目的・ターゲット・伝えたいことを丁寧にお伺いします。広報の現場で培った「聞く力」で、想いを言葉にするお手伝いをします。</p>
+          </div>
+        </li>
+        <li class="flow__item js-fade">
+          <span class="flow__number" aria-hidden="true">02</span>
+          <div>
+            <h3 class="flow__title">構成・デザイン</h3>
+            <p class="flow__desc">サイトマップと各ページの構成をご提案。SWELLをベースに、更新しやすさとデザイン性を両立させます。</p>
+          </div>
+        </li>
+        <li class="flow__item js-fade">
+          <span class="flow__number" aria-hidden="true">03</span>
+          <div>
+            <h3 class="flow__title">制作</h3>
+            <p class="flow__desc">Basic認証をかけたテスト環境で制作を進め、途中経過を確認いただきながら仕上げていきます。</p>
+          </div>
+        </li>
+        <li class="flow__item js-fade">
+          <span class="flow__number" aria-hidden="true">04</span>
+          <div>
+            <h3 class="flow__title">公開</h3>
+            <p class="flow__desc">サーバー・ドメイン・SSLの設定、SEOの基本設定まで対応し、安心して公開できる状態でお引き渡しします。</p>
+          </div>
+        </li>
+        <li class="flow__item js-fade">
+          <span class="flow__number" aria-hidden="true">05</span>
+          <div>
+            <h3 class="flow__title">運用サポート</h3>
+            <p class="flow__desc">「作って終わり」にしないのが信条です。更新方法のレクチャーや、公開後の改善もご相談いただけます。</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ Contact ============ -->
+  <section class="l-section contact" id="contact">
+    <div class="l-inner">
+      <h2 class="c-heading js-fade">
+        <span class="c-heading__en">CONTACT</span>
+        <span class="c-heading__ja">お問い合わせ</span>
+      </h2>
+      <p class="contact__lead js-fade">
+        サイト制作のご相談・お仕事のご依頼など、お気軽にお問い合わせください。<br>
+        在宅勤務のため、メールでのやりとりを基本としております。
+      </p>
+      <div class="contact__button js-fade">
+        <!-- ▼ Googleフォームを用意したらURLを差し替えてください -->
+        <a href="mailto:sakaguchi@do-yonezawa.com" class="c-button">メールで問い合わせる</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ Footer ============ -->
+<footer class="footer">
+  <p class="footer__copy">&copy; 2026 Yukari Sakaguchi</p>
+</footer>
+
+<button class="pagetop js-pagetop" aria-label="ページの先頭へ戻る">↑</button>
+
+<script>
+/* ============================================
+   IntersectionObserver によるフェードイン
+============================================ */
+const fadeTargets = document.querySelectorAll('.js-fade');
+const fadeObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, {
+  rootMargin: '0px 0px -10% 0px',
+  threshold: 0
+});
+fadeTargets.forEach((el) => fadeObserver.observe(el));
+
+/* ============================================
+   ヘッダー：スクロール時に影を付ける
+============================================ */
+const header = document.querySelector('.js-header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('is-scrolled', window.scrollY > 10);
+}, { passive: true });
+
+/* ============================================
+   ハンバーガーメニュー
+============================================ */
+const drawerToggle = document.querySelector('.js-drawer-toggle');
+const drawer = document.querySelector('.js-drawer');
+
+const closeDrawer = () => {
+  drawer.classList.remove('is-open');
+  drawerToggle.setAttribute('aria-expanded', 'false');
+  drawerToggle.setAttribute('aria-label', 'メニューを開く');
+};
+
+drawerToggle.addEventListener('click', () => {
+  const isOpen = drawer.classList.toggle('is-open');
+  drawerToggle.setAttribute('aria-expanded', String(isOpen));
+  drawerToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+});
+
+document.querySelectorAll('.js-drawer-link').forEach((link) => {
+  link.addEventListener('click', closeDrawer);
+});
+
+/* ============================================
+   ページトップボタン
+============================================ */
+const pagetop = document.querySelector('.js-pagetop');
+window.addEventListener('scroll', () => {
+  pagetop.classList.toggle('is-visible', window.scrollY > 600);
+}, { passive: true });
+
+pagetop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
