@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ▼ ページ情報（公開時にURLを実ドメインへ差し替え） -->
+  <title>お問い合わせ | Yukari Sakaguchi | Portfolio</title>
+  <meta name="description" content="Webサイト制作のご相談・お見積りは無料です。「まだ何も決まっていない」段階でもお気軽にどうぞ。2営業日以内にご返信します。">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://example.com/contact.html">
+
+  <!-- ▼ OGP -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Yukari Sakaguchi | Portfolio">
+  <meta property="og:title" content="お問い合わせ | Yukari Sakaguchi | Portfolio">
+  <meta property="og:description" content="Webサイト制作のご相談・お見積りは無料です。お気軽にお問い合わせください。">
+  <meta property="og:url" content="https://example.com/contact.html">
+  <meta property="og:image" content="https://example.com/assets/images/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- ▼ favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+
+  <!-- ▼ CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- ▼ JS -->
+  <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- =========================================================
+       ヘッダー（全ページ共通パーツ）
+  ========================================================== -->
+  <header class="header js-header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        Yukari Sakaguchi<span class="header__logo-sub">Portfolio</span>
+      </a>
+
+      <!-- PCナビ -->
+      <nav class="gnav" aria-label="グローバルナビゲーション">
+        <ul class="gnav__list">
+          <li class="gnav__item"><a href="index.html" class="gnav__link">トップ</a></li>
+          <li class="gnav__item"><a href="about.html" class="gnav__link">わたしについて</a></li>
+          <li class="gnav__item"><a href="contact.html" class="gnav__link is-current" aria-current="page">お問い合わせ</a></li>
+        </ul>
+      </nav>
+
+      <a href="contact.html" class="c-btn c-btn--small header__cta">無料で相談する</a>
+
+      <!-- ハンバーガー（SP/TAB） -->
+      <button type="button" class="header__toggle js-menu-toggle" aria-expanded="false" aria-controls="global-menu" aria-label="メニューを開く">
+        <span class="header__toggle-line"></span>
+      </button>
+    </div>
+
+    <!-- SP/TABドロワーメニュー -->
+    <nav class="drawer js-drawer" id="global-menu" aria-label="モバイルナビゲーション">
+      <ul class="drawer__list">
+        <li class="drawer__item"><a href="index.html" class="drawer__link js-drawer-link">トップ</a></li>
+        <li class="drawer__item"><a href="about.html" class="drawer__link js-drawer-link">わたしについて</a></li>
+        <li class="drawer__item"><a href="contact.html" class="drawer__link js-drawer-link">お問い合わせ</a></li>
+      </ul>
+      <a href="contact.html" class="c-btn drawer__cta js-drawer-link">無料で相談する</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- =========================================================
+         ページヘッダー
+    ========================================================== -->
+    <div class="page-header">
+      <p class="page-header__en">CONTACT</p>
+      <h1 class="page-header__title">お問い合わせ</h1>
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item"><a href="index.html" class="breadcrumb__link">トップ</a></li>
+          <li class="breadcrumb__item" aria-current="page">お問い合わせ</li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- =========================================================
+         お問い合わせフォーム
+    ========================================================== -->
+    <section class="l-section l-section--bg">
+      <div class="l-inner">
+        <p class="contact-intro js-fade">
+          ご相談・お見積りは無料です。「まだ何も決まっていない」段階でも大丈夫。<br class="u-pc-only">
+          いただいた内容には、<strong>2営業日以内</strong>にご返信いたします。
+        </p>
+
+        <!-- 送信先は仮設定：フォームサービスやGoogleフォームのエンドポイントに差し替え -->
+        <form class="form js-fade" action="#" method="post">
+
+          <!-- お名前 -->
+          <div class="form__group">
+            <label class="form__label" for="name">
+              お名前
+              <span class="form__badge">必須</span>
+            </label>
+            <input
+              class="form__input"
+              type="text"
+              id="name"
+              name="name"
+              placeholder="例）山田 花子"
+              autocomplete="name"
+              required
+            >
+          </div>
+
+          <!-- 会社名 -->
+          <div class="form__group">
+            <label class="form__label" for="company">
+              会社名
+              <span class="form__badge form__badge--optional">任意</span>
+            </label>
+            <input
+              class="form__input"
+              type="text"
+              id="company"
+              name="company"
+              placeholder="例）株式会社サンプル"
+              autocomplete="organization"
+            >
+          </div>
+
+          <!-- メールアドレス -->
+          <div class="form__group">
+            <label class="form__label" for="email">
+              メールアドレス
+              <span class="form__badge">必須</span>
+            </label>
+            <input
+              class="form__input"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="例）info@example.com"
+              autocomplete="email"
+              inputmode="email"
+              required
+            >
+          </div>
+
+          <!-- 電話番号 -->
+          <div class="form__group">
+            <label class="form__label" for="tel">
+              電話番号
+              <span class="form__badge form__badge--optional">任意</span>
+            </label>
+            <input
+              class="form__input"
+              type="tel"
+              id="tel"
+              name="tel"
+              placeholder="例）090-1234-5678"
+              autocomplete="tel"
+              inputmode="tel"
+              pattern="[0-9\-]{10,13}"
+              title="ハイフンを含めた10〜13桁の半角数字で入力してください"
+            >
+            <p class="form__note">お電話でのご連絡を希望される場合にご入力ください。</p>
+          </div>
+
+          <!-- お問い合わせ種別 -->
+          <div class="form__group">
+            <label class="form__label" for="type">
+              お問い合わせ種別
+              <span class="form__badge">必須</span>
+            </label>
+            <select class="form__select" id="type" name="type" required>
+              <option value="" selected disabled>選択してください</option>
+              <option value="new">新規サイト制作のご相談</option>
+              <option value="renewal">サイトリニューアルのご相談</option>
+              <option value="maintenance">更新・運用のご相談</option>
+              <option value="estimate">お見積りのご依頼</option>
+              <option value="other">その他</option>
+            </select>
+          </div>
+
+          <!-- お問い合わせ内容 -->
+          <div class="form__group">
+            <label class="form__label" for="message">
+              お問い合わせ内容
+              <span class="form__badge">必須</span>
+            </label>
+            <textarea
+              class="form__textarea"
+              id="message"
+              name="message"
+              placeholder="例）会社のホームページを新しく作りたいと考えています。予算や進め方について相談させてください。"
+              minlength="10"
+              required
+            ></textarea>
+            <p class="form__note">おおまかなご希望だけでも大丈夫です。整理はこちらでお手伝いします。</p>
+          </div>
+
+          <!-- 送信 -->
+          <div class="form__submit">
+            <button type="submit" class="c-btn c-btn--large">送信する</button>
+            <p class="form__note">送信いただいた個人情報は、お問い合わせへの対応以外には使用しません。</p>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       フッター（全ページ共通パーツ）
+  ========================================================== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__main">
+        <a href="index.html" class="footer__logo">Yukari Sakaguchi<span class="footer__logo-sub">Portfolio</span></a>
+        <p class="footer__text">小さな会社の「はじめてのホームページ」を、いっしょに。</p>
+      </div>
+      <nav class="footer__nav" aria-label="フッターナビゲーション">
+        <ul class="footer__list">
+          <li><a href="index.html" class="footer__link">トップ</a></li>
+          <li><a href="about.html" class="footer__link">わたしについて</a></li>
+          <li><a href="contact.html" class="footer__link">お問い合わせ</a></li>
+        </ul>
+      </nav>
+    </div>
+    <p class="footer__copy"><small>&copy; 2026 Yukari Sakaguchi</small></p>
+  </footer>
+
+  <!-- ページトップボタン -->
+  <button type="button" class="pagetop js-pagetop" aria-label="ページの先頭へ戻る">
+    <span class="pagetop__arrow" aria-hidden="true"></span>
+  </button>
+
+</body>
+</html>
