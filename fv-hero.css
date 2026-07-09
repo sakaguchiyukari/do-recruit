@@ -1,0 +1,206 @@
+/* ==========================================================
+  Variables
+========================================================== */
+
+:root {
+  --fv-color-text: #111111;
+  --fv-color-accent: #ffb547;
+
+  --fv-color-chip-bg: rgba(0, 0, 0, 0.06);
+  --fv-color-chip-border: rgba(0, 0, 0, 0.18);
+
+  --fv-shadow-text: none;
+
+  --fv-space-block: clamp(1.2rem, 3vw, 2.4rem);
+  --fv-space-inline: clamp(1rem, 4vw, 2rem);
+}
+
+
+/* ==========================================================
+  Hero
+========================================================== */
+
+.fv-hero {
+width: min(100%, 1200px);
+
+  padding:
+    var(--fv-space-block)
+    var(--fv-space-inline);
+
+  text-align: center;
+  color: var(--fv-color-text);
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================================
+  Fade Animation
+========================================================== */
+
+.fv-hero__fade {
+  opacity: 0;
+  transform: translateY(16px);
+
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+}
+
+.fv-hero__fade.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fv-hero__fade--delay1 {
+  transition-delay: 0.25s;
+}
+
+
+/* ==========================================================
+  Copy
+========================================================== */
+
+.fv-hero__copy {
+  margin: 0 0 var(--fv-space-block);
+
+  font-size: clamp(1.8rem, 4vw, 4.8rem)!important;
+
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+
+  text-shadow: var(--fv-shadow-text);
+}
+
+
+/* 切り替わるテキスト */
+
+.fv-hero__word {
+  display: inline-block;
+
+  min-width: 5em;
+
+  color: var(--fv-color-accent);
+
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.fv-hero__word.is-changing {
+  opacity: 0;
+  transform: translateY(0.4em);
+}
+
+
+/* ==========================================================
+  Sub Copy
+========================================================== */
+
+.fv-hero__sub {
+  margin: 0 0 var(--fv-space-block);
+
+  font-size: clamp(0.9rem, 2.4vw, 1.1rem);
+
+  line-height: 2;
+  letter-spacing: 0.06em;
+
+  text-shadow: var(--fv-shadow-text);
+}
+
+
+/* ==========================================================
+  Marquee
+========================================================== */
+
+.fv-hero__marquee {
+  overflow: hidden;
+
+  -webkit-mask-image:
+    linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+}
+
+.fv-hero__track {
+  display: flex;
+
+  gap: 0.6rem;
+
+  width: max-content;
+
+  animation:
+    fv-marquee 26s linear infinite;
+}
+
+.fv-hero__chip {
+  display: inline-block;
+
+  padding: 0.45em 1.1em;
+
+  border:
+    1px solid var(--fv-color-chip-border);
+
+  border-radius: 999px;
+
+  background: var(--fv-color-chip-bg);
+
+  backdrop-filter: blur(4px);
+
+  font-size: clamp(0.78rem, 2vw, 0.95rem);
+
+  letter-spacing: 0.05em;
+
+  white-space: nowrap;
+}
+
+@keyframes fv-marquee {
+
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+
+}
+
+
+/* ==========================================================
+  Accessibility
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .fv-hero__track {
+    animation: none;
+
+    flex-wrap: wrap;
+    justify-content: center;
+
+    width: auto;
+  }
+
+  .fv-hero__fade {
+    opacity: 1;
+    transform: none;
+
+    transition: none;
+  }
+
+}
