@@ -1,0 +1,152 @@
+/* ==========================================================
+  Opening Catchcopy  ―  初回表示のフルスクリーン・オープニング
+  「まいにちに『プラス』をつぎつぎと」
+========================================================== */
+
+:root {
+  --fvo-bg: #ffffff;
+  --fvo-text: #111111;
+  --fvo-accent: #ffb547;
+}
+
+
+/* スクロールロック（オープニング表示中） */
+
+.fv-opening-lock,
+.fv-opening-lock body {
+  overflow: hidden;
+}
+
+
+/* ==========================================================
+  Overlay
+========================================================== */
+
+.fv-opening {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: clamp(1rem, 5vw, 3rem);
+
+  background: var(--fvo-bg);
+
+  opacity: 1;
+  transition: opacity 0.8s ease;
+}
+
+/* ほんのり暖色のグロー */
+.fv-opening::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      60% 60% at 50% 40%,
+      rgba(255, 181, 71, 0.14),
+      rgba(255, 255, 255, 0) 70%
+    );
+
+  pointer-events: none;
+}
+
+.fv-opening.is-done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+  Copy
+========================================================== */
+
+.fv-opening__inner {
+  position: relative;
+  text-align: center;
+}
+
+.fv-opening__copy {
+  margin: 0;
+
+  color: var(--fvo-text);
+
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+
+  font-size: clamp(1.6rem, 6vw, 3.6rem);
+}
+
+.fv-opening__line {
+  display: block;
+
+  opacity: 0;
+  transform: translateY(0.6em);
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.fv-opening.is-active .fv-opening__line {
+  opacity: 1;
+  transform: none;
+}
+
+.fv-opening.is-active .fv-opening__line--1 {
+  transition-delay: 0.15s;
+}
+
+.fv-opening.is-active .fv-opening__line--2 {
+  transition-delay: 0.5s;
+}
+
+.fv-opening.is-active .fv-opening__line--3 {
+  transition-delay: 0.85s;
+}
+
+
+/* 「プラス」を強調 */
+
+.fv-opening__plus {
+  display: inline-block;
+  color: var(--fvo-accent);
+}
+
+.fv-opening.is-active .fv-opening__plus {
+  animation: fvo-plus-pop 0.6s 0.6s both;
+}
+
+@keyframes fvo-plus-pop {
+  0%   { transform: scale(0.7); }
+  60%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+
+/* ==========================================================
+  Accessibility
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .fv-opening {
+    transition: opacity 0.3s ease;
+  }
+
+  .fv-opening__line {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .fv-opening__plus {
+    animation: none;
+  }
+
+}

@@ -1,0 +1,61 @@
+<!--
+  SWELL WordPress テーマ用
+  オープニング・キャッチコピー
+  「まいにちに『プラス』をつぎつぎと」
+
+  概要:
+  サイトを最初に開いたとき、キャッチコピーを画面全体に表示し、
+  その後フェードアウトして home（フロントページ）を表示します。
+
+  ────────────────────────────────────────────────
+  導入方法（推奨：functions.php で自動化）
+  ────────────────────────────────────────────────
+  1. opening-catchcopy.css と opening-catchcopy.js を
+     子テーマの assets/ ディレクトリに置く
+     例) wp-content/themes/swell_child/assets/
+  2. opening-catchcopy.php の中身を子テーマの functions.php に追記
+  → フロントページを開くと自動でオープニングが再生されます。
+
+  ※ セッション中は初回のみ再生されます（sessionStorage で制御）。
+    ページを再読み込みしても、同じタブ・セッション内では再表示しません。
+    「毎回表示したい」場合は opening-catchcopy.js の
+      sessionStorage.setItem('fvOpeningShown', '1');
+    の行と、opening-catchcopy.php 内インラインスクリプトの
+      if (sessionStorage.getItem('fvOpeningShown')) { ... }
+    の判定を削除してください。
+
+  ────────────────────────────────────────────────
+  導入方法（手動：カスタマイザー等に貼る場合）
+  ────────────────────────────────────────────────
+  1. SWELL カスタマイザー > 追加CSS に opening-catchcopy.css を貼り付け
+  2. opening-catchcopy.js の内容を「カスタムJS」や
+     フッターのカスタムコード欄に貼り付け
+  3. 下記の HTML を、ページ本文の先頭（できるだけ上）に配置
+     ＋ すぐ後ろのインラインスクリプトも一緒に配置
+-->
+
+<!-- ===================== HTML ===================== -->
+<div class="fv-opening" id="fvOpening" role="dialog" aria-label="オープニング" aria-live="polite">
+  <div class="fv-opening__inner">
+    <p class="fv-opening__copy">
+      <span class="fv-opening__line fv-opening__line--1">まいにちに</span>
+      <span class="fv-opening__line fv-opening__line--2"><span class="fv-opening__plus">「プラス」</span>を</span>
+      <span class="fv-opening__line fv-opening__line--3">つぎつぎと</span>
+    </p>
+  </div>
+</div>
+
+<!-- 描画前の判定（チラつき防止・スクロールロック） -->
+<script>
+(function () {
+  try {
+    var el = document.getElementById('fvOpening');
+    if (!el) return;
+    if (sessionStorage.getItem('fvOpeningShown')) {
+      el.parentNode.removeChild(el);
+    } else {
+      document.documentElement.classList.add('fv-opening-lock');
+    }
+  } catch (e) {}
+})();
+</script>
