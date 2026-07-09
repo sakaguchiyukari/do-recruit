@@ -73,6 +73,7 @@
   --------------------------------------------------------- */
   const pagetop = document.querySelector('.js-pagetop');
   const header = document.querySelector('.js-header');
+  const spCta = document.querySelector('.js-sp-cta'); // SP固定CTA（無いページもある）
 
   const onScroll = () => {
     const scrollY = window.scrollY;
@@ -83,6 +84,11 @@
 
     if (pagetop) {
       pagetop.classList.toggle('is-visible', scrollY > 500);
+    }
+
+    // FVを過ぎたらSP固定CTAを表示（CTAをスマホで埋もれさせない）
+    if (spCta) {
+      spCta.classList.toggle('is-visible', scrollY > window.innerHeight * 0.9);
     }
   };
 

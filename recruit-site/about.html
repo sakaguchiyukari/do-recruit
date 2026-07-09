@@ -73,14 +73,17 @@
          ページヘッダー
     ========================================================== -->
     <div class="page-header">
-      <p class="page-header__en">ABOUT</p>
-      <h1 class="page-header__title">わたしについて</h1>
-      <nav class="breadcrumb" aria-label="パンくずリスト">
-        <ol class="breadcrumb__list">
-          <li class="breadcrumb__item"><a href="index.html" class="breadcrumb__link">トップ</a></li>
-          <li class="breadcrumb__item" aria-current="page">わたしについて</li>
-        </ol>
-      </nav>
+      <div class="page-header__inner">
+        <p class="page-header__en">ABOUT</p>
+        <h1 class="page-header__title">わたしについて</h1>
+        <nav class="breadcrumb" aria-label="パンくずリスト">
+          <ol class="breadcrumb__list">
+            <li class="breadcrumb__item"><a href="index.html" class="breadcrumb__link">トップ</a></li>
+            <li class="breadcrumb__item" aria-current="page">わたしについて</li>
+          </ol>
+        </nav>
+        <span class="page-header__ghost" aria-hidden="true">ABOUT</span>
+      </div>
     </div>
 
     <!-- =========================================================
@@ -88,10 +91,15 @@
     ========================================================== -->
     <section class="l-section">
       <div class="l-inner">
-        <h2 class="c-heading js-fade">
-          <span class="c-heading__en">PROFILE</span>
-          プロフィール
-        </h2>
+        <header class="c-head js-fade">
+          <p class="c-head__meta">
+            <span class="c-head__num">01</span>
+            <span class="c-head__en">PROFILE</span>
+          </p>
+          <h2 class="c-head__title">プロフィール</h2>
+          <span class="c-head__ghost" aria-hidden="true">PROFILE</span>
+        </header>
+
         <div class="profile__grid">
           <figure class="profile__photo js-fade">
             <img src="assets/images/profile-photo.svg" alt="Yukari Sakaguchiのプロフィール写真" width="640" height="640">
@@ -123,29 +131,49 @@
     </section>
 
     <!-- =========================================================
-         数字で見る実績
+         数字で見る実績（SVGリング）
     ========================================================== -->
     <section class="stats l-section l-section--bg">
       <div class="l-inner">
-        <h2 class="c-heading js-fade">
-          <span class="c-heading__en">NUMBERS</span>
-          数字で見る、これまで
-        </h2>
+        <header class="c-head js-fade">
+          <p class="c-head__meta">
+            <span class="c-head__num">02</span>
+            <span class="c-head__en">NUMBERS</span>
+          </p>
+          <h2 class="c-head__title">数字で見る、これまで</h2>
+          <span class="c-head__ghost" aria-hidden="true">NUMBERS</span>
+        </header>
+
         <div class="stats__grid">
           <div class="stats__item js-fade">
-            <p class="stats__number">6<span class="stats__unit">サイト</span></p>
+            <div class="stats__ring" style="--ring: 0.86;">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="stats__ring-bg" cx="60" cy="60" r="52"></circle>
+                <circle class="stats__ring-fill" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <p class="stats__number">6<span class="stats__unit">サイト</span></p>
+            </div>
             <p class="stats__label">2年間で公開したサイト数</p>
-            <span class="stats__bar" style="--bar: 86%;"></span>
           </div>
-          <div class="stats__item js-fade" style="transition-delay: .1s;">
-            <p class="stats__number">100<span class="stats__unit">%</span></p>
+          <div class="stats__item js-fade" style="transition-delay: .08s;">
+            <div class="stats__ring" style="--ring: 1;">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="stats__ring-bg" cx="60" cy="60" r="52"></circle>
+                <circle class="stats__ring-fill" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <p class="stats__number">100<span class="stats__unit">%</span></p>
+            </div>
             <p class="stats__label">企画から公開まで一貫担当</p>
-            <span class="stats__bar" style="--bar: 100%;"></span>
           </div>
-          <div class="stats__item js-fade" style="transition-delay: .2s;">
-            <p class="stats__number">7<span class="stats__unit">件目</span></p>
+          <div class="stats__item js-fade" style="transition-delay: .16s;">
+            <div class="stats__ring" style="--ring: 0.7;">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="stats__ring-bg" cx="60" cy="60" r="52"></circle>
+                <circle class="stats__ring-fill" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <p class="stats__number">7<span class="stats__unit">件目</span></p>
+            </div>
             <p class="stats__label">現在も新しいサイトを制作中</p>
-            <span class="stats__bar" style="--bar: 70%;"></span>
           </div>
         </div>
       </div>
@@ -156,10 +184,15 @@
     ========================================================== -->
     <section class="l-section">
       <div class="l-inner">
-        <h2 class="c-heading js-fade">
-          <span class="c-heading__en">SKILL</span>
-          できること
-        </h2>
+        <header class="c-head js-fade">
+          <p class="c-head__meta">
+            <span class="c-head__num">03</span>
+            <span class="c-head__en">SKILL</span>
+          </p>
+          <h2 class="c-head__title">できること</h2>
+          <span class="c-head__ghost" aria-hidden="true">SKILL</span>
+        </header>
+
         <div class="skill__grid">
           <article class="skill__card js-fade">
             <div class="skill__head">
@@ -174,7 +207,7 @@
               <li>画像最適化（WebP・軽量化）</li>
             </ul>
           </article>
-          <article class="skill__card js-fade" style="transition-delay: .1s;">
+          <article class="skill__card js-fade" style="transition-delay: .08s;">
             <div class="skill__head">
               <span class="skill__icon" aria-hidden="true">🚀</span>
               <h3 class="skill__title">公開・運用</h3>
@@ -187,7 +220,7 @@
               <li>公開後の更新・保守運用</li>
             </ul>
           </article>
-          <article class="skill__card js-fade" style="transition-delay: .2s;">
+          <article class="skill__card js-fade" style="transition-delay: .16s;">
             <div class="skill__head">
               <span class="skill__icon" aria-hidden="true">🤝</span>
               <h3 class="skill__title">仕組みづくり</h3>
@@ -208,10 +241,15 @@
     ========================================================== -->
     <section class="l-section l-section--bg">
       <div class="l-inner">
-        <h2 class="c-heading js-fade">
-          <span class="c-heading__en">FLOW</span>
-          制作の流れ
-        </h2>
+        <header class="c-head js-fade">
+          <p class="c-head__meta">
+            <span class="c-head__num">04</span>
+            <span class="c-head__en">FLOW</span>
+          </p>
+          <h2 class="c-head__title">制作の流れ</h2>
+          <span class="c-head__ghost" aria-hidden="true">FLOW</span>
+        </header>
+
         <ol class="flow__list">
           <li class="flow__item js-fade">
             <span class="flow__num" aria-hidden="true"></span>
@@ -256,7 +294,9 @@
          CTA（お問い合わせ導線）
     ========================================================== -->
     <section class="cta">
+      <span class="cta__blob" aria-hidden="true"></span>
       <div class="cta__inner js-fade">
+        <p class="cta__en">CONTACT</p>
         <h2 class="cta__title">まずは、話してみませんか？</h2>
         <p class="cta__text">
           「まだ何も決まっていない」段階でも大丈夫です。<br class="u-pc-only">
@@ -287,6 +327,11 @@
     </div>
     <p class="footer__copy"><small>&copy; 2026 Yukari Sakaguchi</small></p>
   </footer>
+
+  <!-- SP用固定CTA（FVを過ぎたら表示） -->
+  <div class="sp-cta js-sp-cta" aria-hidden="true">
+    <a href="contact.html" class="sp-cta__btn">無料で相談する<span class="sp-cta__sub">お見積り無料・2営業日以内に返信</span></a>
+  </div>
 
   <!-- ページトップボタン -->
   <button type="button" class="pagetop js-pagetop" aria-label="ページの先頭へ戻る">

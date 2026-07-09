@@ -22,7 +22,7 @@
   <!-- ▼ favicon -->
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
 
-  <!-- ▼ CSS（1ファイル運用／Sass化する場合は assets/css/ 配下を分割してビルド） -->
+  <!-- ▼ CSS（1ファイル運用／Sass化する場合はセクションコメント単位で分割） -->
   <link rel="stylesheet" href="assets/css/style.css">
 
   <!-- ▼ JS -->
@@ -71,49 +71,103 @@
 
     <!-- =========================================================
          FV（ファーストビュー）
+         行ごとのクリップ演出＋CSSのみで動く背景ブロブ
     ========================================================== -->
     <section class="fv">
+      <!-- 装飾：有機的なグラデーションブロブ（CSSアニメーション） -->
+      <div class="fv__bg" aria-hidden="true">
+        <span class="fv__blob fv__blob--1"></span>
+        <span class="fv__blob fv__blob--2"></span>
+        <span class="fv__blob fv__blob--3"></span>
+      </div>
+
       <div class="fv__inner">
         <div class="fv__content">
-          <p class="fv__label">WEB DESIGN & SUPPORT</p>
+          <p class="fv__label">
+            <span class="fv__label-line" aria-hidden="true"></span>
+            WEB DESIGN &amp; SUPPORT
+          </p>
           <h1 class="fv__title">
-            はじめての<br>
-            ホームページづくり、<br>
-            <em class="fv__em">いっしょに。</em>
+            <span class="fv__line"><span class="fv__line-inner">はじめての</span></span>
+            <span class="fv__line"><span class="fv__line-inner">ホームページづくり、</span></span>
+            <span class="fv__line"><span class="fv__line-inner"><em class="fv__em">いっしょに。</em></span></span>
           </h1>
           <p class="fv__lead">
-            小さな会社や起業したばかりの方へ。<br class="u-pc-only">
-            むずかしい専門用語は使いません。<br class="u-pc-only">
+            小さな会社や起業したばかりの方へ。むずかしい専門用語は使いません。<br class="u-pc-only">
             「何から始めればいいの？」から、お手伝いします。
           </p>
           <div class="fv__actions">
             <a href="contact.html" class="c-btn c-btn--large">無料で相談してみる</a>
             <a href="about.html" class="c-btn c-btn--ghost c-btn--large">わたしについて</a>
           </div>
+          <ul class="fv__points">
+            <li class="fv__point">ご相談・お見積り無料</li>
+            <li class="fv__point">オンライン対応</li>
+            <li class="fv__point">公開後のサポートあり</li>
+          </ul>
         </div>
         <div class="fv__visual">
           <img src="assets/images/fv-main.svg" alt="制作イメージ" width="960" height="720" class="fv__img">
+          <span class="fv__visual-deco" aria-hidden="true"></span>
         </div>
       </div>
+
+      <span class="fv__scroll" aria-hidden="true">SCROLL</span>
     </section>
+
+    <!-- =========================================================
+         スキルの帯（マーキー：CSSのみで無限ループ）
+    ========================================================== -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <ul class="marquee__list">
+          <li class="marquee__item">WordPress / SWELL</li>
+          <li class="marquee__item">HTML &amp; CSS</li>
+          <li class="marquee__item">JavaScript</li>
+          <li class="marquee__item">レスポンシブ</li>
+          <li class="marquee__item">SEO</li>
+          <li class="marquee__item">Google Apps Script</li>
+          <li class="marquee__item">サーバー設定</li>
+          <li class="marquee__item">画像最適化</li>
+        </ul>
+        <ul class="marquee__list">
+          <li class="marquee__item">WordPress / SWELL</li>
+          <li class="marquee__item">HTML &amp; CSS</li>
+          <li class="marquee__item">JavaScript</li>
+          <li class="marquee__item">レスポンシブ</li>
+          <li class="marquee__item">SEO</li>
+          <li class="marquee__item">Google Apps Script</li>
+          <li class="marquee__item">サーバー設定</li>
+          <li class="marquee__item">画像最適化</li>
+        </ul>
+      </div>
+    </div>
 
     <!-- =========================================================
          悩みへの共感（ターゲットの入口）
     ========================================================== -->
     <section class="worry l-section">
       <div class="l-inner">
-        <h2 class="c-heading js-fade">
-          <span class="c-heading__en">PROBLEM</span>
-          こんなお悩み、ありませんか？
-        </h2>
+        <header class="c-head js-fade">
+          <p class="c-head__meta">
+            <span class="c-head__num">01</span>
+            <span class="c-head__en">PROBLEM</span>
+          </p>
+          <h2 class="c-head__title">こんなお悩み、ありませんか？</h2>
+          <span class="c-head__ghost" aria-hidden="true">PROBLEM</span>
+        </header>
+
         <ul class="worry__list">
           <li class="worry__item js-fade">
+            <span class="worry__q" aria-hidden="true">Q1</span>
             <p class="worry__text">ホームページが必要だけど、<strong>何から始めればいいか</strong>わからない</p>
           </li>
-          <li class="worry__item js-fade" style="transition-delay: .1s;">
+          <li class="worry__item js-fade" style="transition-delay: .08s;">
+            <span class="worry__q" aria-hidden="true">Q2</span>
             <p class="worry__text">制作会社は<strong>専門用語ばかり</strong>で、話がむずかしそう</p>
           </li>
-          <li class="worry__item js-fade" style="transition-delay: .2s;">
+          <li class="worry__item js-fade" style="transition-delay: .16s;">
+            <span class="worry__q" aria-hidden="true">Q3</span>
             <p class="worry__text">作ったあとの<strong>更新や管理</strong>まで、面倒を見てほしい</p>
           </li>
         </ul>
@@ -128,27 +182,32 @@
     ========================================================== -->
     <section class="strength l-section l-section--bg">
       <div class="l-inner">
-        <h2 class="c-heading js-fade">
-          <span class="c-heading__en">STRENGTH</span>
-          選ばれる3つの理由
-        </h2>
+        <header class="c-head js-fade">
+          <p class="c-head__meta">
+            <span class="c-head__num">02</span>
+            <span class="c-head__en">STRENGTH</span>
+          </p>
+          <h2 class="c-head__title">選ばれる3つの理由</h2>
+          <span class="c-head__ghost" aria-hidden="true">STRENGTH</span>
+        </header>
+
         <div class="strength__grid">
           <article class="strength__card js-fade">
-            <span class="strength__num">01</span>
+            <span class="strength__num" aria-hidden="true">01</span>
             <h3 class="strength__title">わかりやすい言葉で<br>伴走します</h3>
             <p class="strength__text">
               企業広報の現場で、Webにくわしくない人と一緒にサイトを作ってきました。専門用語を使わず、目的の整理からお手伝いします。
             </p>
           </article>
-          <article class="strength__card js-fade" style="transition-delay: .1s;">
-            <span class="strength__num">02</span>
+          <article class="strength__card js-fade" style="transition-delay: .08s;">
+            <span class="strength__num" aria-hidden="true">02</span>
             <h3 class="strength__title">企画から公開まで<br>ワンストップ</h3>
             <p class="strength__text">
               構成の提案、デザイン、サーバー・ドメインの設定、公開作業まで一貫対応。「どこに何を頼めばいいの？」という迷子をなくします。
             </p>
           </article>
-          <article class="strength__card js-fade" style="transition-delay: .2s;">
-            <span class="strength__num">03</span>
+          <article class="strength__card js-fade" style="transition-delay: .16s;">
+            <span class="strength__num" aria-hidden="true">03</span>
             <h3 class="strength__title">作って終わりに<br>しません</h3>
             <p class="strength__text">
               公開後の更新方法のレクチャーや、運用のご相談まで。自分で更新できるWordPress（SWELL）だから、育てていけるサイトになります。
@@ -159,29 +218,50 @@
     </section>
 
     <!-- =========================================================
-         数字で見る実績
+         数字で見る実績（SVGリングでグラフィカルに）
     ========================================================== -->
     <section class="stats l-section">
       <div class="l-inner">
-        <h2 class="c-heading js-fade">
-          <span class="c-heading__en">NUMBERS</span>
-          数字で見る、これまで
-        </h2>
+        <header class="c-head js-fade">
+          <p class="c-head__meta">
+            <span class="c-head__num">03</span>
+            <span class="c-head__en">NUMBERS</span>
+          </p>
+          <h2 class="c-head__title">数字で見る、これまで</h2>
+          <span class="c-head__ghost" aria-hidden="true">NUMBERS</span>
+        </header>
+
         <div class="stats__grid">
+          <!-- リング：--ring に 0〜1 を渡すと弧が伸びる（CSSのみ） -->
           <div class="stats__item js-fade">
-            <p class="stats__number">6<span class="stats__unit">サイト</span></p>
+            <div class="stats__ring" style="--ring: 0.86;">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="stats__ring-bg" cx="60" cy="60" r="52"></circle>
+                <circle class="stats__ring-fill" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <p class="stats__number">6<span class="stats__unit">サイト</span></p>
+            </div>
             <p class="stats__label">2年間で公開したサイト数</p>
-            <span class="stats__bar" style="--bar: 86%;"></span>
           </div>
-          <div class="stats__item js-fade" style="transition-delay: .1s;">
-            <p class="stats__number">100<span class="stats__unit">%</span></p>
+          <div class="stats__item js-fade" style="transition-delay: .08s;">
+            <div class="stats__ring" style="--ring: 1;">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="stats__ring-bg" cx="60" cy="60" r="52"></circle>
+                <circle class="stats__ring-fill" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <p class="stats__number">100<span class="stats__unit">%</span></p>
+            </div>
             <p class="stats__label">企画から公開まで一貫担当</p>
-            <span class="stats__bar" style="--bar: 100%;"></span>
           </div>
-          <div class="stats__item js-fade" style="transition-delay: .2s;">
-            <p class="stats__number">7<span class="stats__unit">件目</span></p>
+          <div class="stats__item js-fade" style="transition-delay: .16s;">
+            <div class="stats__ring" style="--ring: 0.7;">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="stats__ring-bg" cx="60" cy="60" r="52"></circle>
+                <circle class="stats__ring-fill" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <p class="stats__number">7<span class="stats__unit">件目</span></p>
+            </div>
             <p class="stats__label">現在も新しいサイトを制作中</p>
-            <span class="stats__bar" style="--bar: 70%;"></span>
           </div>
         </div>
       </div>
@@ -192,14 +272,20 @@
     ========================================================== -->
     <section class="works l-section l-section--bg">
       <div class="l-inner">
-        <h2 class="c-heading js-fade">
-          <span class="c-heading__en">WORKS</span>
-          制作実績（抜粋）
-        </h2>
+        <header class="c-head js-fade">
+          <p class="c-head__meta">
+            <span class="c-head__num">04</span>
+            <span class="c-head__en">WORKS</span>
+          </p>
+          <h2 class="c-head__title">制作実績（抜粋）</h2>
+          <span class="c-head__ghost" aria-hidden="true">WORKS</span>
+        </header>
+
         <div class="works__grid">
           <article class="works__card js-fade">
             <div class="works__thumb">
               <img src="assets/images/works-01.svg" alt="施設サイトの制作実績" width="800" height="500" loading="lazy">
+              <span class="works__arrow" aria-hidden="true">→</span>
             </div>
             <div class="works__body">
               <h3 class="works__title">施設サイト</h3>
@@ -210,9 +296,10 @@
               </ul>
             </div>
           </article>
-          <article class="works__card js-fade" style="transition-delay: .1s;">
+          <article class="works__card js-fade" style="transition-delay: .08s;">
             <div class="works__thumb">
               <img src="assets/images/works-02.svg" alt="採用サイトの制作実績" width="800" height="500" loading="lazy">
+              <span class="works__arrow" aria-hidden="true">→</span>
             </div>
             <div class="works__body">
               <h3 class="works__title">採用サイト</h3>
@@ -223,9 +310,10 @@
               </ul>
             </div>
           </article>
-          <article class="works__card js-fade" style="transition-delay: .2s;">
+          <article class="works__card js-fade" style="transition-delay: .16s;">
             <div class="works__thumb">
               <img src="assets/images/works-03.svg" alt="宿泊施設サイトの制作実績" width="800" height="500" loading="lazy">
+              <span class="works__arrow" aria-hidden="true">→</span>
             </div>
             <div class="works__body">
               <h3 class="works__title">宿泊施設サイト</h3>
@@ -247,7 +335,9 @@
          CTA（お問い合わせ導線）
     ========================================================== -->
     <section class="cta">
+      <span class="cta__blob" aria-hidden="true"></span>
       <div class="cta__inner js-fade">
+        <p class="cta__en">CONTACT</p>
         <h2 class="cta__title">まずは、話してみませんか？</h2>
         <p class="cta__text">
           「まだ何も決まっていない」段階でも大丈夫です。<br class="u-pc-only">
@@ -278,6 +368,11 @@
     </div>
     <p class="footer__copy"><small>&copy; 2026 Yukari Sakaguchi</small></p>
   </footer>
+
+  <!-- SP用固定CTA（FVを過ぎたら表示：スマホでCTAを埋もれさせない） -->
+  <div class="sp-cta js-sp-cta" aria-hidden="true">
+    <a href="contact.html" class="sp-cta__btn">無料で相談する<span class="sp-cta__sub">お見積り無料・2営業日以内に返信</span></a>
+  </div>
 
   <!-- ページトップボタン -->
   <button type="button" class="pagetop js-pagetop" aria-label="ページの先頭へ戻る">
