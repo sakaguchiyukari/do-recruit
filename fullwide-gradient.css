@@ -156,3 +156,44 @@
       #ffffff 100%     /* 下端は白へ溶け込ませる */
     );
 }
+
+
+/* ==========================================================
+  Blue × Yellow  ―  まだら（斑）模様バージョン
+  fw-gradient-blue-yellow--3 の3色を複数の radial-gradient で散らす。
+  クラス: fw-gradient-mottle1 / mottle2 / mottle3
+  ※色は 青 #d4ecfa / 緑 #ddf1d2 / 黄 #fdf4d0
+========================================================== */
+
+/* パターン1：大きめのやわらかい斑（ゆったり） */
+.fw-gradient-mottle1 {
+  background-color: #eaf5ec;
+  background-image:
+    radial-gradient(60% 55% at 15% 20%, #d4ecfa 0%, rgba(212,236,250,0) 60%),
+    radial-gradient(55% 50% at 85% 25%, #fdf4d0 0%, rgba(253,244,208,0) 55%),
+    radial-gradient(65% 60% at 70% 80%, #ddf1d2 0%, rgba(221,241,210,0) 60%),
+    radial-gradient(50% 50% at 30% 88%, #fdf4d0 0%, rgba(253,244,208,0) 55%);
+}
+
+/* パターン2：数多く・中くらいの斑（細かめのまだら） */
+.fw-gradient-mottle2 {
+  background-color: #e6f2ea;
+  background-image:
+    radial-gradient(34% 34% at 20% 30%, #d4ecfa 0%, rgba(212,236,250,0) 55%),
+    radial-gradient(30% 30% at 60% 15%, #fdf4d0 0%, rgba(253,244,208,0) 55%),
+    radial-gradient(38% 38% at 82% 42%, #ddf1d2 0%, rgba(221,241,210,0) 55%),
+    radial-gradient(34% 34% at 42% 68%, #fdf4d0 0%, rgba(253,244,208,0) 55%),
+    radial-gradient(30% 30% at 14% 82%, #d4ecfa 0%, rgba(212,236,250,0) 55%),
+    radial-gradient(34% 34% at 90% 86%, #ddf1d2 0%, rgba(221,241,210,0) 55%);
+}
+
+/* パターン3：斜めに流れる有機的な斑（動きあり） */
+.fw-gradient-mottle3 {
+  background-color: #ddf1d2;
+  background-image:
+    radial-gradient(52% 46% at 10% 15%, #d4ecfa 0%, rgba(212,236,250,0) 62%),
+    radial-gradient(46% 52% at 92% 18%, #fdf4d0 0%, rgba(253,244,208,0) 62%),
+    radial-gradient(56% 50% at 22% 92%, #fdf4d0 0%, rgba(253,244,208,0) 62%),
+    radial-gradient(50% 56% at 82% 84%, #d4ecfa 0%, rgba(212,236,250,0) 62%),
+    radial-gradient(42% 42% at 55% 48%, #eafbdd 0%, rgba(234,251,221,0) 55%);
+}
