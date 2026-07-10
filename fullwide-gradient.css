@@ -143,15 +143,16 @@
     );
 }
 
-/* 縦方向（上→下・4色） */
+/* 縦方向（少し斜め・4色）＋ 最下部を白へフェードして背景になじませる */
 .fw-gradient-blue-yellow--vertical {
-  background-color: #d6f0e6;
+  background-color: #ffffff; /* 非対応環境フォールバック（白背景になじむ色） */
   background-image:
     linear-gradient(
-      to bottom,
-      #dceffb 0%,
-      #d6f0e6 33%,
-      #e7f4cf 66%,
-      #fdf4d0 100%
+      165deg,          /* 少し斜め（真下=180deg より傾ける） */
+      #dceffb 0%,      /* 淡い青 */
+      #d6f0e6 28%,     /* アクア */
+      #e7f4cf 52%,     /* 黄緑 */
+      #fdf4d0 76%,     /* 淡い黄 */
+      #ffffff 100%     /* 下端は白へ溶け込ませる */
     );
 }
