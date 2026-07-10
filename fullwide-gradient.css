@@ -1,0 +1,66 @@
+/* ==========================================================
+  SWELL フルワイドブロック用 グラデーション背景
+  ブロックのグラデーションUIが使えないので、追加CSSクラスで指定する。
+
+  使い方:
+  1. この CSS を「SWELL カスタマイザー > 追加CSS」に貼り付け
+  2. 対象のフルワイドブロックを選択
+     → 右サイドバー「高度な設定」>「追加CSSクラス」に
+        fw-gradient-fresh
+     と入力
+========================================================== */
+
+
+/* 淡い黄 → 黄緑 → 淡い緑（3色・斜め） */
+
+.fw-gradient-fresh {
+  background-color: #eaf5cf; /* 非対応環境フォールバック */
+  background-image:
+    linear-gradient(
+      135deg,
+      #fdf6d8 0%,   /* 淡い黄 */
+      #eaf5cf 50%,  /* 黄緑 */
+      #d9f2df 100%  /* 淡い緑 */
+    );
+}
+
+
+/* ----------------------------------------------------------
+  バリエーション（使いたいものだけクラス名を差し替えて使用）
+---------------------------------------------------------- */
+
+/* もっと黄色寄り */
+.fw-gradient-fresh--warm {
+  background-color: #f4f2c8;
+  background-image:
+    linear-gradient(
+      135deg,
+      #fbf3c4 0%,
+      #eef4c0 45%,
+      #dcefd0 100%
+    );
+}
+
+/* もっと緑寄り */
+.fw-gradient-fresh--cool {
+  background-color: #dcefd6;
+  background-image:
+    linear-gradient(
+      135deg,
+      #f0f6d6 0%,
+      #dcefcf 50%,
+      #cdead9 100%
+    );
+}
+
+/* 縦方向（上→下）にしたい場合 */
+.fw-gradient-fresh--vertical {
+  background-color: #eaf5cf;
+  background-image:
+    linear-gradient(
+      to bottom,
+      #fdf6d8 0%,
+      #eaf5cf 50%,
+      #d9f2df 100%
+    );
+}
