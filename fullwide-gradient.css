@@ -67,3 +67,46 @@
       #dfecc4 100%
     );
 }
+
+
+/* ==========================================================
+  Blue  ―  #269fe6 を軸にしたグラデーション
+  クラス: fw-gradient-blue
+========================================================== */
+
+/* 鮮やかめ（水色 → #269fe6 → 濃い青／斜め）
+   ※濃いので文字は白推奨 */
+.fw-gradient-blue {
+  background-color: #269fe6; /* 非対応環境フォールバック */
+  background-image:
+    linear-gradient(
+      135deg,
+      #7cd0f6 0%,   /* 明るい水色 */
+      #269fe6 50%,  /* ベース #269fe6 */
+      #1466c9 100%  /* 濃い青 */
+    );
+}
+
+/* 淡い版（大きな背景向け・濃い文字でも読みやすい） */
+.fw-gradient-blue--soft {
+  background-color: #d4ecfa;
+  background-image:
+    linear-gradient(
+      135deg,
+      #e9f5fc 0%,
+      #d4ecfa 50%,
+      #bee2f8 100%
+    );
+}
+
+/* 縦方向（上→下） */
+.fw-gradient-blue--vertical {
+  background-color: #269fe6;
+  background-image:
+    linear-gradient(
+      to bottom,
+      #7cd0f6 0%,
+      #269fe6 50%,
+      #1466c9 100%
+    );
+}
