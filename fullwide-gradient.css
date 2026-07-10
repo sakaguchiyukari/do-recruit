@@ -8,12 +8,41 @@
      → 右サイドバー「高度な設定」>「追加CSSクラス」に
         fw-gradient-fresh
      と入力
+
+  ---------------------------------------------------------
+  ■ 端（左右）で背景が切れる／横スクロールが出る場合について
+  ---------------------------------------------------------
+  フルワイドは width:100vw で横いっぱいに広げますが、100vw は
+  縦スクロールバーの幅を含むため実表示幅より数px大きくなり、
+  わずかに横へはみ出して端の背景が切れて見えることがあります。
+  そこで背景は「疑似要素でビューポート幅ぴったりに敷く」方式にし、
+  スクロールバー幅に左右されず必ず端まで塗れるようにしています。
+  （下部の「はみ出し対策」も合わせて適用してください）
 ========================================================== */
 
 
 /* 淡い黄 → 黄緑 → 淡い緑（3色・斜め） */
 
 .fw-gradient-fresh {
+  position: relative;
+  z-index: 0;
+  background: transparent;
+}
+
+.fw-gradient-fresh::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+
+  /* 上下はブロックいっぱい */
+  top: 0;
+  bottom: 0;
+
+  /* 左右はブロック中央を基準にビューポート幅いっぱい */
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+
   background-color: #eaf5cf; /* 非対応環境フォールバック */
   background-image:
     linear-gradient(
@@ -30,37 +59,38 @@
 ---------------------------------------------------------- */
 
 /* もっと黄色寄り */
-.fw-gradient-fresh--warm {
+.fw-gradient-fresh--warm { position: relative; z-index: 0; background: transparent; }
+.fw-gradient-fresh--warm::before {
+  content: ""; position: absolute; z-index: -1;
+  top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%);
   background-color: #f4f2c8;
-  background-image:
-    linear-gradient(
-      135deg,
-      #fbf3c4 0%,
-      #eef4c0 45%,
-      #dcefd0 100%
-    );
+  background-image: linear-gradient(135deg, #fbf3c4 0%, #eef4c0 45%, #dcefd0 100%);
 }
 
 /* もっと緑寄り */
-.fw-gradient-fresh--cool {
+.fw-gradient-fresh--cool { position: relative; z-index: 0; background: transparent; }
+.fw-gradient-fresh--cool::before {
+  content: ""; position: absolute; z-index: -1;
+  top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%);
   background-color: #dcefd6;
-  background-image:
-    linear-gradient(
-      135deg,
-      #f0f6d6 0%,
-      #dcefcf 50%,
-      #cdead9 100%
-    );
+  background-image: linear-gradient(135deg, #f0f6d6 0%, #dcefcf 50%, #cdead9 100%);
 }
 
 /* 縦方向（上→下）にしたい場合 */
-.fw-gradient-fresh--vertical {
+.fw-gradient-fresh--vertical { position: relative; z-index: 0; background: transparent; }
+.fw-gradient-fresh--vertical::before {
+  content: ""; position: absolute; z-index: -1;
+  top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%);
   background-color: #eaf5cf;
-  background-image:
-    linear-gradient(
-      to bottom,
-      #fdf6d8 0%,
-      #eaf5cf 50%,
-      #d9f2df 100%
-    );
+  background-image: linear-gradient(to bottom, #fdf6d8 0%, #eaf5cf 50%, #d9f2df 100%);
+}
+
+
+/* ----------------------------------------------------------
+  はみ出し対策（横スクロール・端切れの保険）
+  100vw のわずかなはみ出しを隠す。フルワイドの端切れが残る場合に有効。
+---------------------------------------------------------- */
+
+html {
+  overflow-x: hidden;
 }
