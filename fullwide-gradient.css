@@ -187,13 +187,14 @@
     radial-gradient(34% 34% at 90% 86%, #ddf1d2 0%, rgba(221,241,210,0) 55%);
 }
 
-/* パターン3：斜めに流れる有機的な斑（動きあり） */
+/* パターン3：斜めに流れる有機的な斑（動きあり）
+   ── 真円（circle）で描き、輪郭を少し見せて「円を描いたような」印象に */
 .fw-gradient-mottle3 {
   background-color: #ddf1d2;
   background-image:
-    radial-gradient(52% 46% at 10% 15%, #d4ecfa 0%, rgba(212,236,250,0) 62%),
-    radial-gradient(46% 52% at 92% 18%, #fdf4d0 0%, rgba(253,244,208,0) 62%),
-    radial-gradient(56% 50% at 22% 92%, #fdf4d0 0%, rgba(253,244,208,0) 62%),
-    radial-gradient(50% 56% at 82% 84%, #d4ecfa 0%, rgba(212,236,250,0) 62%),
-    radial-gradient(42% 42% at 55% 48%, #eafbdd 0%, rgba(234,251,221,0) 55%);
+    radial-gradient(circle 320px at 12% 18%, #d4ecfa 0%, #d4ecfa 40%, rgba(212,236,250,0) 72%),
+    radial-gradient(circle 300px at 90% 20%, #fdf4d0 0%, #fdf4d0 38%, rgba(253,244,208,0) 70%),
+    radial-gradient(circle 340px at 24% 90%, #fdf4d0 0%, #fdf4d0 40%, rgba(253,244,208,0) 72%),
+    radial-gradient(circle 300px at 82% 82%, #d4ecfa 0%, #d4ecfa 38%, rgba(212,236,250,0) 70%),
+    radial-gradient(circle 240px at 55% 50%, #eafbdd 0%, #eafbdd 36%, rgba(234,251,221,0) 66%);
 }
