@@ -110,3 +110,48 @@
       #1466c9 100%
     );
 }
+
+
+/* ==========================================================
+  Blue × Yellow  ―  淡い青ベースに黄色を足したパステル
+  クラス: fw-gradient-blue-yellow
+  ※青→黄の間に淡い緑を挟み、中間が濁らないようにしている
+========================================================== */
+
+/* 4色（淡い青 → アクア → 黄緑 → 淡い黄／斜め） */
+.fw-gradient-blue-yellow {
+  background-color: #d6f0e6; /* 非対応環境フォールバック */
+  background-image:
+    linear-gradient(
+      135deg,
+      #dceffb 0%,   /* 淡い青 */
+      #d6f0e6 33%,  /* アクア */
+      #e7f4cf 66%,  /* 黄緑 */
+      #fdf4d0 100%  /* 淡い黄 */
+    );
+}
+
+/* 3色（淡い青 → 淡い緑 → 淡い黄） */
+.fw-gradient-blue-yellow--3 {
+  background-color: #ddf1d2;
+  background-image:
+    linear-gradient(
+      135deg,
+      #d4ecfa 0%,
+      #ddf1d2 50%,
+      #fdf4d0 100%
+    );
+}
+
+/* 縦方向（上→下・4色） */
+.fw-gradient-blue-yellow--vertical {
+  background-color: #d6f0e6;
+  background-image:
+    linear-gradient(
+      to bottom,
+      #dceffb 0%,
+      #d6f0e6 33%,
+      #e7f4cf 66%,
+      #fdf4d0 100%
+    );
+}
