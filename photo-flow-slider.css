@@ -8,7 +8,12 @@
 ========================================================= */
 .flow-wrap {
   position: relative;
-  width: 100%;
+
+  /* コンテンツ幅を飛び出して画面の端から端まで（フルワイド） */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+
   overflow: hidden;
 
   /* 左右端をふわっと消す（無色・背景に依存しない） */
