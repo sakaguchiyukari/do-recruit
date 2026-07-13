@@ -1,0 +1,93 @@
+/* =========================================================
+   ブロックの境界をやわらげる 2案
+   「外観 > カスタマイズ > 追加CSS」に貼り付け
+
+   ★ .fv-fullwide の部分を、SWELLフルワイドブロックに付けた
+     クラス名に置き換えてください（.fv-area に当ててもOK）。
+   ★ どちらか一方を使う想定です（両方同時でも動きますが、まずは片方ずつ）。
+========================================================= */
+
+
+/* =========================================================
+   案A：グラデーションブラー（Apple / Stripe 風・おすすめ）
+   上下端に「ぼかしの帯」を重ね、中央に向けてブラーを消していく。
+   境目が溶けるように馴染みます。
+========================================================= */
+.fv-fullwide {
+  position: relative;
+}
+
+.fv-fullwide::before,
+.fv-fullwide::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 90px;                     /* ぼかす帯の高さ（大きいほど広く溶ける） */
+  z-index: 3;                       /* 中身より前面に重ねる */
+  pointer-events: none;            /* クリックを邪魔しない */
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* 上端：下に向かってブラーをフェードアウト */
+.fv-fullwide::before {
+  top: 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+}
+
+/* 下端：上に向かってブラーをフェードアウト */
+.fv-fullwide::after {
+  bottom: 0;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 100%);
+}
+
+
+/* =========================================================
+   案B：大きな円をはみ出させる（ブラーなし・デザインで見せる）
+   ブロックの外まで大きな円をはみ出させて境界を分断する。
+   ※ overflow は clip しない（visible）
+========================================================= */
+/*
+.fv-fullwide {
+  position: relative;
+  overflow: visible;               // ← はみ出しを許可
+}
+
+.fv-fullwide::before,
+.fv-fullwide::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;                     // 中身の後ろ
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 50%,
+      rgba(255, 160, 70, 0.28) 0%,
+      rgba(255, 140, 40, 0.18) 55%,
+      rgba(255, 140, 40, 0) 72%);
+}
+
+// 上の境界をまたぐ大きな円（右寄り）
+.fv-fullwide::before {
+  width: 420px;
+  height: 420px;
+  top: -210px;                     // 半分だけ上にはみ出す
+  right: 6%;
+}
+
+// 下の境界をまたぐ大きな円（左寄り）
+.fv-fullwide::after {
+  width: 520px;
+  height: 520px;
+  bottom: -260px;                  // 半分だけ下にはみ出す
+  left: 4%;
+}
+
+@media (max-width: 640px) {
+  .fv-fullwide::before { width: 240px; height: 240px; top: -120px; }
+  .fv-fullwide::after  { width: 300px; height: 300px; bottom: -150px; }
+}
+*/
