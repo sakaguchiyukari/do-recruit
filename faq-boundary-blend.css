@@ -1,0 +1,69 @@
+/* =========================================================
+   「採用についてのご質問」背景（.fw-gradient-mottle）の
+   上下の境界を隣ブロックへ馴染ませる
+   「外観 > カスタマイズ > 追加CSS」に貼り付け
+   ※ 既存の .fw-gradient-mottle の指定はそのまま。これを追記します。
+========================================================= */
+
+.fw-gradient-mottle {
+  position: relative;   /* 端フェードの基準 */
+}
+
+/* 上端・下端に「ベース色 → 透明」の帯を重ね、まだら模様を端で溶かす。
+   z-index:-1 なので背景の上・テキストの下に入り、文字は隠れません。 */
+.fw-gradient-mottle::before,
+.fw-gradient-mottle::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 140px;         /* 溶かす帯の高さ（大きいほど広く馴染む） */
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 上の境界（ヒーロー側）へ馴染ませる */
+.fw-gradient-mottle::before {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    #f9fbfd 0%,
+    rgba(249, 251, 253, 0) 100%
+  );
+}
+
+/* 下の境界（次セクション側）へ馴染ませる */
+.fw-gradient-mottle::after {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    #f9fbfd 0%,
+    rgba(249, 251, 253, 0) 100%
+  );
+}
+
+
+/* =========================================================
+   ＜代替案＞ Apple / Stripe 風のグラデーションブラーにしたい場合は
+   上の ::before / ::after の background を消し、代わりに下を有効化。
+   （端をぼかして境目を溶かす）
+========================================================= */
+/*
+.fw-gradient-mottle::before,
+.fw-gradient-mottle::after {
+  z-index: 3;                       // ブラーは中身より前面
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background: none;
+}
+.fw-gradient-mottle::before {
+  top: 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+}
+.fw-gradient-mottle::after {
+  bottom: 0;
+  -webkit-mask-image: linear-gradient(to top, #000, transparent);
+  mask-image: linear-gradient(to top, #000, transparent);
+}
+*/
