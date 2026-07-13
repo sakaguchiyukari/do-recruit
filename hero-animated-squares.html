@@ -55,18 +55,12 @@
     if (wordEl) {
       var index = 0;
       setInterval(function () {
-        // 退場：上へブラーしながら消える
         wordEl.classList.add("is-changing");
         setTimeout(function () {
           index = (index + 1) % words.length;
           wordEl.textContent = words[index];
-
-          // 登場：下からブラーが晴れて現れる
           wordEl.classList.remove("is-changing");
-          wordEl.classList.add("is-entering");
-          void wordEl.offsetWidth;            // 位置を一瞬で確定（リフロー）
-          wordEl.classList.remove("is-entering");
-        }, 420);
+        }, 450);
       }, 3200);
     }
 
