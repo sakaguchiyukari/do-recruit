@@ -15,19 +15,20 @@
      ・もっと明るいオレンジ:                      rgba(255, 165, 60, 0.16)
      ・淡いグレー（控えめ）:                      rgba(0, 0, 0, 0.05)
      ・淡いブルー（下部セクションと合わせる）:     rgba(78, 84, 200, 0.10) */
-  --sq-color: rgba(224, 135, 10, 0.15);
+  --sq-color: rgba(255, 165, 60, 0.16);
 
   --fv-space-block: clamp(1.2rem, 3vw, 2.4rem);
   --fv-space-inline: clamp(1rem, 4vw, 2rem);
 
-  /* 切り替わる単語のグラデーション（今どきの暖色サンセット）
-     ・他の候補（下の1行を差し替え）:
-       サンセット強め : linear-gradient(120deg,#ffb347 0%,#ff6a5c 55%,#ff4f8b 100%)
-       コーラル→紫    : linear-gradient(120deg,#ff8a3d 0%,#ff5e9c 55%,#a45cff 100%)
-       王道オレンジ濃淡: linear-gradient(135deg,#ffd36b 0%,#ffb547 45%,#ff8a3d 100%) */
-  --fv-accent-gradient:
-    linear-gradient(120deg, #ffab3d 0%, #ff6f61 52%, #ff4f8b 100%);
-}
+  /* 切り替わる単語のグラデーション（暖色オレンジ） */
+  --fv-accent-gradient: linear-gradient(
+    135deg,
+    #ffe97a 0%,
+    #ffb000 28%,
+    #ff7a00 62%,
+    #f4511e 100%
+  );
+}   /* ← .fv-area の変数ブロックを閉じる。これが抜けると丸が動かなくなる */
 
 /* =========================================================
    Area（背景は透明・上下の余白なし）
@@ -85,8 +86,8 @@
   /* キャッチコピーだけフォント変更（フォントは head 等で読み込み済み）
      ・SWELL標準に戻すなら この font-family 行を削除 */
   font-family: "Noto Sans JP", sans-serif !important;
-  font-size: clamp(2.4rem, 8vw, 4.8rem) !important; /* SWELLの見出し指定に勝たせる */
-  font-weight: 700;
+  font-size: clamp(2.6rem, 8vw, 5.8rem) !important; /* SWELLの見出し指定に勝たせる */
+  font-weight: 900;   /* Noto Sans JP の 900 が必要。未読込なら 800/700 に */
   line-height: 1.45;
   letter-spacing: 0.04em;
 }
