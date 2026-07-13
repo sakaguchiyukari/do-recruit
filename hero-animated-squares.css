@@ -96,12 +96,25 @@
   -webkit-background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s cubic-bezier(.22,.61,.36,1),
+    filter 0.4s ease;
   text-shadow: 0 2px 10px rgba(255, 181, 71, 0.25);
+  will-change: opacity, transform, filter;
 }
+/* 退場：上へブラーしながら消える */
 .fv-hero__word.is-changing {
   opacity: 0;
-  transform: translateY(0.4em);
+  transform: translateY(-0.55em) scale(0.94);
+  filter: blur(6px);
+}
+/* 登場の開始位置：下からブラーの状態（トランジション無しで一瞬でセット） */
+.fv-hero__word.is-entering {
+  opacity: 0;
+  transform: translateY(0.55em) scale(0.94);
+  filter: blur(6px);
+  transition: none;
 }
 
 /* Sub Copy */
