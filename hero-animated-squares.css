@@ -10,12 +10,15 @@
   --fv-color-text: #111111;
   --fv-color-accent: #e0870a;
 
-  /* 動く四角形の色（お好みで下の1行を差し替え可）
-     ・オレンジ（推奨・サイトのアクセントと統一）: rgba(224, 135, 10, 0.15)
-     ・もっと明るいオレンジ:                      rgba(255, 165, 60, 0.16)
-     ・淡いグレー（控えめ）:                      rgba(0, 0, 0, 0.05)
-     ・淡いブルー（下部セクションと合わせる）:     rgba(78, 84, 200, 0.10) */
-  --sq-color: rgba(255, 165, 60, 0.16);
+  /* 動く丸の塗り：透過 → 薄いオレンジ → 濃いオレンジのグラデーション
+     ・各stopの不透明度（最後の数値）で濃さを調整
+     ・角度は 160deg（上→下）。斜めにするなら 135deg など */
+  --sq-gradient: linear-gradient(
+    160deg,
+    rgba(255, 205, 130, 0.00) 0%,
+    rgba(255, 180, 90, 0.18) 45%,
+    rgba(240, 100, 25, 0.32) 100%
+  );
 
   --fv-space-block: clamp(1.2rem, 3vw, 2.4rem);
   --fv-space-inline: clamp(1rem, 4vw, 2rem);
@@ -155,7 +158,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--sq-color);
+  background: var(--sq-gradient);
   animation: fv-animate 24s linear infinite;
 }
 
