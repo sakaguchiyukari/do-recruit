@@ -42,7 +42,12 @@
   overflow: hidden;           /* ← 文字ブロックからはみ出す四角形を隠す */
   width: min(100%, 1200px);
   margin-inline: auto;        /* 中央寄せ */
-  padding: var(--fv-space-block) var(--fv-space-inline);
+  /* 上に広めの余白＝ヘッダーとの間にも四角が流れる領域。下は狭く（テキストの下には出さない） */
+  padding:
+    clamp(3rem, 14vh, 8rem)   /* 上：四角が流れる余白 */
+    var(--fv-space-inline)
+    var(--fv-space-block)      /* 下：狭め */
+    var(--fv-space-inline);
   text-align: center;
   color: var(--fv-color-text);
   box-sizing: border-box;
@@ -142,45 +147,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-
-  /* iPhone風リキッドグラス：白背景でも見える透明ガラス玉
-     ・暖色に色づけたい → 2つ目のグラデを rgba(255,200,120,0.30) 系に */
-  background:
-    radial-gradient(circle at 34% 28%,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.35) 30%,
-      rgba(255, 255, 255, 0.05) 55%),
-    radial-gradient(circle at 50% 62%,
-      rgba(214, 228, 240, 0.55) 0%,
-      rgba(188, 208, 226, 0.48) 60%,
-      rgba(170, 194, 214, 0.50) 100%);
-  box-shadow:
-    inset 0 2px 5px rgba(255, 255, 255, 0.95),     /* 上部の光沢 */
-    inset 0 -6px 11px rgba(120, 140, 160, 0.40),   /* 下部の陰影で厚み */
-    inset 0 0 0 1px rgba(150, 170, 190, 0.35),     /* 輪郭のリム（視認性UP） */
-    0 8px 18px rgba(50, 60, 80, 0.24);             /* 落ち影で浮遊感 */
-  -webkit-backdrop-filter: blur(1.5px);            /* 背景をわずかに屈折（水っぽさ） */
-  backdrop-filter: blur(1.5px);
-
+  background: var(--sq-color);
   animation: fv-animate 14s linear infinite;
-}
-
-/* 表面の光の映り込み（ハイライト） */
-.fv-hero .circles li::before {
-  content: "";
-  position: absolute;
-  top: 12%;
-  left: 20%;
-  width: 34%;
-  height: 24%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(255, 255, 255, 0.85),
-    rgba(255, 255, 255, 0) 70%
-  );
-  filter: blur(0.5px);
-  pointer-events: none;
 }
 
 .fv-hero .circles li:nth-child(1)  { left: 25%; width: 40px; height: 40px; animation-delay: 0s; }
@@ -200,7 +168,7 @@
     opacity: 1;
   }
   100% {
-    transform: translateY(-320px);
+    transform: translateY(-460px);
     opacity: 0;
   }
 }
