@@ -1,0 +1,80 @@
+/* =========================================================
+   .fw-gradient-mottle のグラデを活かした演出（追記用）
+   「外観 > カスタマイズ > 追加CSS」の、既存 .fw-gradient-mottle の
+   ★あと★ に貼り付け（上書きせず追記でOK）
+========================================================= */
+
+
+/* =========================================================
+   演出1：グラデをゆっくり動かす（Stripe / オーロラ風・おすすめ）
+   要素自身の背景を動かすので、テーマ干渉に強い。
+========================================================= */
+.fw-gradient-mottle {
+  background-size: 150% 150%;   /* 動く余白を作る */
+  animation: fw-mottle-drift 26s ease-in-out infinite alternate;
+}
+
+@keyframes fw-mottle-drift {
+  0%   { background-position:   0%   0%; }
+  50%  { background-position: 100%  30%; }
+  100% { background-position:  30% 100%; }
+}
+
+/* 動きを控えたい人向け（OSの設定を尊重） */
+@media (prefers-reduced-motion: reduce) {
+  .fw-gradient-mottle { animation: none; }
+}
+
+
+/* =========================================================
+   演出2：グレイン（微粒子）質感を重ねて上品に
+   使うときは、すぐ下の行の開き括弧とファイル内の対応する閉じ括弧を外す。
+   position:relative は必須。
+========================================================= */
+/*
+.fw-gradient-mottle { position: relative; }
+.fw-gradient-mottle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
+<filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/>\
+<feColorMatrix type='saturate' values='0'/></filter>\
+<rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 140px 140px;
+}
+*/
+
+
+/* =========================================================
+   演出3：柔らかい光がゆっくり明滅するアクセント
+   中央にふわっとした光を1つ足して、呼吸するような動きに。
+   使うときは、すぐ下の行の開き括弧とファイル末尾の閉じ括弧を外す。
+========================================================= */
+/*
+.fw-gradient-mottle { position: relative; }
+.fw-gradient-mottle::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  top: 50%; left: 50%;
+  width: 60%; aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 236, 190, 0.55) 0%,
+    rgba(255, 236, 190, 0) 70%);
+  filter: blur(20px);
+  animation: fw-glow 8s ease-in-out infinite;
+}
+@keyframes fw-glow {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50%      { opacity: 0.9; transform: translate(-50%, -50%) scale(1.15); }
+}
+*/
