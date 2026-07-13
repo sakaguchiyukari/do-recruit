@@ -77,11 +77,10 @@
 /* Copy */
 .fv-hero__copy {
   margin: 0 0 var(--fv-space-block);
-  /* キャッチコピーだけフォント変更（HTMLブロックの link で読み込み）
-     ・丸ゴシックにするなら: "M PLUS Rounded 1c"
-     ・明朝にするなら:       "Shippori Mincho", serif
+  /* キャッチコピーだけフォント変更（フォントは head 等で読み込み済み）
+     英字→Marcellus、日本語→Zen Maru Gothic（丸ゴシック）
      ・SWELL標準に戻すなら この font-family 行を削除 */
-  font-family: "Zen Kaku Gothic New", sans-serif !important;
+  font-family: "Marcellus", "Zen Maru Gothic", sans-serif !important;
   font-size: clamp(2.4rem, 8vw, 4.8rem) !important; /* SWELLの見出し指定に勝たせる */
   font-weight: 700;
   line-height: 1.45;
