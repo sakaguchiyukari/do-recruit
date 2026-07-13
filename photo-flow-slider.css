@@ -9,10 +9,12 @@
 .flow-wrap {
   position: relative;
 
-  /* コンテンツ幅を飛び出して画面の端から端まで（フルワイド） */
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
+  /* コンテンツ幅を飛び出して画面の端から端まで（フルワイド）
+     テーマの max-width:100% に負けないよう !important で上書き */
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
 
   overflow: hidden;
 
