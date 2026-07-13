@@ -1,16 +1,24 @@
 <!--
   SWELL WordPress テーマ用
-  採用ファーストビュー（ヒーロー）＋ 背景で動く四角形
+  採用ファーストビュー（ヒーロー）＋ 文字の真後ろで動く四角形
 
   使い方:
-  この中身を「カスタムHTML」ブロックに貼り付けてください。
+  ・この中身をまるごと「カスタムHTML」ブロックに貼り付け（JSも同梱済み）
   ・CSS … hero-animated-squares.css の中身を「外観 > カスタマイズ > 追加CSS」に
-  ・JS  … hero-animated-squares.js の中身をフッター等に（後述）
+
+  ※ SWELLのカスタムHTMLブロックはブロック内の <script> をそのまま実行するため、
+    JSは別欄ではなくこのブロック内に入れています。
 -->
 
 <div class="fv-area">
 
   <section class="fv-hero" id="fvHero">
+
+    <!-- 文字の真後ろで動く四角形（ヒーローの中に配置） -->
+    <ul class="circles" aria-hidden="true">
+      <li></li><li></li><li></li><li></li><li></li>
+      <li></li><li></li><li></li><li></li><li></li>
+    </ul>
 
     <!-- キャッチコピー -->
     <h1 class="fv-hero__copy fv-hero__fade">
@@ -26,10 +34,54 @@
 
   </section>
 
-  <!-- 背景で動く四角形 -->
-  <ul class="circles">
-    <li></li><li></li><li></li><li></li><li></li>
-    <li></li><li></li><li></li><li></li><li></li>
-  </ul>
-
 </div>
+
+<script>
+(function () {
+  var run = function () {
+
+    /* 業種ワード切替 */
+    var words = [
+      "ITのしごと",
+      "ゴルフのしごと",
+      "販売のしごと",
+      "飲食のしごと",
+      "健康のしごと"
+    ];
+    var wordEl = document.getElementById("fvWord");
+    if (wordEl) {
+      var index = 0;
+      setInterval(function () {
+        wordEl.classList.add("is-changing");
+        setTimeout(function () {
+          index = (index + 1) % words.length;
+          wordEl.textContent = words[index];
+          wordEl.classList.remove("is-changing");
+        }, 450);
+      }, 3200);
+    }
+
+    /* フェードイン */
+    var faders = document.querySelectorAll(".fv-hero__fade");
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      faders.forEach(function (el) { observer.observe(el); });
+    } else {
+      faders.forEach(function (el) { el.classList.add("is-visible"); });
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+</script>
