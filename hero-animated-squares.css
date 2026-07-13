@@ -11,7 +11,7 @@
   --fv-color-accent: #e0870a;
 
   /* 動く四角形の色（透明背景でも見えるように） */
-  --sq-color: rgba(224, 135, 10, 0.18);
+  --sq-color: rgba(224, 135, 10, 0.10);
 
   --fv-space-block: clamp(1.2rem, 3vw, 2.4rem);
   --fv-space-inline: clamp(1rem, 4vw, 2rem);
@@ -112,6 +112,22 @@
   padding: 0;
   list-style: none;
   pointer-events: none;     /* クリックを邪魔しない */
+
+  /* 上下の境目をぼかす（出現・消失をフェードで馴染ませる） */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 22%,
+    #000 78%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 22%,
+    #000 78%,
+    transparent 100%
+  );
 }
 
 .fv-hero .circles li {
