@@ -21,15 +21,11 @@
 }
 
 /* =========================================================
-   Area（背景は透明・ヒーローを中央に）
+   Area（背景は透明・上下の余白なし）
 ========================================================= */
 .fv-area {
   position: relative;
   width: 100%;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: transparent;    /* ← 背景色なし（無色） */
   box-sizing: border-box;
 }
@@ -41,6 +37,7 @@
   position: relative;         /* ← 四角形の基準 */
   overflow: hidden;           /* ← 文字ブロックからはみ出す四角形を隠す */
   width: min(100%, 1200px);
+  margin-inline: auto;        /* 中央寄せ */
   padding: var(--fv-space-block) var(--fv-space-inline);
   text-align: center;
   color: var(--fv-color-text);
@@ -71,7 +68,7 @@
 /* Copy */
 .fv-hero__copy {
   margin: 0 0 var(--fv-space-block);
-  font-size: clamp(2.4rem, 8vw, 4.8rem);
+  font-size: clamp(2.4rem, 8vw, 4.8rem) !important; /* SWELLの見出し指定に勝たせる */
   font-weight: 700;
   line-height: 1.45;
   letter-spacing: 0.04em;
@@ -98,7 +95,7 @@
 /* Sub Copy */
 .fv-hero__sub {
   margin: 0 0 var(--fv-space-block);
-  font-size: clamp(0.9rem, 2.4vw, 1.1rem);
+  font-size: clamp(0.9rem, 2.4vw, 1.1rem) !important; /* SWELLの本文指定に勝たせる */
   line-height: 2;
   letter-spacing: 0.06em;
 }
