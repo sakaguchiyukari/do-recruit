@@ -1,0 +1,140 @@
+/* =========================================================
+   フローティング写真スライダー
+   「外観 > カスタマイズ > 追加CSS」に貼り付け
+========================================================= */
+
+/* =========================================================
+   Wrap（端は透明フェード・背景色に依存しない）
+========================================================= */
+.flow-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  /* 左右端をふわっと消す（無色・背景に依存しない） */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+
+/* =========================================================
+   Row（横に流れる）
+========================================================= */
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: max-content;
+  padding: 30px 0;   /* 影が切れないよう上下に余白 */
+}
+
+/* 写真の縦位置をランダム風にずらす */
+.photo:nth-child(4n+1) { margin-top: -28px; }
+.photo:nth-child(4n+2) { margin-top: 18px; }
+.photo:nth-child(4n+3) { margin-top: -12px; }
+.photo:nth-child(4n+4) { margin-top: 30px; }
+
+.flow-row.row-a { animation: scroll-left 46s linear infinite; }
+.flow-row.row-b { animation: scroll-right 52s linear infinite; margin-top: 20px; }
+
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes scroll-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* =========================================================
+   Photo（無色背景・Appleのような浮き出す3D影）
+========================================================= */
+.photo {
+  position: relative;
+  flex: 0 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #ffffff;               /* 緑をやめて無色（白） */
+  isolation: isolate;
+
+  /* 多層のやわらかい影で「浮き出す」立体感 */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    0 18px 40px -12px rgba(0, 0, 0, 0.16);
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* ホバーのズームは削除。静止画としてクリーンに */
+}
+
+/* タグ文字が読めるよう、下部にさりげない影（常時） */
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 62%,
+    rgba(0, 0, 0, 0.32) 100%
+  );
+  pointer-events: none;
+}
+
+/* =========================================================
+   Tag（常時表示・サイトのフォント・PCは細め）
+========================================================= */
+.photo .tag {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  z-index: 1;
+  color: #fff;
+  font-family: inherit;      /* サイトのフォントに合わせる */
+  font-weight: 400;          /* PCで細く（薄く） */
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  opacity: 1;                /* 常時表示 */
+}
+
+/* =========================================================
+   サイズバリエーション
+========================================================= */
+.size-tall    { width: 220px; height: 340px; }
+.size-square  { width: 260px; height: 260px; }
+.size-wide    { width: 360px; height: 220px; }
+.size-small   { width: 180px; height: 180px; }
+.size-portrait{ width: 200px; height: 300px; }
+.size-large   { width: 300px; height: 380px; }
+
+@media (max-width: 640px) {
+  .size-tall    { width: 150px; height: 230px; }
+  .size-square  { width: 170px; height: 170px; }
+  .size-wide    { width: 230px; height: 150px; }
+  .size-small   { width: 130px; height: 130px; }
+  .size-portrait{ width: 140px; height: 210px; }
+  .size-large   { width: 200px; height: 260px; }
+  .flow-row     { gap: 14px; }
+  .photo .tag   { font-size: 12px; }
+}
+
+/* アクセシビリティ */
+@media (prefers-reduced-motion: reduce) {
+  .flow-row { animation: none; }
+}

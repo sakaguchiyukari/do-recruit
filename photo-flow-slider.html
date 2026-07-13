@@ -1,0 +1,35 @@
+<!--
+  SWELL WordPress テーマ用
+  フローティング写真スライダー（左へ流れる）
+
+  使い方:
+  ・この中身をまるごと「カスタムHTML」ブロックに貼り付け（JS同梱）
+  ・CSS … photo-flow-slider.css の中身を「外観 > カスタマイズ > 追加CSS」に
+-->
+
+<div class="flow-wrap">
+
+  <!-- ROW A：左へ流れる -->
+  <div class="flow-row row-a" id="rowA">
+    <div class="photo size-tall"><img src="https://recruit.doyg.jp/wp-content/uploads/2026/07/20250318_0083-scaled.jpg" alt="スタッフ" loading="lazy"><span class="tag">かたるの森</span></div>
+    <div class="photo size-square"><img src="https://recruit.doyg.jp/wp-content/uploads/2026/07/imgi_63_img-service03@2x.jpg" alt="スタッフ" loading="lazy"><span class="tag">ヨネザワモビリティ</span></div>
+    <div class="photo size-wide"><img src="https://recruit.doyg.jp/wp-content/uploads/2026/07/life_img1.jpg" alt="スタッフ" loading="lazy"><span class="tag">BMW</span></div>
+    <div class="photo size-small"><img src="https://recruit.doyg.jp/wp-content/uploads/2026/07/20260605_0036-scaled.jpg" alt="スタッフ" loading="lazy"><span class="tag">ドコモショップ</span></div>
+    <div class="photo size-large"><img src="https://recruit.doyg.jp/wp-content/uploads/2026/07/20260605_0031-scaled.jpg" alt="スタッフ" loading="lazy"><span class="tag">研修風景</span></div>
+    <div class="photo size-portrait"><img src="https://recruit.doyg.jp/wp-content/uploads/2026/07/20250318_0088-scaled.jpg" alt="スタッフ" loading="lazy"><span class="tag">サポート業務</span></div>
+    <div class="photo size-square"><img src="https://recruit.doyg.jp/wp-content/uploads/2026/07/02-v2@2x.webp" alt="スタッフ" loading="lazy"><span class="tag">オフィスワーク</span></div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  // 各行を複製してシームレスな無限ループにする
+  ['rowA', 'rowB'].forEach(function (id) {
+    var row = document.getElementById(id);
+    if (row) {
+      row.innerHTML += row.innerHTML;
+    }
+  });
+})();
+</script>
