@@ -6,18 +6,14 @@
 
 .hd-dot {
   /* ---- カスタムプロパティ（ここを変えれば全体が変わる）---- */
-  --hd-accent: #E8462D;                 /* アクセント色（ドット＆装飾） */
+  --hd-accent: #ee9042;                 /* アクセント色（ドット＆装飾） */
   --hd-ink: #1E232B;                    /* 日本語タイトルの文字色 */
   --hd-muted: #7A7468;                  /* 英字ラベルの文字色 */
   --hd-dot-size: 52px;                  /* ドットブロックの大きさ */
-  --hd-fs-jp: "Hiragino Kaku Gothic ProN", "Hiragino Sans",
-              "Noto Sans JP", "Yu Gothic", YuGothic, "Meiryo", sans-serif;
-  --hd-fs-en: "Helvetica Neue", "Arial", sans-serif;
 
   display: flex;
   align-items: center;
   gap: 22px;
-  font-family: var(--hd-fs-jp);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -42,7 +38,6 @@
 
 /* 英字ラベル（小） */
 .hd-dot__en {
-  font-family: var(--hd-fs-en);
   font-size: 12.5px;
   font-weight: 700;
   letter-spacing: .22em;
@@ -61,7 +56,6 @@
 /* ---- ダークモード（OS設定に追従）---- */
 @media (prefers-color-scheme: dark) {
   .hd-dot {
-    --hd-accent: #FF6A4D;
     --hd-ink: #ECE9E1;
     --hd-muted: #9A948A;
   }
