@@ -1,0 +1,82 @@
+/* ================================================
+   採用サイト 見出し — ドット・グリッド案
+   画像なし・CSSのみ / ライト・ダーク両対応
+   SWELL WordPress テーマ対応
+   ================================================ */
+
+.hd-dot {
+  /* ---- カスタムプロパティ（ここを変えれば全体が変わる）---- */
+  --hd-accent: #E8462D;                 /* アクセント色（ドット＆装飾） */
+  --hd-ink: #1E232B;                    /* 日本語タイトルの文字色 */
+  --hd-muted: #7A7468;                  /* 英字ラベルの文字色 */
+  --hd-dot-size: 52px;                  /* ドットブロックの大きさ */
+  --hd-fs-jp: "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+              "Noto Sans JP", "Yu Gothic", YuGothic, "Meiryo", sans-serif;
+  --hd-fs-en: "Helvetica Neue", "Arial", sans-serif;
+
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-family: var(--hd-fs-jp);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- 左のドット装飾ブロック ---- */
+.hd-dot__dots {
+  flex: none;
+  width: var(--hd-dot-size);
+  height: var(--hd-dot-size);
+  border-radius: 10px;
+  background-image: radial-gradient(var(--hd-accent) 1.8px, transparent 1.9px);
+  background-size: 11px 11px;
+  background-position: 2px 2px;
+  opacity: .9;
+}
+
+/* ---- テキストの列 ---- */
+.hd-dot__col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 英字ラベル（小） */
+.hd-dot__en {
+  font-family: var(--hd-fs-en);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--hd-muted);
+}
+
+/* 日本語タイトル（大） */
+.hd-dot__jp {
+  font-size: clamp(24px, 4.2vw, 38px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--hd-ink);
+}
+
+/* ---- ダークモード（OS設定に追従）---- */
+@media (prefers-color-scheme: dark) {
+  .hd-dot {
+    --hd-accent: #FF6A4D;
+    --hd-ink: #ECE9E1;
+    --hd-muted: #9A948A;
+  }
+}
+
+/* ---- 中央寄せにしたい場合はこのクラスを追加 ---- */
+.hd-dot.is-center {
+  justify-content: center;
+  text-align: left;
+}
+
+/* ---- スマホ ---- */
+@media (max-width: 560px) {
+  .hd-dot {
+    --hd-dot-size: 42px;
+    gap: 16px;
+  }
+}
