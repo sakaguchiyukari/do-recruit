@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>画像プロンプトビルダー | 型を選んで組み立てる</title>
+<!--
+  画像生成プロンプトビルダー（単体HTML・自己完結）
+  ─────────────────────────────────────────────
+  「頭の中にイメージはあるけど言葉にできない」を解決するツール。
+  型（テンプレート）を選び、キーワードのチップをクリックするだけで
+  そのままコピーできる英語 / 日本語のプロンプトが組み上がります。
+
+  使い方: このファイルをブラウザで開くだけ。ネット接続・インストール不要。
+  ライブラリ外部依存なし。すべて1ファイルに収めています。
+-->
+<style>
+  :root{
+    --bg:#f4f5f7;
+    --bg-grad-1:#eef1f6;
+    --bg-grad-2:#f7f4f2;
+    --panel:rgba(255,255,255,0.72);
+    --panel-solid:#ffffff;
+    --ink:#1c1d21;
+    --ink-soft:#5b5f68;
+    --ink-faint:#9aa0aa;
+    --line:rgba(20,22,28,0.10);
+    --line-soft:rgba(20,22,28,0.06);
+    --accent:#4f6ef2;
+    --accent-soft:rgba(79,110,242,0.12);
+    --accent-ink:#3a52d8;
+    --chip:rgba(255,255,255,0.9);
+    --chip-line:rgba(20,22,28,0.12);
+    --shadow:0 1px 2px rgba(20,22,28,.05),0 8px 30px rgba(20,22,28,.07);
+    --shadow-lg:0 4px 12px rgba(20,22,28,.08),0 24px 60px rgba(20,22,28,.12);
+    --radius:18px;
+    --radius-sm:12px;
+    --font:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e0f13;
+      --bg-grad-1:#12141a;
+      --bg-grad-2:#16130f;
+      --panel:rgba(30,32,40,0.66);
+      --panel-solid:#1a1c22;
+      --ink:#f0f1f4;
+      --ink-soft:#a9adb8;
+      --ink-faint:#6c707c;
+      --line:rgba(255,255,255,0.10);
+      --line-soft:rgba(255,255,255,0.06);
+      --accent:#7d95ff;
+      --accent-soft:rgba(125,149,255,0.16);
+      --accent-ink:#a7b7ff;
+      --chip:rgba(255,255,255,0.05);
+      --chip-line:rgba(255,255,255,0.14);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 30px rgba(0,0,0,.5);
+      --shadow-lg:0 4px 12px rgba(0,0,0,.5),0 24px 60px rgba(0,0,0,.6);
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--font);
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, var(--bg-grad-1), transparent 60%),
+      radial-gradient(1000px 700px at 100% 0%, var(--bg-grad-2), transparent 55%),
+      var(--bg);
+    min-height:100vh;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:.01em;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 120px}
+
+  /* ── header ── */
+  header{margin-bottom:22px}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent-ink);text-transform:uppercase}
+  h1{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.01em;margin:6px 0 6px;line-height:1.25}
+  .lede{color:var(--ink-soft);font-size:14px;max-width:640px}
+
+  /* ── layout ── */
+  .grid{display:grid;grid-template-columns:1fr 400px;gap:22px;align-items:start}
+  @media (max-width:920px){.grid{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(20px) saturate(1.4);
+    -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  }
+  .section{padding:18px 18px 20px}
+  .section + .section{border-top:1px solid var(--line-soft)}
+
+  .sec-head{display:flex;align-items:baseline;gap:9px;margin-bottom:12px}
+  .sec-num{
+    font-size:11px;font-weight:800;color:var(--accent-ink);
+    background:var(--accent-soft);border-radius:7px;
+    padding:2px 7px;letter-spacing:.02em;flex:none;
+  }
+  .sec-title{font-size:15px;font-weight:750;letter-spacing:.01em}
+  .sec-hint{font-size:12px;color:var(--ink-faint);margin-left:auto;text-align:right}
+
+  /* ── template cards ── */
+  .tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px}
+  .tpl{
+    text-align:left;cursor:pointer;font-family:inherit;color:var(--ink);
+    background:var(--chip);border:1px solid var(--chip-line);
+    border-radius:var(--radius-sm);padding:11px 11px 10px;
+    transition:transform .12s ease,border-color .12s,background .12s,box-shadow .12s;
+    display:flex;flex-direction:column;gap:2px;
+  }
+  .tpl:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .tpl .emo{font-size:20px;line-height:1}
+  .tpl .tn{font-size:13px;font-weight:700;margin-top:4px}
+  .tpl .td{font-size:11px;color:var(--ink-faint);line-height:1.4}
+  .tpl[aria-pressed="true"]{
+    border-color:var(--accent);background:var(--accent-soft);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+
+  /* ── subject input ── */
+  .field label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px}
+  .txt{
+    width:100%;font-family:inherit;font-size:14px;color:var(--ink);
+    background:var(--panel-solid);border:1px solid var(--chip-line);
+    border-radius:var(--radius-sm);padding:11px 13px;transition:border-color .12s,box-shadow .12s;
+  }
+  .txt:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .txt::placeholder{color:var(--ink-faint)}
+  .suggest{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .suggest button{
+    font-family:inherit;font-size:12px;cursor:pointer;color:var(--ink-soft);
+    background:transparent;border:1px dashed var(--chip-line);border-radius:20px;
+    padding:3px 10px;transition:color .12s,border-color .12s;
+  }
+  .suggest button:hover{color:var(--accent-ink);border-color:var(--accent)}
+
+  /* ── chip groups ── */
+  .group{margin-bottom:16px}
+  .group:last-child{margin-bottom:0}
+  .group-head{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+  .group-title{font-size:13px;font-weight:750}
+  .group-sub{font-size:11px;color:var(--ink-faint)}
+  .group-count{
+    margin-left:auto;font-size:11px;font-weight:700;color:var(--accent-ink);
+    opacity:0;transition:opacity .15s;
+  }
+  .group-count.on{opacity:1}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{
+    font-family:inherit;font-size:12.5px;cursor:pointer;color:var(--ink);
+    background:var(--chip);border:1px solid var(--chip-line);border-radius:20px;
+    padding:6px 12px;transition:all .12s ease;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .chip:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .chip[aria-pressed="true"]{
+    background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;
+    box-shadow:0 2px 8px var(--accent-soft);
+  }
+  .chip[aria-pressed="true"]:hover{color:#fff}
+  .chip .en{font-size:11px;opacity:.6}
+  .chip[aria-pressed="true"] .en{opacity:.8}
+
+  /* aspect ratio special */
+  .ratios{display:flex;flex-wrap:wrap;gap:7px}
+  .ratio{
+    font-family:inherit;cursor:pointer;color:var(--ink);
+    background:var(--chip);border:1px solid var(--chip-line);border-radius:var(--radius-sm);
+    padding:8px 10px;min-width:60px;text-align:center;transition:all .12s;
+  }
+  .ratio .rv{font-size:13px;font-weight:700}
+  .ratio .rl{font-size:10px;color:var(--ink-faint);display:block}
+  .ratio[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+  .ratio[aria-pressed="true"] .rl{color:var(--accent-ink)}
+
+  /* ── output panel (sticky) ── */
+  .out-wrap{position:sticky;top:20px}
+  .out-head{display:flex;align-items:center;gap:10px;padding:16px 18px 12px}
+  .out-head .sec-title{font-size:15px}
+  .model-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 14px}
+  .seg{
+    font-family:inherit;font-size:12px;cursor:pointer;color:var(--ink-soft);font-weight:600;
+    background:var(--chip);border:1px solid var(--chip-line);border-radius:9px;padding:6px 10px;
+    transition:all .12s;
+  }
+  .seg[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  .out-box{padding:0 18px}
+  .out-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--ink-soft);margin:12px 0 6px}
+  .out-label .tag{font-size:10px;background:var(--line);border-radius:5px;padding:1px 6px;color:var(--ink-faint);font-weight:600}
+  .out-text{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:12.5px;line-height:1.7;color:var(--ink);
+    background:var(--panel-solid);border:1px solid var(--line);border-radius:var(--radius-sm);
+    padding:12px 13px;white-space:pre-wrap;word-break:break-word;min-height:44px;
+  }
+  .out-text.empty{color:var(--ink-faint);font-style:italic;font-family:var(--font)}
+  .out-text .neg{color:var(--ink-faint)}
+
+  .copy-row{display:flex;gap:8px;margin-top:8px}
+  .btn{
+    flex:1;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;
+    border-radius:var(--radius-sm);padding:11px 12px;transition:all .12s;border:1px solid transparent;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .btn-primary:active{transform:scale(.98)}
+  .btn-ghost{background:transparent;color:var(--ink-soft);border-color:var(--chip-line)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .btn.copied{background:#22a06b;color:#fff}
+
+  .out-foot{padding:12px 18px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .reset{font-family:inherit;font-size:12px;cursor:pointer;color:var(--ink-faint);background:none;border:none;text-decoration:underline;text-underline-offset:2px}
+  .reset:hover{color:var(--ink-soft)}
+  .neg-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);cursor:pointer;user-select:none}
+  .neg-toggle input{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
+
+  .foot-note{font-size:11px;color:var(--ink-faint);margin-top:20px;text-align:center;line-height:1.7}
+  .foot-note code{background:var(--line);padding:1px 5px;border-radius:4px;font-size:10px}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--bg);font-size:13px;font-weight:600;
+    padding:10px 18px;border-radius:12px;box-shadow:var(--shadow-lg);
+    opacity:0;pointer-events:none;transition:all .25s ease;z-index:100;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Image Prompt Builder</div>
+    <h1>型を選んで、画像プロンプトを組み立てる</h1>
+    <p class="lede">「こういう画像が欲しいけど、うまく言葉にできない」を解決するツール。近い<b>型（テンプレート）</b>を選び、キーワードを<b>クリックで足していく</b>だけで、そのまま貼れる英語／日本語のプロンプトが完成します。</p>
+  </header>
+
+  <div class="grid">
+    <!-- ═══ 左：入力 ═══ -->
+    <div>
+      <!-- 1. 型 -->
+      <div class="panel section">
+        <div class="sec-head">
+          <span class="sec-num">STEP 1</span>
+          <span class="sec-title">型（テンプレート）を選ぶ</span>
+          <span class="sec-hint">近いものを1つ</span>
+        </div>
+        <div class="tpl-grid" id="tplGrid"></div>
+      </div>
+
+      <!-- 2. 被写体 -->
+      <div class="panel section" style="margin-top:22px">
+        <div class="sec-head">
+          <span class="sec-num">STEP 2</span>
+          <span class="sec-title">何を描く？（主題）</span>
+          <span class="sec-hint">日本語でOK</span>
+        </div>
+        <div class="field">
+          <label for="subject">被写体・主題</label>
+          <input class="txt" id="subject" type="text" autocomplete="off" placeholder="例: 笑顔で働く若手スタッフ">
+          <div class="suggest" id="subjectSuggest"></div>
+        </div>
+      </div>
+
+      <!-- 3. 要素 -->
+      <div class="panel section" style="margin-top:22px">
+        <div class="sec-head">
+          <span class="sec-num">STEP 3</span>
+          <span class="sec-title">雰囲気の要素を足す</span>
+          <span class="sec-hint">クリックで選択・解除</span>
+        </div>
+        <div id="groups"></div>
+        <div class="field" style="margin-top:18px">
+          <label for="extra">追加キーワード（任意・カンマ区切り）</label>
+          <input class="txt" id="extra" type="text" autocomplete="off" placeholder="例: 観葉植物, ノートパソコン, 木目のデスク">
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 右：出力 ═══ -->
+    <div class="panel out-wrap">
+      <div class="out-head">
+        <span class="sec-num">RESULT</span>
+        <span class="sec-title">完成プロンプト</span>
+      </div>
+      <div class="model-row" id="modelRow"></div>
+
+      <div class="out-box">
+        <div class="out-label"><span id="mainLabel">英語プロンプト</span><span class="tag" id="mainTag">推奨</span></div>
+        <div class="out-text empty" id="outMain">左で型と要素を選ぶと、ここにプロンプトが組み上がります。</div>
+        <div class="copy-row">
+          <button class="btn btn-primary" id="copyMain">コピー</button>
+          <button class="btn btn-ghost" id="copyJa">日本語版をコピー</button>
+        </div>
+
+        <div class="out-label" id="jaLabelRow"><span>日本語プロンプト（確認用）</span></div>
+        <div class="out-text empty" id="outJa">—</div>
+      </div>
+
+      <div class="out-foot">
+        <label class="neg-toggle"><input type="checkbox" id="negChk">ネガティブを付ける</label>
+        <button class="reset" id="resetBtn">すべてクリア</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot-note">
+    英語プロンプトはほとんどの画像生成AI（DALL·E / nano banana / Midjourney / Stable Diffusion 等）で精度が高く出やすいため推奨。<br>
+    モデルを切り替えると、そのAI向けの書き方（Midjourneyの <code>--ar</code> など）に自動整形されます。すべてこの1ファイルで完結・保存されません。
+  </p>
+</div>
+
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   データ定義：型・チップ（すべて {ja, en} で対訳を持つ）
+   ═══════════════════════════════════════════════════════════ */
+
+// チップ群の定義。順番＝表示順。
+const GROUPS = [
+  { key:"style", title:"画風・スタイル", sub:"タッチ", items:[
+    {ja:"写実的（実写）", en:"photorealistic"},
+    {ja:"シネマ風", en:"cinematic"},
+    {ja:"やわらかい写真", en:"soft photography"},
+    {ja:"アニメ調", en:"anime style"},
+    {ja:"水彩イラスト", en:"watercolor illustration"},
+    {ja:"フラットイラスト", en:"flat vector illustration"},
+    {ja:"手描き風", en:"hand-drawn sketch"},
+    {ja:"油絵風", en:"oil painting"},
+    {ja:"3D CG", en:"3D render, octane"},
+    {ja:"ミニマル", en:"minimalist"},
+    {ja:"レトロ・ヴィンテージ", en:"retro vintage"},
+    {ja:"ドット絵", en:"pixel art"},
+  ]},
+  { key:"composition", title:"構図・アングル", sub:"寄り引き", items:[
+    {ja:"顔アップ", en:"close-up portrait"},
+    {ja:"バストアップ", en:"upper body shot"},
+    {ja:"全身", en:"full body shot"},
+    {ja:"引きの構図", en:"wide shot"},
+    {ja:"俯瞰（上から）", en:"bird's-eye view, top-down"},
+    {ja:"ローアングル", en:"low angle"},
+    {ja:"真俯瞰・平置き", en:"flat lay"},
+    {ja:"背景ぼかし", en:"shallow depth of field, bokeh"},
+    {ja:"三分割構図", en:"rule of thirds"},
+    {ja:"余白多め", en:"negative space, lots of copy space"},
+    {ja:"シンメトリー", en:"symmetrical composition"},
+  ]},
+  { key:"lighting", title:"ライティング", sub:"光", items:[
+    {ja:"自然光", en:"natural light"},
+    {ja:"やわらかい光", en:"soft diffused light"},
+    {ja:"朝日・夕日", en:"golden hour"},
+    {ja:"スタジオ照明", en:"studio lighting"},
+    {ja:"逆光", en:"backlight"},
+    {ja:"ドラマチック", en:"dramatic lighting"},
+    {ja:"ネオン", en:"neon glow"},
+    {ja:"やさしい影", en:"gentle shadows"},
+    {ja:"明るくクリーン", en:"bright and clean"},
+  ]},
+  { key:"color", title:"色・トーン", sub:"配色", items:[
+    {ja:"暖色系", en:"warm tones"},
+    {ja:"寒色系", en:"cool tones"},
+    {ja:"パステル", en:"pastel colors"},
+    {ja:"ビビッド", en:"vivid saturated colors"},
+    {ja:"モノトーン", en:"monochrome"},
+    {ja:"アースカラー", en:"earthy natural palette"},
+    {ja:"淡い・落ち着いた", en:"muted tones"},
+    {ja:"白基調", en:"white background, airy"},
+    {ja:"高コントラスト", en:"high contrast"},
+  ]},
+  { key:"mood", title:"雰囲気・印象", sub:"感情", items:[
+    {ja:"清潔感・信頼", en:"clean and trustworthy"},
+    {ja:"あたたかい", en:"warm and welcoming"},
+    {ja:"活気・元気", en:"energetic, lively"},
+    {ja:"プロフェッショナル", en:"professional, corporate"},
+    {ja:"落ち着き・上品", en:"calm and elegant"},
+    {ja:"くつろぎ", en:"cozy, relaxed"},
+    {ja:"未来的", en:"futuristic"},
+    {ja:"ナチュラル", en:"natural, organic"},
+    {ja:"ワクワク感", en:"exciting, inspiring"},
+  ]},
+  { key:"background", title:"背景・場所", sub:"シーン", items:[
+    {ja:"白背景（スタジオ）", en:"seamless white studio background"},
+    {ja:"明るいオフィス", en:"bright modern office"},
+    {ja:"自然・屋外", en:"outdoor nature"},
+    {ja:"街・都会", en:"urban city street"},
+    {ja:"カフェ", en:"cozy cafe interior"},
+    {ja:"無地グラデ背景", en:"smooth gradient background"},
+    {ja:"木目・ナチュラル素材", en:"wooden natural materials"},
+    {ja:"抽象背景", en:"abstract background"},
+  ]},
+  { key:"detail", title:"品質・仕上げ", sub:"クオリティ", items:[
+    {ja:"高精細", en:"highly detailed"},
+    {ja:"くっきりピント", en:"sharp focus"},
+    {ja:"高解像度", en:"high resolution, 8k"},
+    {ja:"プロ撮影", en:"professional photography"},
+    {ja:"フィルム風の粒子", en:"subtle film grain"},
+    {ja:"質感リアル", en:"realistic textures"},
+    {ja:"雑誌・広告品質", en:"editorial, advertising quality"},
+  ]},
+];
+
+// アスペクト比（単一選択・別扱い）
+const RATIOS = [
+  {v:"1:1",  l:"正方形"},
+  {v:"16:9", l:"横長"},
+  {v:"9:16", l:"縦長/SNS"},
+  {v:"4:3",  l:"標準"},
+  {v:"3:2",  l:"写真"},
+  {v:"3:4",  l:"ポスター"},
+];
+
+// 型（テンプレート）。defaults に各群のenを入れておくと自動でONになる。
+const TEMPLATES = [
+  { key:"recruit", emo:"🧑‍💼", name:"採用・求人ビジュアル", desc:"働く人・職場の魅力",
+    subject:"笑顔で働く若手スタッフ", ratio:"16:9",
+    subjectHints:["笑顔で働く若手スタッフ","チームで打ち合わせする社員","先輩が新人に教える様子","現場で活躍するスタッフ"],
+    defaults:{ style:["photorealistic"], lighting:["natural light","bright and clean"], mood:["clean and trustworthy","warm and welcoming"], background:["bright modern office"], detail:["professional photography","highly detailed"], composition:["upper body shot"] } },
+  { key:"portrait", emo:"📸", name:"人物ポートレート", desc:"人物の写真・肖像",
+    subject:"30代のビジネスパーソン", ratio:"3:4",
+    subjectHints:["30代のビジネスパーソン","カジュアルな私服の女性","ヘッドショット用の証明写真風","職人の横顔"],
+    defaults:{ style:["photorealistic"], composition:["upper body shot","shallow depth of field, bokeh"], lighting:["soft diffused light"], detail:["sharp focus","professional photography"] } },
+  { key:"product", emo:"📦", name:"商品・物撮り", desc:"モノを魅力的に",
+    subject:"化粧品のボトル", ratio:"1:1",
+    subjectHints:["化粧品のボトル","焙煎したコーヒー豆の袋","手作りの革財布","新商品のパッケージ"],
+    defaults:{ style:["photorealistic"], composition:["flat lay","negative space, lots of copy space"], lighting:["soft diffused light","studio lighting"], background:["seamless white studio background"], detail:["editorial, advertising quality","realistic textures"] } },
+  { key:"food", emo:"🍽️", name:"料理・グルメ", desc:"おいしそうに",
+    subject:"湯気の立つラーメン", ratio:"1:1",
+    subjectHints:["湯気の立つラーメン","焼きたてのパン","彩り豊かなサラダボウル","デザートプレート"],
+    defaults:{ style:["photorealistic"], composition:["close-up portrait","shallow depth of field, bokeh"], lighting:["natural light"], color:["warm tones"], detail:["highly detailed","professional photography"] } },
+  { key:"landscape", emo:"🏞️", name:"風景・背景素材", desc:"景色・空間",
+    subject:"朝もやの山並み", ratio:"16:9",
+    subjectHints:["朝もやの山並み","静かな海辺","都会の夜景","緑あふれる公園"],
+    defaults:{ style:["cinematic"], composition:["wide shot"], lighting:["golden hour"], detail:["high resolution, 8k","highly detailed"] } },
+  { key:"illust", emo:"🎨", name:"イラスト・アニメ調", desc:"手描き・二次元",
+    subject:"街を歩くキャラクター", ratio:"3:4",
+    subjectHints:["街を歩くキャラクター","かわいいマスコット","ふんわりした背景","LINEスタンプ風の表情"],
+    defaults:{ style:["anime style"], color:["pastel colors"], mood:["warm and welcoming"], detail:["highly detailed"] } },
+  { key:"logo", emo:"🔷", name:"ロゴ・アイコン", desc:"シンボル・記号",
+    subject:"コーヒーショップのロゴ", ratio:"1:1",
+    subjectHints:["コーヒーショップのロゴ","会社のシンボルマーク","アプリのアイコン","線画のミニマルロゴ"],
+    defaults:{ style:["flat vector illustration","minimalist"], color:["high contrast"], background:["white background, airy"], composition:["symmetrical composition"] } },
+  { key:"banner", emo:"🖼️", name:"SNS・バナー", desc:"広告・投稿画像",
+    subject:"キャンペーン告知のビジュアル", ratio:"1:1",
+    subjectHints:["キャンペーン告知のビジュアル","セール告知バナー","イベント募集の背景","Instagram投稿用の1枚"],
+    defaults:{ style:["flat vector illustration"], color:["vivid saturated colors"], mood:["energetic, lively"], composition:["negative space, lots of copy space"] } },
+  { key:"interior", emo:"🛋️", name:"建築・インテリア", desc:"空間・内装",
+    subject:"北欧風のリビング", ratio:"3:2",
+    subjectHints:["北欧風のリビング","モダンなオフィス空間","ナチュラルなカフェ内装","明るい住宅の玄関"],
+    defaults:{ style:["photorealistic"], lighting:["natural light","soft diffused light"], color:["earthy natural palette"], detail:["high resolution, 8k","realistic textures"], composition:["wide shot"] } },
+  { key:"free", emo:"✨", name:"フリー（自由設定）", desc:"型なしで一から",
+    subject:"", ratio:"1:1", subjectHints:[], defaults:{} },
+];
+
+// モデル別の出力整形
+const MODELS = [
+  { key:"universal", label:"汎用 / DALL·E / nano banana", mode:"natural" },
+  { key:"midjourney", label:"Midjourney", mode:"keywords" },
+  { key:"sd", label:"Stable Diffusion", mode:"keywords" },
+];
+
+// ネガティブプロンプトのデフォルト
+const NEGATIVE = "low quality, blurry, distorted, extra fingers, bad anatomy, watermark, text, logo, jpeg artifacts";
+
+/* ═══════════════════════════════════════════════════════════
+   状態
+   ═══════════════════════════════════════════════════════════ */
+const state = {
+  template:null,
+  subject:"",
+  extra:"",
+  selected:{}, // group.key -> Set(en)
+  ratio:"1:1",
+  model:"universal",
+  negative:false,
+};
+GROUPS.forEach(g=>state.selected[g.key]=new Set());
+
+/* ═══════════════════════════════════════════════════════════
+   描画
+   ═══════════════════════════════════════════════════════════ */
+const $ = id=>document.getElementById(id);
+
+function renderTemplates(){
+  const grid=$("tplGrid");
+  grid.innerHTML="";
+  TEMPLATES.forEach(t=>{
+    const b=document.createElement("button");
+    b.className="tpl";
+    b.setAttribute("aria-pressed", state.template===t.key ? "true":"false");
+    b.innerHTML=`<span class="emo">${t.emo}</span><span class="tn">${t.name}</span><span class="td">${t.desc}</span>`;
+    b.onclick=()=>applyTemplate(t);
+    grid.appendChild(b);
+  });
+}
+
+function renderGroups(){
+  const wrap=$("groups");
+  wrap.innerHTML="";
+  GROUPS.forEach(g=>{
+    const div=document.createElement("div");
+    div.className="group";
+    const count=state.selected[g.key].size;
+    div.innerHTML=`<div class="group-head">
+        <span class="group-title">${g.title}</span>
+        <span class="group-sub">${g.sub}</span>
+        <span class="group-count ${count?'on':''}">${count} 選択中</span>
+      </div>`;
+    const chips=document.createElement("div");
+    chips.className="chips";
+    g.items.forEach(it=>{
+      const on=state.selected[g.key].has(it.en);
+      const c=document.createElement("button");
+      c.className="chip";
+      c.setAttribute("aria-pressed", on?"true":"false");
+      c.innerHTML=`${it.ja} <span class="en">${it.en}</span>`;
+      c.onclick=()=>{
+        const set=state.selected[g.key];
+        set.has(it.en)?set.delete(it.en):set.add(it.en);
+        renderGroups(); renderOutput();
+      };
+      chips.appendChild(c);
+    });
+    div.appendChild(chips);
+
+    // アスペクト比グループはstyleの後には出さず、最後にまとめて出す（下で処理）
+    wrap.appendChild(div);
+  });
+
+  // アスペクト比
+  const rdiv=document.createElement("div");
+  rdiv.className="group";
+  rdiv.innerHTML=`<div class="group-head"><span class="group-title">アスペクト比</span><span class="group-sub">縦横比</span></div>`;
+  const rwrap=document.createElement("div");
+  rwrap.className="ratios";
+  RATIOS.forEach(r=>{
+    const b=document.createElement("button");
+    b.className="ratio";
+    b.setAttribute("aria-pressed", state.ratio===r.v?"true":"false");
+    b.innerHTML=`<span class="rv">${r.v}</span><span class="rl">${r.l}</span>`;
+    b.onclick=()=>{ state.ratio=r.v; renderGroups(); renderOutput(); };
+    rwrap.appendChild(b);
+  });
+  rdiv.appendChild(rwrap);
+  wrap.appendChild(rdiv);
+}
+
+function renderModels(){
+  const row=$("modelRow");
+  row.innerHTML="";
+  MODELS.forEach(m=>{
+    const b=document.createElement("button");
+    b.className="seg";
+    b.setAttribute("aria-pressed", state.model===m.key?"true":"false");
+    b.textContent=m.label;
+    b.onclick=()=>{ state.model=m.key; renderModels(); renderOutput(); };
+    row.appendChild(b);
+  });
+}
+
+function renderSubjectSuggest(){
+  const wrap=$("subjectSuggest");
+  wrap.innerHTML="";
+  const hints = state.template
+    ? (TEMPLATES.find(t=>t.key===state.template)?.subjectHints||[])
+    : [];
+  hints.forEach(h=>{
+    const b=document.createElement("button");
+    b.textContent=h;
+    b.onclick=()=>{ $("subject").value=h; state.subject=h; renderOutput(); };
+    wrap.appendChild(b);
+  });
+}
+
+/* ── 型を適用 ── */
+function applyTemplate(t){
+  state.template=t.key;
+  // 選択リセットしてデフォルトを流し込む
+  GROUPS.forEach(g=>state.selected[g.key]=new Set());
+  Object.entries(t.defaults||{}).forEach(([k,arr])=>{
+    if(state.selected[k]) arr.forEach(en=>state.selected[k].add(en));
+  });
+  state.ratio=t.ratio||"1:1";
+  if(t.subject){ state.subject=t.subject; $("subject").value=t.subject; }
+  renderTemplates(); renderGroups(); renderSubjectSuggest(); renderOutput();
+  // STEP2へスクロール（モバイル配慮で控えめ）
+}
+
+/* ═══════════════════════════════════════════════════════════
+   プロンプト組み立て
+   ═══════════════════════════════════════════════════════════ */
+
+// 主題を英語に大まかに寄せる（辞書ベースの簡易変換）。未知語はそのまま残す。
+const JA2EN = [
+  [/笑顔で働く若手スタッフ/,"young staff working with a smile"],
+  [/チームで打ち合わせする社員/,"employees having a team meeting"],
+  [/先輩が新人に教える様子/,"a senior mentoring a new employee"],
+  [/現場で活躍するスタッフ/,"staff working actively on site"],
+  [/30代のビジネスパーソン/,"a businessperson in their 30s"],
+  [/カジュアルな私服の女性/,"a woman in casual clothes"],
+  [/ヘッドショット用の証明写真風/,"a professional headshot"],
+  [/職人の横顔/,"the profile of a craftsman"],
+  [/化粧品のボトル/,"a cosmetic bottle"],
+  [/焙煎したコーヒー豆の袋/,"a bag of roasted coffee beans"],
+  [/手作りの革財布/,"a handmade leather wallet"],
+  [/新商品のパッケージ/,"a new product package"],
+  [/湯気の立つラーメン/,"a steaming bowl of ramen"],
+  [/焼きたてのパン/,"freshly baked bread"],
+  [/彩り豊かなサラダボウル/,"a colorful salad bowl"],
+  [/デザートプレート/,"a dessert plate"],
+  [/朝もやの山並み/,"misty mountains at dawn"],
+  [/静かな海辺/,"a quiet seaside"],
+  [/都会の夜景/,"a city night view"],
+  [/緑あふれる公園/,"a green park"],
+  [/街を歩くキャラクター/,"a character walking in town"],
+  [/かわいいマスコット/,"a cute mascot character"],
+  [/コーヒーショップのロゴ/,"a coffee shop logo"],
+  [/会社のシンボルマーク/,"a company symbol mark"],
+  [/アプリのアイコン/,"an app icon"],
+  [/キャンペーン告知のビジュアル/,"a campaign announcement visual"],
+  [/北欧風のリビング/,"a Scandinavian-style living room"],
+  [/モダンなオフィス空間/,"a modern office space"],
+];
+function subjectToEn(ja){
+  if(!ja) return "";
+  for(const [re,en] of JA2EN){ if(re.test(ja)) return en; }
+  return ja; // 未知語はそのまま（英語入力にも対応）
+}
+
+function collectEn(){
+  // 群をまたいで選択中のen語を配列で
+  const arr=[];
+  GROUPS.forEach(g=> state.selected[g.key].forEach(en=>arr.push(en)) );
+  return arr;
+}
+function collectJa(){
+  const map={};
+  GROUPS.forEach(g=>{
+    const labels=[];
+    g.items.forEach(it=>{ if(state.selected[g.key].has(it.en)) labels.push(it.ja); });
+    if(labels.length) map[g.title]=labels;
+  });
+  return map;
+}
+
+function hasAny(){
+  return state.subject.trim() || collectEn().length>0 || state.extra.trim();
+}
+
+function buildEnglish(){
+  const model=MODELS.find(m=>m.key===state.model);
+  const subj=subjectToEn(state.subject.trim());
+  const words=collectEn();
+  const extra=state.extra.split(",").map(s=>s.trim()).filter(Boolean);
+  const parts=[...(subj?[subj]:[]),...words,...extra];
+
+  if(model.mode==="natural"){
+    // 自然文寄せ：主題を主語に、要素を形容として続ける
+    let s = subj ? subj.charAt(0).toUpperCase()+subj.slice(1) : "An image";
+    const rest=[...words,...extra];
+    let sentence = s + (rest.length? ", " + rest.join(", ") : "");
+    sentence += `. Aspect ratio ${state.ratio}.`;
+    return sentence;
+  }
+  // keywords（Midjourney / SD）
+  let base=parts.join(", ");
+  if(state.model==="midjourney"){
+    return `${base} --ar ${state.ratio} --style raw`;
+  }
+  return base; // SD はキーワード羅列、ネガティブは別欄
+}
+
+function buildJapanese(){
+  const jamap=collectJa();
+  const subj=state.subject.trim();
+  const extra=state.extra.split(",").map(s=>s.trim()).filter(Boolean);
+  let lines=[];
+  if(subj) lines.push(`主題：${subj}`);
+  Object.entries(jamap).forEach(([k,v])=> lines.push(`${k}：${v.join("、")}`));
+  if(extra.length) lines.push(`追加：${extra.join("、")}`);
+  lines.push(`縦横比：${state.ratio}`);
+  return lines.join("\n");
+}
+
+function renderOutput(){
+  state.subject=$("subject").value;
+  state.extra=$("extra").value;
+  const model=MODELS.find(m=>m.key===state.model);
+
+  // ラベル調整
+  $("mainLabel").textContent = model.mode==="natural" ? "英語プロンプト（自然文）" : "英語プロンプト（キーワード）";
+  $("mainTag").textContent = "推奨";
+
+  const main=$("outMain"), ja=$("outJa");
+
+  if(!hasAny()){
+    main.className="out-text empty";
+    main.textContent="左で型と要素を選ぶと、ここにプロンプトが組み上がります。";
+    ja.className="out-text empty";
+    ja.textContent="—";
+    return;
+  }
+
+  let en=buildEnglish();
+  // ネガティブ表示（SDは別行、Midjourneyは--no、自然文は補足）
+  let negHtml="";
+  if(state.negative){
+    if(state.model==="sd"){
+      negHtml=`\n\nNegative prompt: ${NEGATIVE}`;
+    } else if(state.model==="midjourney"){
+      en = en.replace(" --style raw", ` --no ${NEGATIVE.split(",")[0].trim()} --style raw`);
+      negHtml="";
+    } else {
+      negHtml=`\n\nAvoid: ${NEGATIVE}.`;
+    }
+  }
+  main.className="out-text";
+  main.textContent=en+negHtml;
+
+  ja.className="out-text";
+  ja.textContent=buildJapanese();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   コピー・リセット
+   ═══════════════════════════════════════════════════════════ */
+function toast(msg){
+  const t=$("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1600);
+}
+async function copyText(text,btn,label){
+  if(!hasAny()){ toast("まず型や要素を選んでください"); return; }
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch(e){
+    const ta=document.createElement("textarea");
+    ta.value=text; document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
+  }
+  toast((label||"")+"コピーしました");
+  if(btn){ const o=btn.textContent; btn.classList.add("copied"); btn.textContent="✓ コピー完了";
+    setTimeout(()=>{btn.classList.remove("copied");btn.textContent=o;},1400); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   初期化 / イベント
+   ═══════════════════════════════════════════════════════════ */
+$("subject").addEventListener("input", renderOutput);
+$("extra").addEventListener("input", renderOutput);
+$("negChk").addEventListener("change", e=>{ state.negative=e.target.checked; renderOutput(); });
+$("copyMain").addEventListener("click", e=> copyText($("outMain").textContent, e.currentTarget, "英語プロンプトを"));
+$("copyJa").addEventListener("click", ()=> copyText($("outJa").textContent, null, "日本語版を"));
+$("resetBtn").addEventListener("click", ()=>{
+  state.template=null; state.subject=""; state.extra=""; state.ratio="1:1"; state.negative=false;
+  GROUPS.forEach(g=>state.selected[g.key]=new Set());
+  $("subject").value=""; $("extra").value=""; $("negChk").checked=false;
+  renderTemplates(); renderGroups(); renderModels(); renderSubjectSuggest(); renderOutput();
+  toast("クリアしました");
+});
+
+renderTemplates();
+renderGroups();
+renderModels();
+renderSubjectSuggest();
+renderOutput();
+</script>
+</body>
+</html>
