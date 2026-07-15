@@ -1,15 +1,16 @@
 /* ================================================
-   採用サイト 見出し — ドット・グリッド案
+   採用サイト 見出し — ドット・グリッド案（装飾強化版）
    画像なし・CSSのみ / ライト・ダーク両対応
    SWELL WordPress テーマ対応
    ================================================ */
 
 .hd-dot {
   /* ---- カスタムプロパティ（ここを変えれば全体が変わる）---- */
-  --hd-accent: #ee9042;                 /* アクセント色（ドット＆装飾） */
-  --hd-ink: #1E232B;                    /* 日本語タイトルの文字色 */
-  --hd-muted: #7A7468;                  /* 英字ラベルの文字色 */
-  --hd-dot-size: 52px;                  /* ドットブロックの大きさ */
+  --hd-accent: #ee9042;                      /* アクセント色（ドット＆装飾） */
+  --hd-accent-tint: rgba(238, 144, 66, .10); /* ドットチップの背景 */
+  --hd-accent-line: rgba(238, 144, 66, .28); /* チップの枠・ヘアライン */
+  --hd-muted: #7A7468;                        /* 英字ラベルの文字色 */
+  --hd-dot-size: 52px;                        /* ドットブロックの大きさ */
 
   display: flex;
   align-items: center;
@@ -17,16 +18,17 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* ---- 左のドット装飾ブロック ---- */
+/* ---- 左のドット装飾ブロック（淡いチップ背景を追加）---- */
 .hd-dot__dots {
   flex: none;
   width: var(--hd-dot-size);
   height: var(--hd-dot-size);
-  border-radius: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--hd-accent-line);
+  background-color: var(--hd-accent-tint);
   background-image: radial-gradient(var(--hd-accent) 1.8px, transparent 1.9px);
   background-size: 11px 11px;
-  background-position: 2px 2px;
-  opacity: .9;
+  background-position: 3px 3px;
 }
 
 /* ---- テキストの列 ---- */
@@ -45,26 +47,47 @@
   color: var(--hd-muted);
 }
 
-/* 日本語タイトル（大） */
+/* 日本語タイトル（大・色指定なし＝テーマの文字色を継承）*/
 .hd-dot__jp {
   font-size: clamp(24px, 4.2vw, 38px);
   font-weight: 800;
   line-height: 1.15;
-  color: var(--hd-ink);
+}
+
+/* タイトル下の短いアクセント下線 */
+.hd-dot__jp::after {
+  content: "";
+  display: block;
+  width: 44px;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 2px;
+  background: var(--hd-accent);
+}
+
+/* ---- 見出し右へ伸びるヘアライン ---- */
+.hd-dot__rule {
+  flex: 1;
+  min-width: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--hd-accent-line), transparent);
 }
 
 /* ---- ダークモード（OS設定に追従）---- */
 @media (prefers-color-scheme: dark) {
   .hd-dot {
-    --hd-ink: #ECE9E1;
     --hd-muted: #9A948A;
+    --hd-accent-tint: rgba(238, 144, 66, .14);
+    --hd-accent-line: rgba(238, 144, 66, .34);
   }
 }
 
-/* ---- 中央寄せにしたい場合はこのクラスを追加 ---- */
+/* ---- 中央寄せにしたい場合はこのクラスを追加（ヘアラインは非表示に）---- */
 .hd-dot.is-center {
   justify-content: center;
-  text-align: left;
+}
+.hd-dot.is-center .hd-dot__rule {
+  display: none;
 }
 
 /* ---- スマホ ---- */
@@ -72,5 +95,8 @@
   .hd-dot {
     --hd-dot-size: 42px;
     gap: 16px;
+  }
+  .hd-dot__rule {
+    display: none;
   }
 }
