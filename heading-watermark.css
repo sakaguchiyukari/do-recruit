@@ -1,0 +1,88 @@
+/* ================================================
+   採用サイト 見出し — 背景ウォーターマーク案
+   背景に大きな英字を薄く敷くタイプ
+   画像なし・CSSのみ / ライト・ダーク両対応
+   SWELL WordPress テーマ対応
+   ================================================ */
+
+.hd-wm {
+  /* ---- カスタムプロパティ（ここを変えれば全体が変わる）---- */
+  --hd-accent: #ee9042;                       /* 英字ラベル（番号）の色 */
+  --hd-ghost: rgba(30, 35, 43, .08);          /* 背景ウォーターマークの色 */
+  --hd-ghost-size: clamp(84px, 17vw, 210px);  /* 背景英字の大きさ */
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  min-height: calc(var(--hd-ghost-size) * 1.05);
+  padding: 0 4px 6px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- 背景の大きな英字（中抜き）---- */
+.hd-wm__ghost {
+  position: absolute;
+  top: 50%;
+  left: -0.04em;
+  transform: translateY(-58%);
+  z-index: 0;
+  margin: 0;
+  font-size: var(--hd-ghost-size);
+  font-weight: 800;
+  line-height: .8;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--hd-ghost);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- 英字ラベル（番号 / セクション名）---- */
+.hd-wm__eyebrow {
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--hd-accent);
+}
+
+/* ---- 日本語タイトル（色指定なし＝テーマの文字色を継承）---- */
+.hd-wm__jp {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: .02em;
+}
+
+/* ---- ダークモード（OS設定に追従）---- */
+@media (prefers-color-scheme: dark) {
+  .hd-wm {
+    --hd-ghost: rgba(236, 233, 225, .07);
+  }
+}
+
+/* ---- 中央寄せにしたい場合はこのクラスを追加 ---- */
+.hd-wm.is-center {
+  align-items: center;
+  text-align: center;
+}
+.hd-wm.is-center .hd-wm__ghost {
+  left: 50%;
+  transform: translate(-50%, -58%);
+}
+
+/* ---- スマホ ---- */
+@media (max-width: 560px) {
+  .hd-wm {
+    --hd-ghost-size: clamp(66px, 24vw, 120px);
+  }
+}
