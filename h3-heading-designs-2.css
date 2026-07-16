@@ -1,0 +1,221 @@
+/* ================================================
+   H3 見出しデザインアイデア集 第2弾（11〜20）
+   SWELL WordPress テーマ用
+   ================================================
+
+   使い方:
+   1. 気に入ったデザインのCSSを SWELLカスタマイザー > 追加CSS に貼り付け
+   2. サイト全体のh3に適用する場合は、セレクタを
+      「.h3-design-XX」から「.post_content h3」に書き換える
+   3. 使い分けたい場合はブロックエディタの
+      「高度な設定 > 追加CSSクラス」でクラスを指定する
+
+   カラー変更:
+   #2b6cb0（メイン）と #ffb340（アクセント）を
+   サイトのブランドカラーに置き換えてください。
+================================================ */
+
+
+/* ---------- 11. かぎ括弧（コーナーブラケット） ----------
+   写真のフレームのように四隅の2つを飾る。和モダン・上品 */
+.h3-design-11 {
+  position: relative;
+  display: inline-block;
+  padding: 0.6em 1em;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+}
+.h3-design-11::before,
+.h3-design-11::after {
+  content: "";
+  position: absolute;
+  width: 1em;
+  height: 1em;
+}
+.h3-design-11::before {
+  top: 0;
+  left: 0;
+  border-top: 3px solid #2b6cb0;
+  border-left: 3px solid #2b6cb0;
+}
+.h3-design-11::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 3px solid #2b6cb0;
+  border-right: 3px solid #2b6cb0;
+}
+
+
+/* ---------- 12. グラデーション文字 ----------
+   文字自体に色のグラデーション。モダンで先進的な印象 */
+.h3-design-12 {
+  display: inline-block;
+  font-size: 1.3em;
+  font-weight: 800;
+  background: linear-gradient(120deg, #2b6cb0 20%, #4fd1c5 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+
+/* ---------- 13. ステッチ（縫い目）ラベル風 ----------
+   点線の縫い目でクラフト感。温かみのある採用サイトに */
+.h3-design-13 {
+  display: inline-block;
+  padding: 0.6em 1.2em;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #fff;
+  background: #2b6cb0;
+  border-radius: 8px;
+  box-shadow: 0 0 0 4px #2b6cb0;
+  border: 1px dashed rgba(255, 255, 255, 0.7);
+}
+
+
+/* ---------- 14. 斜めストライプ帯 ----------
+   見出しの下に工事現場テープ風の帯。元気・アクティブな印象 */
+.h3-design-14 {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.6em;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+}
+.h3-design-14::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 7px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #ffb340 0 6px,
+    transparent 6px 12px
+  );
+}
+
+
+/* ---------- 15. 背景ゴースト英字 ----------
+   見出しの後ろに大きな薄い英字を敷く。デザイン性の高いサイトに。
+   HTML側で data-en 属性を付ける:
+   <h3 class="h3-design-15" data-en="CULTURE">社風を知る</h3> */
+.h3-design-15 {
+  position: relative;
+  display: inline-block;
+  padding: 0.6em 0 0.2em 0.2em;
+  font-size: 1.25em;
+  font-weight: 800;
+  color: #1a202c;
+  z-index: 0;
+}
+.h3-design-15::before {
+  content: attr(data-en);
+  position: absolute;
+  left: 0;
+  top: -0.15em;
+  font-size: 2.2em;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: rgba(43, 108, 176, 0.09);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  white-space: nowrap;
+  z-index: -1;
+  pointer-events: none;
+}
+
+
+/* ---------- 16. リボン風 ----------
+   両端が折り返したリボン。特集・キャンペーン的なセクションに */
+.h3-design-16 {
+  position: relative;
+  z-index: 0; /* 擬似要素(折り返し)を自身の背面・背景の前面に置くための基準 */
+  display: inline-block;
+  margin: 0 1.2em;
+  padding: 0.5em 1.4em;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #fff;
+  background: #2b6cb0;
+}
+.h3-design-16::before,
+.h3-design-16::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border: 0.8em solid #245a94;
+  z-index: -1;
+}
+.h3-design-16::before {
+  left: -1.2em;
+  border-left-color: transparent;
+}
+.h3-design-16::after {
+  right: -1.2em;
+  border-right-color: transparent;
+}
+
+
+/* ---------- 17. ネオン発光（ダーク背景用） ----------
+   夜景・ダークセクションで光る見出し。インパクト重視 */
+.h3-design-17 {
+  display: inline-block;
+  padding: 0.4em 0.2em;
+  font-size: 1.25em;
+  font-weight: 700;
+  color: #e6f3ff;
+  text-shadow:
+    0 0 6px rgba(120, 190, 255, 0.9),
+    0 0 18px rgba(64, 156, 255, 0.7),
+    0 0 40px rgba(64, 156, 255, 0.45);
+  letter-spacing: 0.06em;
+}
+
+
+/* ---------- 18. 先頭一文字アクセント ----------
+   最初の1文字だけ大きく色付け。雑誌の見出しのような表情 */
+.h3-design-18 {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1.4;
+}
+.h3-design-18::first-letter {
+  font-size: 1.7em;
+  color: #2b6cb0;
+  font-weight: 800;
+  margin-right: 0.05em;
+}
+
+
+/* ---------- 19. 手書き風波線アンダーライン ----------
+   SVGの波線で柔らかく。親しみやすさ・人柄を伝えるページに */
+.h3-design-19 {
+  display: inline-block;
+  padding-bottom: 0.45em;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="8" viewBox="0 0 40 8"><path d="M0 5 Q 5 1, 10 5 T 20 5 T 30 5 T 40 5" fill="none" stroke="%23ffb340" stroke-width="2.5" stroke-linecap="round"/></svg>') repeat-x left bottom / 40px 8px;
+}
+
+
+/* ---------- 20. ずらし影ポップボックス ----------
+   ベタ塗りの影をずらして配置。ポップで今っぽい（ネオブルータリズム） */
+.h3-design-20 {
+  display: inline-block;
+  padding: 0.5em 1.2em;
+  font-size: 1.1em;
+  font-weight: 800;
+  color: #1a202c;
+  background: #fff;
+  border: 2.5px solid #1a202c;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 #ffb340;
+}
