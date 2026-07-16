@@ -1,0 +1,100 @@
+<!--
+  H3 見出しデザインアイデア集 プレビュー
+  このファイルをブラウザで開くと10種類のデザインを見比べられます。
+  実際に使うCSSは h3-heading-designs.css を参照してください。
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H3見出しデザイン プレビュー</title>
+<link rel="stylesheet" href="h3-heading-designs.css">
+<style>
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    color: #1a202c;
+    background: #f7f9fb;
+    margin: 0;
+    padding: 40px 16px;
+    line-height: 1.7;
+    counter-reset: h3steps; /* デザイン04（番号付き）用 */
+  }
+  .preview-wrap { max-width: 720px; margin: 0 auto; }
+  .preview-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .preview-card p { color: #64748b; font-size: 0.85em; margin: 0 0 16px; }
+  .preview-card h3 { margin: 0; }
+  /* デザイン10（ガラス風）は背景付きで見せる */
+  .preview-card.glass-bg {
+    background: linear-gradient(135deg, #7fb4e8, #2b6cb0);
+  }
+  .preview-card.glass-bg p { color: rgba(255,255,255,0.85); }
+</style>
+</head>
+<body>
+<div class="preview-wrap">
+  <h1 style="font-size:1.4em;">H3見出しデザインアイデア（10種類）</h1>
+
+  <div class="preview-card">
+    <p>01. 左ボーダー + 背景グラデーション（定番・万能）</p>
+    <h3 class="h3-design-01">数字で見るDO</h3>
+  </div>
+
+  <div class="preview-card">
+    <p>02. 下線グラデーション（すっきり軽やか）</p>
+    <h3 class="h3-design-02">私たちが大切にしていること</h3>
+  </div>
+
+  <div class="preview-card">
+    <p>03. アイコン（チェックマーク）付き</p>
+    <h3 class="h3-design-03">充実の福利厚生</h3>
+  </div>
+
+  <div class="preview-card">
+    <p>04. 番号付きステップ見出し（選考の流れなどに）</p>
+    <h3 class="h3-design-04">エントリー</h3>
+    <div style="height:12px"></div>
+    <h3 class="h3-design-04">カジュアル面談</h3>
+    <div style="height:12px"></div>
+    <h3 class="h3-design-04">内定</h3>
+  </div>
+
+  <div class="preview-card">
+    <p>05. 蛍光マーカー風（カジュアル・親しみやすい）</p>
+    <h3 class="h3-design-05">未経験でも大丈夫?</h3>
+  </div>
+
+  <div class="preview-card">
+    <p>06. 吹き出し風（FAQ・先輩の声などに）</p>
+    <h3 class="h3-design-06">よくあるご質問</h3>
+  </div>
+
+  <div class="preview-card">
+    <p>07. 英字サブテキスト付き（data-en属性で英字を指定）</p>
+    <h3 class="h3-design-07" data-en="MESSAGE">代表メッセージ</h3>
+  </div>
+
+  <div class="preview-card">
+    <p>08. 両端ライン（センター見出し）</p>
+    <h3 class="h3-design-08">働く環境</h3>
+  </div>
+
+  <div class="preview-card">
+    <p>09. 立体タブ風</p>
+    <h3 class="h3-design-09">募集要項</h3>
+  </div>
+
+  <div class="preview-card glass-bg">
+    <p>10. Liquid Glass風（スクロールインジケーターと統一感）</p>
+    <h3 class="h3-design-10">米沢で、はたらく。</h3>
+  </div>
+
+</div>
+</body>
+</html>

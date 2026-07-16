@@ -1,0 +1,238 @@
+/* ================================================
+   H3 見出しデザインアイデア集（10種類）
+   SWELL WordPress テーマ用
+   ================================================
+
+   使い方:
+   1. 気に入ったデザインのCSSを SWELLカスタマイザー > 追加CSS に貼り付け
+   2. サイト全体のh3に適用する場合は、セレクタを
+      「.h3-design-XX」から「.post_content h3」に書き換える
+      （SWELLの記事本文内の見出しは .post_content h3 が対象）
+   3. 複数デザインを使い分けたい場合はクラスのまま残し、
+      ブロックエディタの「高度な設定 > 追加CSSクラス」で指定する
+
+   カラー変更:
+   各デザイン内の #2b6cb0（メインカラー）と #ffb340（アクセント）を
+   サイトのブランドカラーに置き換えてください。
+================================================ */
+
+
+/* ---------- 01. 左ボーダー + 背景グラデーション ----------
+   定番で読みやすい。採用サイトの本文見出しに万能 */
+.h3-design-01 {
+  position: relative;
+  padding: 0.6em 0.8em;
+  border-left: 5px solid #2b6cb0;
+  background: linear-gradient(90deg, rgba(43, 108, 176, 0.08), transparent 70%);
+  border-radius: 0 6px 6px 0;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+
+/* ---------- 02. 下線グラデーション ----------
+   すっきり軽やか。写真が多いページと相性◎ */
+.h3-design-02 {
+  position: relative;
+  padding-bottom: 0.5em;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+}
+.h3-design-02::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #2b6cb0 0 60px, #e2e8f0 60px);
+}
+
+
+/* ---------- 03. アイコン（チェックマーク）付き ----------
+   「福利厚生」「募集要項」などリスト的な内容の前に */
+.h3-design-03 {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+}
+.h3-design-03::before {
+  content: "";
+  flex-shrink: 0;
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  background: #2b6cb0;
+  /* チェックマークをSVGで描画（画像不要） */
+  -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.2 14.5-4.3-4.3 1.4-1.4 2.9 2.9 5.9-5.9 1.4 1.4-7.3 7.3z"/></svg>') center / contain no-repeat;
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.2 14.5-4.3-4.3 1.4-1.4 2.9 2.9 5.9-5.9 1.4 1.4-7.3 7.3z"/></svg>') center / contain no-repeat;
+}
+
+
+/* ---------- 04. 番号付きステップ見出し ----------
+   「選考の流れ」「入社までのステップ」に最適。
+   親要素（記事本文など）に counter-reset: h3steps; を追加すること */
+.h3-design-04 {
+  counter-increment: h3steps;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+}
+.h3-design-04::before {
+  content: counter(h3steps, decimal-leading-zero);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.2em;
+  height: 2.2em;
+  border-radius: 50%;
+  background: #2b6cb0;
+  color: #fff;
+  font-size: 0.8em;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+
+/* ---------- 05. 蛍光マーカー風 ----------
+   カジュアルで親しみやすい。若手向け採用ページに */
+.h3-design-05 {
+  display: inline;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+  background: linear-gradient(transparent 60%, rgba(255, 179, 64, 0.55) 60%);
+  padding: 0 0.15em;
+  line-height: 1.8;
+}
+
+
+/* ---------- 06. 吹き出し風 ----------
+   「よくある質問」「先輩の声」など会話的なセクションに */
+.h3-design-06 {
+  position: relative;
+  display: inline-block;
+  padding: 0.5em 1em;
+  background: #2b6cb0;
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: 700;
+  border-radius: 10px;
+}
+.h3-design-06::after {
+  content: "";
+  position: absolute;
+  left: 1.5em;
+  bottom: -8px;
+  border: 8px solid transparent;
+  border-top-color: #2b6cb0;
+  border-bottom: none;
+}
+
+
+/* ---------- 07. 英字サブテキスト付き ----------
+   デザイン性重視のコーポレート・採用サイト向け。
+   HTML側で data-en 属性を付ける: <h3 class="h3-design-07" data-en="MESSAGE">代表メッセージ</h3> */
+.h3-design-07 {
+  position: relative;
+  padding-left: 0.8em;
+  border-left: 4px solid #ffb340;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1.4;
+}
+.h3-design-07::after {
+  content: attr(data-en);
+  display: block;
+  font-size: 0.6em;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #2b6cb0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+
+/* ---------- 08. 両端ライン（センター見出し） ----------
+   セクションの区切りに。中央寄せレイアウト用 */
+.h3-design-08 {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #1a202c;
+}
+.h3-design-08::before,
+.h3-design-08::after {
+  content: "";
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #2b6cb0);
+}
+.h3-design-08::after {
+  background: linear-gradient(90deg, #2b6cb0, transparent);
+}
+
+
+/* ---------- 09. 立体タブ風 ----------
+   コンテンツをカード的に区切りたいときに */
+.h3-design-09 {
+  display: inline-block;
+  padding: 0.5em 1.4em;
+  background: #fff;
+  color: #2b6cb0;
+  font-size: 1.1em;
+  font-weight: 700;
+  border: 1px solid rgba(43, 108, 176, 0.25);
+  border-bottom: 3px solid #2b6cb0;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 8px rgba(43, 108, 176, 0.12);
+}
+
+
+/* ---------- 10. Liquid Glass 風（既存スクロールインジケーターと統一感） ----------
+   ヒーロー画像や色付き背景の上に置く見出しに。
+   ※ 背景に画像や色があるほどガラス感が出ます */
+.h3-design-10 {
+  display: inline-block;
+  padding: 0.55em 1.2em;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #1a202c;
+  background: rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+
+/* ================================================
+   共通: SWELLの記事内h3にそのまま適用する例
+   （デザイン01を全記事に使う場合）
+================================================ */
+/*
+.post_content h3 {
+  position: relative;
+  padding: 0.6em 0.8em;
+  border-left: 5px solid #2b6cb0;
+  background: linear-gradient(90deg, rgba(43, 108, 176, 0.08), transparent 70%);
+  border-radius: 0 6px 6px 0;
+}
+*/
