@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webサイト公開前チェックリスト</title>
+<meta name="description" content="Webサイトを公開する前の品質チェックリスト。WordPress公開・FTPアップロードの両方に対応。チェック状態は自動保存されます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #f9a8c9;
+    --pink-deep: #ec6ea5;
+    --pink-pale: #fdeef5;
+    --lavender: #c9b8f0;
+    --mint: #a8e6cf;
+    --cream: #fffaf3;
+    --ink: #5a4a52;
+    --ink-soft: #9a8a92;
+    --card: #ffffff;
+    --radius: 22px;
+    --shadow: 0 6px 20px rgba(236, 110, 165, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    color: var(--ink);
+    background: linear-gradient(160deg, #fff5fa 0%, #f7f2ff 55%, #f0fbf6 100%);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+  }
+
+  /* ---------- ヘッダー ---------- */
+  header {
+    text-align: center;
+    padding: 28px 12px 20px;
+  }
+  header .deco { font-size: 1.6rem; letter-spacing: 0.4em; }
+  header h1 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    margin: 8px 0 6px;
+    color: var(--ink);
+  }
+  header h1 span { color: var(--pink-deep); }
+  header p {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- 進捗バー(固定) ---------- */
+  .progress-sticky {
+    position: sticky;
+    top: 12px;
+    z-index: 10;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 20px 16px;
+    margin-bottom: 22px;
+    border: 2px solid var(--pink-pale);
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .progress-message {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  .progress-count {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+  .progress-count strong {
+    font-size: 1.15rem;
+    color: var(--pink-deep);
+  }
+  .bar {
+    height: 16px;
+    background: var(--pink-pale);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--pink), var(--lavender), var(--mint));
+    background-size: 300% 100%;
+    transition: width 0.5s cubic-bezier(0.34, 1.3, 0.64, 1);
+  }
+
+  /* ---------- お祝いバナー ---------- */
+  .congrats {
+    display: none;
+    text-align: center;
+    background: linear-gradient(135deg, #fff0f7, #f3edff);
+    border: 2px dashed var(--pink);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 22px;
+    animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .congrats.show { display: block; }
+  .congrats .big { font-size: 2rem; }
+  .congrats p { font-weight: 700; color: var(--pink-deep); }
+  .congrats small { color: var(--ink-soft); font-weight: 400; }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ---------- カテゴリカード ---------- */
+  .category {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .category-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: left;
+  }
+  .category-header .emoji { font-size: 1.3rem; }
+  .category-header .cat-title { flex: 1; }
+  .category-header .cat-count {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--pink-deep);
+    background: var(--pink-pale);
+    border-radius: 99px;
+    padding: 3px 12px;
+    white-space: nowrap;
+  }
+  .category-header .cat-count.done {
+    color: #2e9e6f;
+    background: #e2f8ee;
+  }
+  .category-header .arrow {
+    transition: transform 0.25s;
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+  }
+  .category.closed .arrow { transform: rotate(-90deg); }
+  .category.closed .items { display: none; }
+
+  .items {
+    list-style: none;
+    padding: 0 14px 14px;
+  }
+  .items li + li { margin-top: 4px; }
+
+  label.check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  label.check:hover { background: var(--pink-pale); }
+
+  label.check input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .box {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    margin-top: 2px;
+    border-radius: 50%;
+    border: 2.5px solid var(--pink);
+    background: #fff;
+    display: grid;
+    place-items: center;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .box::after {
+    content: "✓";
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    transform: scale(0);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  label.check input:checked + .box {
+    background: var(--pink-deep);
+    border-color: var(--pink-deep);
+    transform: scale(1.08);
+  }
+  label.check input:checked + .box::after { transform: scale(1); }
+
+  .check-text {
+    font-size: 0.92rem;
+    transition: color 0.2s;
+  }
+  .check-text small {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  label.check input:checked ~ .check-text {
+    color: #c5b6bd;
+    text-decoration: line-through;
+    text-decoration-color: var(--pink);
+  }
+
+  /* ---------- リセットボタン ---------- */
+  .actions {
+    text-align: center;
+    margin-top: 28px;
+  }
+  .reset-btn {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--pink-deep);
+    background: #fff;
+    border: 2px solid var(--pink);
+    border-radius: 99px;
+    padding: 12px 32px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 0.2s;
+  }
+  .reset-btn:hover {
+    background: var(--pink-deep);
+    border-color: var(--pink-deep);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 36px;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+
+  @media print {
+    .progress-sticky { position: static; }
+    .reset-btn { display: none; }
+    .category.closed .items { display: block; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="deco">🌸 ✨ 🌸</div>
+    <h1>Webサイト<span>公開前</span>チェックリスト</h1>
+    <p>公開ボタンを押すまえに、ひとつずつ確認しよう!<br>チェックはブラウザに自動保存されます 💾</p>
+  </header>
+
+  <div class="progress-sticky">
+    <div class="progress-top">
+      <span class="progress-message" id="progressMessage">さあ、はじめよう!🌱</span>
+      <span class="progress-count"><strong id="doneCount">0</strong> / <span id="totalCount">0</span> 完了</span>
+    </div>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+  </div>
+
+  <div class="congrats" id="congrats">
+    <div class="big">🎉🎊🎉</div>
+    <p>全部チェック完了!公開準備ばっちりです!</p>
+    <small>おつかれさまでした。自信をもって公開しましょう ✨</small>
+  </div>
+
+  <main id="checklist"></main>
+
+  <div class="actions">
+    <button type="button" class="reset-btn" id="resetBtn">🧹 チェックをぜんぶリセット</button>
+  </div>
+
+  <footer>
+    <p>チェック状態はこのブラウザにだけ保存されます(サーバーには送信されません)</p>
+  </footer>
+
+</div>
+
+<script>
+const CATEGORIES = [
+  {
+    id: "content",
+    emoji: "📝",
+    title: "コンテンツ・原稿",
+    items: [
+      { t: "誤字脱字がないか、全ページ確認した" },
+      { t: "会社名・住所・電話番号・営業時間が正しい" },
+      { t: "ダミーテキストが残っていない", s: "「テキストが入ります」「Lorem ipsum」など" },
+      { t: "コピーライトの年号が最新になっている" },
+      { t: "画像に alt(代替テキスト)を設定した" },
+      { t: "プライバシーポリシーなど必要なページを用意した" }
+    ]
+  },
+  {
+    id: "design",
+    emoji: "🎨",
+    title: "デザイン・表示",
+    items: [
+      { t: "主要ブラウザで表示確認した", s: "Chrome / Safari / Edge / Firefox" },
+      { t: "画像がぼやけていない・崩れていない" },
+      { t: "フォントが意図した通りに表示されている" },
+      { t: "ホバーやアニメーションが正しく動く" },
+      { t: "ファビコン(タブのアイコン)を設定した" },
+      { t: "OGP画像(SNSシェア時の画像)を設定した" }
+    ]
+  },
+  {
+    id: "link",
+    emoji: "🔗",
+    title: "リンク・動作",
+    items: [
+      { t: "全ての内部リンクが正しいページに飛ぶ" },
+      { t: "リンク切れ(404)がない" },
+      { t: "外部リンクが別タブで開く", s: "target=\"_blank\" + rel=\"noopener\"" },
+      { t: "電話番号リンク(tel:)がスマホで発信できる" },
+      { t: "お問い合わせフォームの送信テストをした", s: "自動返信メール・通知メールの内容も確認" }
+    ]
+  },
+  {
+    id: "responsive",
+    emoji: "📱",
+    title: "スマホ・レスポンシブ",
+    items: [
+      { t: "スマホ実機で全ページを確認した" },
+      { t: "タブレットサイズでも崩れていない" },
+      { t: "文字が小さすぎず、読みやすい" },
+      { t: "ボタンやリンクが指でタップしやすい大きさ" }
+    ]
+  },
+  {
+    id: "seo",
+    emoji: "🔍",
+    title: "SEO・アクセス解析",
+    items: [
+      { t: "各ページに title(ページタイトル)を設定した" },
+      { t: "各ページに description(説明文)を設定した" },
+      { t: "見出しタグ(h1〜h3)の順番が正しい" },
+      { t: "XMLサイトマップを用意した" },
+      { t: "Google Search Console に登録した" },
+      { t: "Googleアナリティクス等の解析タグを設置した" }
+    ]
+  },
+  {
+    id: "speed",
+    emoji: "⚡",
+    title: "表示速度",
+    items: [
+      { t: "画像を圧縮した", s: "TinyPNG・Squoosh などのツールが便利" },
+      { t: "PageSpeed Insights でスコアを確認した" },
+      { t: "大きい画像に遅延読み込み(loading=\"lazy\")を設定した" }
+    ]
+  },
+  {
+    id: "wordpress",
+    emoji: "🌷",
+    title: "WordPressで公開する場合",
+    items: [
+      { t: "「検索エンジンがインデックスしないようにする」のチェックを外した", s: "設定 → 表示設定。これを忘れると検索に出ません!" },
+      { t: "パーマリンク設定を確認した", s: "公開後に変えるとURLが変わってしまうので先に決める" },
+      { t: "サイトタイトルとキャッチフレーズを設定した" },
+      { t: "サンプルページ・「Hello world!」投稿を削除した" },
+      { t: "使っていないプラグイン・テーマを削除した" },
+      { t: "WordPress本体・テーマ・プラグインを最新版にした" },
+      { t: "管理者のユーザー名が「admin」ではない" },
+      { t: "ログインパスワードが強固なものになっている" },
+      { t: "バックアップの仕組みを用意した", s: "BackWPup などのプラグインや、サーバーの自動バックアップ" },
+      { t: "SSL化(https)され、http からリダイレクトされる" },
+      { t: "キャッシュ系プラグインを使う場合、表示が壊れないか確認した" }
+    ]
+  },
+  {
+    id: "ftp",
+    emoji: "📂",
+    title: "ファイルをアップして公開する場合(FTP)",
+    items: [
+      { t: "ローカルで全ページの表示・リンクを最終確認した" },
+      { t: "ファイル名・フォルダ名が半角英数字になっている", s: "日本語やスペース入りの名前は文字化け・リンク切れのもと" },
+      { t: "トップページが index.html になっている" },
+      { t: "リンクや画像のパスがサーバー上でも正しく動く", s: "「C:\\Users\\...」のようなローカルパスが残っていないか" },
+      { t: "不要なファイルを除外した", s: "psd・ai・古いバックアップ・.DS_Store など" },
+      { t: "アップロード先のフォルダを確認した", s: "public_html など、サーバーの公開ディレクトリ" },
+      { t: "FTPの接続情報を安全に管理している", s: "ホスト名・ユーザー名・パスワードはメモを平置きしない" },
+      { t: "全ファイルをアップロードし、抜けがないか確認した", s: "CSS・JS・画像フォルダの上げ忘れに注意" },
+      { t: "文字コードが UTF-8 で統一されている" },
+      { t: ".htaccess を設定した(必要な場合)", s: "httpsへのリダイレクト・www有無の統一など" },
+      { t: "オリジナルの404ページを用意した(できれば)" },
+      { t: "更新時はキャッシュを消して確認する", s: "スーパーリロード:Win = Ctrl+F5 / Mac = Cmd+Shift+R" }
+    ]
+  },
+  {
+    id: "after",
+    emoji: "🎀",
+    title: "公開後のさいごの確認",
+    items: [
+      { t: "本番URLで全ページを表示確認した" },
+      { t: "スマホ実機でも本番URLを確認した" },
+      { t: "本番環境でフォームの送信テストをした" },
+      { t: "SSL証明書が有効(鍵マークが出る)" },
+      { t: "数日後、Googleで「site:自分のドメイン」を検索してインデックスを確認した" }
+    ]
+  }
+];
+
+const STORAGE_KEY = "quality-checklist-v1";
+const listEl = document.getElementById("checklist");
+const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+/* チェックリストを描画 */
+CATEGORIES.forEach(cat => {
+  const section = document.createElement("section");
+  section.className = "category";
+  section.dataset.cat = cat.id;
+
+  const itemsHtml = cat.items.map((item, i) => {
+    const key = cat.id + "-" + i;
+    const checked = saved[key] ? "checked" : "";
+    const sub = item.s ? `<small>${item.s}</small>` : "";
+    return `<li>
+      <label class="check">
+        <input type="checkbox" data-key="${key}" ${checked}>
+        <span class="box"></span>
+        <span class="check-text">${item.t}${sub}</span>
+      </label>
+    </li>`;
+  }).join("");
+
+  section.innerHTML = `
+    <button type="button" class="category-header" aria-expanded="true">
+      <span class="emoji">${cat.emoji}</span>
+      <span class="cat-title">${cat.title}</span>
+      <span class="cat-count"></span>
+      <span class="arrow">▼</span>
+    </button>
+    <ul class="items">${itemsHtml}</ul>`;
+
+  listEl.appendChild(section);
+});
+
+/* 開閉 */
+listEl.querySelectorAll(".category-header").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const cat = btn.closest(".category");
+    cat.classList.toggle("closed");
+    btn.setAttribute("aria-expanded", String(!cat.classList.contains("closed")));
+  });
+});
+
+/* チェック時:保存 + 進捗更新 */
+listEl.addEventListener("change", e => {
+  if (e.target.matches("input[type=checkbox]")) {
+    const state = {};
+    listEl.querySelectorAll("input[type=checkbox]").forEach(cb => {
+      if (cb.checked) state[cb.dataset.key] = true;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    updateProgress();
+  }
+});
+
+/* 進捗表示 */
+const MESSAGES = [
+  [0,   "さあ、はじめよう!🌱"],
+  [1,   "いい調子!その調子!🐣"],
+  [25,  "順調です!コツコツいこう ☕"],
+  [50,  "半分こえた!えらい!🌼"],
+  [75,  "あとちょっと!ふぁいと!🔥"],
+  [99,  "ラストスパート!🏃‍♀️💨"],
+  [100, "完璧です!おめでとう!🎉"]
+];
+
+function updateProgress() {
+  const boxes = [...listEl.querySelectorAll("input[type=checkbox]")];
+  const done = boxes.filter(cb => cb.checked).length;
+  const total = boxes.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+
+  document.getElementById("doneCount").textContent = done;
+  document.getElementById("totalCount").textContent = total;
+  document.getElementById("barFill").style.width = pct + "%";
+
+  let msg = MESSAGES[0][1];
+  for (const [threshold, text] of MESSAGES) {
+    if (pct >= threshold && (done > 0 || threshold === 0)) msg = text;
+  }
+  document.getElementById("progressMessage").textContent = msg;
+  document.getElementById("congrats").classList.toggle("show", pct === 100 && total > 0);
+
+  /* カテゴリごとのカウント */
+  listEl.querySelectorAll(".category").forEach(section => {
+    const catBoxes = [...section.querySelectorAll("input[type=checkbox]")];
+    const catDone = catBoxes.filter(cb => cb.checked).length;
+    const badge = section.querySelector(".cat-count");
+    badge.textContent = catDone === catBoxes.length ? "✓ 完了!" : `${catDone} / ${catBoxes.length}`;
+    badge.classList.toggle("done", catDone === catBoxes.length);
+  });
+}
+
+/* リセット */
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (!confirm("チェックをすべてリセットします。よろしいですか?")) return;
+  listEl.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
+  localStorage.removeItem(STORAGE_KEY);
+  updateProgress();
+});
+
+updateProgress();
+</script>
+</body>
+</html>
