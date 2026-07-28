@@ -1,0 +1,126 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Component / News Item
+   --------------------------------------------------------------------------
+   「ニュースを見やすく」への回答。カードグリッドは使わない。
+   罫線リスト + 等幅数字による日付の桁揃え + 十分な行高で読みやすさを作る。
+   ========================================================================== */
+
+.c-news-list {
+  border-block-start: 1px solid var(--color-rule);
+}
+
+/* --------------------------------------------------------------------------
+   Item
+   -------------------------------------------------------------------------- */
+
+.c-news-item {
+  border-block-end: 1px solid var(--color-rule);
+}
+
+.c-news-item__link {
+  display: grid;
+  /* SP：日付・カテゴリを1行目、タイトルを2行目に積む */
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 16px;
+  /* 行の最小高さを確保することが「見やすさ」の実体 */
+  min-height: 96px;
+  padding: 20px 8px;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.c-news-item__link:hover,
+.c-news-item__link:focus-visible {
+  background-color: var(--color-bg-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Meta（日付 + カテゴリ）
+   -------------------------------------------------------------------------- */
+
+.c-news-item__meta {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.c-news-item__date {
+  font-family: var(--font-num);
+  font-size: var(--fs-small);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  /* 桁を揃える。これだけで一覧が一気に整って見える */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Title
+   -------------------------------------------------------------------------- */
+
+.c-news-item__title {
+  grid-column: 1;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: var(--color-text-strong);
+  /* 2行を超えたら省略（一覧の行高を揃えるため） */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.c-news-item__icon {
+  grid-column: 2;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.c-news-item__link:hover .c-news-item__icon,
+.c-news-item__link:focus-visible .c-news-item__icon {
+  transform: translateX(6px);
+}
+
+/* --------------------------------------------------------------------------
+   PC：日付 / カテゴリ / タイトル / 矢印 を1行に並べる
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 768px) {
+  .c-news-item__link {
+    grid-template-columns: 7.5em 9em minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0 32px;
+    padding-inline: 8px;
+  }
+
+  .c-news-item__meta {
+    display: contents;
+  }
+
+  .c-news-item__date {
+    grid-column: 1;
+    font-size: var(--fs-body);
+  }
+
+  .c-news-item__tag-wrap {
+    grid-column: 2;
+  }
+
+  .c-news-item__title {
+    grid-column: 3;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+
+  .c-news-item__icon {
+    grid-column: 4;
+  }
+}

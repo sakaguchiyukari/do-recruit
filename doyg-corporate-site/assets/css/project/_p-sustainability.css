@@ -1,0 +1,101 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Project / Sustainability
+   --------------------------------------------------------------------------
+   全幅の自然写真 + グリーンのグラデーションマスク。
+   地域住民・投資家への信頼感を担保する、飾りではない主要セクション。
+   ========================================================================== */
+
+.p-sustainability {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 90svh;
+  overflow: hidden;
+  color: var(--color-text-inverse);
+  background-color: #061e16;
+}
+
+@media (min-width: 1024px) {
+  .p-sustainability {
+    min-height: 90vh;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Media
+   -------------------------------------------------------------------------- */
+
+.p-sustainability__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.p-sustainability__img {
+  position: absolute;
+  inset-block-start: -12%;
+  inset-inline-start: 0;
+  width: 100%;
+  height: 124%;
+  object-fit: cover;
+  will-change: transform;
+  transform: translate3d(0, var(--parallax-y, 0), 0);
+}
+
+.p-sustainability__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-green);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Body
+   -------------------------------------------------------------------------- */
+
+.p-sustainability__body {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: calc(var(--container-width) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding: 96px var(--gutter);
+}
+
+@media (min-width: 1024px) {
+  .p-sustainability__body {
+    padding-block: 120px;
+  }
+}
+
+.p-sustainability__title {
+  margin-block-start: var(--space-head-body);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  color: var(--color-text-inverse);
+  max-width: 16em;
+  word-break: auto-phrase;
+}
+
+.p-sustainability__text {
+  margin-block-start: 28px;
+  color: var(--color-text-inverse);
+  /* 写真上のためコントラストを確保する目的で、通常より少し明るく保つ */
+  opacity: 0.94;
+}
+
+/* --------------------------------------------------------------------------
+   Topics（取り組みのキーワード列挙）
+   -------------------------------------------------------------------------- */
+
+.p-sustainability__topics {
+  margin-block-start: 36px;
+}
+
+.p-sustainability__actions {
+  margin-block-start: var(--space-body-cta);
+}

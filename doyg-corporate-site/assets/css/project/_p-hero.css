@@ -1,0 +1,226 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Project / Hero
+   --------------------------------------------------------------------------
+   100svh のフルスクリーンビジュアル。
+   svh（Small Viewport Height）を使うことで、iOS のアドレスバーによって
+   コピーが見切れる問題を回避する。SP体験を最優先するための必須指定。
+   ========================================================================== */
+
+.p-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100svh;
+  overflow: hidden;
+  color: var(--color-text-inverse);
+  background-color: var(--color-navy-deep);
+}
+
+/* --------------------------------------------------------------------------
+   Background（動画 / 静止画）
+   -------------------------------------------------------------------------- */
+
+.p-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* poster画像と動画を重ねて配置する。
+   動画が読み込まれない環境（SP・省データ・モーション削減）では
+   動画要素が DOM から取り除かれ、下の poster 画像だけが残る */
+.p-hero__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ロード時にゆっくり引く（A2 Hero Zoom）。初期値は少し寄った状態。
+   JS が動く環境でのみ適用する */
+.js-enabled .p-hero__media {
+  transform: scale(1.06);
+  transition: transform 2400ms var(--ease);
+}
+
+.p-hero.is-loaded .p-hero__media {
+  transform: scale(1);
+}
+
+.p-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-hero);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Body（キャッチコピー）
+   -------------------------------------------------------------------------- */
+
+.p-hero__body {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: calc(var(--container-width-wide) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  /* ヘッダーぶんを避けつつ、下寄せの版面をつくる */
+  padding-block: calc(var(--header-height) + 40px) 0;
+  margin-block-end: 120px;
+}
+
+@media (min-width: 768px) {
+  .p-hero__body {
+    margin-block-end: 140px;
+  }
+}
+
+/* ---- キャッチコピー ---- */
+
+.p-hero__title {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-display);
+}
+
+.p-hero__title-en {
+  display: block;
+  margin-block-start: 16px;
+  font-family: var(--font-en);
+  font-size: clamp(0.8125rem, 0.7rem + 0.5vw, 1.0625rem);
+  font-weight: 400;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-text-inverse-muted);
+}
+
+.p-hero__lead {
+  margin-block-start: 28px;
+  font-size: var(--fs-lead);
+  font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0.06em;
+}
+
+/* --------------------------------------------------------------------------
+   A1 Hero Reveal の初期状態
+   .js-enabled 配下でのみ隠す。JS が無効・読み込み失敗の環境では
+   キャッチコピーが最初から表示されたままになる（真っ白を絶対につくらない）。
+   -------------------------------------------------------------------------- */
+
+.js-enabled .p-hero__title,
+.js-enabled .p-hero__lead {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity var(--dur-slower) var(--ease),
+    transform var(--dur-slower) var(--ease);
+}
+
+.js-enabled .p-hero__title { transition-delay: 300ms; }
+.js-enabled .p-hero__lead  { transition-delay: 500ms; }
+
+.p-hero.is-loaded .p-hero__title,
+.p-hero.is-loaded .p-hero__lead {
+  opacity: 1;
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   Foot（スクロール誘導 + 所在地表示 + 動画停止ボタン）
+   -------------------------------------------------------------------------- */
+
+.p-hero__foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: calc(var(--container-width-wide) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding: 0 var(--gutter) 28px;
+  border-block-start: 1px solid var(--color-rule-inverse);
+  padding-block-start: 20px;
+}
+
+/* ---- スクロールインジケータ（A3） ---- */
+
+.p-hero__scroll {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-en);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+}
+
+.p-hero__scroll-line {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 40px;
+  overflow: hidden;
+  background-color: var(--color-rule-inverse);
+}
+
+/* 縦線の中を光が上から下へ流れ続ける */
+.p-hero__scroll-line::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  width: 100%;
+  height: 50%;
+  background-color: var(--color-white);
+  animation: p-hero-scroll 1800ms linear infinite;
+}
+
+@keyframes p-hero-scroll {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+/* ---- 右側（所在地 + 動画操作） ---- */
+
+.p-hero__foot-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.p-hero__place {
+  font-family: var(--font-en);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-text-inverse-muted);
+}
+
+/* SPでは所在地を省き、スクロール誘導と停止ボタンのみ残す */
+@media (max-width: 767px) {
+  .p-hero__place {
+    display: none;
+  }
+}
+
+/* ---- 動画の再生/停止ボタン ----
+   自動再生される動きのあるコンテンツには停止手段が必要（WCAG 2.2.2）。
+   アクセシビリティ AA の必須要件のため省略しない。 */
+
+.p-hero__video-toggle {
+  color: var(--color-white);
+}
+
+/* 動画を読み込んでいない場合（SP・省データ時）はボタンを隠す */
+.p-hero:not(.has-video) .p-hero__video-toggle {
+  display: none;
+}
