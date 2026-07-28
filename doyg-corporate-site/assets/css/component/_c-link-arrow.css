@@ -1,0 +1,67 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Component / Link Arrow
+   --------------------------------------------------------------------------
+   本文中・セクション末尾で使う矢印付きテキストリンク。
+   サイト内の「次へ進む」導線はすべてこの形に統一する。
+   ========================================================================== */
+
+.c-link-arrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  /* タップ領域を44px確保する（見た目の高さは文字ぶんのまま） */
+  min-height: 44px;
+  padding-block: 10px;
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--color-text-strong);
+}
+
+/* 下線は左から引く。ホバー前は幅ゼロ */
+.c-link-arrow__label {
+  position: relative;
+}
+
+.c-link-arrow__label::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -4px;
+  inset-inline-start: 0;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.c-link-arrow__icon {
+  flex-shrink: 0;
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.c-link-arrow:hover .c-link-arrow__label::after,
+.c-link-arrow:focus-visible .c-link-arrow__label::after {
+  transform: scaleX(1);
+}
+
+.c-link-arrow:hover .c-link-arrow__icon,
+.c-link-arrow:focus-visible .c-link-arrow__icon {
+  transform: translateX(6px);
+}
+
+/* --------------------------------------------------------------------------
+   Modifier
+   -------------------------------------------------------------------------- */
+
+.c-link-arrow--inverse {
+  color: var(--color-text-inverse);
+}
+
+.c-link-arrow--large {
+  font-size: var(--fs-body);
+  gap: 16px;
+}

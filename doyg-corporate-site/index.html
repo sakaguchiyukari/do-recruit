@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: https://ogp.me/ns#">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ==========================================================================
+     JS 有効判定
+     --------------------------------------------------------------------------
+     スクロール連動アニメーションの初期状態（opacity:0）は
+     .js-enabled 配下でのみ適用される。ここで最速のタイミングでクラスを付ける
+     ことで、JS が無効・読み込み失敗の環境ではコンテンツが最初から見えたままになる。
+     この1行を省くと JS 失敗時にページが真っ白になる。
+     ========================================================================== -->
+<script>document.documentElement.classList.add('js-enabled');</script>
+
+<title>ドゥ.ヨネザワ企業グループ｜地平を、ひらく。熊本から、次の価値を。</title>
+<meta name="description" content="熊本のドゥ.ヨネザワ企業グループ。情報通信・カーライフ・ゴルフ・ライフ&amp;ウェルネスの4事業領域で、11の法人・約700名が地域の暮らしを支えています。新たな価値を創造する企業へ。">
+
+<!-- OGP（Phase4 の SEO 対応で各ページ個別に最適化する） -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ドゥ.ヨネザワ企業グループ">
+<meta property="og:title" content="ドゥ.ヨネザワ企業グループ｜地平を、ひらく。">
+<meta property="og:description" content="熊本から、次の価値を。4つの事業領域で地域の暮らしを支えるドゥ.ヨネザワ企業グループ。">
+<!-- TODO(Phase4): OGP は SVG 非対応のため 1200×630 の PNG に差し替える -->
+<meta property="og:image" content="/assets/img/ogp/ogp-default.svg">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="theme-color" content="#0b2545">
+
+<!-- Hero の LCP を最短化する。ここだけ preload + fetchpriority を使う -->
+<link rel="preload" as="image" href="/assets/img/hero/hero-poster.svg" fetchpriority="high">
+
+<link rel="stylesheet" href="/assets/css/style.css">
+<script type="module" src="/assets/js/main.js"></script>
+</head>
+
+<body>
+
+<!-- 繰り返しナビゲーションの読み飛ばし（WCAG 2.4.1） -->
+<a class="c-skip-link" href="#main">本文へスキップ</a>
+
+<!-- ==========================================================================
+     Header
+     ========================================================================== -->
+<header class="l-header js-header">
+  <div class="l-header__inner">
+
+    <a class="l-header__logo" href="/">
+      <!-- Phase1 はロゴ画像未支給のためテキストロゴで代替。
+           支給後に logo.svg / logo-white.svg へ差し替える -->
+      DO.YONEZAWA
+      <span class="l-header__logo-sub">ドゥ.ヨネザワ企業グループ</span>
+    </a>
+
+    <nav class="l-header__nav" aria-label="メインメニュー">
+      <ul class="l-header__nav-list">
+        <li><a class="l-header__nav-link" href="/about/">About</a></li>
+        <li><a class="l-header__nav-link" href="/business/">Business</a></li>
+        <li><a class="l-header__nav-link" href="/group/">Group</a></li>
+        <li><a class="l-header__nav-link" href="/sustainability/">Sustainability</a></li>
+        <li><a class="l-header__nav-link" href="/news/">News</a></li>
+      </ul>
+    </nav>
+
+    <div class="l-header__actions">
+      <!-- 採用強化という最優先目的をナビゲーション上で表明するため、
+           RECRUIT のみ枠線ボタンとして視覚的に独立させる -->
+      <a class="l-header__recruit" href="/recruit/">Recruit</a>
+
+      <button class="l-header__menu js-drawer-trigger"
+              type="button"
+              aria-label="メニューを開く"
+              aria-controls="drawer"
+              aria-expanded="false">
+        <span class="l-header__menu-bar" aria-hidden="true"></span>
+        <span class="l-header__menu-bar" aria-hidden="true"></span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- ==========================================================================
+     Drawer（フルスクリーンメニュー）
+     PC でも表示し、全ページへの到達を1クリックに保つ
+     ========================================================================== -->
+<div class="c-drawer js-drawer" id="drawer">
+  <div class="c-drawer__inner l-container l-container--wide">
+
+    <nav class="c-drawer__nav" aria-label="全メニュー">
+      <ul class="c-drawer__list">
+        <li class="c-drawer__item" style="--i:0">
+          <a class="c-drawer__link" href="/about/">
+            <span class="c-drawer__en">About</span>
+            <span class="c-drawer__jp">企業理念・会社概要</span>
+          </a>
+        </li>
+        <li class="c-drawer__item" style="--i:1">
+          <a class="c-drawer__link" href="/message/">
+            <span class="c-drawer__en">Message</span>
+            <span class="c-drawer__jp">CEOメッセージ</span>
+          </a>
+        </li>
+        <li class="c-drawer__item" style="--i:2">
+          <a class="c-drawer__link" href="/business/">
+            <span class="c-drawer__en">Business</span>
+            <span class="c-drawer__jp">4つの事業領域</span>
+          </a>
+        </li>
+        <li class="c-drawer__item" style="--i:3">
+          <a class="c-drawer__link" href="/group/">
+            <span class="c-drawer__en">Group</span>
+            <span class="c-drawer__jp">グループ会社</span>
+          </a>
+        </li>
+        <li class="c-drawer__item" style="--i:4">
+          <a class="c-drawer__link" href="/sustainability/">
+            <span class="c-drawer__en">Sustainability</span>
+            <span class="c-drawer__jp">環境・地域貢献</span>
+          </a>
+        </li>
+        <li class="c-drawer__item" style="--i:5">
+          <a class="c-drawer__link" href="/news/">
+            <span class="c-drawer__en">News</span>
+            <span class="c-drawer__jp">ニュース</span>
+          </a>
+        </li>
+        <li class="c-drawer__item" style="--i:6">
+          <a class="c-drawer__link" href="/recruit/">
+            <span class="c-drawer__en">Recruit</span>
+            <span class="c-drawer__jp">採用情報</span>
+          </a>
+        </li>
+        <li class="c-drawer__item" style="--i:7">
+          <a class="c-drawer__link" href="/contact/">
+            <span class="c-drawer__en">Contact</span>
+            <span class="c-drawer__jp">お問い合わせ</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="c-drawer__foot">
+      <ul class="c-drawer__utility">
+        <li><a class="c-drawer__utility-link" href="/privacy/">プライバシーポリシー</a></li>
+        <li><a class="c-drawer__utility-link" href="/terms/">サイトポリシー</a></li>
+        <li><a class="c-drawer__utility-link" href="/sitemap/">サイトマップ</a></li>
+      </ul>
+      <p class="c-drawer__utility-link">〒862-0908 熊本県熊本市東区新生2丁目23-18</p>
+    </div>
+
+  </div>
+</div>
+
+<main id="main">
+
+  <!-- ========================================================================
+       Hero
+       100svh を使うことで iOS のアドレスバーによるコピーの見切れを回避する
+       ======================================================================== -->
+  <section class="p-hero js-hero" aria-label="メインビジュアル">
+
+    <div class="p-hero__bg">
+      <!-- poster 画像は常に存在させる。動画が読み込まれない環境ではこれが背景になる -->
+      <img class="p-hero__media"
+           src="/assets/img/hero/hero-poster.svg"
+           alt=""
+           width="1920" height="1080"
+           fetchpriority="high" decoding="async">
+
+      <!--
+        背景動画は JS（hero-video.js）が生成し、再生可能になってから挿入する。
+        HTML に <video> を直接置くと、JS 無効環境で「再生できない動画」として
+        ブラウザ既定のメディアUIが表示され、Hero の見た目が壊れるため。
+
+        動画素材の撮影後、section.p-hero に次の属性を追加すれば有効になる：
+          data-video-webm="/assets/video/hero.webm"
+          data-video-mp4="/assets/video/hero.mp4"
+        読み込まない条件：768px未満 / Save-Data / 低速回線 / モーション削減。
+      -->
+
+      <div class="p-hero__overlay" aria-hidden="true"></div>
+    </div>
+
+    <div class="p-hero__body">
+      <h1 class="p-hero__title">
+        地平を、ひらく。
+        <span class="p-hero__title-en">Open the Horizon</span>
+      </h1>
+      <p class="p-hero__lead">熊本から、次の価値を。</p>
+    </div>
+
+    <div class="p-hero__foot">
+      <a class="p-hero__scroll" href="#about">
+        <span class="p-hero__scroll-line" aria-hidden="true"></span>
+        Scroll
+      </a>
+
+      <div class="p-hero__foot-right">
+        <p class="p-hero__place">Kumamoto, Japan</p>
+
+        <!-- 自動再生される動きには停止手段が必須（WCAG 2.2.2） -->
+        <button class="c-icon-button p-hero__video-toggle js-hero-video-toggle"
+                type="button"
+                data-state="playing"
+                aria-label="背景動画を停止する">
+          <svg class="c-icon c-icon--md" aria-hidden="true" focusable="false">
+            <use href="/assets/icon/sprite.svg#pause"></use>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================================
+       01 About
+       ======================================================================== -->
+  <section class="l-section" id="about" aria-labelledby="about-title">
+    <div class="l-container l-container--wide">
+      <div class="p-about__layout">
+
+        <div class="p-about__body" data-reveal-stagger>
+          <p class="c-section-head__label js-reveal">
+            <span class="c-section-head__num">01</span>
+            <span class="c-section-head__en">About</span>
+          </p>
+          <h2 class="p-about__title js-reveal" id="about-title">一つの土地に、<br>多様な営みを。</h2>
+          <div class="p-about__text js-reveal">
+            <p class="c-text">1999年、株式会社ヨネザワからの分社化とともに、私たちの歩みははじまりました。情報通信、カーライフ、ゴルフ、ライフ&amp;ウェルネス。業種の異なる11の法人に、約700名の仲間がいます。</p>
+            <p class="c-text">ばらばらに見えるこれらの事業は、熊本という一つの土地で人の暮らしを支えるという一点で、確かにつながっています。</p>
+          </div>
+          <p class="p-about__actions js-reveal">
+            <a class="c-link-arrow" href="/about/">
+              <span class="c-link-arrow__label">グループについて</span>
+              <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
+                <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              </svg>
+            </a>
+          </p>
+        </div>
+
+        <div class="p-about__media">
+          <div class="c-media c-media--4x5 c-media--parallax js-mask js-parallax">
+            <img class="c-media__img"
+                 src="/assets/img/about/about-main.svg"
+                 alt="熊本の風景のなかに広がる街並みと田畑"
+                 width="1200" height="1500"
+                 loading="lazy" decoding="async">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       02 Mission
+       サイト内で唯一「色を面で使う」セクション
+       ======================================================================== -->
+  <section class="l-section l-section--navy p-mission" id="mission" aria-labelledby="mission-title">
+    <div class="l-container">
+
+      <p class="c-section-head__label c-section-head__label--inverse js-reveal">
+        <span class="c-section-head__num">02</span>
+        <span class="c-section-head__en">Mission</span>
+      </p>
+
+      <h2 class="p-mission__statement js-reveal" id="mission-title">新たな価値を<br>創造する企業へ。</h2>
+
+      <dl class="p-mission__list" data-reveal-stagger>
+
+        <div class="p-mission__row js-reveal">
+          <dt class="p-mission__term">Mission</dt>
+          <dd class="p-mission__desc">
+            新たな価値を創造する企業へ
+            <span class="p-mission__note">業種の枠組みを超え、まだ世の中にない価値をこの地域から生み出していく。</span>
+          </dd>
+        </div>
+
+        <div class="p-mission__row js-reveal">
+          <dt class="p-mission__term">Vision</dt>
+          <dd class="p-mission__desc">
+            地域のお客様と、生涯のパートナーに
+            <span class="p-mission__note">2030年をマイルストーンとし、お客様から選ばれ続けるグループを目指します。</span>
+          </dd>
+        </div>
+
+        <div class="p-mission__row js-reveal">
+          <dt class="p-mission__term">Values</dt>
+          <dd class="p-mission__desc">
+            共創・共生・協働
+            <span class="p-mission__note">一社では届かない場所へ。グループとして、地域とともに向かう。</span>
+          </dd>
+        </div>
+
+        <div class="p-mission__row js-reveal">
+          <dt class="p-mission__term">Credo</dt>
+          <dd class="p-mission__desc">
+            誠実・創造・躍動
+            <span class="p-mission__note">創業から変わらない社是。私たちの立ち姿を示す三つの言葉。</span>
+          </dd>
+        </div>
+
+      </dl>
+
+      <p class="p-mission__actions js-reveal">
+        <a class="c-link-arrow c-link-arrow--inverse" href="/about/">
+          <span class="c-link-arrow__label">企業理念を見る</span>
+          <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
+            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+          </svg>
+        </a>
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       03 Business
+       4事業をカードで並べず、1事業=1つの全幅の帯として見せる
+       ======================================================================== -->
+  <section class="l-section" id="business" aria-labelledby="business-title">
+
+    <div class="l-container l-container--wide">
+      <div class="c-section-head" data-reveal-stagger>
+        <p class="c-section-head__label js-reveal">
+          <span class="c-section-head__num">03</span>
+          <span class="c-section-head__en">Business</span>
+        </p>
+        <h2 class="c-section-head__title js-reveal" id="business-title">業種の枠を超えて、暮らしのそばに。</h2>
+        <hr class="c-section-head__rule js-rule">
+      </div>
+    </div>
+
+    <div class="p-business__list">
+
+      <!-- 01 情報通信 -->
+      <a class="p-business__band" href="/business/information-communication/">
+        <div class="p-business__media">
+          <img class="p-business__img js-parallax"
+               src="/assets/img/business/bs-ict.svg"
+               alt="店内でお客様と一緒に画面を確認するスタッフの手元"
+               width="2400" height="1350"
+               loading="lazy" decoding="async">
+          <span class="p-business__overlay" aria-hidden="true"></span>
+        </div>
+        <div class="p-business__body" data-reveal-stagger>
+          <div class="js-reveal">
+            <span class="p-business__num">01</span>
+            <span class="p-business__en">Information &amp; Communication</span>
+            <span class="p-business__jp">インフォメーション&amp;コミュニケーション事業</span>
+            <p class="p-business__lead">つながることが当たり前になった社会を、足元から支える。NTTドコモ正規代理店として、地域のデジタル化に伴走します。</p>
+          </div>
+          <span class="p-business__action js-reveal">
+            詳しく見る
+            <svg class="c-icon c-icon--md p-business__action-icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- 02 カーライフ -->
+      <a class="p-business__band" href="/business/car-life/">
+        <div class="p-business__media">
+          <img class="p-business__img js-parallax"
+               src="/assets/img/business/bs-car.svg"
+               alt="洗車を終えた車体に映り込む空"
+               width="2400" height="1350"
+               loading="lazy" decoding="async">
+          <span class="p-business__overlay" aria-hidden="true"></span>
+        </div>
+        <div class="p-business__body" data-reveal-stagger>
+          <div class="js-reveal">
+            <span class="p-business__num">02</span>
+            <span class="p-business__en">Car Life</span>
+            <span class="p-business__jp">カーライフ事業</span>
+            <p class="p-business__lead">移動する自由を、この地域のすみずみへ。販売から整備、観光バスまで、人と場所をつなぐ手段を担います。</p>
+          </div>
+          <span class="p-business__action js-reveal">
+            詳しく見る
+            <svg class="c-icon c-icon--md p-business__action-icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- 03 ゴルフ -->
+      <a class="p-business__band" href="/business/golf/">
+        <div class="p-business__media">
+          <img class="p-business__img js-parallax"
+               src="/assets/img/business/bs-golf.svg"
+               alt="朝露に濡れたゴルフコースの芝と遠くに見える阿蘇の山並み"
+               width="2400" height="1350"
+               loading="lazy" decoding="async">
+          <span class="p-business__overlay" aria-hidden="true"></span>
+        </div>
+        <div class="p-business__body" data-reveal-stagger>
+          <div class="js-reveal">
+            <span class="p-business__num">03</span>
+            <span class="p-business__en">Golf</span>
+            <span class="p-business__jp">ゴルフ事業</span>
+            <p class="p-business__lead">阿蘇の風のなかに、特別な一日を。熊本の自然そのものを資源とし、訪れる人の時間を豊かにします。</p>
+          </div>
+          <span class="p-business__action js-reveal">
+            詳しく見る
+            <svg class="c-icon c-icon--md p-business__action-icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- 04 ライフ&ウェルネス -->
+      <a class="p-business__band" href="/business/life-wellness/">
+        <div class="p-business__media">
+          <img class="p-business__img js-parallax"
+               src="/assets/img/business/bs-wellness.svg"
+               alt="デイサービスで交わされる手と手"
+               width="2400" height="1350"
+               loading="lazy" decoding="async">
+          <span class="p-business__overlay" aria-hidden="true"></span>
+        </div>
+        <div class="p-business__body" data-reveal-stagger>
+          <div class="js-reveal">
+            <span class="p-business__num">04</span>
+            <span class="p-business__en">Life &amp; Wellness</span>
+            <span class="p-business__jp">ライフ&amp;ウェルネス事業</span>
+            <p class="p-business__lead">食・住まい・暮らし、そして健康。不動産から介護・医療まで、人生の長い時間に寄り添います。</p>
+          </div>
+          <span class="p-business__action js-reveal">
+            詳しく見る
+            <svg class="c-icon c-icon--md p-business__action-icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       04 Group（数字で見る企業）
+       企業規模を一瞬で伝えるための最重要セクション
+       ======================================================================== -->
+  <section class="l-section l-section--subtle" id="group" aria-labelledby="group-title">
+    <div class="l-container l-container--wide">
+
+      <div class="c-section-head" data-reveal-stagger>
+        <p class="c-section-head__label js-reveal">
+          <span class="c-section-head__num">04</span>
+          <span class="c-section-head__en">Group</span>
+        </p>
+        <h2 class="c-section-head__title js-reveal" id="group-title">数字で見る、ドゥ.ヨネザワ企業グループ</h2>
+        <hr class="c-section-head__rule js-rule">
+      </div>
+
+      <!--
+        data-count-to は Phase3 のカウントアップ演出で使用する。
+        JS が動作しない環境でも数字はそのまま読めるよう、
+        値は必ず HTML に直書きしておくこと。
+      -->
+      <dl class="c-stat-list p-group__stats" data-reveal-stagger>
+
+        <div class="c-stat c-stat--primary js-reveal">
+          <dt class="c-stat__label">設立</dt>
+          <dd class="c-stat__value"><span class="js-count" data-count-to="1999">1999</span></dd>
+        </div>
+
+        <div class="c-stat c-stat--primary js-reveal">
+          <dt class="c-stat__label">グループ企業10社＋社会福祉法人1</dt>
+          <dd class="c-stat__value">
+            <span class="js-count" data-count-to="11">11</span>
+            <span class="c-stat__unit">法人</span>
+          </dd>
+        </div>
+
+        <div class="c-stat c-stat--primary js-reveal">
+          <dt class="c-stat__label">事業カテゴリー</dt>
+          <dd class="c-stat__value">
+            <span class="js-count" data-count-to="4">4</span>
+            <span class="c-stat__unit">領域</span>
+          </dd>
+        </div>
+
+        <div class="c-stat c-stat--primary js-reveal">
+          <dt class="c-stat__label">グループ従業員数</dt>
+          <dd class="c-stat__value">
+            <span class="c-stat__affix">約</span>
+            <span class="js-count" data-count-to="700">700</span>
+            <span class="c-stat__unit">名</span>
+          </dd>
+        </div>
+
+        <div class="c-stat c-stat--secondary js-reveal">
+          <dt class="c-stat__label">グループ売上高</dt>
+          <dd class="c-stat__value">
+            <span class="js-count" data-count-to="200">200</span>
+            <span class="c-stat__unit">億円</span>
+            <span class="c-stat__affix">超</span>
+          </dd>
+        </div>
+
+        <div class="c-stat c-stat--secondary js-reveal">
+          <dt class="c-stat__label">創立からの歩み（2024年時点）</dt>
+          <dd class="c-stat__value">
+            <span class="js-count" data-count-to="25">25</span>
+            <span class="c-stat__unit">周年</span>
+          </dd>
+        </div>
+
+      </dl>
+
+      <p class="c-stat-note js-reveal">※ 掲載数値は公開情報にもとづく参考値です。公開前に確定値へ差し替えます。</p>
+
+      <p class="p-group__actions js-reveal">
+        <a class="c-link-arrow" href="/group/">
+          <span class="c-link-arrow__label">グループ会社を見る</span>
+          <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
+            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+          </svg>
+        </a>
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       05 Sustainability
+       飾りではなく主要セクションとして厚く扱う
+       ======================================================================== -->
+  <section class="p-sustainability" id="sustainability" aria-labelledby="sustainability-title">
+
+    <div class="p-sustainability__media">
+      <img class="p-sustainability__img js-parallax"
+           src="/assets/img/sustainability/sus-main.svg"
+           alt="霧のかかった南阿蘇の森"
+           width="2400" height="1350"
+           loading="lazy" decoding="async">
+      <span class="p-sustainability__overlay" aria-hidden="true"></span>
+    </div>
+
+    <div class="p-sustainability__body" data-reveal-stagger>
+      <p class="c-section-head__label c-section-head__label--inverse js-reveal">
+        <span class="c-section-head__num">05</span>
+        <span class="c-section-head__en">Sustainability</span>
+      </p>
+
+      <h2 class="p-sustainability__title js-reveal" id="sustainability-title">この土地からいただいた分を、返していく。</h2>
+
+      <div class="p-sustainability__text js-reveal">
+        <p class="c-text">南阿蘇村の湯の谷では、自然や動物との共生をテーマに「ネイチャーポジティブ（自然再興）」を推進し、国際目標「30by30」のサイト登録を目指しています。熊本市南区では温泉跡地を再開発し、キャンプ場・企業研修・自然学習の場「かたるの森」を開きました。</p>
+        <p class="c-text">環境・健康・デジタルの3領域で、事業そのものを通じた社会貢献に取り組んでいます。</p>
+      </div>
+
+      <ul class="c-tag-list p-sustainability__topics js-reveal">
+        <li><span class="c-tag c-tag--inverse c-tag--auto">ネイチャーポジティブ</span></li>
+        <li><span class="c-tag c-tag--inverse c-tag--auto">30by30</span></li>
+        <li><span class="c-tag c-tag--inverse c-tag--auto">カーボンニュートラル</span></li>
+        <li><span class="c-tag c-tag--inverse c-tag--auto">かたるの森</span></li>
+        <li><span class="c-tag c-tag--inverse c-tag--auto">健軍商店街 清掃活動</span></li>
+        <li><span class="c-tag c-tag--inverse c-tag--auto">まちづくり応“縁”団</span></li>
+      </ul>
+
+      <p class="p-sustainability__actions js-reveal">
+        <a class="c-link-arrow c-link-arrow--inverse" href="/sustainability/">
+          <span class="c-link-arrow__label">取り組みを見る</span>
+          <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
+            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+          </svg>
+        </a>
+      </p>
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================================
+       06 News
+       カードグリッドではなく罫線リスト。日付は等幅数字で桁を揃える
+       ======================================================================== -->
+  <section class="l-section" id="news" aria-labelledby="news-title">
+    <div class="l-container">
+
+      <div class="c-section-head c-section-head--split" data-reveal-stagger>
+        <p class="c-section-head__label js-reveal">
+          <span class="c-section-head__num">06</span>
+          <span class="c-section-head__en">News</span>
+        </p>
+        <h2 class="c-section-head__title js-reveal" id="news-title">ニュース</h2>
+        <p class="c-section-head__aside p-news__aside js-reveal">
+          <a class="c-link-arrow" href="/news/">
+            <span class="c-link-arrow__label">すべて見る</span>
+            <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </a>
+        </p>
+        <hr class="c-section-head__rule js-rule">
+      </div>
+
+      <!-- ダミー記事。Phase2 で実データ / CMS 連携に差し替える -->
+      <ul class="c-news-list p-news__list" data-reveal-stagger>
+
+        <li class="c-news-item js-reveal">
+          <a class="c-news-item__link" href="/news/">
+            <span class="c-news-item__meta">
+              <time class="c-news-item__date" datetime="2026-07-15">2026.07.15</time>
+              <span class="c-news-item__tag-wrap"><span class="c-tag">お知らせ</span></span>
+            </span>
+            <span class="c-news-item__title">（サンプル）ニュースのタイトルがここに入ります</span>
+            <svg class="c-icon c-icon--md c-news-item__icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </a>
+        </li>
+
+        <li class="c-news-item js-reveal">
+          <a class="c-news-item__link" href="/news/">
+            <span class="c-news-item__meta">
+              <time class="c-news-item__date" datetime="2026-06-28">2026.06.28</time>
+              <span class="c-news-item__tag-wrap"><span class="c-tag">プレスリリース</span></span>
+            </span>
+            <span class="c-news-item__title">（サンプル）長めのタイトルでも一覧の行の高さが崩れないことを確認するためのダミーテキストです</span>
+            <svg class="c-icon c-icon--md c-news-item__icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </a>
+        </li>
+
+        <li class="c-news-item js-reveal">
+          <a class="c-news-item__link" href="/news/">
+            <span class="c-news-item__meta">
+              <time class="c-news-item__date" datetime="2026-06-10">2026.06.10</time>
+              <span class="c-news-item__tag-wrap"><span class="c-tag">採用情報</span></span>
+            </span>
+            <span class="c-news-item__title">（サンプル）2027年度 新卒採用のエントリー受付を開始しました</span>
+            <svg class="c-icon c-icon--md c-news-item__icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </a>
+        </li>
+
+        <li class="c-news-item js-reveal">
+          <a class="c-news-item__link" href="/news/">
+            <span class="c-news-item__meta">
+              <time class="c-news-item__date" datetime="2026-05-30">2026.05.30</time>
+              <span class="c-news-item__tag-wrap"><span class="c-tag">サステナビリティ</span></span>
+            </span>
+            <span class="c-news-item__title">（サンプル）ネイチャーポジティブの取り組みについて</span>
+            <svg class="c-icon c-icon--md c-news-item__icon" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            </svg>
+          </a>
+        </li>
+
+      </ul>
+
+      <p class="p-news__actions js-reveal">
+        <a class="c-link-arrow" href="/news/">
+          <span class="c-link-arrow__label">すべて見る</span>
+          <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
+            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+          </svg>
+        </a>
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       07 Recruit CTA
+       他セクションより意図的に強いブロックにする。下層ページでも共通で使う
+       ======================================================================== -->
+  <section class="p-recruit" id="recruit" aria-labelledby="recruit-title">
+
+    <div class="p-recruit__media">
+      <img class="p-recruit__img js-parallax"
+           src="/assets/img/recruit/recruit-cta.svg"
+           alt="打ち合わせのなかで自然に言葉を交わす若手社員たち"
+           width="2400" height="1350"
+           loading="lazy" decoding="async">
+      <span class="p-recruit__overlay" aria-hidden="true"></span>
+    </div>
+
+    <div class="p-recruit__body" data-reveal-stagger>
+      <p class="c-section-head__label c-section-head__label--inverse js-reveal">
+        <span class="c-section-head__num">07</span>
+        <span class="c-section-head__en">Recruit</span>
+      </p>
+
+      <h2 class="p-recruit__title js-reveal" id="recruit-title">まだ名前のない仕事を、<br>つくりにいこう。</h2>
+
+      <div class="p-recruit__text js-reveal">
+        <p class="c-text">業種の枠を超えていく会社に必要なのは、枠のない人です。情報通信から介護まで、これだけ違う仕事が一つのグループにある理由は、この地域で挑戦できる領域がまだ残っているからです。</p>
+      </div>
+
+      <div class="p-recruit__actions js-reveal">
+        <a class="c-button c-button--light c-button--block" href="/recruit/">
+          採用情報を見る
+          <svg class="c-icon c-icon--md c-button__icon" aria-hidden="true" focusable="false">
+            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+          </svg>
+        </a>
+        <a class="c-button c-button--inverse c-button--block" href="/recruit/#requirements">
+          募集要項
+          <svg class="c-icon c-icon--md c-button__icon" aria-hidden="true" focusable="false">
+            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================================
+       08 Contact
+       Recruit CTA の直後に来るため、あえて静かに構成する
+       ======================================================================== -->
+  <section class="l-section" id="contact" aria-labelledby="contact-title">
+    <div class="l-container">
+
+      <div class="c-section-head" data-reveal-stagger>
+        <p class="c-section-head__label js-reveal">
+          <span class="c-section-head__num">08</span>
+          <span class="c-section-head__en">Contact</span>
+        </p>
+        <h2 class="c-section-head__title js-reveal" id="contact-title">お問い合わせ</h2>
+        <hr class="c-section-head__rule js-rule">
+      </div>
+
+      <div class="p-contact__layout">
+
+        <div class="js-reveal">
+          <div class="p-contact__text">
+            <p class="c-text">ご相談、取材のご依頼、お取引に関するお問い合わせを承っています。採用に関するご質問は採用ページの専用フォームからお願いいたします。</p>
+          </div>
+        </div>
+
+        <div class="p-contact__box js-reveal">
+          <div>
+            <p class="p-contact__box-title">Form</p>
+            <p class="c-small" style="margin-block-start:12px">24時間受付。3営業日以内にご返信します。</p>
+            <p style="margin-block-start:20px">
+              <a class="c-button c-button--block" href="/contact/">
+                お問い合わせフォーム
+                <svg class="c-icon c-icon--md c-button__icon" aria-hidden="true" focusable="false">
+                  <use href="/assets/icon/sprite.svg#arrow-right"></use>
+                </svg>
+              </a>
+            </p>
+          </div>
+
+          <hr class="p-contact__divider">
+
+          <div>
+            <p class="p-contact__box-title">Tel</p>
+            <!-- TODO: 正式な代表電話番号に差し替える -->
+            <p style="margin-block-start:12px">
+              <a class="p-contact__tel" href="tel:096-000-0000">
+                <svg class="c-icon c-icon--md" aria-hidden="true" focusable="false">
+                  <use href="/assets/icon/sprite.svg#phone"></use>
+                </svg>
+                096-000-0000
+              </a>
+            </p>
+            <p class="p-contact__hours">平日 9:00 – 18:00（土日祝を除く）</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ==========================================================================
+     Footer
+     ========================================================================== -->
+<footer class="l-footer">
+  <div class="l-container l-container--wide l-footer__inner">
+
+    <div class="l-footer__main">
+
+      <div>
+        <p class="l-footer__brand">
+          DO.YONEZAWA
+          <span class="l-footer__brand-sub">ドゥ.ヨネザワ企業グループ</span>
+        </p>
+        <address class="l-footer__address">
+          〒862-0908<br>
+          熊本県熊本市東区新生2丁目23-18
+        </address>
+        <p>
+          <a class="l-footer__tel" href="tel:096-000-0000">
+            <svg class="c-icon c-icon--md" aria-hidden="true" focusable="false">
+              <use href="/assets/icon/sprite.svg#phone"></use>
+            </svg>
+            096-000-0000
+          </a>
+        </p>
+      </div>
+
+      <nav class="l-footer__nav" aria-label="フッターメニュー">
+
+        <div>
+          <p class="l-footer__nav-title">About</p>
+          <ul class="l-footer__nav-list">
+            <li><a class="l-footer__nav-link" href="/about/">企業理念</a></li>
+            <li><a class="l-footer__nav-link" href="/message/">CEOメッセージ</a></li>
+            <li><a class="l-footer__nav-link" href="/about/#overview">会社概要</a></li>
+            <li><a class="l-footer__nav-link" href="/about/#history">沿革</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="l-footer__nav-title">Business</p>
+          <ul class="l-footer__nav-list">
+            <li><a class="l-footer__nav-link" href="/business/information-communication/">情報通信</a></li>
+            <li><a class="l-footer__nav-link" href="/business/car-life/">カーライフ</a></li>
+            <li><a class="l-footer__nav-link" href="/business/golf/">ゴルフ</a></li>
+            <li><a class="l-footer__nav-link" href="/business/life-wellness/">ライフ&amp;ウェルネス</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="l-footer__nav-title">Group</p>
+          <ul class="l-footer__nav-list">
+            <li><a class="l-footer__nav-link" href="/group/">グループ会社</a></li>
+            <li><a class="l-footer__nav-link" href="/sustainability/">サステナビリティ</a></li>
+            <li><a class="l-footer__nav-link" href="/news/">ニュース</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="l-footer__nav-title">Contact</p>
+          <ul class="l-footer__nav-list">
+            <li><a class="l-footer__nav-link" href="/recruit/">採用情報</a></li>
+            <li><a class="l-footer__nav-link" href="/contact/">お問い合わせ</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </div>
+
+    <div class="l-footer__bottom">
+      <p class="l-footer__copyright">&copy; DO.YONEZAWA CORPORATE GROUP</p>
+      <ul class="l-footer__utility">
+        <li><a class="l-footer__utility-link" href="/privacy/">プライバシーポリシー</a></li>
+        <li><a class="l-footer__utility-link" href="/terms/">サイトポリシー</a></li>
+        <li><a class="l-footer__utility-link" href="/sitemap/">サイトマップ</a></li>
+      </ul>
+    </div>
+
+  </div>
+</footer>
+
+
+<!-- ==========================================================================
+     SP固定フッターCTA
+     Hero を通過したら現れる。採用導線の強化とスマホ体験の最優先を両立させる
+     ========================================================================== -->
+<div class="p-sp-cta js-sp-cta">
+  <a class="p-sp-cta__item p-sp-cta__item--primary" href="/recruit/">
+    採用情報を見る
+    <svg class="c-icon c-icon--sm" aria-hidden="true" focusable="false">
+      <use href="/assets/icon/sprite.svg#arrow-right"></use>
+    </svg>
+  </a>
+  <a class="p-sp-cta__item p-sp-cta__item--tel" href="tel:096-000-0000" aria-label="電話をかける">
+    <svg class="c-icon c-icon--md" aria-hidden="true" focusable="false">
+      <use href="/assets/icon/sprite.svg#phone"></use>
+    </svg>
+  </a>
+</div>
+
+</body>
+</html>

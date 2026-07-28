@@ -1,0 +1,100 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Foundation / Reset
+   --------------------------------------------------------------------------
+   モダンリセット。ブラウザ間の差異を消すことだけを担当し、
+   見た目の意思決定は _base.css / _typography.css 側で行う。
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* マージンの初期値を一律で消す。余白は必ず明示的に与える */
+html,
+body,
+h1, h2, h3, h4, h5, h6,
+p,
+figure,
+blockquote,
+dl, dd, dt,
+ul, ol, li {
+  margin: 0;
+  padding: 0;
+}
+
+ul[class],
+ol[class] {
+  list-style: none;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* スクロールバー出現によるレイアウトシフトを防ぐ */
+  scrollbar-gutter: stable;
+}
+
+body {
+  min-height: 100svh;
+  /* 横スクロールを一切発生させない（SP体験の最優先事項） */
+  overflow-x: clip;
+}
+
+/* 画像・メディアはブロック要素として扱い、はみ出しを防ぐ */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+  /* 読み込み前の背景色。真っ白よりちらつきが目立たない */
+  background-color: var(--color-bg-subtle);
+}
+
+/* フォーム要素はフォントを継承させる（ブラウザ既定を持ち込まない） */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* 見出しの自動サイズ・自動太字を解除し、クラスで制御する */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+address {
+  font-style: normal;
+}
+
+/* 隠し属性を確実に効かせる */
+[hidden] {
+  display: none !important;
+}

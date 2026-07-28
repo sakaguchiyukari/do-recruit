@@ -1,0 +1,58 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Component / Tag
+   --------------------------------------------------------------------------
+   ニュースのカテゴリ、サステナビリティの取り組み名などに使う小さなラベル。
+   塗りではなく線で表現し、主張を抑える。
+   ========================================================================== */
+
+.c-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 7em;
+  padding: 4px 12px;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Modifier
+   -------------------------------------------------------------------------- */
+
+.c-tag--blue {
+  color: var(--color-blue);
+  border-color: color-mix(in srgb, var(--color-blue) 40%, transparent);
+}
+
+.c-tag--green {
+  color: var(--color-green);
+  border-color: color-mix(in srgb, var(--color-green) 40%, transparent);
+}
+
+/* 濃色背景・写真上で使う反転版 */
+.c-tag--inverse {
+  color: var(--color-text-inverse);
+  border-color: var(--color-rule-inverse);
+}
+
+/* 幅の下限をなくす（キーワード列挙などで使う） */
+.c-tag--auto {
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Tag List
+   -------------------------------------------------------------------------- */
+
+.c-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}

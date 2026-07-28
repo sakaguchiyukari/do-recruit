@@ -1,0 +1,53 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Layout / Section
+   --------------------------------------------------------------------------
+   セクションの縦余白を統括する。
+   「大胆な余白」はここの1箇所で担保し、各セクションが個別に
+   padding を持たないようにする（余白の統一感が崩れるため）。
+   ========================================================================== */
+
+.l-section {
+  position: relative;
+  padding-block: var(--space-section);
+  /* 画面外セクションの描画をスキップし、スクロールのカクつきを防ぐ */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+}
+
+/* 背景に微差をつけるセクション（和紙のイメージ） */
+.l-section--subtle {
+  background-color: var(--color-bg-subtle);
+}
+
+/* Navy 全面のセクション */
+.l-section--navy {
+  color: var(--color-text-inverse);
+  background-color: var(--color-navy);
+}
+
+/* 上下の余白を詰めたいセクション */
+.l-section--compact {
+  padding-block: calc(var(--space-section) * 0.6);
+}
+
+/* 内部で自前の高さを持つセクション（Hero / 事業帯など）は余白を打ち消す */
+.l-section--flush {
+  padding-block: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Section Divider
+   セクション区切りのヘアライン。装飾はこの1本に集約する。
+   -------------------------------------------------------------------------- */
+
+.l-section__rule {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background-color: var(--color-rule);
+}
+
+.l-section__rule--inverse {
+  background-color: var(--color-rule-inverse);
+}

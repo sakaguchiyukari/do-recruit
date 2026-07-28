@@ -1,0 +1,58 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Project / About
+   --------------------------------------------------------------------------
+   テキストと縦位置写真（4:5）の2カラム。
+   SP では「見出し → 本文 → 写真 → リンク」の縦積みにする。
+   ========================================================================== */
+
+.p-about__layout {
+  display: grid;
+  gap: 48px;
+}
+
+@media (min-width: 1024px) {
+  .p-about__layout {
+    /* テキスト側をやや狭くし、写真に存在感を持たせる */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    column-gap: clamp(48px, 6vw, 112px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Body
+   -------------------------------------------------------------------------- */
+
+.p-about__title {
+  margin-block-start: var(--space-head-body);
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  color: var(--color-text-strong);
+  word-break: auto-phrase;
+}
+
+.p-about__text {
+  margin-block-start: 32px;
+}
+
+.p-about__actions {
+  margin-block-start: var(--space-body-cta);
+}
+
+/* --------------------------------------------------------------------------
+   Media
+   -------------------------------------------------------------------------- */
+
+.p-about__media {
+  /* SP では横幅いっぱい、PC では縦位置写真として見せる */
+  max-width: 520px;
+}
+
+@media (min-width: 1024px) {
+  .p-about__media {
+    max-width: none;
+  }
+}

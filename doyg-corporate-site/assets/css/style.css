@@ -1,0 +1,56 @@
+@charset "UTF-8";
+/* ==========================================================================
+   DO.YONEZAWA CORPORATE GROUP — Stylesheet Entry
+   --------------------------------------------------------------------------
+   読み込み順序に意味がある。下に行くほど詳細度と具体性が上がるため、
+   この順番を入れ替えないこと。
+
+     1. foundation … 変数・リセット・素の要素・タイプスケール
+     2. layout     … 版面と配置（l-）
+     3. component  … 再利用可能な部品（c-）
+     4. project    … ページ固有のまとまり（p-）
+     5. utility    … 単一責務の上書き（u-）
+
+   ※ @import は開発時の可読性を優先した構成。
+      Phase6（パフォーマンス最適化）で1ファイルに結合・最小化し、
+      リクエストの直列化（ウォーターフォール）を解消する。
+   ========================================================================== */
+
+/* 1. Foundation ---------------------------------------------------------- */
+@import url("foundation/_variables.css");
+@import url("foundation/_reset.css");
+@import url("foundation/_base.css");
+@import url("foundation/_typography.css");
+
+/* 2. Layout -------------------------------------------------------------- */
+@import url("layout/_l-container.css");
+@import url("layout/_l-section.css");
+@import url("layout/_l-header.css");
+@import url("layout/_l-footer.css");
+
+/* 3. Component ----------------------------------------------------------- */
+@import url("component/_c-icon.css");
+@import url("component/_c-button.css");
+@import url("component/_c-link-arrow.css");
+@import url("component/_c-section-head.css");
+@import url("component/_c-media.css");
+@import url("component/_c-tag.css");
+@import url("component/_c-stat.css");
+@import url("component/_c-news-item.css");
+@import url("component/_c-drawer.css");
+
+/* 4. Project ------------------------------------------------------------- */
+@import url("project/_p-hero.css");
+@import url("project/_p-about.css");
+@import url("project/_p-mission.css");
+@import url("project/_p-business-band.css");
+@import url("project/_p-group-stats.css");
+@import url("project/_p-sustainability.css");
+@import url("project/_p-news.css");
+@import url("project/_p-recruit-cta.css");
+@import url("project/_p-contact.css");
+@import url("project/_p-sp-cta.css");
+
+/* 5. Utility ------------------------------------------------------------- */
+@import url("utility/_u-visually-hidden.css");
+@import url("utility/_u-motion.css");

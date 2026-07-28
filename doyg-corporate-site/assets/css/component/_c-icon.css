@@ -1,0 +1,69 @@
+@charset "UTF-8";
+/* ==========================================================================
+   Component / Icon
+   --------------------------------------------------------------------------
+   アイコンフォントは使用せず、SVGスプライトを <use> で参照する。
+   線幅1.5px・塗りなし・currentColor継承 に統一することが上質さの決め手。
+   塗りアイコンと線アイコンを混在させない。
+   ========================================================================== */
+
+.c-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  /* 親のテキスト色を継承する */
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* テキストと並べたときにベースラインを揃える */
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   Size Modifier
+   -------------------------------------------------------------------------- */
+
+.c-icon--sm {
+  width: 16px;
+  height: 16px;
+}
+
+.c-icon--md {
+  width: 20px;
+  height: 20px;
+}
+
+.c-icon--lg {
+  width: 32px;
+  height: 32px;
+}
+
+/* --------------------------------------------------------------------------
+   Icon Button
+   アイコン単体のボタン。必ず aria-label を付与すること。
+   -------------------------------------------------------------------------- */
+
+.c-icon-button {
+  display: grid;
+  place-items: center;
+  /* タップターゲット最小44px */
+  width: 44px;
+  height: 44px;
+  color: currentColor;
+  border: 1px solid var(--color-rule-inverse);
+  border-radius: 50%;
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.c-icon-button:hover,
+.c-icon-button:focus-visible {
+  color: var(--color-navy);
+  background-color: var(--color-white);
+  border-color: var(--color-white);
+}
