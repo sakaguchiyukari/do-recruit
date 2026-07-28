@@ -5,14 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- ==========================================================================
-     JS 有効判定
+     JS 有効判定 + 保険
      --------------------------------------------------------------------------
      スクロール連動アニメーションの初期状態（opacity:0）は
      .js-enabled 配下でのみ適用される。ここで最速のタイミングでクラスを付ける
-     ことで、JS が無効・読み込み失敗の環境ではコンテンツが最初から見えたままになる。
-     この1行を省くと JS 失敗時にページが真っ白になる。
+     ことで、JS が無効の環境ではコンテンツが最初から見えたままになる。
+
+     さらに「JSは有効だが main.js が起動しなかった」場合の保険を置く。
+     （通信断・モジュール非対応・file:// で開いた場合など）
+     起動に成功すると main.js が js-booted を付けるので、それが一定時間
+     現れなければ js-enabled を外し、全コンテンツを即座に可視へ戻す。
      ========================================================================== -->
-<script>document.documentElement.classList.add('js-enabled');</script>
+<script>
+  (function () {
+    var root = document.documentElement;
+    root.classList.add('js-enabled');
+    window.setTimeout(function () {
+      if (!root.classList.contains('js-booted')) {
+        root.classList.remove('js-enabled');
+      }
+    }, 2500);
+  })();
+</script>
 
 <title>ドゥ.ヨネザワ企業グループ｜地平を、ひらく。熊本から、次の価値を。</title>
 <meta name="description" content="熊本のドゥ.ヨネザワ企業グループ。情報通信・カーライフ・ゴルフ・ライフ&amp;ウェルネスの4事業領域で、11の法人・約700名が地域の暮らしを支えています。新たな価値を創造する企業へ。">
@@ -23,16 +37,16 @@
 <meta property="og:title" content="ドゥ.ヨネザワ企業グループ｜地平を、ひらく。">
 <meta property="og:description" content="熊本から、次の価値を。4つの事業領域で地域の暮らしを支えるドゥ.ヨネザワ企業グループ。">
 <!-- TODO(Phase4): OGP は SVG 非対応のため 1200×630 の PNG に差し替える -->
-<meta property="og:image" content="/assets/img/ogp/ogp-default.svg">
+<meta property="og:image" content="assets/img/ogp/ogp-default.svg">
 <meta name="twitter:card" content="summary_large_image">
 
 <meta name="theme-color" content="#0b2545">
 
 <!-- Hero の LCP を最短化する。ここだけ preload + fetchpriority を使う -->
-<link rel="preload" as="image" href="/assets/img/hero/hero-poster.svg" fetchpriority="high">
+<link rel="preload" as="image" href="assets/img/hero/hero-poster.svg" fetchpriority="high">
 
-<link rel="stylesheet" href="/assets/css/style.css">
-<script type="module" src="/assets/js/main.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="module" src="assets/js/main.js"></script>
 </head>
 
 <body>
@@ -46,7 +60,7 @@
 <header class="l-header js-header">
   <div class="l-header__inner">
 
-    <a class="l-header__logo" href="/">
+    <a class="l-header__logo" href="./">
       <!-- Phase1 はロゴ画像未支給のためテキストロゴで代替。
            支給後に logo.svg / logo-white.svg へ差し替える -->
       DO.YONEZAWA
@@ -55,18 +69,18 @@
 
     <nav class="l-header__nav" aria-label="メインメニュー">
       <ul class="l-header__nav-list">
-        <li><a class="l-header__nav-link" href="/about/">About</a></li>
-        <li><a class="l-header__nav-link" href="/business/">Business</a></li>
-        <li><a class="l-header__nav-link" href="/group/">Group</a></li>
-        <li><a class="l-header__nav-link" href="/sustainability/">Sustainability</a></li>
-        <li><a class="l-header__nav-link" href="/news/">News</a></li>
+        <li><a class="l-header__nav-link" href="about/">About</a></li>
+        <li><a class="l-header__nav-link" href="business/">Business</a></li>
+        <li><a class="l-header__nav-link" href="group/">Group</a></li>
+        <li><a class="l-header__nav-link" href="sustainability/">Sustainability</a></li>
+        <li><a class="l-header__nav-link" href="news/">News</a></li>
       </ul>
     </nav>
 
     <div class="l-header__actions">
       <!-- 採用強化という最優先目的をナビゲーション上で表明するため、
            RECRUIT のみ枠線ボタンとして視覚的に独立させる -->
-      <a class="l-header__recruit" href="/recruit/">Recruit</a>
+      <a class="l-header__recruit" href="recruit/">Recruit</a>
 
       <button class="l-header__menu js-drawer-trigger"
               type="button"
@@ -91,49 +105,49 @@
     <nav class="c-drawer__nav" aria-label="全メニュー">
       <ul class="c-drawer__list">
         <li class="c-drawer__item" style="--i:0">
-          <a class="c-drawer__link" href="/about/">
+          <a class="c-drawer__link" href="about/">
             <span class="c-drawer__en">About</span>
             <span class="c-drawer__jp">企業理念・会社概要</span>
           </a>
         </li>
         <li class="c-drawer__item" style="--i:1">
-          <a class="c-drawer__link" href="/message/">
+          <a class="c-drawer__link" href="message/">
             <span class="c-drawer__en">Message</span>
             <span class="c-drawer__jp">CEOメッセージ</span>
           </a>
         </li>
         <li class="c-drawer__item" style="--i:2">
-          <a class="c-drawer__link" href="/business/">
+          <a class="c-drawer__link" href="business/">
             <span class="c-drawer__en">Business</span>
             <span class="c-drawer__jp">4つの事業領域</span>
           </a>
         </li>
         <li class="c-drawer__item" style="--i:3">
-          <a class="c-drawer__link" href="/group/">
+          <a class="c-drawer__link" href="group/">
             <span class="c-drawer__en">Group</span>
             <span class="c-drawer__jp">グループ会社</span>
           </a>
         </li>
         <li class="c-drawer__item" style="--i:4">
-          <a class="c-drawer__link" href="/sustainability/">
+          <a class="c-drawer__link" href="sustainability/">
             <span class="c-drawer__en">Sustainability</span>
             <span class="c-drawer__jp">環境・地域貢献</span>
           </a>
         </li>
         <li class="c-drawer__item" style="--i:5">
-          <a class="c-drawer__link" href="/news/">
+          <a class="c-drawer__link" href="news/">
             <span class="c-drawer__en">News</span>
             <span class="c-drawer__jp">ニュース</span>
           </a>
         </li>
         <li class="c-drawer__item" style="--i:6">
-          <a class="c-drawer__link" href="/recruit/">
+          <a class="c-drawer__link" href="recruit/">
             <span class="c-drawer__en">Recruit</span>
             <span class="c-drawer__jp">採用情報</span>
           </a>
         </li>
         <li class="c-drawer__item" style="--i:7">
-          <a class="c-drawer__link" href="/contact/">
+          <a class="c-drawer__link" href="contact/">
             <span class="c-drawer__en">Contact</span>
             <span class="c-drawer__jp">お問い合わせ</span>
           </a>
@@ -143,9 +157,9 @@
 
     <div class="c-drawer__foot">
       <ul class="c-drawer__utility">
-        <li><a class="c-drawer__utility-link" href="/privacy/">プライバシーポリシー</a></li>
-        <li><a class="c-drawer__utility-link" href="/terms/">サイトポリシー</a></li>
-        <li><a class="c-drawer__utility-link" href="/sitemap/">サイトマップ</a></li>
+        <li><a class="c-drawer__utility-link" href="privacy/">プライバシーポリシー</a></li>
+        <li><a class="c-drawer__utility-link" href="terms/">サイトポリシー</a></li>
+        <li><a class="c-drawer__utility-link" href="sitemap/">サイトマップ</a></li>
       </ul>
       <p class="c-drawer__utility-link">〒862-0908 熊本県熊本市東区新生2丁目23-18</p>
     </div>
@@ -164,7 +178,7 @@
     <div class="p-hero__bg">
       <!-- poster 画像は常に存在させる。動画が読み込まれない環境ではこれが背景になる -->
       <img class="p-hero__media"
-           src="/assets/img/hero/hero-poster.svg"
+           src="assets/img/hero/hero-poster.svg"
            alt=""
            width="1920" height="1080"
            fetchpriority="high" decoding="async">
@@ -175,8 +189,8 @@
         ブラウザ既定のメディアUIが表示され、Hero の見た目が壊れるため。
 
         動画素材の撮影後、section.p-hero に次の属性を追加すれば有効になる：
-          data-video-webm="/assets/video/hero.webm"
-          data-video-mp4="/assets/video/hero.mp4"
+          data-video-webm="assets/video/hero.webm"
+          data-video-mp4="assets/video/hero.mp4"
         読み込まない条件：768px未満 / Save-Data / 低速回線 / モーション削減。
       -->
 
@@ -206,7 +220,7 @@
                 data-state="playing"
                 aria-label="背景動画を停止する">
           <svg class="c-icon c-icon--md" aria-hidden="true" focusable="false">
-            <use href="/assets/icon/sprite.svg#pause"></use>
+            <use href="assets/icon/sprite.svg#pause"></use>
           </svg>
         </button>
       </div>
@@ -233,10 +247,10 @@
             <p class="c-text">ばらばらに見えるこれらの事業は、熊本という一つの土地で人の暮らしを支えるという一点で、確かにつながっています。</p>
           </div>
           <p class="p-about__actions js-reveal">
-            <a class="c-link-arrow" href="/about/">
+            <a class="c-link-arrow" href="about/">
               <span class="c-link-arrow__label">グループについて</span>
               <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
-                <use href="/assets/icon/sprite.svg#arrow-right"></use>
+                <use href="assets/icon/sprite.svg#arrow-right"></use>
               </svg>
             </a>
           </p>
@@ -245,7 +259,7 @@
         <div class="p-about__media">
           <div class="c-media c-media--4x5 c-media--parallax js-mask js-parallax">
             <img class="c-media__img"
-                 src="/assets/img/about/about-main.svg"
+                 src="assets/img/about/about-main.svg"
                  alt="熊本の風景のなかに広がる街並みと田畑"
                  width="1200" height="1500"
                  loading="lazy" decoding="async">
@@ -308,10 +322,10 @@
       </dl>
 
       <p class="p-mission__actions js-reveal">
-        <a class="c-link-arrow c-link-arrow--inverse" href="/about/">
+        <a class="c-link-arrow c-link-arrow--inverse" href="about/">
           <span class="c-link-arrow__label">企業理念を見る</span>
           <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
-            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            <use href="assets/icon/sprite.svg#arrow-right"></use>
           </svg>
         </a>
       </p>
@@ -340,10 +354,10 @@
     <div class="p-business__list">
 
       <!-- 01 情報通信 -->
-      <a class="p-business__band" href="/business/information-communication/">
+      <a class="p-business__band" href="business/information-communication/">
         <div class="p-business__media">
           <img class="p-business__img js-parallax"
-               src="/assets/img/business/bs-ict.svg"
+               src="assets/img/business/bs-ict.svg"
                alt="店内でお客様と一緒に画面を確認するスタッフの手元"
                width="2400" height="1350"
                loading="lazy" decoding="async">
@@ -359,17 +373,17 @@
           <span class="p-business__action js-reveal">
             詳しく見る
             <svg class="c-icon c-icon--md p-business__action-icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </span>
         </div>
       </a>
 
       <!-- 02 カーライフ -->
-      <a class="p-business__band" href="/business/car-life/">
+      <a class="p-business__band" href="business/car-life/">
         <div class="p-business__media">
           <img class="p-business__img js-parallax"
-               src="/assets/img/business/bs-car.svg"
+               src="assets/img/business/bs-car.svg"
                alt="洗車を終えた車体に映り込む空"
                width="2400" height="1350"
                loading="lazy" decoding="async">
@@ -385,17 +399,17 @@
           <span class="p-business__action js-reveal">
             詳しく見る
             <svg class="c-icon c-icon--md p-business__action-icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </span>
         </div>
       </a>
 
       <!-- 03 ゴルフ -->
-      <a class="p-business__band" href="/business/golf/">
+      <a class="p-business__band" href="business/golf/">
         <div class="p-business__media">
           <img class="p-business__img js-parallax"
-               src="/assets/img/business/bs-golf.svg"
+               src="assets/img/business/bs-golf.svg"
                alt="朝露に濡れたゴルフコースの芝と遠くに見える阿蘇の山並み"
                width="2400" height="1350"
                loading="lazy" decoding="async">
@@ -411,17 +425,17 @@
           <span class="p-business__action js-reveal">
             詳しく見る
             <svg class="c-icon c-icon--md p-business__action-icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </span>
         </div>
       </a>
 
       <!-- 04 ライフ&ウェルネス -->
-      <a class="p-business__band" href="/business/life-wellness/">
+      <a class="p-business__band" href="business/life-wellness/">
         <div class="p-business__media">
           <img class="p-business__img js-parallax"
-               src="/assets/img/business/bs-wellness.svg"
+               src="assets/img/business/bs-wellness.svg"
                alt="デイサービスで交わされる手と手"
                width="2400" height="1350"
                loading="lazy" decoding="async">
@@ -437,7 +451,7 @@
           <span class="p-business__action js-reveal">
             詳しく見る
             <svg class="c-icon c-icon--md p-business__action-icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </span>
         </div>
@@ -522,10 +536,10 @@
       <p class="c-stat-note js-reveal">※ 掲載数値は公開情報にもとづく参考値です。公開前に確定値へ差し替えます。</p>
 
       <p class="p-group__actions js-reveal">
-        <a class="c-link-arrow" href="/group/">
+        <a class="c-link-arrow" href="group/">
           <span class="c-link-arrow__label">グループ会社を見る</span>
           <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
-            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            <use href="assets/icon/sprite.svg#arrow-right"></use>
           </svg>
         </a>
       </p>
@@ -542,7 +556,7 @@
 
     <div class="p-sustainability__media">
       <img class="p-sustainability__img js-parallax"
-           src="/assets/img/sustainability/sus-main.svg"
+           src="assets/img/sustainability/sus-main.svg"
            alt="霧のかかった南阿蘇の森"
            width="2400" height="1350"
            loading="lazy" decoding="async">
@@ -572,10 +586,10 @@
       </ul>
 
       <p class="p-sustainability__actions js-reveal">
-        <a class="c-link-arrow c-link-arrow--inverse" href="/sustainability/">
+        <a class="c-link-arrow c-link-arrow--inverse" href="sustainability/">
           <span class="c-link-arrow__label">取り組みを見る</span>
           <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
-            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            <use href="assets/icon/sprite.svg#arrow-right"></use>
           </svg>
         </a>
       </p>
@@ -598,10 +612,10 @@
         </p>
         <h2 class="c-section-head__title js-reveal" id="news-title">ニュース</h2>
         <p class="c-section-head__aside p-news__aside js-reveal">
-          <a class="c-link-arrow" href="/news/">
+          <a class="c-link-arrow" href="news/">
             <span class="c-link-arrow__label">すべて見る</span>
             <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </a>
         </p>
@@ -612,53 +626,53 @@
       <ul class="c-news-list p-news__list" data-reveal-stagger>
 
         <li class="c-news-item js-reveal">
-          <a class="c-news-item__link" href="/news/">
+          <a class="c-news-item__link" href="news/">
             <span class="c-news-item__meta">
               <time class="c-news-item__date" datetime="2026-07-15">2026.07.15</time>
               <span class="c-news-item__tag-wrap"><span class="c-tag">お知らせ</span></span>
             </span>
             <span class="c-news-item__title">（サンプル）ニュースのタイトルがここに入ります</span>
             <svg class="c-icon c-icon--md c-news-item__icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </a>
         </li>
 
         <li class="c-news-item js-reveal">
-          <a class="c-news-item__link" href="/news/">
+          <a class="c-news-item__link" href="news/">
             <span class="c-news-item__meta">
               <time class="c-news-item__date" datetime="2026-06-28">2026.06.28</time>
               <span class="c-news-item__tag-wrap"><span class="c-tag">プレスリリース</span></span>
             </span>
             <span class="c-news-item__title">（サンプル）長めのタイトルでも一覧の行の高さが崩れないことを確認するためのダミーテキストです</span>
             <svg class="c-icon c-icon--md c-news-item__icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </a>
         </li>
 
         <li class="c-news-item js-reveal">
-          <a class="c-news-item__link" href="/news/">
+          <a class="c-news-item__link" href="news/">
             <span class="c-news-item__meta">
               <time class="c-news-item__date" datetime="2026-06-10">2026.06.10</time>
               <span class="c-news-item__tag-wrap"><span class="c-tag">採用情報</span></span>
             </span>
             <span class="c-news-item__title">（サンプル）2027年度 新卒採用のエントリー受付を開始しました</span>
             <svg class="c-icon c-icon--md c-news-item__icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </a>
         </li>
 
         <li class="c-news-item js-reveal">
-          <a class="c-news-item__link" href="/news/">
+          <a class="c-news-item__link" href="news/">
             <span class="c-news-item__meta">
               <time class="c-news-item__date" datetime="2026-05-30">2026.05.30</time>
               <span class="c-news-item__tag-wrap"><span class="c-tag">サステナビリティ</span></span>
             </span>
             <span class="c-news-item__title">（サンプル）ネイチャーポジティブの取り組みについて</span>
             <svg class="c-icon c-icon--md c-news-item__icon" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#arrow-right"></use>
+              <use href="assets/icon/sprite.svg#arrow-right"></use>
             </svg>
           </a>
         </li>
@@ -666,10 +680,10 @@
       </ul>
 
       <p class="p-news__actions js-reveal">
-        <a class="c-link-arrow" href="/news/">
+        <a class="c-link-arrow" href="news/">
           <span class="c-link-arrow__label">すべて見る</span>
           <svg class="c-icon c-icon--md c-link-arrow__icon" aria-hidden="true" focusable="false">
-            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            <use href="assets/icon/sprite.svg#arrow-right"></use>
           </svg>
         </a>
       </p>
@@ -686,7 +700,7 @@
 
     <div class="p-recruit__media">
       <img class="p-recruit__img js-parallax"
-           src="/assets/img/recruit/recruit-cta.svg"
+           src="assets/img/recruit/recruit-cta.svg"
            alt="打ち合わせのなかで自然に言葉を交わす若手社員たち"
            width="2400" height="1350"
            loading="lazy" decoding="async">
@@ -706,16 +720,16 @@
       </div>
 
       <div class="p-recruit__actions js-reveal">
-        <a class="c-button c-button--light c-button--block" href="/recruit/">
+        <a class="c-button c-button--light c-button--block" href="recruit/">
           採用情報を見る
           <svg class="c-icon c-icon--md c-button__icon" aria-hidden="true" focusable="false">
-            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            <use href="assets/icon/sprite.svg#arrow-right"></use>
           </svg>
         </a>
-        <a class="c-button c-button--inverse c-button--block" href="/recruit/#requirements">
+        <a class="c-button c-button--inverse c-button--block" href="recruit/#requirements">
           募集要項
           <svg class="c-icon c-icon--md c-button__icon" aria-hidden="true" focusable="false">
-            <use href="/assets/icon/sprite.svg#arrow-right"></use>
+            <use href="assets/icon/sprite.svg#arrow-right"></use>
           </svg>
         </a>
       </div>
@@ -753,10 +767,10 @@
             <p class="p-contact__box-title">Form</p>
             <p class="c-small" style="margin-block-start:12px">24時間受付。3営業日以内にご返信します。</p>
             <p style="margin-block-start:20px">
-              <a class="c-button c-button--block" href="/contact/">
+              <a class="c-button c-button--block" href="contact/">
                 お問い合わせフォーム
                 <svg class="c-icon c-icon--md c-button__icon" aria-hidden="true" focusable="false">
-                  <use href="/assets/icon/sprite.svg#arrow-right"></use>
+                  <use href="assets/icon/sprite.svg#arrow-right"></use>
                 </svg>
               </a>
             </p>
@@ -770,7 +784,7 @@
             <p style="margin-block-start:12px">
               <a class="p-contact__tel" href="tel:096-000-0000">
                 <svg class="c-icon c-icon--md" aria-hidden="true" focusable="false">
-                  <use href="/assets/icon/sprite.svg#phone"></use>
+                  <use href="assets/icon/sprite.svg#phone"></use>
                 </svg>
                 096-000-0000
               </a>
@@ -806,7 +820,7 @@
         <p>
           <a class="l-footer__tel" href="tel:096-000-0000">
             <svg class="c-icon c-icon--md" aria-hidden="true" focusable="false">
-              <use href="/assets/icon/sprite.svg#phone"></use>
+              <use href="assets/icon/sprite.svg#phone"></use>
             </svg>
             096-000-0000
           </a>
@@ -818,37 +832,37 @@
         <div>
           <p class="l-footer__nav-title">About</p>
           <ul class="l-footer__nav-list">
-            <li><a class="l-footer__nav-link" href="/about/">企業理念</a></li>
-            <li><a class="l-footer__nav-link" href="/message/">CEOメッセージ</a></li>
-            <li><a class="l-footer__nav-link" href="/about/#overview">会社概要</a></li>
-            <li><a class="l-footer__nav-link" href="/about/#history">沿革</a></li>
+            <li><a class="l-footer__nav-link" href="about/">企業理念</a></li>
+            <li><a class="l-footer__nav-link" href="message/">CEOメッセージ</a></li>
+            <li><a class="l-footer__nav-link" href="about/#overview">会社概要</a></li>
+            <li><a class="l-footer__nav-link" href="about/#history">沿革</a></li>
           </ul>
         </div>
 
         <div>
           <p class="l-footer__nav-title">Business</p>
           <ul class="l-footer__nav-list">
-            <li><a class="l-footer__nav-link" href="/business/information-communication/">情報通信</a></li>
-            <li><a class="l-footer__nav-link" href="/business/car-life/">カーライフ</a></li>
-            <li><a class="l-footer__nav-link" href="/business/golf/">ゴルフ</a></li>
-            <li><a class="l-footer__nav-link" href="/business/life-wellness/">ライフ&amp;ウェルネス</a></li>
+            <li><a class="l-footer__nav-link" href="business/information-communication/">情報通信</a></li>
+            <li><a class="l-footer__nav-link" href="business/car-life/">カーライフ</a></li>
+            <li><a class="l-footer__nav-link" href="business/golf/">ゴルフ</a></li>
+            <li><a class="l-footer__nav-link" href="business/life-wellness/">ライフ&amp;ウェルネス</a></li>
           </ul>
         </div>
 
         <div>
           <p class="l-footer__nav-title">Group</p>
           <ul class="l-footer__nav-list">
-            <li><a class="l-footer__nav-link" href="/group/">グループ会社</a></li>
-            <li><a class="l-footer__nav-link" href="/sustainability/">サステナビリティ</a></li>
-            <li><a class="l-footer__nav-link" href="/news/">ニュース</a></li>
+            <li><a class="l-footer__nav-link" href="group/">グループ会社</a></li>
+            <li><a class="l-footer__nav-link" href="sustainability/">サステナビリティ</a></li>
+            <li><a class="l-footer__nav-link" href="news/">ニュース</a></li>
           </ul>
         </div>
 
         <div>
           <p class="l-footer__nav-title">Contact</p>
           <ul class="l-footer__nav-list">
-            <li><a class="l-footer__nav-link" href="/recruit/">採用情報</a></li>
-            <li><a class="l-footer__nav-link" href="/contact/">お問い合わせ</a></li>
+            <li><a class="l-footer__nav-link" href="recruit/">採用情報</a></li>
+            <li><a class="l-footer__nav-link" href="contact/">お問い合わせ</a></li>
           </ul>
         </div>
 
@@ -858,9 +872,9 @@
     <div class="l-footer__bottom">
       <p class="l-footer__copyright">&copy; DO.YONEZAWA CORPORATE GROUP</p>
       <ul class="l-footer__utility">
-        <li><a class="l-footer__utility-link" href="/privacy/">プライバシーポリシー</a></li>
-        <li><a class="l-footer__utility-link" href="/terms/">サイトポリシー</a></li>
-        <li><a class="l-footer__utility-link" href="/sitemap/">サイトマップ</a></li>
+        <li><a class="l-footer__utility-link" href="privacy/">プライバシーポリシー</a></li>
+        <li><a class="l-footer__utility-link" href="terms/">サイトポリシー</a></li>
+        <li><a class="l-footer__utility-link" href="sitemap/">サイトマップ</a></li>
       </ul>
     </div>
 
@@ -873,15 +887,15 @@
      Hero を通過したら現れる。採用導線の強化とスマホ体験の最優先を両立させる
      ========================================================================== -->
 <div class="p-sp-cta js-sp-cta">
-  <a class="p-sp-cta__item p-sp-cta__item--primary" href="/recruit/">
+  <a class="p-sp-cta__item p-sp-cta__item--primary" href="recruit/">
     採用情報を見る
     <svg class="c-icon c-icon--sm" aria-hidden="true" focusable="false">
-      <use href="/assets/icon/sprite.svg#arrow-right"></use>
+      <use href="assets/icon/sprite.svg#arrow-right"></use>
     </svg>
   </a>
   <a class="p-sp-cta__item p-sp-cta__item--tel" href="tel:096-000-0000" aria-label="電話をかける">
     <svg class="c-icon c-icon--md" aria-hidden="true" focusable="false">
-      <use href="/assets/icon/sprite.svg#phone"></use>
+      <use href="assets/icon/sprite.svg#phone"></use>
     </svg>
   </a>
 </div>

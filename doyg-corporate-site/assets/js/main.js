@@ -25,6 +25,10 @@ import { initScrollReveal } from './modules/scroll-reveal.js';
  * 1つのモジュールが失敗しても他が止まらないよう、個別に例外を捕捉する。
  */
 const boot = () => {
+  // 起動できたことを知らせる。これが付かないと <head> の保険が働き、
+  // アニメーションの初期状態（opacity:0）が解除されて内容が即表示される。
+  document.documentElement.classList.add('js-booted');
+
   const modules = [
     ['header', initHeader],
     ['drawer', initDrawer],
