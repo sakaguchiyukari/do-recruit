@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="避難所持ち物チェックリスト">
+  <!-- 角丸の藍色の面。赤を使わないのは、アイコンの時点で不安をあおらないため -->
+  <rect width="512" height="512" rx="96" fill="#0b2545"/>
+  <!-- 持ち出し袋を思わせる矩形と、チェックマーク -->
+  <rect x="128" y="150" width="256" height="240" rx="28" fill="none" stroke="#ffffff" stroke-width="22"/>
+  <path d="M200 150v-24a56 56 0 0 1 112 0v24" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+  <path d="M186 272l48 48 92-92" fill="none" stroke="#7fb2e5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

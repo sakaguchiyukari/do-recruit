@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="避難所持ち物チェックリスト">
+  <!-- maskable 用。OS が最大 20% を切り落とすため、図柄を中央 60% に収めている -->
+  <rect width="512" height="512" fill="#0b2545"/>
+  <rect x="166" y="186" width="180" height="170" rx="20" fill="none" stroke="#ffffff" stroke-width="18"/>
+  <path d="M217 186v-17a39 39 0 0 1 78 0v17" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+  <path d="M207 272l34 34 65-65" fill="none" stroke="#7fb2e5" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

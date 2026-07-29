@@ -1,0 +1,27 @@
+{
+  "name": "避難所 持ち物チェックリスト",
+  "short_name": "持ち物リスト",
+  "description": "家族構成や状況に合わせて、避難所へ持っていくものを提案するチェックリスト。通信が無くても使えます。",
+  "lang": "ja",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f8f9",
+  "theme_color": "#0b2545",
+  "icons": [
+    {
+      "src": "assets/img/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>避難所 持ち物チェックリスト</title>
+<meta name="description" content="家族構成や状況に合わせて、避難所へ持っていくものを提案するチェックリスト。通信が無くても使えます。印刷・PDF保存に対応。">
+<meta name="theme-color" content="#0b2545">
+<meta name="format-detection" content="telephone=yes">
+
+<!-- 外部ドメインは一切参照しない。圏外・輻輳時でも必ず表示されるようにするため -->
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%230b2545'/><path d='M28 52l14 14 30-30' stroke='%23fff' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+</head>
+<body>
+
+<a class="u-skip-link" href="#list">持ち物リストへ移動</a>
+
+<!-- ==========================================================================
+     ヘッダー
+     最初に目に入る場所には「安心してよい理由」を置く。
+     不足を責める設計にしない。
+     ========================================================================== -->
+<header class="c-header">
+  <div class="l-container">
+    <h1 class="c-header__title">避難所 持ち物チェックリスト</h1>
+    <p class="c-header__lead">
+      あなたの状況に合わせて、必要なものだけを表示します。<br>
+      入力した内容はこの端末に自動で保存され、通信が無くても開けます。
+    </p>
+
+    <p class="c-priority-note">
+      <strong>持ち物より、あなたの命が最優先です。</strong>
+      身の危険を感じたら、何も持たずにすぐ避難してください。
+      足りないものは、避難したあとで必ず何とかなります。
+    </p>
+  </div>
+</header>
+
+<main class="l-container">
+
+  <!-- ======================================================================
+       覚えておきたいこと
+       電池が切れても役に立つ情報。紙に出したときも必ず残る位置に置く。
+       ====================================================================== -->
+  <section class="l-section" aria-labelledby="info-title">
+    <div class="c-card">
+      <h2 class="c-card__title" id="info-title">
+        <span aria-hidden="true">📞</span>覚えておきたいこと
+      </h2>
+      <p class="c-card__desc">スマホの電池が切れても使えるよう、紙に控えておくと安心です。</p>
+
+      <dl class="p-info__list">
+        <div class="p-info__item">
+          <dt class="p-info__term">
+            災害用伝言ダイヤル <a class="p-info__num" href="tel:171">171</a>
+          </dt>
+          <dd class="p-info__desc">
+            録音は <strong>171 → 1 → 自宅の電話番号</strong>、
+            再生は <strong>171 → 2 → 相手の電話番号</strong>。
+            電話がつながりにくいときでも、伝言なら残せます。
+            インターネットからは web171（web171.jp）が使えます。
+          </dd>
+        </div>
+
+        <div class="p-info__item">
+          <dt class="p-info__term">
+            火事・救急 <a class="p-info__num" href="tel:119">119</a> ／
+            事件・事故 <a class="p-info__num" href="tel:110">110</a>
+          </dt>
+          <dd class="p-info__desc">
+            つながらないときは、近くの人に助けを求めてください。
+            閉じ込められている場合は、声より笛や硬いものを叩く音のほうが遠くまで届きます。
+          </dd>
+        </div>
+
+        <div class="p-info__item">
+          <dt class="p-info__term">大きな揺れは、一度で終わらないことがあります</dt>
+          <dd class="p-info__desc">
+            最初の地震のあと、さらに大きな地震が起きた例があります。
+            「揺れがおさまったから大丈夫」と自分だけで判断せず、
+            家に戻るのは安全が確認できてからにしてください。
+          </dd>
+        </div>
+
+        <div class="p-info__item">
+          <dt class="p-info__term">避難する前に、余裕があれば</dt>
+          <dd class="p-info__desc">
+            電気のブレーカーを落とす（通電火災を防ぎます）／ ガスの元栓を閉める ／
+            行き先を書いた紙を玄関に残す。
+            危険を感じるときは、どれも省いて構いません。
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       状況の選択
+       ここを触るだけでリストが変わる、という体験を最短で届ける
+       ====================================================================== -->
+  <section class="l-section js-print-hide" aria-labelledby="profile-title">
+    <div class="c-card">
+      <h2 class="c-card__title" id="profile-title">
+        <span aria-hidden="true">👥</span>あなたの状況を選んでください
+      </h2>
+      <p class="c-card__desc">選ぶと、必要な持ち物と量が自動で変わります。あとから変更できます。</p>
+
+      <fieldset class="c-fieldset">
+        <legend class="c-fieldset__legend">世帯（ひとつ選ぶ）</legend>
+        <div class="c-chips js-households"></div>
+      </fieldset>
+
+      <fieldset class="c-fieldset">
+        <legend class="c-fieldset__legend">あてはまるもの（いくつでも）</legend>
+        <div class="c-chips js-conditions"></div>
+      </fieldset>
+
+      <div class="c-steppers js-steppers"></div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       進捗
+       ====================================================================== -->
+  <section class="l-section" aria-labelledby="progress-title">
+    <div class="c-card">
+      <h2 class="u-visually-hidden" id="progress-title">準備の進みぐあい</h2>
+
+      <div class="c-progress">
+        <div class="c-progress__head">
+          <span class="js-progress-label">まず「いま10分で持って出る」を先に確認してください</span>
+          <span class="c-progress__count js-progress-count">0 / 0</span>
+        </div>
+        <div class="c-progress__bar" role="progressbar" aria-labelledby="progress-title"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="c-progress__fill js-progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="p-listtools js-print-hide">
+        <label class="p-listtools__toggle">
+          <input type="checkbox" class="p-listtools__check js-hide-checked">
+          <span>チェック済みを隠す</span>
+        </label>
+        <button type="button" class="c-btn c-btn--quiet js-uncheck">チェックを全部外す</button>
+      </div>
+
+      <p class="c-card__desc p-updated js-updated">この端末に自動保存されます</p>
+      <p class="c-card__desc p-printed-at js-printed-at"></p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       チェックリスト本体（app.js が描画する）
+       ====================================================================== -->
+  <section class="l-section" id="list" aria-labelledby="list-title">
+    <h2 class="u-visually-hidden" id="list-title">持ち物リスト</h2>
+    <div class="js-list"></div>
+  </section>
+
+  <!-- ======================================================================
+       メモ
+       紙に印刷したとき、ここが一番役に立つ。
+       ====================================================================== -->
+  <section class="l-section" aria-labelledby="memo-title">
+    <div class="c-card">
+      <h2 class="c-card__title" id="memo-title">
+        <span aria-hidden="true">✍️</span>大事なことを書いておく
+      </h2>
+      <p class="c-card__desc">
+        スマホが使えなくなったときのために。印刷すると、この内容も一緒に紙に残ります。
+      </p>
+
+      <div class="p-memo">
+        <div class="p-memo__field">
+          <label for="memo-shelter">避難する場所</label>
+          <input type="text" id="memo-shelter" data-memo="shelter"
+                 placeholder="例）◯◯小学校 体育館">
+          <!-- 印刷専用。入力欄は紙の上で内容が切れることがあるため、
+               同じ内容を通常のテキストとして複製しておく -->
+          <div class="p-memo__print" data-memo-print="shelter" aria-hidden="true"></div>
+        </div>
+
+        <div class="p-memo__field">
+          <label for="memo-meeting">家族と落ち合う場所・時間</label>
+          <input type="text" id="memo-meeting" data-memo="meeting"
+                 placeholder="例）◯◯公園の時計前 / 毎日 朝8時と夕方5時">
+          <!-- 印刷専用。入力欄は紙の上で内容が切れることがあるため、
+               同じ内容を通常のテキストとして複製しておく -->
+          <div class="p-memo__print" data-memo-print="meeting" aria-hidden="true"></div>
+        </div>
+
+        <div class="p-memo__field">
+          <label for="memo-contacts">緊急連絡先（名前と電話番号）</label>
+          <textarea id="memo-contacts" data-memo="contacts"
+                    placeholder="例）&#10;母 090-0000-0000&#10;兄 080-0000-0000&#10;かかりつけ医 096-000-0000"></textarea>
+          <!-- 印刷専用。入力欄は紙の上で内容が切れることがあるため、
+               同じ内容を通常のテキストとして複製しておく -->
+          <div class="p-memo__print p-memo__print--multi" data-memo-print="contacts" aria-hidden="true"></div>
+        </div>
+
+        <div class="p-memo__field">
+          <label for="memo-free">その他（持病・薬・アレルギー・伝えたいこと）</label>
+          <textarea id="memo-free" data-memo="free"
+                    placeholder="例）父は高血圧の薬を服用中。◯◯にアレルギーあり。"></textarea>
+          <!-- 印刷専用。入力欄は紙の上で内容が切れることがあるため、
+               同じ内容を通常のテキストとして複製しておく -->
+          <div class="p-memo__print p-memo__print--multi" data-memo-print="free" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="l-section p-reset js-print-hide">
+    <button type="button" class="c-btn c-btn--quiet js-reset">入力内容をすべて消す</button>
+  </div>
+
+</main>
+
+<footer class="c-footer">
+  <div class="l-container">
+    <p>
+      このページは通信が無くても動きます。一度開いたあとは、機内モードでも同じ内容を確認できます。
+      入力内容はこの端末の中だけに保存され、どこにも送信されません。
+    </p>
+    <p>
+      持ち物の数量は一般的な目安です。ご自身の体力・健康状態に合わせて調整してください。
+      避難の判断は、必ず自治体からの情報と現地の状況を優先してください。
+    </p>
+  </div>
+</footer>
+
+<div class="c-toast js-toast" role="status" aria-live="polite"></div>
+
+<!-- ==========================================================================
+     下部固定バー
+     ストレス下では機能を「探させない」。主要操作は常に指の届く位置に置く。
+     ========================================================================== -->
+<div class="c-actionbar js-print-hide">
+  <div class="c-actionbar__inner">
+    <button type="button" class="c-btn js-print">
+      <span aria-hidden="true">🖨</span>印刷する
+    </button>
+    <button type="button" class="c-btn c-btn--primary js-pdf">
+      <span aria-hidden="true">📄</span>PDFで保存
+    </button>
+  </div>
+</div>
+
+<script src="assets/js/data/items.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+/* オフライン対応。
+   http(s) で配信されているときだけ登録する。
+   file:// で直接開いた場合は Service Worker が使えないが、
+   その状態は元々オフラインで動くので問題にならない。 */
+if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function (e) {
+      console.warn('[checklist] オフライン用の準備に失敗しました', e);
+    });
+  });
+}
+</script>
+
+</body>
+</html>

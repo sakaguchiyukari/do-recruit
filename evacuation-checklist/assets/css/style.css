@@ -1,0 +1,1081 @@
+@charset "UTF-8";
+/* ==========================================================================
+   避難所持ち物チェックリスト — スタイル
+   --------------------------------------------------------------------------
+   設計方針
+   1. 不安をあおらない。赤は「本当に危険な一言」だけに使い、基調は落ち着いた藍。
+   2. 疲れて・暗い場所で・片手で操作する前提。タップ領域は最低44pxを確保する。
+   3. 外部フォント／外部CSSを読み込まない。通信が無くても必ず同じ見た目になる。
+   4. 印刷は「紙の持ち物リスト」として完成させる。停電したらこれが本体になる。
+   ========================================================================== */
+
+/* ==========================================================================
+   Foundation / Variables
+   コーポレートサイトのトークン思想を踏襲しつつ、単独で動くよう自己完結させる。
+   ========================================================================== */
+:root {
+  --color-navy: #0b2545;
+  --color-navy-deep: #061727;
+  --color-blue: #1b6ca8;
+  --color-blue-pale: #edf4fa;
+  --color-green: #2e6e4f;
+  --color-green-pale: #eef5f1;
+  --color-amber: #a86a1b;
+  --color-amber-pale: #fdf4e6;
+  --color-alert: #b3261e;
+
+  --color-bg: #f7f8f9;
+  --color-surface: #ffffff;
+  --color-surface-sub: #f2f4f6;
+
+  --color-text: #14181c;
+  --color-text-muted: #5b6570;
+  --color-text-inverse: #ffffff;
+
+  --color-rule: #dce1e6;
+  --color-focus: #1b6ca8;
+
+  --font-jp: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI",
+    "Meiryo", system-ui, sans-serif;
+
+  --lh-body: 1.8;
+  --ls-body: 0.02em;
+
+  --radius: 12px;
+  --radius-sm: 6px;
+  --gutter: 16px;
+  --container: 780px;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 200ms;
+
+  --z-bar: 30;
+  --z-toast: 50;
+  --z-skip: 60;
+
+  /* 優先度ごとのアクセント。色そのものに意味を持たせる */
+  --pri-now: #b3261e;
+  --pri-now-pale: #fdeceb;
+  --pri-bag: #1b6ca8;
+  --pri-bag-pale: #edf4fa;
+  --pri-later: #2e6e4f;
+  --pri-later-pale: #eef5f1;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   ダークモード
+   避難所の夜、周りの人の迷惑にならない明るさで読めるようにする。
+   端末のバッテリー節約にもつながる。
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0d1116;
+    --color-surface: #161c23;
+    --color-surface-sub: #1e252e;
+
+    --color-text: #e8edf2;
+    --color-text-muted: #9aa7b4;
+
+    --color-rule: #2b333d;
+    --color-blue-pale: #16273a;
+    --color-green-pale: #16281f;
+    --color-amber-pale: #2b2113;
+
+    --pri-now: #ff8b82;
+    --pri-now-pale: #33191a;
+    --pri-bag: #7fb2e5;
+    --pri-bag-pale: #16273a;
+    --pri-later: #8fc4a6;
+    --pri-later-pale: #16281f;
+
+    --color-alert: #ff8b82;
+    --color-amber: #e0a75a;
+  }
+}
+
+/* ==========================================================================
+   Foundation / Reset・Base
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-jp);
+  font-size: 16px;
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  /* 下部固定バーに最後の項目が隠れないよう逃がす */
+  padding-bottom: 96px;
+}
+
+h1, h2, h3, h4, p, ul, ol, dl, dt, dd, figure {
+  margin: 0;
+}
+
+ul, ol {
+  padding: 0;
+  list-style: none;
+}
+
+/* dd の既定インデント（40px）を消す。説明文が用語より右にずれると読みにくい */
+dd {
+  margin-inline-start: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: var(--color-blue);
+}
+
+@media (prefers-color-scheme: dark) {
+  a { color: #7fb2e5; }
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+.l-container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.l-section {
+  margin-top: 40px;
+}
+
+/* ==========================================================================
+   Utility
+   ========================================================================== */
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.u-skip-link {
+  position: absolute;
+  top: -100px;
+  left: 8px;
+  z-index: var(--z-skip);
+  padding: 12px 20px;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: var(--color-navy);
+  color: var(--color-text-inverse);
+  text-decoration: none;
+}
+
+.u-skip-link:focus {
+  top: 0;
+}
+
+/* ==========================================================================
+   Component / Header
+   ========================================================================== */
+.c-header {
+  padding: 24px 0 20px;
+  background: var(--color-navy);
+  color: var(--color-text-inverse);
+}
+
+.c-header__title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+.c-header__lead {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  color: #c8d4e0;
+}
+
+/* --------------------------------------------------------------------------
+   最優先の呼びかけ
+   「物より命」。このツール全体で最も重要な一文なので、唯一の赤面として扱う。
+   -------------------------------------------------------------------------- */
+.c-priority-note {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #ff8b82;
+  font-size: 0.9375rem;
+  line-height: 1.75;
+}
+
+.c-priority-note strong {
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ==========================================================================
+   Component / Card
+   ========================================================================== */
+.c-card {
+  padding: 20px var(--gutter);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.c-card + .c-card {
+  margin-top: 16px;
+}
+
+.c-card__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.c-card__desc {
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Component / Chip（世帯タイプ・追加条件の選択）
+   input を隠して label をボタン化する。見た目より「押せる面積」を優先する。
+   ========================================================================== */
+.c-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.c-chip {
+  position: relative;
+}
+
+.c-chip__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.c-chip__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1.5px solid var(--color-rule);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.c-chip__label:hover {
+  border-color: var(--color-blue);
+  color: var(--color-text);
+}
+
+.c-chip__input:checked + .c-chip__label {
+  border-color: var(--color-blue);
+  background: var(--color-blue-pale);
+  color: var(--color-blue);
+  font-weight: 700;
+}
+
+.c-chip__input:focus-visible + .c-chip__label {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* チェック済みマーク。色だけに頼らず形でも状態を伝える */
+.c-chip__input:checked + .c-chip__label::before {
+  content: "✓";
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Fieldset（チップ群のまとまり）
+   ブラウザ既定の枠線は情報量を増やすだけなので消し、見出しだけを残す。
+   -------------------------------------------------------------------------- */
+.c-fieldset {
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.c-fieldset__legend {
+  padding: 0;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Component / Stepper（人数入力）
+   ========================================================================== */
+.c-steppers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.c-stepper__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.c-stepper__control {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.c-stepper__btn {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: var(--color-surface-sub);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.c-stepper__btn:hover:not(:disabled) {
+  background: var(--color-blue-pale);
+  color: var(--color-blue);
+}
+
+.c-stepper__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.c-stepper__value {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.c-stepper__value::-webkit-outer-spin-button,
+.c-stepper__value::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Component / Progress
+   ========================================================================== */
+.c-progress {
+  margin-top: 12px;
+}
+
+.c-progress__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+
+.c-progress__count {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.c-progress__bar {
+  margin-top: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-surface-sub);
+  overflow: hidden;
+}
+
+.c-progress__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-blue);
+  transition: width var(--dur) var(--ease);
+}
+
+.c-progress__fill.is-complete {
+  background: var(--color-green);
+}
+
+@media (prefers-color-scheme: dark) {
+  .c-progress__fill { background: #7fb2e5; }
+  .c-progress__fill.is-complete { background: #8fc4a6; }
+}
+
+/* --------------------------------------------------------------------------
+   リスト操作（チェック済みを隠す / 全部外す）
+   -------------------------------------------------------------------------- */
+.p-listtools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.p-listtools__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.p-listtools__check {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-blue);
+  cursor: pointer;
+}
+
+.p-updated {
+  margin-top: 12px;
+}
+
+/* 印刷したときだけ日付を出す。画面では今日の日付を見せる意味がない */
+.p-printed-at {
+  display: none;
+}
+
+.p-reset {
+  text-align: center;
+}
+
+/* ==========================================================================
+   Project / Checklist
+   ========================================================================== */
+.p-group {
+  margin-top: 32px;
+}
+
+.p-group__head {
+  padding: 14px 16px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border: 1px solid var(--color-rule);
+  border-bottom: 0;
+}
+
+.p-group__head[data-pri="now"] { background: var(--pri-now-pale); }
+.p-group__head[data-pri="bag"] { background: var(--pri-bag-pale); }
+.p-group__head[data-pri="later"] { background: var(--pri-later-pale); }
+
+.p-group__badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-inverse);
+}
+
+.p-group__head[data-pri="now"] .p-group__badge { background: #b3261e; }
+.p-group__head[data-pri="bag"] .p-group__badge { background: #1b6ca8; }
+.p-group__head[data-pri="later"] .p-group__badge { background: #2e6e4f; }
+
+.p-group__title {
+  margin-top: 8px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.p-group__head[data-pri="now"] .p-group__title { color: var(--pri-now); }
+.p-group__head[data-pri="bag"] .p-group__title { color: var(--pri-bag); }
+.p-group__head[data-pri="later"] .p-group__title { color: var(--pri-later); }
+
+.p-group__desc {
+  margin-top: 2px;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.p-group__body {
+  border: 1px solid var(--color-rule);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   カテゴリ見出し
+   -------------------------------------------------------------------------- */
+.p-cat {
+  border-top: 1px solid var(--color-rule);
+}
+
+.p-cat:first-child {
+  border-top: 0;
+}
+
+.p-cat__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--color-surface-sub);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.p-cat__icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   1項目
+   label 全体を当たり判定にして、手が震えていても押せるようにする。
+   -------------------------------------------------------------------------- */
+.p-item {
+  border-top: 1px solid var(--color-rule);
+}
+
+.p-item:first-child {
+  border-top: 0;
+}
+
+.p-item__label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  min-height: 44px;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.p-item__label:hover {
+  background: var(--color-surface-sub);
+}
+
+.p-item__check {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  margin: 2px 0 0;
+  accent-color: var(--color-blue);
+  cursor: pointer;
+}
+
+.p-item__body {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* span を積むので、明示的にブロック化する（インラインのままだと説明文が続き書きになる） */
+.p-item__name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.6;
+  transition: color var(--dur) var(--ease);
+}
+
+.p-item__qty {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--color-blue-pale);
+  color: var(--color-blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  vertical-align: 2px;
+}
+
+.p-item__note {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+/* チェック済みは薄くして、残りが自然に目立つようにする */
+.p-item.is-checked .p-item__name {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.p-item.is-checked .p-item__qty {
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   Project / 覚えておきたいこと（171 など）
+   ========================================================================== */
+.p-info__list {
+  margin-top: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.p-info__item {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sub);
+}
+
+.p-info__term {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.p-info__num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.p-info__desc {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Project / メモ（連絡先・避難先）
+   ========================================================================== */
+.p-memo {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.p-memo__field label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.p-memo__field input,
+.p-memo__field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.p-memo__field textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.p-memo__field input:focus,
+.p-memo__field textarea:focus {
+  border-color: var(--color-blue);
+  outline: none;
+}
+
+/* 印刷用の複製。画面では常に隠す（実体は入力欄のほう） */
+.p-memo__print {
+  display: none;
+}
+
+/* ==========================================================================
+   Component / Button
+   ========================================================================== */
+.c-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 10px 18px;
+  border: 1.5px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.c-btn:hover {
+  border-color: var(--color-blue);
+  background: var(--color-blue-pale);
+  color: var(--color-blue);
+}
+
+.c-btn--primary {
+  border-color: var(--color-navy);
+  background: var(--color-navy);
+  color: var(--color-text-inverse);
+}
+
+.c-btn--primary:hover {
+  border-color: var(--color-blue);
+  background: var(--color-blue);
+  color: var(--color-text-inverse);
+}
+
+.c-btn--quiet {
+  min-height: 40px;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   下部固定アクションバー
+   印刷／PDFは「探させない」。常に指の届くところに置く。
+   -------------------------------------------------------------------------- */
+.c-actionbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: var(--z-bar);
+  padding: 10px var(--gutter);
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--color-rule);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* color-mix 非対応ブラウザ向けの素の背景色（上書きされる前提） */
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
+  .c-actionbar {
+    background: var(--color-surface);
+  }
+}
+
+.c-actionbar__inner {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+}
+
+.c-actionbar .c-btn {
+  flex: 1 1 0;
+  padding-inline: 8px;
+  font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   Component / Toast（保存しました等の短い通知）
+   ========================================================================== */
+.c-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 88px;
+  z-index: var(--z-toast);
+  transform: translate(-50%, 8px);
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--color-navy-deep);
+  color: var(--color-text-inverse);
+  font-size: 0.875rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.c-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ==========================================================================
+   Component / Footer
+   ========================================================================== */
+.c-footer {
+  margin-top: 48px;
+  padding: 24px 0 32px;
+  border-top: 1px solid var(--color-rule);
+  font-size: 0.75rem;
+  line-height: 1.9;
+  color: var(--color-text-muted);
+}
+
+.c-footer p + p {
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   印刷（＝PDF保存）
+   --------------------------------------------------------------------------
+   紙になった瞬間、これは「電池の要らない防災グッズ」になる。
+   操作UIを消し、チェック欄を手書きできる四角にして、白黒で読めるようにする。
+   ========================================================================== */
+@media print {
+  :root {
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-sub: #ffffff;
+    --color-text: #000000;
+    --color-text-muted: #333333;
+    --color-rule: #999999;
+  }
+
+  body {
+    padding-bottom: 0;
+    background: #fff;
+    color: #000;
+    font-size: 10.5pt;
+    line-height: 1.6;
+  }
+
+  /* 画面操作のためだけの要素は紙に出さない。
+     進捗バーも、紙の上では動かないので件数の文字だけ残す */
+  .u-skip-link,
+  .c-actionbar,
+  .c-toast,
+  .c-progress__bar,
+  .js-print-hide {
+    display: none !important;
+  }
+
+  .l-container {
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .c-header {
+    padding: 0 0 8pt;
+    background: #fff;
+    color: #000;
+    border-bottom: 1.5pt solid #000;
+  }
+
+  .c-header__lead,
+  .c-priority-note {
+    color: #000;
+  }
+
+  .c-priority-note {
+    margin-top: 8pt;
+    padding: 6pt 8pt;
+    background: #fff;
+    border: 1pt solid #000;
+    border-left: 3pt solid #000;
+  }
+
+  .c-card {
+    border: 1pt solid #999;
+    padding: 8pt 10pt;
+  }
+
+  /* 見出しだけがページ末尾に取り残されるのを防ぐ */
+  .p-group {
+    margin-top: 14pt;
+    break-inside: avoid;
+  }
+
+  .p-group__head {
+    background: #fff !important;
+    border: 1pt solid #000;
+    border-bottom: 0;
+    padding: 6pt 8pt;
+    break-after: avoid;
+  }
+
+  .p-group__badge {
+    background: #000 !important;
+    color: #fff !important;
+  }
+
+  .p-group__title,
+  .p-group__desc {
+    color: #000 !important;
+  }
+
+  .p-cat {
+    break-inside: avoid;
+  }
+
+  .p-cat__head {
+    background: #f0f0f0 !important;
+    color: #000;
+    padding: 4pt 8pt;
+    break-after: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .p-item {
+    break-inside: avoid;
+  }
+
+  .p-item__label {
+    padding: 4pt 8pt;
+    min-height: 0;
+  }
+
+  /* ブラウザによってはチェックボックスが白飛びする。
+     紙の上で手書きできるよう、常に枠のある四角として描き直す */
+  .p-item__check {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 11pt;
+    height: 11pt;
+    margin-top: 2pt;
+    border: 1pt solid #000;
+    border-radius: 1pt;
+    background: #fff;
+  }
+
+  .p-item__check:checked {
+    background: #000;
+    /* 黒地に白のチェックを描く（画像を使わない） */
+    background-image: linear-gradient(45deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%),
+      linear-gradient(-45deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .p-item.is-checked .p-item__name {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .p-item__qty {
+    background: #fff;
+    color: #000;
+    border: 0.5pt solid #666;
+  }
+
+  .p-item__note {
+    color: #333;
+  }
+
+  /* --------------------------------------------------------------------
+     メモ欄
+     入力欄をそのまま印刷すると、
+      ・未入力でもプレースホルダが本文のように出る
+      ・textarea に収まらない行（連絡先など）が丸ごと欠落する
+     という二つの問題が起きる。緊急連絡先が紙から消えるのは致命的なので、
+     入力欄は隠し、同じ内容を複製した通常のテキストを印刷する。
+     -------------------------------------------------------------------- */
+  .p-memo__field input,
+  .p-memo__field textarea {
+    display: none;
+  }
+
+  .p-memo__print {
+    display: block;
+    min-height: 16pt;
+    padding: 2pt 0;
+    border-bottom: 0.75pt solid #666;
+    /* 改行と連続空白を保ちつつ、長い行は折り返す */
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  /* 未記入なら、その場で手書きできるだけの高さを残す */
+  .p-memo__print--multi {
+    min-height: 48pt;
+  }
+
+  .p-info__item {
+    border: 0.5pt solid #999;
+    break-inside: avoid;
+  }
+
+  /* 画面では隠している「印刷日」を、紙の上でだけ出す */
+  .p-printed-at {
+    display: block;
+    margin-top: 4pt;
+  }
+
+  .c-footer {
+    margin-top: 12pt;
+    padding: 8pt 0 0;
+  }
+
+  a[href^="tel:"] {
+    color: #000;
+    text-decoration: none;
+  }
+
+  @page {
+    margin: 14mm 12mm;
+  }
+}
