@@ -18,14 +18,38 @@ evacuation-checklist/
     └── img/icon*.svg           アプリアイコン
 ```
 
-## 使い方
+## 開き方
 
-`index.html` をブラウザで開くだけで動きます。ビルド不要、インストール不要です。
+ビルドもインストールも不要です。目的に応じて3通りあります。
 
-サーバに置く場合は、このフォルダごとアップロードしてください。
-HTTPS で配信すると Service Worker が有効になり、
+### A. とりあえず中身を見る（いちばん簡単）
+
+`dist/避難所持ち物チェックリスト.html` をダウンロードして、ダブルクリックするだけです。
+HTML 1枚に全部入っているので、これだけで全機能が動きます。
+
+`dist/` はリポジトリに含まれないため、手元に無い場合は
+`node build-single-file.js` を実行すると生成されます。
+
+### B. リポジトリを手元に取ってくる
+
+```bash
+git fetch origin claude/evacuation-checklist-tool-06ex49
+git checkout claude/evacuation-checklist-tool-06ex49
+open evacuation-checklist/index.html      # Windows は start、Linux は xdg-open
+```
+
+GitHub の画面からなら、ブランチを選んで
+「Code → Download ZIP」で落とし、解凍後に
+`evacuation-checklist/index.html` をダブルクリックしても同じです。
+
+### C. サーバに置いて公開する
+
+このフォルダごとアップロードしてください。
+**HTTPS で配信したときだけ** Service Worker が有効になり、
 一度開いたあとは通信が無くても開けるようになります。
 スマートフォンでは「ホーム画面に追加」でアプリのように使えます。
+
+避難所で配る想定なら、この形が本来の姿です。
 
 ## 設計方針
 
@@ -135,3 +159,19 @@ Chromium で以下を確認しています。
 持ち物の数量は一般的な目安です。利用者の体力・健康状態に合わせた調整が前提です。
 避難の判断そのものは、必ず自治体の情報と現地の状況が優先されます。
 その旨はページ下部にも明記しています。
+
+## 1ファイル版
+
+`node build-single-file.js` を実行すると、CSS と JS を埋め込んだ
+HTML 1枚だけの版が `dist/` に出力されます。
+
+```
+dist/避難所持ち物チェックリスト.html   ← ダブルクリックで開ける（約87KB）
+dist/artifact.html                      ← 外側の骨組みを持たない断片版
+```
+
+フォルダごとの配布ができない場面（メール添付、USBメモリ、LINEでの送信など）で
+使ってください。1ファイル版は Service Worker を持ちませんが、
+ファイル自体が手元にあるため、オフラインでも開けます。
+
+`dist/` はビルド生成物なのでコミット対象外です。

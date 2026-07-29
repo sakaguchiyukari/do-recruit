@@ -74,7 +74,8 @@
    端末のバッテリー節約にもつながる。
    -------------------------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
-  :root {
+  /* :not() で、利用者が明示的に light を選んだ場合はこの指定を効かせない */
+  :root:not([data-theme="light"]) {
     --color-bg: #0d1116;
     --color-surface: #161c23;
     --color-surface-sub: #1e252e;
@@ -97,6 +98,35 @@
     --color-alert: #ff8b82;
     --color-amber: #e0a75a;
   }
+}
+
+/* --------------------------------------------------------------------------
+   テーマの明示指定
+   ページを埋め込む側にテーマ切替がある場合、ルート要素の data-theme が
+   OS の設定より優先される。上のメディアクエリと同じ値を保つこと。
+   -------------------------------------------------------------------------- */
+:root[data-theme="dark"] {
+  --color-bg: #0d1116;
+  --color-surface: #161c23;
+  --color-surface-sub: #1e252e;
+
+  --color-text: #e8edf2;
+  --color-text-muted: #9aa7b4;
+
+  --color-rule: #2b333d;
+  --color-blue-pale: #16273a;
+  --color-green-pale: #16281f;
+  --color-amber-pale: #2b2113;
+
+  --pri-now: #ff8b82;
+  --pri-now-pale: #33191a;
+  --pri-bag: #7fb2e5;
+  --pri-bag-pale: #16273a;
+  --pri-later: #8fc4a6;
+  --pri-later-pale: #16281f;
+
+  --color-alert: #ff8b82;
+  --color-amber: #e0a75a;
 }
 
 /* ==========================================================================
