@@ -39,19 +39,26 @@ lifeline-support/
 ├── about/index.html            # 使い方・情報の扱い・免責事項
 ├── manifest.webmanifest        # PWA マニフェスト
 ├── sw.js                       # Service Worker（オフライン対応の中核）
+├── preview.html                # 1ファイル版（自動生成・直接編集しない）
 │
 ├── assets/
 │   ├── css/style.css           # 全スタイル（1ファイル＝1リクエスト）
 │   ├── icon/                   # icon.svg / icon-192 / icon-512 / maskable / apple-touch
 │   └── js/
-│       ├── app.js              # ホーム
-│       ├── page-lifehacks.js   # ライフハック集
-│       ├── page-links.js       # リンク集
-│       ├── page-memo.js        # 緊急メモ
-│       ├── page-static.js      # 文章だけのページ（about）
+│       ├── app.js              # エントリ：ホーム
+│       ├── page-lifehacks.js   # エントリ：ライフハック集
+│       ├── page-links.js       # エントリ：リンク集
+│       ├── page-memo.js        # エントリ：緊急メモ
+│       ├── page-static.js      # エントリ：文章だけのページ（about）
+│       ├── pages/              # 各画面の描画処理（init 関数を export）
+│       │   ├── home.js
+│       │   ├── lifehacks.js
+│       │   ├── links.js
+│       │   └── memo.js
 │       ├── modules/
 │       │   ├── state.js        # localStorage による状態管理
 │       │   ├── render.js       # カードの描画
+│       │   ├── region-form.js  # 地域設定フォーム（ホームとリンク集で共用）
 │       │   ├── dom.js          # 要素生成ヘルパー
 │       │   ├── theme.js        # 表示モード（ダーク／省電力）
 │       │   ├── pwa.js          # Service Worker 登録・オンライン検知・インストール
@@ -60,8 +67,13 @@ lifeline-support/
 │           ├── situations.js   # 状況・世帯条件・都道府県→電力会社
 │           ├── items.js        # 対策コンテンツ本体（133件）
 │           └── links.js        # 公的機関リンク（77件）
+├── tools/build-preview.mjs     # preview.html の生成
 └── docs/README.md              # 本書
 ```
+
+エントリ（`app.js` / `page-*.js`）は初期化の呼び出しだけを持ち、描画は `pages/` にあります。
+`pages/` の init 関数は探索範囲（root）を受け取れるため、1ファイル版のように
+複数の画面を同じ DOM に並べても取り違えません。
 
 ### 設計上の判断
 
