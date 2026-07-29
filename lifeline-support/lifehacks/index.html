@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto" data-saver="off" data-app-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ライフハック集｜ライフラインサポート</title>
+<meta name="description" content="停電・断水・トイレ・通信・ガス・食事・子ども・高齢者・ペット。災害後の暮らしを支える工夫をカテゴリ別にまとめました。オフラインでも読めます。">
+<meta name="theme-color" content="#0f3b5c">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icon/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<a class="u-visually-hidden" href="#main">本文へスキップ</a>
+
+<header class="l-header">
+  <div class="l-header__inner">
+    <p class="l-header__title">
+      <a href="../">ライフラインサポート
+        <span class="l-header__sub">ライフハック集</span>
+      </a>
+    </p>
+    <span class="c-net" data-net-status data-state="online">オンライン</span>
+    <label class="c-mode__button">
+      <input type="checkbox" class="u-visually-hidden" data-saver-toggle>
+      <span aria-hidden="true">🌙</span>
+      <span class="u-visually-hidden">省電力表示（暗い画面）に切り替える</span>
+    </label>
+  </div>
+</header>
+
+<main id="main" class="l-main">
+
+  <div class="c-status" data-status-bar hidden></div>
+
+  <p class="c-banner c-banner--warn" data-offline-note hidden>
+    <span class="c-banner__text">オフラインです。保存済みの内容を表示しています。外部サイトへのリンクは、通信が戻ってからひらけます。</span>
+  </p>
+
+  <div class="c-banner" data-update-banner hidden>
+    <span class="c-banner__text">新しい内容が届いています。</span>
+    <button type="button" class="c-button c-button--small" data-update-apply>更新する</button>
+  </div>
+
+  <section class="l-section" aria-labelledby="h-intro">
+    <div class="c-head">
+      <h1 class="c-head__title" id="h-intro">
+        <span class="c-head__icon" aria-hidden="true">💡</span>
+        <span>ライフハック集</span>
+      </h1>
+      <p class="c-head__note">カテゴリを選ぶと、その分野の内容だけを表示します。今の状況に合わせた優先順位で読みたいときは <a href="../">ホーム</a> から選んでください。</p>
+    </div>
+    <ul class="c-chip-list" data-category-chips></ul>
+  </section>
+
+  <div data-categories></div>
+
+</main>
+
+<footer class="l-footer">
+  <p>掲載内容は一般的な防災の考え方をまとめたものです。実際の対応は、気象庁・自治体・ライフライン各社の最新の発表に必ず従ってください。</p>
+</footer>
+
+<nav class="l-tabbar" aria-label="主要メニュー">
+  <ul class="l-tabbar__list">
+    <li><a class="l-tabbar__link" href="../"><span class="l-tabbar__icon" aria-hidden="true">🏠</span>ホーム</a></li>
+    <li><a class="l-tabbar__link" href="./" aria-current="page"><span class="l-tabbar__icon" aria-hidden="true">💡</span>ライフハック</a></li>
+    <li><a class="l-tabbar__link" href="../links/"><span class="l-tabbar__icon" aria-hidden="true">🔗</span>リンク集</a></li>
+    <li><a class="l-tabbar__link" href="../memo/"><span class="l-tabbar__icon" aria-hidden="true">📝</span>メモ</a></li>
+  </ul>
+</nav>
+
+<script type="module" src="../assets/js/page-lifehacks.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto" data-saver="off" data-app-root="./">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ライフラインサポート｜地震後の暮らしを支える防災ツール</title>
+<meta name="description" content="停電・断水・通信障害・ガス停止・食料不足・トイレ。今困っていることを選ぶと、必要な対策だけが優先度順に表示されます。オフラインでも使えます。">
+<meta name="theme-color" content="#0f3b5c">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ライフライン">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<a class="u-visually-hidden" href="#main">本文へスキップ</a>
+
+<header class="l-header">
+  <div class="l-header__inner">
+    <p class="l-header__title">
+      <a href="./">ライフラインサポート
+        <span class="l-header__sub">地震後の暮らしを支える</span>
+      </a>
+    </p>
+    <span class="c-net" data-net-status data-state="online">オンライン</span>
+    <label class="c-mode__button">
+      <input type="checkbox" class="u-visually-hidden" data-saver-toggle>
+      <span aria-hidden="true">🌙</span>
+      <span class="u-visually-hidden">省電力表示（暗い画面）に切り替える</span>
+    </label>
+  </div>
+</header>
+
+<main id="main" class="l-main">
+
+  <div class="c-status" data-status-bar hidden></div>
+
+  <p class="c-banner c-banner--warn" data-offline-note hidden>
+    <span class="c-banner__text">オフラインです。保存済みの内容を表示しています。外部サイトへのリンクは、通信が戻ってからひらけます。</span>
+  </p>
+
+  <div class="c-banner" data-update-banner hidden>
+    <span class="c-banner__text">新しい内容が届いています。</span>
+    <button type="button" class="c-button c-button--small" data-update-apply>更新する</button>
+  </div>
+
+  <div class="c-banner c-banner--warn" data-storage-warning hidden>
+    <span class="c-banner__text">この環境では選択内容を保存できません（プライベートブラウズなどの可能性があります）。画面を閉じると設定が消えます。</span>
+  </div>
+
+  <!-- ============================================================ 状況の選択 -->
+  <section class="l-section" aria-labelledby="h-select">
+    <div class="c-head">
+      <h2 class="c-head__title" id="h-select">
+        <span class="c-head__icon" aria-hidden="true">🏠</span>
+        <span>今困っていることを選択してください</span>
+      </h2>
+      <p class="c-head__note">選ぶと、その状況で優先度の高い対策だけが上から順に表示されます。選択はこの端末に保存されます。</p>
+    </div>
+
+    <ul class="c-tile-grid" data-situation-grid></ul>
+
+    <details class="c-details" style="margin-top:14px">
+      <summary>いっしょにいる人（選ぶとより絞り込めます）</summary>
+      <div class="c-details__body">
+        <p class="c-field__hint">乳幼児・高齢者・ペットなど、配慮が必要な人がいる場合の注意点を追加で表示します。</p>
+        <ul class="c-tile-grid" data-household-grid></ul>
+      </div>
+    </details>
+
+    <details class="c-details" style="margin-top:10px" id="settings">
+      <summary>地域を設定する（公式情報のリンクが地域向けになります）</summary>
+      <div class="c-details__body">
+        <div class="c-field">
+          <label class="c-field__label" for="prefecture">都道府県</label>
+          <select class="c-select" id="prefecture" data-prefecture></select>
+          <p class="c-field__hint" data-region-note></p>
+        </div>
+        <div class="c-field">
+          <label class="c-field__label" for="city">市区町村（任意）</label>
+          <input class="c-input" id="city" type="text" inputmode="text" placeholder="例：熊本市東区" data-city>
+          <p class="c-field__hint">入力すると、自治体・水道局・ガス会社を探すリンクが自動で作られます。</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="c-details" style="margin-top:10px">
+      <summary>画面の明るさ・配色</summary>
+      <div class="c-details__body">
+        <p class="c-field__hint">停電時は暗い画面のほうが目が慣れ、電池も長持ちします（有機ELの場合）。</p>
+        <div class="c-chip-list">
+          <button type="button" class="c-chip" data-theme-value="auto" aria-pressed="false">端末の設定に合わせる</button>
+          <button type="button" class="c-chip" data-theme-value="light" aria-pressed="false">明るい</button>
+          <button type="button" class="c-chip" data-theme-value="dark" aria-pressed="false">暗い</button>
+        </div>
+        <p class="c-field__hint">さらに暗くしたいときは、画面右上の 🌙 で省電力表示に切り替えられます。</p>
+      </div>
+    </details>
+
+    <div class="c-button-row">
+      <button type="button" class="c-button c-button--ghost c-button--small" data-clear>選択をすべて解除</button>
+      <button type="button" class="c-button c-button--ghost c-button--small" data-clear-done>チェックの記録を消す</button>
+    </div>
+  </section>
+
+  <!-- ================================================================== 結果 -->
+  <section class="l-section l-section--flat" aria-labelledby="h-result">
+    <h2 class="u-visually-hidden" id="h-result">あなたの状況に合わせた対策</h2>
+    <p class="u-visually-hidden" role="status" aria-live="polite" data-result-summary></p>
+    <div data-results></div>
+  </section>
+
+  <!-- ======================================================== 困ったとき -->
+  <section class="l-section" data-quick-links hidden></section>
+
+  <!-- ============================================================ オフライン -->
+  <section class="l-section" aria-labelledby="h-offline">
+    <div class="c-head">
+      <h2 class="c-head__title" id="h-offline">
+        <span class="c-head__icon" aria-hidden="true">📥</span>
+        <span>通信がなくても使えます</span>
+      </h2>
+      <p class="c-head__note">一度ひらけば、対策・ライフハック・リンク集は端末に保存されます。圏外でも、このページをそのまま開けます。</p>
+    </div>
+    <p class="c-banner" data-offline-ready hidden>
+      <span class="c-banner__text">✅ この端末に保存済みです。オフラインでも全ページを閲覧できます。</span>
+    </p>
+    <div class="c-button-row">
+      <button type="button" class="c-button" data-install hidden>ホーム画面に追加する</button>
+      <a class="c-button c-button--ghost c-button--small" href="memo/">緊急メモを書いておく</a>
+    </div>
+    <p class="c-note">iPhone の Safari では、共有ボタン → 「ホーム画面に追加」でアプリのように使えます。</p>
+  </section>
+
+  <!-- ================================================================ 案内 -->
+  <section class="l-section" aria-labelledby="h-guide">
+    <div class="c-head">
+      <h2 class="c-head__title" id="h-guide">
+        <span class="c-head__icon" aria-hidden="true">🧭</span>
+        <span>ほかのページ</span>
+      </h2>
+    </div>
+    <ul class="c-link-list">
+      <li class="c-link">
+        <a class="c-link__name" href="lifehacks/">ライフハック集<span class="c-link__mark" aria-hidden="true">→</span></a>
+        <p class="c-link__note">停電・断水・通信・食事・トイレ・子ども・ペット・高齢者。カテゴリごとに全部読めます。</p>
+      </li>
+      <li class="c-link">
+        <a class="c-link__name" href="links/">公的機関リンク集<span class="c-link__mark" aria-hidden="true">→</span></a>
+        <p class="c-link__note">気象庁・自治体・電力・水道・ガス・通信・道路・支援制度の窓口。</p>
+      </li>
+      <li class="c-link">
+        <a class="c-link__name" href="memo/">緊急メモ<span class="c-link__mark" aria-hidden="true">→</span></a>
+        <p class="c-link__note">家族の連絡先、落ち合う場所、持病と薬。この端末の中だけに保存します。</p>
+      </li>
+      <li class="c-link">
+        <a class="c-link__name" href="about/">このアプリについて<span class="c-link__mark" aria-hidden="true">→</span></a>
+        <p class="c-link__note">情報の扱い、使い方、免責事項。</p>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="l-footer">
+  <p>掲載内容は一般的な防災の考え方をまとめたものです。実際の対応は、気象庁・自治体・ライフライン各社の最新の発表に必ず従ってください。</p>
+</footer>
+
+<nav class="l-tabbar" aria-label="主要メニュー">
+  <ul class="l-tabbar__list">
+    <li><a class="l-tabbar__link" href="./" aria-current="page"><span class="l-tabbar__icon" aria-hidden="true">🏠</span>ホーム</a></li>
+    <li><a class="l-tabbar__link" href="lifehacks/"><span class="l-tabbar__icon" aria-hidden="true">💡</span>ライフハック</a></li>
+    <li><a class="l-tabbar__link" href="links/"><span class="l-tabbar__icon" aria-hidden="true">🔗</span>リンク集</a></li>
+    <li><a class="l-tabbar__link" href="memo/"><span class="l-tabbar__icon" aria-hidden="true">📝</span>メモ</a></li>
+  </ul>
+</nav>
+
+<noscript>
+  <div class="l-main">
+    <div class="c-banner c-banner--warn">
+      <span class="c-banner__text">
+        JavaScript が無効のため、状況に合わせた絞り込みができません。以下だけは覚えておいてください。
+        ①停電：ブレーカーを落として避難する（通電火災の予防）／②断水：浴槽の水を捨てない／
+        ③トイレ：配管の無事が確認できるまで流さない／④通信：通話よりSMS、安否は171・web171へ。
+      </span>
+    </div>
+  </div>
+</noscript>
+
+<script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

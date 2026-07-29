@@ -1,0 +1,1195 @@
+@charset "UTF-8";
+/* ==========================================================================
+   ライフラインサポート — Stylesheet
+   --------------------------------------------------------------------------
+   1ファイルにまとめている。理由は @import の直列読み込みを避けるためで、
+   災害時に「1リクエストで全部そろう」ことを最優先した。
+
+   目次
+     01. デザイントークン（配色・寸法・モーション）
+     02. リセットと素の要素
+     03. レイアウト（ヘッダー / メイン / タブバー）
+     04. 状況バー・通知バー
+     05. トグルタイル（状況・世帯条件の選択）
+     06. フォーム（地域設定・検索・メモ）
+     07. 見出し・進捗・リード
+     08. カード（対策・ライフハック・注意）
+     09. リンクカード
+     10. チップ / ボタン / 補助テキスト
+     11. 表示モード（ダーク・省電力）
+     12. モーション削減・印刷
+
+   ■ 設計上の約束
+     ・タップ領域は最小 44×44px。手が震えていても押せること。
+     ・本文は 16px 以上。暗い場所・涙目でも読めること。
+     ・色だけで意味を伝えない（必ずアイコンか文字を添える）。
+   ========================================================================== */
+
+/* ==========================================================================
+   01. デザイントークン
+   ========================================================================== */
+
+:root {
+  /* ---- 面と文字 ---- */
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --surface-sub: #f6f8fa;
+  --text: #14181c;
+  --text-muted: #545f6b;
+  --text-inverse: #ffffff;
+  --rule: #d6dce2;
+  --rule-strong: #b6c0ca;
+
+  /* ---- ブランド ---- */
+  --brand: #0f3b5c;
+  --brand-strong: #0a2a42;
+  --brand-tint: #e4edf4;
+  --accent: #0d6ea8;
+
+  /* ---- 種別ごとの色（必ずアイコンとセットで使う） ---- */
+  --now: #0d6ea8;
+  --now-tint: #e3eff7;
+  --hack: #8a5a00;
+  --hack-tint: #fbf0da;
+  --caution: #b3261e;
+  --caution-tint: #fbe6e4;
+  --status: #a33b00;
+  --status-tint: #fdeade;
+
+  /* ---- 寸法 ---- */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --tap: 48px;
+  --gap: 12px;
+  --page-pad: 16px;
+  --max-width: 720px;
+  --tabbar-h: 64px;
+
+  /* ---- タイポ ---- */
+  --font: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Noto Sans JP",
+    "Meiryo", system-ui, sans-serif;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-title: 1.0625rem;
+  --fs-head: 1.25rem;
+
+  /* ---- 影とモーション ---- */
+  --shadow: 0 1px 2px rgba(16, 24, 32, 0.08), 0 4px 14px rgba(16, 24, 32, 0.06);
+  --dur: 180ms;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   02. リセットと素の要素
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  overflow-x: clip;
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* hidden 属性は必ず効かせる。
+   .c-banner などにクラスで display を指定しているため、
+   これが無いと「更新のお知らせ」などが常時表示されてしまう。 */
+[hidden] {
+  display: none !important;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+/* 読み上げ専用テキスト */
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   03. レイアウト
+   ========================================================================== */
+
+.l-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--brand);
+  color: var(--text-inverse);
+  padding: 10px var(--page-pad) 10px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+}
+
+.l-header__inner {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.l-header__title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  margin-right: auto;
+  /* 右側のバッジが伸びてもタイトルを1文字ずつに潰させない */
+  flex: 1 1 auto;
+  min-width: 8em;
+}
+
+.l-header__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.l-header__sub {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  opacity: 0.82;
+  letter-spacing: 0.04em;
+}
+
+.l-main {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding: var(--page-pad) var(--page-pad) 32px;
+  display: grid;
+  gap: 20px;
+}
+
+.l-section {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.l-section--flat {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ---- 下部タブバー：片手で全ページへ届くようにする ---- */
+
+.l-tabbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 30;
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.l-tabbar__list {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.l-tabbar__link {
+  min-height: var(--tabbar-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+  padding: 6px 2px;
+}
+
+.l-tabbar__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.l-tabbar__link[aria-current="page"] {
+  color: var(--accent);
+  font-weight: 700;
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+
+/* ==========================================================================
+   04. 状況バー・通知バー
+   ========================================================================== */
+
+.c-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  background: var(--status-tint);
+  border: 1px solid color-mix(in srgb, var(--status) 30%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: var(--fs-small);
+}
+
+.c-status__label {
+  font-weight: 700;
+  color: var(--status);
+  letter-spacing: 0.08em;
+}
+
+.c-status__chip {
+  background: var(--status);
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+
+.c-status__chip--household {
+  background: transparent;
+  color: var(--status);
+  border: 1px solid color-mix(in srgb, var(--status) 45%, transparent);
+  font-weight: 500;
+}
+
+.c-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  background: var(--brand-tint);
+  border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.c-banner--warn {
+  background: var(--caution-tint);
+  border-color: color-mix(in srgb, var(--caution) 30%, transparent);
+}
+
+.c-banner__text {
+  flex: 1 1 200px;
+}
+
+.c-net {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--text-inverse);
+  white-space: nowrap;
+}
+
+.c-net::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #57d38c;
+}
+
+.c-net[data-state="offline"]::before {
+  background: #ffb020;
+}
+
+/* ==========================================================================
+   05. トグルタイル
+   ========================================================================== */
+
+.c-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap);
+}
+
+@media (min-width: 480px) {
+  .c-tile-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.c-tile-item {
+  display: contents;
+}
+
+.c-tile__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.c-tile {
+  position: relative;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 8px;
+  text-align: center;
+  background: var(--surface);
+  border: 2px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.c-tile__icon {
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+.c-tile__label {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+/* 選択状態は「色」だけでなく「✓」でも示す（色覚特性への配慮） */
+.c-tile__state::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.c-tile__input:checked + .c-tile {
+  background: var(--brand-tint);
+  border-color: var(--brand);
+}
+
+.c-tile__input:checked + .c-tile .c-tile__state::after {
+  content: "✓ ON";
+}
+
+.c-tile__input:focus-visible + .c-tile {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.c-tile--sub {
+  min-height: 72px;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 10px 12px;
+}
+
+.c-tile--sub .c-tile__icon {
+  font-size: 1.375rem;
+}
+
+.c-tile--sub .c-tile__label {
+  font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   06. フォーム
+   ========================================================================== */
+
+.c-field {
+  display: grid;
+  gap: 6px;
+}
+
+.c-field + .c-field {
+  margin-top: 12px;
+}
+
+.c-field__label {
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.c-field__hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.c-input,
+.c-select,
+.c-textarea {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 10px 12px;
+  background: var(--surface-sub);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+}
+
+.c-textarea {
+  min-height: 120px;
+  line-height: 1.8;
+  resize: vertical;
+}
+
+.c-details {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sub);
+  padding: 0 12px;
+}
+
+.c-details > summary {
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: var(--fs-small);
+  cursor: pointer;
+  list-style: none;
+}
+
+.c-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.c-details > summary::after {
+  content: "＋";
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.c-details[open] > summary::after {
+  content: "−";
+}
+
+.c-details__body {
+  padding: 4px 0 14px;
+  display: grid;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   07. 見出し・進捗・リード
+   ========================================================================== */
+
+.c-head {
+  margin-bottom: 10px;
+}
+
+.c-head__title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: var(--fs-head);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  /* 和文を文節で折り返す（対応ブラウザのみ。非対応でも表示は崩れない） */
+  word-break: auto-phrase;
+}
+
+.c-head__icon {
+  font-size: 1.125em;
+  line-height: 1;
+}
+
+.c-head__count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--surface-sub);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 1px 9px;
+  letter-spacing: 0;
+}
+
+.c-head__note {
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.p-lead {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.p-lead__item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--surface);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  box-shadow: var(--shadow);
+}
+
+.p-lead__icon {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.p-group + .p-group {
+  margin-top: 24px;
+}
+
+.p-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.p-progress__bar {
+  flex: 1;
+  height: 8px;
+  background: var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.p-progress__fill {
+  height: 100%;
+  background: var(--now);
+  border-radius: 999px;
+  transition: width var(--dur) var(--ease);
+}
+
+.p-progress__text {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.p-category + .p-category {
+  margin-top: 28px;
+}
+
+.p-category__kind {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 16px 0 8px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   08. カード
+   ========================================================================== */
+
+.c-card-list {
+  display: grid;
+  gap: 10px;
+}
+
+.c-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 5px solid var(--rule-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.c-card--now {
+  border-left-color: var(--now);
+}
+
+.c-card--hack {
+  border-left-color: var(--hack);
+}
+
+.c-card--caution {
+  border-left-color: var(--caution);
+  background: var(--caution-tint);
+}
+
+.c-card__inner {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+}
+
+.c-card__inner--check {
+  cursor: pointer;
+  min-height: var(--tap);
+  align-items: flex-start;
+}
+
+.c-card__checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* チェックマークは自前で描く（各OSの既定サイズが小さすぎるため） */
+.c-card__mark {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  margin-top: 2px;
+  border: 2px solid var(--now);
+  border-radius: 8px;
+  background: var(--surface);
+  position: relative;
+}
+
+.c-card__mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 7px;
+  height: 13px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  transform: translateY(-1px) rotate(45deg);
+  opacity: 0;
+}
+
+.c-card__checkbox:checked + .c-card__mark {
+  background: var(--now);
+}
+
+.c-card__checkbox:checked + .c-card__mark::after {
+  opacity: 1;
+}
+
+.c-card__checkbox:focus-visible + .c-card__mark {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.c-card__body {
+  display: grid;
+  gap: 4px;
+}
+
+.c-card__title {
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+}
+
+.c-card__text {
+  font-size: var(--fs-small);
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.c-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.c-card__tag {
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  background: var(--surface-sub);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0 8px;
+  letter-spacing: 0;
+}
+
+/* 完了した項目は薄くするが、消さない（あとで見返せるように） */
+.c-card.is-done {
+  opacity: 0.62;
+}
+
+.c-card.is-done .c-card__title {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* ==========================================================================
+   09. リンクカード
+   ========================================================================== */
+
+.c-link-list {
+  display: grid;
+  gap: 10px;
+}
+
+.c-link {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+}
+
+.c-link.is-highlight {
+  border-color: var(--brand);
+  border-left: 5px solid var(--brand);
+  background: var(--brand-tint);
+}
+
+.c-link__badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.c-link__name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.c-link__name:hover,
+.c-link__name:focus-visible {
+  text-decoration: underline;
+}
+
+.c-link__name--tel {
+  color: var(--caution);
+}
+
+.c-link__name--disabled {
+  color: var(--text-muted);
+}
+
+.c-link__mark {
+  font-size: 0.875em;
+  opacity: 0.75;
+}
+
+.c-link__note {
+  margin-top: 2px;
+  font-size: var(--fs-small);
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+.c-link__hint {
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: var(--status);
+  background: var(--status-tint);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  line-height: 1.6;
+}
+
+.c-link__search {
+  display: inline-block;
+  margin-top: 8px;
+  min-height: 32px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+
+/* オフライン時は「開けない」ことを先に伝える */
+:root[data-online="no"] .c-link__name:not(.c-link__name--tel)::after {
+  content: "（通信が必要）";
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: var(--status);
+}
+
+/* ==========================================================================
+   10. チップ / ボタン / 補助テキスト
+   ========================================================================== */
+
+.c-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.c-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 40px;
+  padding: 6px 14px;
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  letter-spacing: 0;
+}
+
+.c-chip.is-active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text-inverse);
+}
+
+.c-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--tap);
+  padding: 10px 18px;
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-sm);
+  background: var(--brand);
+  color: var(--text-inverse);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.c-button--ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--rule-strong);
+}
+
+.c-button--small {
+  min-height: 40px;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+}
+
+.c-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.c-note {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-top: 10px;
+}
+
+.c-note__link {
+  font-weight: 700;
+}
+
+.c-empty {
+  background: var(--surface);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.c-empty__title {
+  font-size: var(--fs-title);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.c-empty__text {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.c-prose {
+  font-size: var(--fs-small);
+  line-height: 1.9;
+}
+
+.c-prose h2 {
+  font-size: var(--fs-head);
+  margin: 24px 0 8px;
+}
+
+.c-prose h3 {
+  font-size: 1rem;
+  margin: 18px 0 6px;
+}
+
+.c-prose p + p {
+  margin-top: 10px;
+}
+
+.c-prose ul {
+  list-style: disc;
+  padding-left: 1.4em;
+  margin-top: 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.c-prose ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+  margin-top: 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.l-footer {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding: 0 var(--page-pad) 24px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+/* 表示モードの切り替え（ヘッダー内） */
+.c-mode {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.c-mode__button {
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-inverse);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.c-mode__button[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   11. 表示モード（ダーク・省電力）
+   --------------------------------------------------------------------------
+   停電時は「暗い画面」が実用機能になる。暗闇で明るい画面を見ると
+   目が慣れず周囲が見えなくなるため、省電力表示は独立したスイッチにしている。
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --bg: #0f1419;
+    --surface: #181f27;
+    --surface-sub: #131920;
+    --text: #e9eff5;
+    --text-muted: #a7b4c0;
+    --rule: #2a3540;
+    --rule-strong: #3c4a58;
+    --brand: #12496f;
+    --brand-strong: #0d3049;
+    --brand-tint: #16293a;
+    --accent: #6fb8e8;
+    --now: #6fb8e8;
+    --now-tint: #14293a;
+    --hack: #e0b45c;
+    --hack-tint: #2a2314;
+    --caution: #ff9a90;
+    --caution-tint: #33191a;
+    --status: #ffb27a;
+    --status-tint: #33220f;
+    --shadow: none;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f1419;
+  --surface: #181f27;
+  --surface-sub: #131920;
+  --text: #e9eff5;
+  --text-muted: #a7b4c0;
+  --rule: #2a3540;
+  --rule-strong: #3c4a58;
+  --brand: #12496f;
+  --brand-tint: #16293a;
+  --accent: #6fb8e8;
+  --now: #6fb8e8;
+  --now-tint: #14293a;
+  --hack: #e0b45c;
+  --hack-tint: #2a2314;
+  --caution: #ff9a90;
+  --caution-tint: #33191a;
+  --status: #ffb27a;
+  --status-tint: #33220f;
+  --shadow: none;
+  color-scheme: dark;
+}
+
+:root[data-saver="on"] {
+  --bg: #000000;
+  --surface: #0a0d10;
+  --surface-sub: #05070a;
+  --text: #d8dfe6;
+  --text-muted: #93a0ac;
+  --rule: #1e262e;
+  --rule-strong: #2c3742;
+  --brand: #0b2f47;
+  --brand-tint: #0a1620;
+  --accent: #79bde9;
+  --now: #79bde9;
+  --hack: #d9ad57;
+  --caution: #ff9a90;
+  --caution-tint: #1c0f0f;
+  --status: #ffb27a;
+  --status-tint: #1c1309;
+  --shadow: none;
+  color-scheme: dark;
+}
+
+/* 省電力表示では白い面を作らない */
+:root[data-saver="on"] .c-status__chip {
+  background: transparent;
+  color: var(--status);
+  border: 1px solid var(--status);
+}
+
+:root[data-saver="on"] .c-card__mark {
+  background: var(--surface);
+}
+
+/* ==========================================================================
+   12. モーション削減・印刷
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 紙に出して冷蔵庫に貼れるようにする（停電しても読める最後の手段） */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+    padding-bottom: 0;
+  }
+
+  .l-header,
+  .l-tabbar,
+  .c-mode,
+  .c-button-row,
+  .c-chip-list,
+  .c-link__search,
+  .c-banner {
+    display: none !important;
+  }
+
+  .l-section,
+  .c-card,
+  .c-link {
+    border: 1px solid #999;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}

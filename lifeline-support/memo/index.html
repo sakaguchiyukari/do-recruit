@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto" data-saver="off" data-app-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>緊急メモ｜ライフラインサポート</title>
+<meta name="description" content="家族の連絡先、落ち合う場所、持病と薬。この端末の中だけに保存し、通信がなくても開けます。">
+<meta name="theme-color" content="#0f3b5c">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icon/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<a class="u-visually-hidden" href="#main">本文へスキップ</a>
+
+<header class="l-header">
+  <div class="l-header__inner">
+    <p class="l-header__title">
+      <a href="../">ライフラインサポート
+        <span class="l-header__sub">緊急メモ</span>
+      </a>
+    </p>
+    <span class="c-net" data-net-status data-state="online">オンライン</span>
+    <label class="c-mode__button">
+      <input type="checkbox" class="u-visually-hidden" data-saver-toggle>
+      <span aria-hidden="true">🌙</span>
+      <span class="u-visually-hidden">省電力表示（暗い画面）に切り替える</span>
+    </label>
+  </div>
+</header>
+
+<main id="main" class="l-main">
+
+  <div class="c-status" data-status-bar hidden></div>
+
+  <p class="c-banner c-banner--warn" data-offline-note hidden>
+    <span class="c-banner__text">オフラインです。保存済みの内容を表示しています。外部サイトへのリンクは、通信が戻ってからひらけます。</span>
+  </p>
+
+  <div class="c-banner c-banner--warn" data-storage-warning hidden>
+    <span class="c-banner__text">この環境ではメモを保存できません（プライベートブラウズなどの可能性があります）。画面を閉じると内容が消えます。</span>
+  </div>
+
+  <section class="l-section" aria-labelledby="h-memo">
+    <div class="c-head">
+      <h1 class="c-head__title" id="h-memo">
+        <span class="c-head__icon" aria-hidden="true">📝</span>
+        <span>緊急メモ</span>
+      </h1>
+      <p class="c-head__note">
+        入力した内容はこの端末の中だけに保存されます。どこにも送信されません。
+        通信がなくても、電池が持つ限りいつでも開けます。
+      </p>
+    </div>
+
+    <div class="c-banner">
+      <span class="c-banner__text">
+        スマホが壊れる・電池が切れることもあります。書き終えたら、同じ内容を紙にも書いて財布や防災リュックに入れておいてください。
+      </span>
+    </div>
+
+    <form data-memo-form style="margin-top:14px">
+      <div class="c-field">
+        <label class="c-field__label" for="memo-contacts">家族・親族・職場の連絡先</label>
+        <p class="c-field__hint">被災地の外に住む人を1人入れておくと、安否の中継役になってもらえます。</p>
+        <textarea class="c-textarea" id="memo-contacts" data-memo="contacts" placeholder="例：
+母 090-0000-0000
+兄（東京）080-0000-0000 ←安否の中継役
+勤務先 096-000-0000"></textarea>
+      </div>
+
+      <div class="c-field">
+        <label class="c-field__label" for="memo-meetup">落ち合う場所・避難先</label>
+        <p class="c-field__hint">第1候補と第2候補を決めておくと、連絡が取れなくても合流できます。</p>
+        <textarea class="c-textarea" id="memo-meetup" data-memo="meetup" placeholder="例：
+第1 ○○小学校の正門前
+第2 △△公園の時計台
+自宅が無事なら在宅避難"></textarea>
+      </div>
+
+      <div class="c-field">
+        <label class="c-field__label" for="memo-medical">持病・常用薬・かかりつけ医</label>
+        <p class="c-field__hint">意識がないときでも医療者に伝わります。アレルギーや医療機器も書いておいてください。</p>
+        <textarea class="c-textarea" id="memo-medical" data-memo="medical" placeholder="例：
+高血圧（○○錠 朝1回）
+卵アレルギー（子）
+かかりつけ ○○医院 096-000-0000
+在宅酸素の業者 0120-000-000"></textarea>
+      </div>
+
+      <div class="c-field">
+        <label class="c-field__label" for="memo-other">その他</label>
+        <p class="c-field__hint">保険会社の連絡先、ガス・電力の契約番号、ペットの情報など。</p>
+        <textarea class="c-textarea" id="memo-other" data-memo="other" placeholder="例：
+火災保険 ○○損保 証券番号 0000-0000
+猫（さば・8歳・療法食）
+自宅の水道の元栓は玄関横"></textarea>
+      </div>
+
+      <div class="c-button-row">
+        <button type="submit" class="c-button">保存する</button>
+        <button type="button" class="c-button c-button--ghost c-button--small" data-memo-reset>保存内容をすべて消す</button>
+      </div>
+      <p class="c-note" data-memo-status role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="l-section" aria-labelledby="h-privacy">
+    <div class="c-head">
+      <h2 class="c-head__title" id="h-privacy">
+        <span class="c-head__icon" aria-hidden="true">🔒</span>
+        <span>取り扱いについて</span>
+      </h2>
+    </div>
+    <div class="c-prose">
+      <ul>
+        <li>入力内容はブラウザの保存領域（localStorage）にのみ保存されます。送信先はありません。</li>
+        <li>端末を他の人に渡すときや、共用の端末で使ったときは「保存内容をすべて消す」を押してください。</li>
+        <li>ブラウザの履歴・サイトデータを削除すると、メモも一緒に消えます。</li>
+        <li>暗証番号やクレジットカード番号など、盗まれると被害が出る情報は書かないでください。</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="l-footer">
+  <p>掲載内容は一般的な防災の考え方をまとめたものです。実際の対応は、気象庁・自治体・ライフライン各社の最新の発表に必ず従ってください。</p>
+</footer>
+
+<nav class="l-tabbar" aria-label="主要メニュー">
+  <ul class="l-tabbar__list">
+    <li><a class="l-tabbar__link" href="../"><span class="l-tabbar__icon" aria-hidden="true">🏠</span>ホーム</a></li>
+    <li><a class="l-tabbar__link" href="../lifehacks/"><span class="l-tabbar__icon" aria-hidden="true">💡</span>ライフハック</a></li>
+    <li><a class="l-tabbar__link" href="../links/"><span class="l-tabbar__icon" aria-hidden="true">🔗</span>リンク集</a></li>
+    <li><a class="l-tabbar__link" href="./" aria-current="page"><span class="l-tabbar__icon" aria-hidden="true">📝</span>メモ</a></li>
+  </ul>
+</nav>
+
+<script type="module" src="../assets/js/page-memo.js"></script>
+</body>
+</html>

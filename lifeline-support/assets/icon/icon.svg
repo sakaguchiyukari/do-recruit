@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ライフラインサポート">
+  <title>ライフラインサポート</title>
+  <rect width="512" height="512" rx="113" fill="#0f3b5c"/>
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M128 252 L256 146 L384 252" stroke-width="26"/>
+    <path d="M168 252 L168 382 L344 382 L344 252" stroke-width="26"/>
+    <path d="M202 316 L228 316 L243 282 L267 352 L284 316 L310 316" stroke-width="20"/>
+  </g>
+</svg>

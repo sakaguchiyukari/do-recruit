@@ -1,0 +1,58 @@
+{
+  "name": "ライフラインサポート｜地震後の暮らしを支える",
+  "short_name": "ライフライン",
+  "description": "停電・断水・通信障害・ガス停止・食料不足・トイレ。今困っていることを選ぶと、必要な対策だけが優先度順に表示されます。通信がなくても使えます。",
+  "lang": "ja",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "id": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f3b5c",
+  "theme_color": "#0f3b5c",
+  "categories": ["utilities", "lifestyle"],
+  "icons": [
+    {
+      "src": "assets/icon/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "ライフハック集",
+      "short_name": "ライフハック",
+      "url": "lifehacks/"
+    },
+    {
+      "name": "公的機関リンク集",
+      "short_name": "リンク集",
+      "url": "links/"
+    },
+    {
+      "name": "緊急メモ",
+      "short_name": "メモ",
+      "url": "memo/"
+    }
+  ]
+}

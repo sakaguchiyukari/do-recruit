@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto" data-saver="off" data-app-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>公的機関リンク集｜ライフラインサポート</title>
+<meta name="description" content="気象庁・自治体・電力会社・水道局・ガス会社・通信各社・道路・医療・支援制度。災害時に確認する窓口をカテゴリ別にまとめました。">
+<meta name="theme-color" content="#0f3b5c">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icon/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<a class="u-visually-hidden" href="#main">本文へスキップ</a>
+
+<header class="l-header">
+  <div class="l-header__inner">
+    <p class="l-header__title">
+      <a href="../">ライフラインサポート
+        <span class="l-header__sub">公的機関リンク集</span>
+      </a>
+    </p>
+    <span class="c-net" data-net-status data-state="online">オンライン</span>
+    <label class="c-mode__button">
+      <input type="checkbox" class="u-visually-hidden" data-saver-toggle>
+      <span aria-hidden="true">🌙</span>
+      <span class="u-visually-hidden">省電力表示（暗い画面）に切り替える</span>
+    </label>
+  </div>
+</header>
+
+<main id="main" class="l-main">
+
+  <div class="c-status" data-status-bar hidden></div>
+
+  <p class="c-banner c-banner--warn" data-offline-note hidden>
+    <span class="c-banner__text">オフラインです。保存済みの内容を表示しています。外部サイトへのリンクは、通信が戻ってからひらけます。</span>
+  </p>
+
+  <div class="c-banner" data-update-banner hidden>
+    <span class="c-banner__text">新しい内容が届いています。</span>
+    <button type="button" class="c-button c-button--small" data-update-apply>更新する</button>
+  </div>
+
+  <section class="l-section" aria-labelledby="h-intro">
+    <div class="c-head">
+      <h1 class="c-head__title" id="h-intro">
+        <span class="c-head__icon" aria-hidden="true">🔗</span>
+        <span>公的機関リンク集</span>
+      </h1>
+      <p class="c-head__note">リンク先は通信が必要です。リンクが切れていた場合に備え、各項目に「検索して探す」を用意しています。</p>
+    </div>
+
+    <div class="c-field">
+      <label class="c-field__label" for="link-search">窓口を探す</label>
+      <input class="c-input" id="link-search" type="search" placeholder="例：停電、給水、罹災証明" data-link-search>
+    </div>
+
+    <details class="c-details" style="margin-top:12px">
+      <summary>地域を設定する（自治体・水道局・ガス会社のリンクが地域向けになります）</summary>
+      <div class="c-details__body">
+        <div class="c-field">
+          <label class="c-field__label" for="prefecture">都道府県</label>
+          <select class="c-select" id="prefecture" data-prefecture></select>
+          <p class="c-field__hint" data-region-note></p>
+        </div>
+        <div class="c-field">
+          <label class="c-field__label" for="city">市区町村（任意）</label>
+          <input class="c-input" id="city" type="text" placeholder="例：熊本市東区" data-city>
+        </div>
+      </div>
+    </details>
+
+    <nav aria-label="カテゴリ" style="margin-top:14px">
+      <ul class="c-chip-list" data-link-nav></ul>
+    </nav>
+
+    <p class="u-visually-hidden" role="status" aria-live="polite" data-link-summary></p>
+  </section>
+
+  <div data-links></div>
+
+</main>
+
+<footer class="l-footer">
+  <p>掲載しているURLは公開情報をもとにしています。組織の改称やサイト移転で変わることがあるため、つながらないときは各カードの「検索して探す」をお使いください。</p>
+</footer>
+
+<nav class="l-tabbar" aria-label="主要メニュー">
+  <ul class="l-tabbar__list">
+    <li><a class="l-tabbar__link" href="../"><span class="l-tabbar__icon" aria-hidden="true">🏠</span>ホーム</a></li>
+    <li><a class="l-tabbar__link" href="../lifehacks/"><span class="l-tabbar__icon" aria-hidden="true">💡</span>ライフハック</a></li>
+    <li><a class="l-tabbar__link" href="./" aria-current="page"><span class="l-tabbar__icon" aria-hidden="true">🔗</span>リンク集</a></li>
+    <li><a class="l-tabbar__link" href="../memo/"><span class="l-tabbar__icon" aria-hidden="true">📝</span>メモ</a></li>
+  </ul>
+</nav>
+
+<script type="module" src="../assets/js/page-links.js"></script>
+</body>
+</html>

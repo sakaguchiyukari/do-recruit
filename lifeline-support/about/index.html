@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto" data-saver="off" data-app-root="../">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>このアプリについて｜ライフラインサポート</title>
+<meta name="description" content="ライフラインサポートの使い方、情報の扱い、オフライン対応の仕組み、免責事項。">
+<meta name="theme-color" content="#0f3b5c">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icon/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<a class="u-visually-hidden" href="#main">本文へスキップ</a>
+
+<header class="l-header">
+  <div class="l-header__inner">
+    <p class="l-header__title">
+      <a href="../">ライフラインサポート
+        <span class="l-header__sub">このアプリについて</span>
+      </a>
+    </p>
+    <span class="c-net" data-net-status data-state="online">オンライン</span>
+    <label class="c-mode__button">
+      <input type="checkbox" class="u-visually-hidden" data-saver-toggle>
+      <span aria-hidden="true">🌙</span>
+      <span class="u-visually-hidden">省電力表示（暗い画面）に切り替える</span>
+    </label>
+  </div>
+</header>
+
+<main id="main" class="l-main">
+
+  <div class="c-status" data-status-bar hidden></div>
+
+  <p class="c-banner c-banner--warn" data-offline-note hidden>
+    <span class="c-banner__text">オフラインです。保存済みの内容を表示しています。外部サイトへのリンクは、通信が戻ってからひらけます。</span>
+  </p>
+
+  <section class="l-section">
+    <div class="c-head">
+      <h1 class="c-head__title">
+        <span class="c-head__icon" aria-hidden="true">ℹ️</span>
+        <span>このアプリについて</span>
+      </h1>
+      <p class="c-head__note">地震のあと、避難所に行かずに自宅で暮らす「在宅避難」を支えるための道具です。</p>
+    </div>
+
+    <div class="c-prose">
+      <h2>何ができるか</h2>
+      <ol>
+        <li><strong>状況で絞り込む</strong>— 停電・断水・トイレ・通信障害・ガス停止・食料不足のうち、今起きていることを選ぶと、その状況で優先度の高い対策だけが上から順に出ます。</li>
+        <li><strong>いっしょにいる人で絞り込む</strong>— 乳幼児・高齢者・ペット・持病のある人・妊娠中の人がいる場合、その人に必要な注意点が差し込まれます。</li>
+        <li><strong>組み合わせに答える</strong>— 「停電と断水が同時」のように条件が重なると、その組み合わせ専用の対策が最上位に出ます。</li>
+        <li><strong>やったことを記録する</strong>— 「今すぐやること」はチェックできます。混乱している最中に「もうやったか」を思い出さずに済みます。</li>
+        <li><strong>公式の窓口へつなぐ</strong>— 地域を設定すると、電力・水道・ガス・自治体のリンクがその地域向けになります。</li>
+      </ol>
+
+      <h2>通信がなくても使えます</h2>
+      <p>
+        初めて開いたときに、すべてのページ・対策・リンク集が端末に保存されます（Service Worker という仕組みを使っています）。
+        以降は圏外でも、保存された内容をそのまま読めます。
+        ホーム画面に追加しておけば、ブラウザを開かずにアプリのように起動できます。
+      </p>
+      <p>
+        ただし、リンク集から外部サイトへ移動するには通信が必要です。
+        オフラインのときは、リンクに「（通信が必要）」と表示されます。
+      </p>
+
+      <h2>入力した内容の扱い</h2>
+      <ul>
+        <li>状況の選択、チェックの記録、地域設定、緊急メモは、すべて<strong>この端末の中だけ</strong>に保存されます。</li>
+        <li>サーバーへ送信する処理はありません。アクセス解析も入れていません。</li>
+        <li>共用の端末で使ったときは、<a href="../memo/">緊急メモ</a>の「保存内容をすべて消す」で削除できます。</li>
+      </ul>
+
+      <h2>省電力表示について</h2>
+      <p>
+        画面右上の 🌙 で、黒を基調とした表示に切り替わります。
+        暗闇で明るい画面を見ると目が慣れず周囲が見えなくなること、
+        有機ELの画面では黒い表示のほうが電力を使わないことから、停電時の実用機能として用意しています。
+      </p>
+
+      <h2>情報の出どころ</h2>
+      <p>
+        掲載している対策は、公的機関が公開している防災の考え方や、過去の災害で共有されてきた対処法をもとに、
+        在宅避難の場面で使いやすい形に整理したものです。
+        数値（1人1日3Lの水、トイレ5回/日 など）は目安であり、季節・体格・健康状態によって変わります。
+      </p>
+
+      <h2>免責事項</h2>
+      <ul>
+        <li>本アプリの内容は一般的な情報提供であり、医療・法律・工学上の助言ではありません。</li>
+        <li>実際の行動は、<strong>気象庁・自治体・ライフライン各社の最新の発表を最優先</strong>してください。矛盾する場合は公的機関の指示に従ってください。</li>
+        <li>体調に異変があるとき、ガス漏れや建物の損傷が疑われるときは、自己判断せず専門機関に連絡してください。</li>
+        <li>掲載しているURLは変わることがあります。つながらないときは各カードの「検索して探す」をお使いください。</li>
+      </ul>
+
+      <h2>いま最低限おぼえておくこと</h2>
+      <ul>
+        <li>停電：避難するときはブレーカーを落とす（通電火災の予防）。屋内で発電機・炭を使わない。</li>
+        <li>断水：浴槽の水を捨てない。飲む水と生活用水を分ける。</li>
+        <li>トイレ：配管の無事が確認できるまで流さない。袋と吸収材で持ち帰る方式に切り替える。</li>
+        <li>通信：通話よりSMS。安否は171・web171に残す。</li>
+        <li>ガス：においがしたら火も電気スイッチも触らず、窓を開けて元栓を閉める。</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="l-footer">
+  <p>ライフラインサポート — 地震後の暮らしを支える防災ツール</p>
+</footer>
+
+<nav class="l-tabbar" aria-label="主要メニュー">
+  <ul class="l-tabbar__list">
+    <li><a class="l-tabbar__link" href="../"><span class="l-tabbar__icon" aria-hidden="true">🏠</span>ホーム</a></li>
+    <li><a class="l-tabbar__link" href="../lifehacks/"><span class="l-tabbar__icon" aria-hidden="true">💡</span>ライフハック</a></li>
+    <li><a class="l-tabbar__link" href="../links/"><span class="l-tabbar__icon" aria-hidden="true">🔗</span>リンク集</a></li>
+    <li><a class="l-tabbar__link" href="../memo/"><span class="l-tabbar__icon" aria-hidden="true">📝</span>メモ</a></li>
+  </ul>
+</nav>
+
+<script type="module" src="../assets/js/page-static.js"></script>
+</body>
+</html>
