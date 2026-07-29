@@ -14,7 +14,7 @@
  * ■ 内容を更新したときは CACHE_VERSION を必ず上げること。
  */
 
-const CACHE_VERSION = 'lifeline-support-v1';
+const CACHE_VERSION = 'lifeline-support-v2';
 
 /** sw.js からの相対パス。アプリの全ファイルをここに列挙する。 */
 const PRECACHE_URLS = [
@@ -35,9 +35,14 @@ const PRECACHE_URLS = [
   './assets/js/page-links.js',
   './assets/js/page-memo.js',
   './assets/js/page-static.js',
+  './assets/js/pages/home.js',
+  './assets/js/pages/lifehacks.js',
+  './assets/js/pages/links.js',
+  './assets/js/pages/memo.js',
   './assets/js/modules/dom.js',
   './assets/js/modules/state.js',
   './assets/js/modules/render.js',
+  './assets/js/modules/region-form.js',
   './assets/js/modules/theme.js',
   './assets/js/modules/pwa.js',
   './assets/js/modules/status-bar.js',

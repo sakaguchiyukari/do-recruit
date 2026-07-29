@@ -16,7 +16,7 @@
  * ヘッダーのバッジは1語だけにし、詳しい説明は本文側の帯に出す
  * （ヘッダーで折り返すとタイトルが潰れるため）。
  */
-function renderNetworkStatus() {
+export function renderNetworkStatus() {
   const online = navigator.onLine;
 
   document.querySelectorAll('[data-net-status]').forEach((node) => {
@@ -114,10 +114,15 @@ function setupInstallPrompt() {
   });
 }
 
-export function initPwa() {
+/** オンライン / オフラインの監視だけを始める（Service Worker を伴わない場合に使う） */
+export function initNetworkStatus() {
   renderNetworkStatus();
   window.addEventListener('online', renderNetworkStatus);
   window.addEventListener('offline', renderNetworkStatus);
+}
+
+export function initPwa() {
+  initNetworkStatus();
   registerServiceWorker();
   setupInstallPrompt();
 }

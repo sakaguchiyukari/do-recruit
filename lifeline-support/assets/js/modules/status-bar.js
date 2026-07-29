@@ -10,7 +10,7 @@ import { el, clear } from './dom.js';
 import { SITUATIONS, HOUSEHOLDS } from '../data/situations.js';
 import { getState, subscribe } from './state.js';
 
-function render(container) {
+function renderStatusBar(container) {
   const state = getState();
   clear(container);
 
@@ -44,6 +44,6 @@ export function initStatusBar() {
   const container = document.querySelector('[data-status-bar]');
   if (!container) return;
 
-  render(container);
-  subscribe(() => render(container));
+  renderStatusBar(container);
+  subscribe(() => renderStatusBar(container));
 }

@@ -1,0 +1,5069 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto" data-saver="off">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="停電・断水・通信障害・ガス停止・食料不足・トイレ。今困っていることを選ぶと、必要な対策だけが優先度順に表示されます。">
+<meta name="theme-color" content="#0f3b5c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20role%3D%22img%22%20aria-label%3D%22%E3%83%A9%E3%82%A4%E3%83%95%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%22%3E%20%3Ctitle%3E%E3%83%A9%E3%82%A4%E3%83%95%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%3C%2Ftitle%3E%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22113%22%20fill%3D%22%230f3b5c%22%2F%3E%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%20%3Cpath%20d%3D%22M128%20252%20L256%20146%20L384%20252%22%20stroke-width%3D%2226%22%2F%3E%20%3Cpath%20d%3D%22M168%20252%20L168%20382%20L344%20382%20L344%20252%22%20stroke-width%3D%2226%22%2F%3E%20%3Cpath%20d%3D%22M202%20316%20L228%20316%20L243%20282%20L267%20352%20L284%20316%20L310%20316%22%20stroke-width%3D%2220%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E">
+</head>
+<body>
+<title>ライフラインサポート（プレビュー版）</title>
+<style>
+@charset "UTF-8";
+/* ==========================================================================
+   ライフラインサポート — Stylesheet
+   --------------------------------------------------------------------------
+   1ファイルにまとめている。理由は @import の直列読み込みを避けるためで、
+   災害時に「1リクエストで全部そろう」ことを最優先した。
+
+   目次
+     01. デザイントークン（配色・寸法・モーション）
+     02. リセットと素の要素
+     03. レイアウト（ヘッダー / メイン / タブバー）
+     04. 状況バー・通知バー
+     05. トグルタイル（状況・世帯条件の選択）
+     06. フォーム（地域設定・検索・メモ）
+     07. 見出し・進捗・リード
+     08. カード（対策・ライフハック・注意）
+     09. リンクカード
+     10. チップ / ボタン / 補助テキスト
+     11. 表示モード（ダーク・省電力）
+     12. モーション削減・印刷
+
+   ■ 設計上の約束
+     ・タップ領域は最小 44×44px。手が震えていても押せること。
+     ・本文は 16px 以上。暗い場所・涙目でも読めること。
+     ・色だけで意味を伝えない（必ずアイコンか文字を添える）。
+   ========================================================================== */
+
+/* ==========================================================================
+   01. デザイントークン
+   ========================================================================== */
+
+:root {
+  /* ---- 面と文字 ---- */
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --surface-sub: #f6f8fa;
+  --text: #14181c;
+  --text-muted: #545f6b;
+  --text-inverse: #ffffff;
+  --rule: #d6dce2;
+  --rule-strong: #b6c0ca;
+
+  /* ---- ブランド ---- */
+  --brand: #0f3b5c;
+  --brand-strong: #0a2a42;
+  --brand-tint: #e4edf4;
+  --accent: #0d6ea8;
+
+  /* ---- 種別ごとの色（必ずアイコンとセットで使う） ---- */
+  --now: #0d6ea8;
+  --now-tint: #e3eff7;
+  --hack: #8a5a00;
+  --hack-tint: #fbf0da;
+  --caution: #b3261e;
+  --caution-tint: #fbe6e4;
+  --status: #a33b00;
+  --status-tint: #fdeade;
+
+  /* ---- 寸法 ---- */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --tap: 48px;
+  --gap: 12px;
+  --page-pad: 16px;
+  --max-width: 720px;
+  --tabbar-h: 64px;
+
+  /* ---- タイポ ---- */
+  --font: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Noto Sans JP",
+    "Meiryo", system-ui, sans-serif;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-title: 1.0625rem;
+  --fs-head: 1.25rem;
+
+  /* ---- 影とモーション ---- */
+  --shadow: 0 1px 2px rgba(16, 24, 32, 0.08), 0 4px 14px rgba(16, 24, 32, 0.06);
+  --dur: 180ms;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   02. リセットと素の要素
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  overflow-x: clip;
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* hidden 属性は必ず効かせる。
+   .c-banner などにクラスで display を指定しているため、
+   これが無いと「更新のお知らせ」などが常時表示されてしまう。 */
+[hidden] {
+  display: none !important;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+/* 読み上げ専用テキスト */
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   03. レイアウト
+   ========================================================================== */
+
+.l-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--brand);
+  color: var(--text-inverse);
+  padding: 10px var(--page-pad) 10px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+}
+
+.l-header__inner {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.l-header__title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  margin-right: auto;
+  /* 右側のバッジが伸びてもタイトルを1文字ずつに潰させない */
+  flex: 1 1 auto;
+  min-width: 8em;
+}
+
+.l-header__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.l-header__sub {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  opacity: 0.82;
+  letter-spacing: 0.04em;
+}
+
+.l-main {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding: var(--page-pad) var(--page-pad) 32px;
+  display: grid;
+  gap: 20px;
+}
+
+.l-section {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.l-section--flat {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ---- 下部タブバー：片手で全ページへ届くようにする ---- */
+
+.l-tabbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 30;
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.l-tabbar__list {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.l-tabbar__link {
+  min-height: var(--tabbar-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+  padding: 6px 2px;
+}
+
+.l-tabbar__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.l-tabbar__link[aria-current="page"] {
+  color: var(--accent);
+  font-weight: 700;
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+
+/* ==========================================================================
+   04. 状況バー・通知バー
+   ========================================================================== */
+
+.c-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  background: var(--status-tint);
+  border: 1px solid color-mix(in srgb, var(--status) 30%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: var(--fs-small);
+}
+
+.c-status__label {
+  font-weight: 700;
+  color: var(--status);
+  letter-spacing: 0.08em;
+}
+
+.c-status__chip {
+  background: var(--status);
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+
+.c-status__chip--household {
+  background: transparent;
+  color: var(--status);
+  border: 1px solid color-mix(in srgb, var(--status) 45%, transparent);
+  font-weight: 500;
+}
+
+.c-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  background: var(--brand-tint);
+  border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.c-banner--warn {
+  background: var(--caution-tint);
+  border-color: color-mix(in srgb, var(--caution) 30%, transparent);
+}
+
+.c-banner__text {
+  flex: 1 1 200px;
+}
+
+.c-net {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--text-inverse);
+  white-space: nowrap;
+}
+
+.c-net::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #57d38c;
+}
+
+.c-net[data-state="offline"]::before {
+  background: #ffb020;
+}
+
+/* ==========================================================================
+   05. トグルタイル
+   ========================================================================== */
+
+.c-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap);
+}
+
+@media (min-width: 480px) {
+  .c-tile-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.c-tile-item {
+  display: contents;
+}
+
+.c-tile__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.c-tile {
+  position: relative;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 8px;
+  text-align: center;
+  background: var(--surface);
+  border: 2px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.c-tile__icon {
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+.c-tile__label {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+/* 選択状態は「色」だけでなく「✓」でも示す（色覚特性への配慮） */
+.c-tile__state::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.c-tile__input:checked + .c-tile {
+  background: var(--brand-tint);
+  border-color: var(--brand);
+}
+
+.c-tile__input:checked + .c-tile .c-tile__state::after {
+  content: "✓ ON";
+}
+
+.c-tile__input:focus-visible + .c-tile {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.c-tile--sub {
+  min-height: 72px;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 10px 12px;
+}
+
+.c-tile--sub .c-tile__icon {
+  font-size: 1.375rem;
+}
+
+.c-tile--sub .c-tile__label {
+  font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   06. フォーム
+   ========================================================================== */
+
+.c-field {
+  display: grid;
+  gap: 6px;
+}
+
+.c-field + .c-field {
+  margin-top: 12px;
+}
+
+.c-field__label {
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.c-field__hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.c-input,
+.c-select,
+.c-textarea {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 10px 12px;
+  background: var(--surface-sub);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+}
+
+.c-textarea {
+  min-height: 120px;
+  line-height: 1.8;
+  resize: vertical;
+}
+
+.c-details {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--surface-sub);
+  padding: 0 12px;
+}
+
+.c-details > summary {
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: var(--fs-small);
+  cursor: pointer;
+  list-style: none;
+}
+
+.c-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.c-details > summary::after {
+  content: "＋";
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.c-details[open] > summary::after {
+  content: "−";
+}
+
+.c-details__body {
+  padding: 4px 0 14px;
+  display: grid;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   07. 見出し・進捗・リード
+   ========================================================================== */
+
+.c-head {
+  margin-bottom: 10px;
+}
+
+.c-head__title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: var(--fs-head);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  /* 和文を文節で折り返す（対応ブラウザのみ。非対応でも表示は崩れない） */
+  word-break: auto-phrase;
+}
+
+.c-head__icon {
+  font-size: 1.125em;
+  line-height: 1;
+}
+
+.c-head__count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--surface-sub);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 1px 9px;
+  letter-spacing: 0;
+}
+
+.c-head__note {
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.p-lead {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.p-lead__item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--surface);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  box-shadow: var(--shadow);
+}
+
+.p-lead__icon {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.p-group + .p-group {
+  margin-top: 24px;
+}
+
+.p-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.p-progress__bar {
+  flex: 1;
+  height: 8px;
+  background: var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.p-progress__fill {
+  height: 100%;
+  background: var(--now);
+  border-radius: 999px;
+  transition: width var(--dur) var(--ease);
+}
+
+.p-progress__text {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.p-category + .p-category {
+  margin-top: 28px;
+}
+
+.p-category__kind {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 16px 0 8px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   08. カード
+   ========================================================================== */
+
+.c-card-list {
+  display: grid;
+  gap: 10px;
+}
+
+.c-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 5px solid var(--rule-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.c-card--now {
+  border-left-color: var(--now);
+}
+
+.c-card--hack {
+  border-left-color: var(--hack);
+}
+
+.c-card--caution {
+  border-left-color: var(--caution);
+  background: var(--caution-tint);
+}
+
+.c-card__inner {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+}
+
+.c-card__inner--check {
+  cursor: pointer;
+  min-height: var(--tap);
+  align-items: flex-start;
+}
+
+.c-card__checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* チェックマークは自前で描く（各OSの既定サイズが小さすぎるため） */
+.c-card__mark {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  margin-top: 2px;
+  border: 2px solid var(--now);
+  border-radius: 8px;
+  background: var(--surface);
+  position: relative;
+}
+
+.c-card__mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 7px;
+  height: 13px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  transform: translateY(-1px) rotate(45deg);
+  opacity: 0;
+}
+
+.c-card__checkbox:checked + .c-card__mark {
+  background: var(--now);
+}
+
+.c-card__checkbox:checked + .c-card__mark::after {
+  opacity: 1;
+}
+
+.c-card__checkbox:focus-visible + .c-card__mark {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.c-card__body {
+  display: grid;
+  gap: 4px;
+}
+
+.c-card__title {
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+}
+
+.c-card__text {
+  font-size: var(--fs-small);
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.c-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.c-card__tag {
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  background: var(--surface-sub);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0 8px;
+  letter-spacing: 0;
+}
+
+/* 完了した項目は薄くするが、消さない（あとで見返せるように） */
+.c-card.is-done {
+  opacity: 0.62;
+}
+
+.c-card.is-done .c-card__title {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* ==========================================================================
+   09. リンクカード
+   ========================================================================== */
+
+.c-link-list {
+  display: grid;
+  gap: 10px;
+}
+
+.c-link {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+}
+
+.c-link.is-highlight {
+  border-color: var(--brand);
+  border-left: 5px solid var(--brand);
+  background: var(--brand-tint);
+}
+
+.c-link__badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.c-link__name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.c-link__name:hover,
+.c-link__name:focus-visible {
+  text-decoration: underline;
+}
+
+.c-link__name--tel {
+  color: var(--caution);
+}
+
+.c-link__name--disabled {
+  color: var(--text-muted);
+}
+
+.c-link__mark {
+  font-size: 0.875em;
+  opacity: 0.75;
+}
+
+.c-link__note {
+  margin-top: 2px;
+  font-size: var(--fs-small);
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+.c-link__hint {
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: var(--status);
+  background: var(--status-tint);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  line-height: 1.6;
+}
+
+.c-link__search {
+  display: inline-block;
+  margin-top: 8px;
+  min-height: 32px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+
+/* オフライン時は「開けない」ことを先に伝える */
+:root[data-online="no"] .c-link__name:not(.c-link__name--tel)::after {
+  content: "（通信が必要）";
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: var(--status);
+}
+
+/* ==========================================================================
+   10. チップ / ボタン / 補助テキスト
+   ========================================================================== */
+
+.c-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.c-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 40px;
+  padding: 6px 14px;
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  letter-spacing: 0;
+}
+
+.c-chip.is-active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text-inverse);
+}
+
+.c-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--tap);
+  padding: 10px 18px;
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-sm);
+  background: var(--brand);
+  color: var(--text-inverse);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.c-button--ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--rule-strong);
+}
+
+.c-button--small {
+  min-height: 40px;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+}
+
+.c-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.c-note {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-top: 10px;
+}
+
+.c-note__link {
+  font-weight: 700;
+}
+
+.c-empty {
+  background: var(--surface);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.c-empty__title {
+  font-size: var(--fs-title);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.c-empty__text {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.c-prose {
+  font-size: var(--fs-small);
+  line-height: 1.9;
+}
+
+.c-prose h2 {
+  font-size: var(--fs-head);
+  margin: 24px 0 8px;
+}
+
+.c-prose h3 {
+  font-size: 1rem;
+  margin: 18px 0 6px;
+}
+
+.c-prose p + p {
+  margin-top: 10px;
+}
+
+.c-prose ul {
+  list-style: disc;
+  padding-left: 1.4em;
+  margin-top: 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.c-prose ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+  margin-top: 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.l-footer {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding: 0 var(--page-pad) 24px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+/* 表示モードの切り替え（ヘッダー内） */
+.c-mode {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.c-mode__button {
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-inverse);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.c-mode__button[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   11. 表示モード（ダーク・省電力）
+   --------------------------------------------------------------------------
+   停電時は「暗い画面」が実用機能になる。暗闇で明るい画面を見ると
+   目が慣れず周囲が見えなくなるため、省電力表示は独立したスイッチにしている。
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --bg: #0f1419;
+    --surface: #181f27;
+    --surface-sub: #131920;
+    --text: #e9eff5;
+    --text-muted: #a7b4c0;
+    --rule: #2a3540;
+    --rule-strong: #3c4a58;
+    --brand: #12496f;
+    --brand-strong: #0d3049;
+    --brand-tint: #16293a;
+    --accent: #6fb8e8;
+    --now: #6fb8e8;
+    --now-tint: #14293a;
+    --hack: #e0b45c;
+    --hack-tint: #2a2314;
+    --caution: #ff9a90;
+    --caution-tint: #33191a;
+    --status: #ffb27a;
+    --status-tint: #33220f;
+    --shadow: none;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f1419;
+  --surface: #181f27;
+  --surface-sub: #131920;
+  --text: #e9eff5;
+  --text-muted: #a7b4c0;
+  --rule: #2a3540;
+  --rule-strong: #3c4a58;
+  --brand: #12496f;
+  --brand-tint: #16293a;
+  --accent: #6fb8e8;
+  --now: #6fb8e8;
+  --now-tint: #14293a;
+  --hack: #e0b45c;
+  --hack-tint: #2a2314;
+  --caution: #ff9a90;
+  --caution-tint: #33191a;
+  --status: #ffb27a;
+  --status-tint: #33220f;
+  --shadow: none;
+  color-scheme: dark;
+}
+
+:root[data-saver="on"] {
+  --bg: #000000;
+  --surface: #0a0d10;
+  --surface-sub: #05070a;
+  --text: #d8dfe6;
+  --text-muted: #93a0ac;
+  --rule: #1e262e;
+  --rule-strong: #2c3742;
+  --brand: #0b2f47;
+  --brand-tint: #0a1620;
+  --accent: #79bde9;
+  --now: #79bde9;
+  --hack: #d9ad57;
+  --caution: #ff9a90;
+  --caution-tint: #1c0f0f;
+  --status: #ffb27a;
+  --status-tint: #1c1309;
+  --shadow: none;
+  color-scheme: dark;
+}
+
+/* 省電力表示では白い面を作らない */
+:root[data-saver="on"] .c-status__chip {
+  background: transparent;
+  color: var(--status);
+  border: 1px solid var(--status);
+}
+
+:root[data-saver="on"] .c-card__mark {
+  background: var(--surface);
+}
+
+/* ==========================================================================
+   12. モーション削減・印刷
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 紙に出して冷蔵庫に貼れるようにする（停電しても読める最後の手段） */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+    padding-bottom: 0;
+  }
+
+  .l-header,
+  .l-tabbar,
+  .c-mode,
+  .c-button-row,
+  .c-chip-list,
+  .c-link__search,
+  .c-banner {
+    display: none !important;
+  }
+
+  .l-section,
+  .c-card,
+  .c-link {
+    border: 1px solid #999;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+
+
+/* ---- プレビュー版だけの調整 ---------------------------------------------
+   本体では別ページになっている画面を、1つの <main> の中で切り替える。 */
+.p-view {
+  display: grid;
+  gap: 20px;
+}
+
+.l-tabbar__link {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+</style>
+
+<a class="u-visually-hidden" href="#main">本文へスキップ</a>
+
+<header class="l-header">
+  <div class="l-header__inner">
+    <p class="l-header__title">ライフラインサポート
+      <span class="l-header__sub">地震後の暮らしを支える</span>
+    </p>
+    <span class="c-net" data-net-status data-state="online">オンライン</span>
+    <label class="c-mode__button">
+      <input type="checkbox" class="u-visually-hidden" data-saver-toggle>
+      <span aria-hidden="true">🌙</span>
+      <span class="u-visually-hidden">省電力表示（暗い画面）に切り替える</span>
+    </label>
+  </div>
+</header>
+
+<main id="main" class="l-main">
+
+  <div class="c-status" data-status-bar hidden></div>
+
+  <p class="c-banner c-banner--warn" data-offline-note hidden>
+    <span class="c-banner__text">オフラインです。保存済みの内容を表示しています。外部サイトへのリンクは、通信が戻ってからひらけます。</span>
+  </p>
+
+  <div class="c-banner">
+    <span class="c-banner__text"><strong>これは動作確認用のプレビュー版です。</strong>全画面を1ファイルにまとめてあります。オフライン保存（Service Worker）とホーム画面への追加は、実際に公開したときに有効になります。</span>
+  </div>
+
+<div class="p-view" data-view="home">
+
+
+  <div class="c-banner c-banner--warn" data-storage-warning hidden>
+    <span class="c-banner__text">この環境では選択内容を保存できません（プライベートブラウズなどの可能性があります）。画面を閉じると設定が消えます。</span>
+  </div>
+
+  <!-- ============================================================ 状況の選択 -->
+  <section class="l-section" aria-labelledby="home-h-select">
+    <div class="c-head">
+      <h2 class="c-head__title" id="home-h-select">
+        <span class="c-head__icon" aria-hidden="true">🏠</span>
+        <span>今困っていることを選択してください</span>
+      </h2>
+      <p class="c-head__note">選ぶと、その状況で優先度の高い対策だけが上から順に表示されます。選択はこの端末に保存されます。</p>
+    </div>
+
+    <ul class="c-tile-grid" data-situation-grid></ul>
+
+    <details class="c-details" style="margin-top:14px">
+      <summary>いっしょにいる人（選ぶとより絞り込めます）</summary>
+      <div class="c-details__body">
+        <p class="c-field__hint">乳幼児・高齢者・ペットなど、配慮が必要な人がいる場合の注意点を追加で表示します。</p>
+        <ul class="c-tile-grid" data-household-grid></ul>
+      </div>
+    </details>
+
+    <details class="c-details" style="margin-top:10px" id="home-settings">
+      <summary>地域を設定する（公式情報のリンクが地域向けになります）</summary>
+      <div class="c-details__body">
+        <div class="c-field">
+          <label class="c-field__label" for="home-prefecture">都道府県</label>
+          <select class="c-select" id="home-prefecture" data-prefecture></select>
+          <p class="c-field__hint" data-region-note></p>
+        </div>
+        <div class="c-field">
+          <label class="c-field__label" for="home-city">市区町村（任意）</label>
+          <input class="c-input" id="home-city" type="text" inputmode="text" placeholder="例：熊本市東区" data-city>
+          <p class="c-field__hint">入力すると、自治体・水道局・ガス会社を探すリンクが自動で作られます。</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="c-details" style="margin-top:10px">
+      <summary>画面の明るさ・配色</summary>
+      <div class="c-details__body">
+        <p class="c-field__hint">停電時は暗い画面のほうが目が慣れ、電池も長持ちします（有機ELの場合）。</p>
+        <div class="c-chip-list">
+          <button type="button" class="c-chip" data-theme-value="auto" aria-pressed="false">端末の設定に合わせる</button>
+          <button type="button" class="c-chip" data-theme-value="light" aria-pressed="false">明るい</button>
+          <button type="button" class="c-chip" data-theme-value="dark" aria-pressed="false">暗い</button>
+        </div>
+        <p class="c-field__hint">さらに暗くしたいときは、画面右上の 🌙 で省電力表示に切り替えられます。</p>
+      </div>
+    </details>
+
+    <div class="c-button-row">
+      <button type="button" class="c-button c-button--ghost c-button--small" data-clear>選択をすべて解除</button>
+      <button type="button" class="c-button c-button--ghost c-button--small" data-clear-done>チェックの記録を消す</button>
+    </div>
+  </section>
+
+  <!-- ================================================================== 結果 -->
+  <section class="l-section l-section--flat" aria-labelledby="home-h-result">
+    <h2 class="u-visually-hidden" id="home-h-result">あなたの状況に合わせた対策</h2>
+    <p class="u-visually-hidden" role="status" aria-live="polite" data-result-summary></p>
+    <div data-results></div>
+  </section>
+
+  <!-- ======================================================== 困ったとき -->
+  <section class="l-section" data-quick-links hidden></section>
+
+  <!-- ============================================================ オフライン -->
+  <section class="l-section" aria-labelledby="home-h-offline">
+    <div class="c-head">
+      <h2 class="c-head__title" id="home-h-offline">
+        <span class="c-head__icon" aria-hidden="true">📥</span>
+        <span>通信がなくても使えます</span>
+      </h2>
+      <p class="c-head__note">一度ひらけば、対策・ライフハック・リンク集は端末に保存されます。圏外でも、このページをそのまま開けます。</p>
+    </div>
+    <p class="c-banner" data-offline-ready hidden>
+      <span class="c-banner__text">✅ この端末に保存済みです。オフラインでも全ページを閲覧できます。</span>
+    </p>
+    <div class="c-button-row">
+      <button type="button" class="c-button" data-install hidden>ホーム画面に追加する</button>
+      <a class="c-button c-button--ghost c-button--small" href="memo/">緊急メモを書いておく</a>
+    </div>
+    <p class="c-note">iPhone の Safari では、共有ボタン → 「ホーム画面に追加」でアプリのように使えます。</p>
+  </section>
+
+  <!-- ================================================================ 案内 -->
+  <section class="l-section" aria-labelledby="home-h-guide">
+    <div class="c-head">
+      <h2 class="c-head__title" id="home-h-guide">
+        <span class="c-head__icon" aria-hidden="true">🧭</span>
+        <span>ほかのページ</span>
+      </h2>
+    </div>
+    <ul class="c-link-list">
+      <li class="c-link">
+        <a class="c-link__name" href="lifehacks/">ライフハック集<span class="c-link__mark" aria-hidden="true">→</span></a>
+        <p class="c-link__note">停電・断水・通信・食事・トイレ・子ども・ペット・高齢者。カテゴリごとに全部読めます。</p>
+      </li>
+      <li class="c-link">
+        <a class="c-link__name" href="links/">公的機関リンク集<span class="c-link__mark" aria-hidden="true">→</span></a>
+        <p class="c-link__note">気象庁・自治体・電力・水道・ガス・通信・道路・支援制度の窓口。</p>
+      </li>
+      <li class="c-link">
+        <a class="c-link__name" href="memo/">緊急メモ<span class="c-link__mark" aria-hidden="true">→</span></a>
+        <p class="c-link__note">家族の連絡先、落ち合う場所、持病と薬。この端末の中だけに保存します。</p>
+      </li>
+      <li class="c-link">
+        <a class="c-link__name" href="about/">このアプリについて<span class="c-link__mark" aria-hidden="true">→</span></a>
+        <p class="c-link__note">情報の扱い、使い方、免責事項。</p>
+      </li>
+    </ul>
+  </section>
+
+
+</div>
+
+<div class="p-view" data-view="lifehacks" hidden>
+
+
+  <section class="l-section" aria-labelledby="lifehacks-h-intro">
+    <div class="c-head">
+      <h1 class="c-head__title" id="lifehacks-h-intro">
+        <span class="c-head__icon" aria-hidden="true">💡</span>
+        <span>ライフハック集</span>
+      </h1>
+      <p class="c-head__note">カテゴリを選ぶと、その分野の内容だけを表示します。今の状況に合わせた優先順位で読みたいときは <a href="../">ホーム</a> から選んでください。</p>
+    </div>
+    <ul class="c-chip-list" data-category-chips></ul>
+  </section>
+
+  <div data-categories></div>
+
+
+</div>
+
+<div class="p-view" data-view="links" hidden>
+
+
+  <section class="l-section" aria-labelledby="links-h-intro">
+    <div class="c-head">
+      <h1 class="c-head__title" id="links-h-intro">
+        <span class="c-head__icon" aria-hidden="true">🔗</span>
+        <span>公的機関リンク集</span>
+      </h1>
+      <p class="c-head__note">リンク先は通信が必要です。リンクが切れていた場合に備え、各項目に「検索して探す」を用意しています。</p>
+    </div>
+
+    <div class="c-field">
+      <label class="c-field__label" for="links-link-search">窓口を探す</label>
+      <input class="c-input" id="links-link-search" type="search" placeholder="例：停電、給水、罹災証明" data-link-search>
+    </div>
+
+    <nav aria-label="カテゴリ" style="margin-top:14px">
+      <ul class="c-chip-list" data-link-nav></ul>
+    </nav>
+
+    <p class="u-visually-hidden" role="status" aria-live="polite" data-link-summary></p>
+  </section>
+
+  <div data-links></div>
+
+
+</div>
+
+<div class="p-view" data-view="memo" hidden>
+
+
+  <div class="c-banner c-banner--warn" data-storage-warning hidden>
+    <span class="c-banner__text">この環境ではメモを保存できません（プライベートブラウズなどの可能性があります）。画面を閉じると内容が消えます。</span>
+  </div>
+
+  <section class="l-section" aria-labelledby="memo-h-memo">
+    <div class="c-head">
+      <h1 class="c-head__title" id="memo-h-memo">
+        <span class="c-head__icon" aria-hidden="true">📝</span>
+        <span>緊急メモ</span>
+      </h1>
+      <p class="c-head__note">
+        入力した内容はこの端末の中だけに保存されます。どこにも送信されません。
+        通信がなくても、電池が持つ限りいつでも開けます。
+      </p>
+    </div>
+
+    <div class="c-banner">
+      <span class="c-banner__text">
+        スマホが壊れる・電池が切れることもあります。書き終えたら、同じ内容を紙にも書いて財布や防災リュックに入れておいてください。
+      </span>
+    </div>
+
+    <form data-memo-form style="margin-top:14px">
+      <div class="c-field">
+        <label class="c-field__label" for="memo-memo-contacts">家族・親族・職場の連絡先</label>
+        <p class="c-field__hint">被災地の外に住む人を1人入れておくと、安否の中継役になってもらえます。</p>
+        <textarea class="c-textarea" id="memo-memo-contacts" data-memo="contacts" placeholder="例：
+母 090-0000-0000
+兄（東京）080-0000-0000 ←安否の中継役
+勤務先 096-000-0000"></textarea>
+      </div>
+
+      <div class="c-field">
+        <label class="c-field__label" for="memo-memo-meetup">落ち合う場所・避難先</label>
+        <p class="c-field__hint">第1候補と第2候補を決めておくと、連絡が取れなくても合流できます。</p>
+        <textarea class="c-textarea" id="memo-memo-meetup" data-memo="meetup" placeholder="例：
+第1 ○○小学校の正門前
+第2 △△公園の時計台
+自宅が無事なら在宅避難"></textarea>
+      </div>
+
+      <div class="c-field">
+        <label class="c-field__label" for="memo-memo-medical">持病・常用薬・かかりつけ医</label>
+        <p class="c-field__hint">意識がないときでも医療者に伝わります。アレルギーや医療機器も書いておいてください。</p>
+        <textarea class="c-textarea" id="memo-memo-medical" data-memo="medical" placeholder="例：
+高血圧（○○錠 朝1回）
+卵アレルギー（子）
+かかりつけ ○○医院 096-000-0000
+在宅酸素の業者 0120-000-000"></textarea>
+      </div>
+
+      <div class="c-field">
+        <label class="c-field__label" for="memo-memo-other">その他</label>
+        <p class="c-field__hint">保険会社の連絡先、ガス・電力の契約番号、ペットの情報など。</p>
+        <textarea class="c-textarea" id="memo-memo-other" data-memo="other" placeholder="例：
+火災保険 ○○損保 証券番号 0000-0000
+猫（さば・8歳・療法食）
+自宅の水道の元栓は玄関横"></textarea>
+      </div>
+
+      <div class="c-button-row">
+        <button type="submit" class="c-button">保存する</button>
+        <button type="button" class="c-button c-button--ghost c-button--small" data-memo-reset>保存内容をすべて消す</button>
+      </div>
+      <p class="c-note" data-memo-status role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="l-section" aria-labelledby="memo-h-privacy">
+    <div class="c-head">
+      <h2 class="c-head__title" id="memo-h-privacy">
+        <span class="c-head__icon" aria-hidden="true">🔒</span>
+        <span>取り扱いについて</span>
+      </h2>
+    </div>
+    <div class="c-prose">
+      <ul>
+        <li>入力内容はブラウザの保存領域（localStorage）にのみ保存されます。送信先はありません。</li>
+        <li>端末を他の人に渡すときや、共用の端末で使ったときは「保存内容をすべて消す」を押してください。</li>
+        <li>ブラウザの履歴・サイトデータを削除すると、メモも一緒に消えます。</li>
+        <li>暗証番号やクレジットカード番号など、盗まれると被害が出る情報は書かないでください。</li>
+      </ul>
+    </div>
+  </section>
+
+
+</div>
+
+<div class="p-view" data-view="about" hidden>
+
+
+  <section class="l-section">
+    <div class="c-head">
+      <h1 class="c-head__title">
+        <span class="c-head__icon" aria-hidden="true">ℹ️</span>
+        <span>このアプリについて</span>
+      </h1>
+      <p class="c-head__note">地震のあと、避難所に行かずに自宅で暮らす「在宅避難」を支えるための道具です。</p>
+    </div>
+
+    <div class="c-prose">
+      <h2>何ができるか</h2>
+      <ol>
+        <li><strong>状況で絞り込む</strong>— 停電・断水・トイレ・通信障害・ガス停止・食料不足のうち、今起きていることを選ぶと、その状況で優先度の高い対策だけが上から順に出ます。</li>
+        <li><strong>いっしょにいる人で絞り込む</strong>— 乳幼児・高齢者・ペット・持病のある人・妊娠中の人がいる場合、その人に必要な注意点が差し込まれます。</li>
+        <li><strong>組み合わせに答える</strong>— 「停電と断水が同時」のように条件が重なると、その組み合わせ専用の対策が最上位に出ます。</li>
+        <li><strong>やったことを記録する</strong>— 「今すぐやること」はチェックできます。混乱している最中に「もうやったか」を思い出さずに済みます。</li>
+        <li><strong>公式の窓口へつなぐ</strong>— 地域を設定すると、電力・水道・ガス・自治体のリンクがその地域向けになります。</li>
+      </ol>
+
+      <h2>通信がなくても使えます</h2>
+      <p>
+        初めて開いたときに、すべてのページ・対策・リンク集が端末に保存されます（Service Worker という仕組みを使っています）。
+        以降は圏外でも、保存された内容をそのまま読めます。
+        ホーム画面に追加しておけば、ブラウザを開かずにアプリのように起動できます。
+      </p>
+      <p>
+        ただし、リンク集から外部サイトへ移動するには通信が必要です。
+        オフラインのときは、リンクに「（通信が必要）」と表示されます。
+      </p>
+
+      <h2>入力した内容の扱い</h2>
+      <ul>
+        <li>状況の選択、チェックの記録、地域設定、緊急メモは、すべて<strong>この端末の中だけ</strong>に保存されます。</li>
+        <li>サーバーへ送信する処理はありません。アクセス解析も入れていません。</li>
+        <li>共用の端末で使ったときは、<a href="../memo/">緊急メモ</a>の「保存内容をすべて消す」で削除できます。</li>
+      </ul>
+
+      <h2>省電力表示について</h2>
+      <p>
+        画面右上の 🌙 で、黒を基調とした表示に切り替わります。
+        暗闇で明るい画面を見ると目が慣れず周囲が見えなくなること、
+        有機ELの画面では黒い表示のほうが電力を使わないことから、停電時の実用機能として用意しています。
+      </p>
+
+      <h2>情報の出どころ</h2>
+      <p>
+        掲載している対策は、公的機関が公開している防災の考え方や、過去の災害で共有されてきた対処法をもとに、
+        在宅避難の場面で使いやすい形に整理したものです。
+        数値（1人1日3Lの水、トイレ5回/日 など）は目安であり、季節・体格・健康状態によって変わります。
+      </p>
+
+      <h2>免責事項</h2>
+      <ul>
+        <li>本アプリの内容は一般的な情報提供であり、医療・法律・工学上の助言ではありません。</li>
+        <li>実際の行動は、<strong>気象庁・自治体・ライフライン各社の最新の発表を最優先</strong>してください。矛盾する場合は公的機関の指示に従ってください。</li>
+        <li>体調に異変があるとき、ガス漏れや建物の損傷が疑われるときは、自己判断せず専門機関に連絡してください。</li>
+        <li>掲載しているURLは変わることがあります。つながらないときは各カードの「検索して探す」をお使いください。</li>
+      </ul>
+
+      <h2>いま最低限おぼえておくこと</h2>
+      <ul>
+        <li>停電：避難するときはブレーカーを落とす（通電火災の予防）。屋内で発電機・炭を使わない。</li>
+        <li>断水：浴槽の水を捨てない。飲む水と生活用水を分ける。</li>
+        <li>トイレ：配管の無事が確認できるまで流さない。袋と吸収材で持ち帰る方式に切り替える。</li>
+        <li>通信：通話よりSMS。安否は171・web171に残す。</li>
+        <li>ガス：においがしたら火も電気スイッチも触らず、窓を開けて元栓を閉める。</li>
+      </ul>
+    </div>
+  </section>
+
+
+</div>
+
+</main>
+
+<footer class="l-footer">
+  <p>掲載内容は一般的な防災の考え方をまとめたものです。実際の対応は、気象庁・自治体・ライフライン各社の最新の発表に必ず従ってください。</p>
+</footer>
+
+<nav class="l-tabbar" aria-label="主要メニュー">
+  <ul class="l-tabbar__list">
+    <li><button type="button" class="l-tabbar__link" data-tab="home" aria-current="false"><span class="l-tabbar__icon" aria-hidden="true">🏠</span>ホーム</button></li>
+    <li><button type="button" class="l-tabbar__link" data-tab="lifehacks" aria-current="false"><span class="l-tabbar__icon" aria-hidden="true">💡</span>ライフハック</button></li>
+    <li><button type="button" class="l-tabbar__link" data-tab="links" aria-current="false"><span class="l-tabbar__icon" aria-hidden="true">🔗</span>リンク集</button></li>
+    <li><button type="button" class="l-tabbar__link" data-tab="memo" aria-current="false"><span class="l-tabbar__icon" aria-hidden="true">📝</span>メモ</button></li>
+  </ul>
+</nav>
+
+<script type="module">
+/* ===== assets/js/modules/dom.js ===== */
+/**
+ * ライフラインサポート — DOM ヘルパー
+ * -----------------------------------------------------------------------------
+ * innerHTML に文字列を流し込む書き方は、データに記号が混ざったときに壊れるうえ
+ * 意図しないタグを実行してしまう。このアプリでは要素生成をここに集約し、
+ * テキストは必ず textContent 経由で入れる。
+ */
+
+/**
+ * 要素をつくる。
+ * @param {string} tag タグ名
+ * @param {object} [props] class / text / html 以外は属性としてそのまま設定する
+ * @param {(Node|string)[]} [children] 子要素
+ */
+function el(tag, props = {}, children = []) {
+  const node = document.createElement(tag);
+
+  Object.entries(props).forEach(([key, value]) => {
+    if (value === null || value === undefined || value === false) return;
+
+    if (key === 'class') {
+      node.className = value;
+    } else if (key === 'text') {
+      node.textContent = value;
+    } else if (key === 'dataset') {
+      Object.entries(value).forEach(([k, v]) => {
+        node.dataset[k] = v;
+      });
+    } else if (key.startsWith('on') && typeof value === 'function') {
+      node.addEventListener(key.slice(2).toLowerCase(), value);
+    } else if (value === true) {
+      node.setAttribute(key, '');
+    } else {
+      node.setAttribute(key, value);
+    }
+  });
+
+  children.filter(Boolean).forEach((child) => {
+    node.append(typeof child === 'string' ? document.createTextNode(child) : child);
+  });
+
+  return node;
+}
+
+/** 中身を空にする（innerHTML = '' より意図が明確で速い） */
+function clear(node) {
+  while (node.firstChild) node.firstChild.remove();
+}
+
+const qs = (selector, scope = document) => scope.querySelector(selector);
+const qsa = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+/**
+ * Google 検索へのリンクを組み立てる。
+ * 公的機関のURLは改称・移転で変わることがあるため、
+ * リンク切れの行き止まりを防ぐ「逃げ道」としてすべてのカードに添える。
+ */
+const searchUrl = (query) =>
+  `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+
+/* ===== assets/js/data/situations.js ===== */
+/**
+ * ライフラインサポート — 状況・世帯条件・地域のマスタデータ
+ * -----------------------------------------------------------------------------
+ * このファイルは「絞り込みの軸」だけを定義する。
+ * 実際の対策文（コンテンツ）は data/items.js、外部リンクは data/links.js。
+ *
+ * ここで定義した id は localStorage に保存されるため、
+ * 一度公開したあとに id を変更しないこと（利用者の設定が失われる）。
+ */
+
+/**
+ * 今困っていること（ライフラインの状況）
+ * order … ホーム画面での並び順。数字が小さいほど生命維持に直結する。
+ */
+const SITUATIONS = [
+  {
+    id: 'blackout',
+    label: '停電',
+    icon: '⚡',
+    order: 1,
+    statusLabel: '停電中',
+    lead: '明かり・情報・冷蔵庫が同時に止まります。まず電池を守ることが最優先です。',
+  },
+  {
+    id: 'water',
+    label: '断水',
+    icon: '💧',
+    order: 2,
+    statusLabel: '断水中',
+    lead: '飲む水とトイレの水は別に確保します。いま家にある水を捨てないでください。',
+  },
+  {
+    id: 'toilet',
+    label: 'トイレが使えない',
+    icon: '🚽',
+    order: 3,
+    statusLabel: 'トイレ不可',
+    lead: '排水管の被害が分かるまで流さない。袋と凝固剤で「持ち帰る」方式に切り替えます。',
+  },
+  {
+    id: 'comms',
+    label: '通信障害',
+    icon: '📱',
+    order: 4,
+    statusLabel: '通信障害',
+    lead: '通話よりテキスト。電波を探し続けるだけで電池は減ります。',
+  },
+  {
+    id: 'gas',
+    label: 'ガス停止',
+    icon: '🔥',
+    order: 5,
+    statusLabel: 'ガス停止',
+    lead: 'ガス臭があるときは火も電気スイッチも触らないでください。',
+  },
+  {
+    id: 'food',
+    label: '食料不足',
+    icon: '🍙',
+    order: 6,
+    statusLabel: '食料不足',
+    lead: '家にあるものを全部出して並べる。消費の順番を決めるだけで数日変わります。',
+  },
+];
+
+/**
+ * 世帯条件（配慮が必要な人がいるか）
+ * 選択すると、その人向けの注意点が結果の上位に差し込まれる。
+ */
+const HOUSEHOLDS = [
+  { id: 'baby', label: '乳幼児・子どもがいる', icon: '👶' },
+  { id: 'elderly', label: '高齢者がいる', icon: '👴' },
+  { id: 'pet', label: 'ペットがいる', icon: '🐶' },
+  { id: 'medical', label: '持病・医療機器がある', icon: '🩺' },
+  { id: 'pregnant', label: '妊娠中の人がいる', icon: '🤰' },
+];
+
+/** カードの種類。表示順もこの配列の順に従う。 */
+const KINDS = [
+  {
+    id: 'now',
+    label: '今すぐやること',
+    icon: '✅',
+    note: 'チェックを付けると記録されます（この端末内だけに保存）',
+  },
+  {
+    id: 'hack',
+    label: 'ライフハック',
+    icon: '💡',
+    note: '道具がなくても代用できる工夫',
+  },
+  {
+    id: 'caution',
+    label: '命に関わる注意',
+    icon: '⚠️',
+    note: '災害後の二次被害はここで防げます',
+  },
+];
+
+/**
+ * 都道府県 → 一般送配電事業者（停電情報の窓口）
+ * 県境や河川で供給エリアが分かれる県には note を付けている。
+ */
+const PREFECTURES = [
+  { id: 'hokkaido', label: '北海道', power: 'hepco' },
+  { id: 'aomori', label: '青森県', power: 'tohoku' },
+  { id: 'iwate', label: '岩手県', power: 'tohoku' },
+  { id: 'miyagi', label: '宮城県', power: 'tohoku' },
+  { id: 'akita', label: '秋田県', power: 'tohoku' },
+  { id: 'yamagata', label: '山形県', power: 'tohoku' },
+  { id: 'fukushima', label: '福島県', power: 'tohoku' },
+  { id: 'ibaraki', label: '茨城県', power: 'tepco' },
+  { id: 'tochigi', label: '栃木県', power: 'tepco' },
+  { id: 'gunma', label: '群馬県', power: 'tepco' },
+  { id: 'saitama', label: '埼玉県', power: 'tepco' },
+  { id: 'chiba', label: '千葉県', power: 'tepco' },
+  { id: 'tokyo', label: '東京都', power: 'tepco' },
+  { id: 'kanagawa', label: '神奈川県', power: 'tepco' },
+  { id: 'niigata', label: '新潟県', power: 'tohoku' },
+  { id: 'toyama', label: '富山県', power: 'rikuden' },
+  { id: 'ishikawa', label: '石川県', power: 'rikuden' },
+  { id: 'fukui', label: '福井県', power: 'rikuden', note: '嶺南地域の一部は関西電力送配電エリアです。' },
+  { id: 'yamanashi', label: '山梨県', power: 'tepco' },
+  { id: 'nagano', label: '長野県', power: 'chuden', note: '一部が東京電力パワーグリッドエリアです。' },
+  { id: 'gifu', label: '岐阜県', power: 'chuden' },
+  { id: 'shizuoka', label: '静岡県', power: 'chuden', note: '富士川以東は東京電力パワーグリッドエリアです。' },
+  { id: 'aichi', label: '愛知県', power: 'chuden' },
+  { id: 'mie', label: '三重県', power: 'chuden', note: '南部の一部は関西電力送配電エリアです。' },
+  { id: 'shiga', label: '滋賀県', power: 'kansai' },
+  { id: 'kyoto', label: '京都府', power: 'kansai' },
+  { id: 'osaka', label: '大阪府', power: 'kansai' },
+  { id: 'hyogo', label: '兵庫県', power: 'kansai' },
+  { id: 'nara', label: '奈良県', power: 'kansai' },
+  { id: 'wakayama', label: '和歌山県', power: 'kansai' },
+  { id: 'tottori', label: '鳥取県', power: 'energia' },
+  { id: 'shimane', label: '島根県', power: 'energia' },
+  { id: 'okayama', label: '岡山県', power: 'energia' },
+  { id: 'hiroshima', label: '広島県', power: 'energia' },
+  { id: 'yamaguchi', label: '山口県', power: 'energia' },
+  { id: 'tokushima', label: '徳島県', power: 'yonden' },
+  { id: 'kagawa', label: '香川県', power: 'yonden' },
+  { id: 'ehime', label: '愛媛県', power: 'yonden' },
+  { id: 'kochi', label: '高知県', power: 'yonden' },
+  { id: 'fukuoka', label: '福岡県', power: 'kyuden' },
+  { id: 'saga', label: '佐賀県', power: 'kyuden' },
+  { id: 'nagasaki', label: '長崎県', power: 'kyuden' },
+  { id: 'kumamoto', label: '熊本県', power: 'kyuden' },
+  { id: 'oita', label: '大分県', power: 'kyuden' },
+  { id: 'miyazaki', label: '宮崎県', power: 'kyuden' },
+  { id: 'kagoshima', label: '鹿児島県', power: 'kyuden' },
+  { id: 'okinawa', label: '沖縄県', power: 'okiden' },
+];
+
+/** id から探すためのヘルパー（毎回 find を書かないため） */
+const bySituationId = (id) => SITUATIONS.find((s) => s.id === id);
+const byHouseholdId = (id) => HOUSEHOLDS.find((h) => h.id === id);
+const byPrefectureId = (id) => PREFECTURES.find((p) => p.id === id);
+
+/* ===== assets/js/data/items.js ===== */
+/**
+ * ライフラインサポート — 対策コンテンツ本体
+ * -----------------------------------------------------------------------------
+ * 1件 = 1枚のカード。ホーム画面の絞り込みと「ライフハック集」の両方が
+ * このファイルだけを情報源にしている（二重管理をしないための約束）。
+ *
+ * ■ データ構造
+ *   id          … 一意。チェック状態の保存キーになるため、公開後に変更しない。
+ *   kind        … 'now'（今すぐやること）/ 'hack'（工夫）/ 'caution'（命に関わる注意）
+ *   situations  … 対象の状況 id。1つでも選ばれていれば表示（OR）。
+ *   households  … 対象の世帯条件 id。1つでも選ばれていれば表示（OR）。
+ *                 situations と両方ある場合は AND 条件になる。
+ *   combo       … 指定した状況が「すべて」選ばれたときだけ表示し、最上位に出す。
+ *   priority    … 1〜5。小さいほど上に出る。1 は命に直結するもの。
+ *   title       … 一目で行動が分かる短い文（20文字前後）。
+ *   body        … 補足。数字を入れて「どれくらい」まで書く。
+ *
+ * ■ 執筆ルール
+ *   ・「〜しましょう」ではなく「〜する」で言い切る（緊急時に読む文章のため）
+ *   ・目安の数値は必ず単位付きで書く（1人1日3L、5〜8L など）
+ *   ・危険を伴う代用手段には必ず caution を対にして置く
+ */
+
+const ITEMS = [
+  /* =========================================================================
+     停電
+     ====================================================================== */
+  {
+    id: 'bo-now-01',
+    kind: 'now',
+    situations: ['blackout'],
+    households: [],
+    priority: 1,
+    title: 'スマホを省電力モードにし、画面を最も暗くする',
+    body: '画面の明るさは電池消費の最大要因。省電力モード＋最低輝度＋通知オフで、体感の持ち時間が2倍近くになる。',
+  },
+  {
+    id: 'bo-now-02',
+    kind: 'now',
+    situations: ['blackout'],
+    households: [],
+    priority: 1,
+    title: 'モバイルバッテリーの残量を数え、使う順番を決める',
+    body: '「今日使う1本」「明日以降の予備」を分ける。家族全員のスマホを同時に充電しない。連絡係を1台に絞ると全体の電池が長持ちする。',
+  },
+  {
+    id: 'bo-now-03',
+    kind: 'now',
+    situations: ['blackout'],
+    households: [],
+    priority: 1,
+    title: '使っていた電熱器具のスイッチを切り、プラグを抜く',
+    body: '電気ストーブ・アイロン・ドライヤーなど。復旧した瞬間に無人で再稼働して火が出るのが「通電火災」。家を離れるときはブレーカーも落とす。',
+  },
+  {
+    id: 'bo-now-04',
+    kind: 'now',
+    situations: ['blackout'],
+    households: [],
+    priority: 2,
+    title: '冷蔵庫・冷凍庫のドアを開けない',
+    body: '開けなければ冷蔵室は2〜3時間、冷凍室は食品が詰まっていれば半日〜1日程度は保つ。開ける回数を減らすため、先に「何をいつ食べるか」を決めてから一度で取り出す。',
+  },
+  {
+    id: 'bo-now-05',
+    kind: 'now',
+    situations: ['blackout'],
+    households: [],
+    priority: 2,
+    title: '明かりはLEDライトにする。ろうそくは使わない',
+    body: '余震で倒れれば火災になる。懐中電灯・ランタン・ヘッドライトを使い、就寝時に裸火を残さない。',
+  },
+  {
+    id: 'bo-now-06',
+    kind: 'now',
+    situations: ['blackout'],
+    households: [],
+    priority: 2,
+    title: 'エレベーターを使わない',
+    body: '復旧と停止を繰り返す段階では閉じ込めが起きる。すでに乗っている場合は全部の階のボタンを押し、停まった階で降りる。',
+  },
+  {
+    id: 'bo-now-07',
+    kind: 'now',
+    situations: ['blackout'],
+    households: [],
+    priority: 3,
+    title: '水が出るうちに、浴槽とやかん・鍋に水をためる',
+    body: 'マンションは受水槽のポンプが電気で動くため、停電がそのまま断水になることが多い。停電を確認したら真っ先に水をためる。',
+  },
+  {
+    id: 'bo-now-08',
+    kind: 'now',
+    situations: ['blackout'],
+    households: [],
+    priority: 3,
+    title: '情報源をラジオに切り替える',
+    body: '乾電池式・手回しラジオがあればスマホの電池を温存できる。スマホのラジオアプリは通信と画面を使うため消耗が早い。',
+  },
+  {
+    id: 'bo-hack-01',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 2,
+    title: '車はいちばん大きなモバイルバッテリー',
+    body: 'シガーソケットのUSB充電器で複数台を充電できる。ガソリンは移動と暖房のためにも使うので、充電は必要な分だけに。',
+  },
+  {
+    id: 'bo-hack-02',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 2,
+    title: '懐中電灯＋水の入ったペットボトルでランタンになる',
+    body: 'ライトの発光面に水入りペットボトルを立てると光が拡散し、部屋全体がぼんやり明るくなる。レジ袋をかぶせても同じ効果がある。',
+  },
+  {
+    id: 'bo-hack-03',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 2,
+    title: 'ヘッドライトを1人1個。両手が空くのが正義',
+    body: '暗い中での調理・片付け・トイレはすべて両手を使う。懐中電灯を口にくわえる状態は転倒につながる。',
+  },
+  {
+    id: 'bo-hack-04',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 2,
+    title: '保冷剤と冷凍食品を保冷バッグに集めて「小さな冷蔵庫」を作る',
+    body: 'よく使うものだけを保冷バッグに移せば、冷蔵庫を開ける回数が激減する。凍った保冷剤は溶けるまで数時間、庫内を冷やし続ける。',
+  },
+  {
+    id: 'bo-hack-05',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 3,
+    title: '日中はカーテンを開け、夜は一部屋に集まる',
+    body: '明かりも暖房も1か所に集約すると、電池も燃料も体力も節約できる。子どもや高齢者の様子にも気づきやすい。',
+  },
+  {
+    id: 'bo-hack-06',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 3,
+    title: '食べる順番は「冷蔵 → 冷凍 → 常温」',
+    body: '傷みやすいものから消費する。冷凍食品は自然解凍されながら保冷剤の役目も果たすので、最後まで庫内に置いておく。',
+  },
+  {
+    id: 'bo-hack-07',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 3,
+    title: '給湯器・エコキュート・電気コンロは動かない前提で考える',
+    body: 'ガスが生きていても給湯器は電気で制御されているため、停電中はお湯が出ない。体を拭くシートやドライシャンプーで代替する。',
+  },
+  {
+    id: 'bo-hack-08',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 3,
+    title: '電動シャッター・オートロック・電動自転車の手動対応を確認',
+    body: '電動シャッターと立体駐車場には手動解錠の手順がある。明るいうちに取扱説明書の該当ページを写真に撮っておく。',
+  },
+  {
+    id: 'bo-hack-09',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 4,
+    title: '光回線の固定電話・インターホンも止まる',
+    body: 'ひかり電話・IP電話は停電で使えない。訪問者が来ても呼び鈴は鳴らないため、玄関先に張り紙をしておくと安否確認がしやすい。',
+  },
+  {
+    id: 'bo-hack-10',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: [],
+    priority: 4,
+    title: '夏は保冷、冬は着る。エアコンに頼らない体温管理',
+    body: '夏は濡らしたタオルと保冷剤を首・脇・脚の付け根に。冬は重ね着＋毛布＋段ボールで床からの冷えを断つ。室温より「体に触れるもの」を変えるほうが効く。',
+  },
+  {
+    id: 'bo-caution-01',
+    kind: 'caution',
+    situations: ['blackout'],
+    households: [],
+    priority: 1,
+    title: '発電機・カセットコンロ・炭を室内で使わない',
+    body: '一酸化炭素は無色無臭で、気づいたときには動けなくなる。発電機は必ず屋外に置き、屋内で火を使うときは必ず窓を開けて換気する。',
+  },
+  {
+    id: 'bo-caution-02',
+    kind: 'caution',
+    situations: ['blackout'],
+    households: [],
+    priority: 1,
+    title: '通電火災に備え、避難時は必ずブレーカーを落とす',
+    body: '過去の地震では、電気の復旧後に起きた火災が出火原因の大きな割合を占めている。家を空けるときはブレーカーOFFを最後の動作にする。',
+  },
+  {
+    id: 'bo-caution-03',
+    kind: 'caution',
+    situations: ['blackout'],
+    households: [],
+    priority: 2,
+    title: '車中でエンジンをかけ続けるときは排気口の周りを空ける',
+    body: '雪や瓦礫でマフラーがふさがると排ガスが車内に流れ込む。定期的に外へ出て確認し、寝るときはエンジンを切る。長時間同じ姿勢はエコノミークラス症候群の原因にもなる。',
+  },
+  {
+    id: 'bo-caution-04',
+    kind: 'caution',
+    situations: ['blackout'],
+    households: [],
+    priority: 3,
+    title: '停電から復旧した冷蔵庫の中身を、においだけで判断しない',
+    body: '生鮮品が10℃以上の状態に2時間以上あったら処分を検討する。食中毒は断水中の在宅避難でいちばん避けたい事態。',
+  },
+
+  /* =========================================================================
+     断水
+     ====================================================================== */
+  {
+    id: 'wa-now-01',
+    kind: 'now',
+    situations: ['water'],
+    households: [],
+    priority: 1,
+    title: '浴槽・バケツに残っている水を絶対に捨てない',
+    body: 'トイレ・掃除・手洗いに使う生活用水になる。飲用には使わないと決めて、フタをして確保しておく。',
+  },
+  {
+    id: 'wa-now-02',
+    kind: 'now',
+    situations: ['water'],
+    households: [],
+    priority: 1,
+    title: '「飲む水」と「生活用水」の容器を物理的に分ける',
+    body: '容器に油性ペンで「飲」「生活」と大きく書く。一度でも生活用水に使った容器は飲用に戻さない。家族全員が一目で分かる状態にしておく。',
+  },
+  {
+    id: 'wa-now-03',
+    kind: 'now',
+    situations: ['water'],
+    households: [],
+    priority: 1,
+    title: '飲料水は1人1日3Lで計算し、残り日数を出す',
+    body: '飲用と調理を合わせた目安。4人家族なら1日12L、3日で36L。手元の量を数えて「あと何日か」を先に知ると、判断が落ち着く。',
+  },
+  {
+    id: 'wa-now-04',
+    kind: 'now',
+    situations: ['water'],
+    households: [],
+    priority: 2,
+    title: '給水所の場所・開設時間・持参する容器を確認する',
+    body: '自治体の水道局やSNSで発表される。並ぶ前に容器と運搬手段（台車・キャリーカート）を用意しておくと往復の回数が減る。',
+  },
+  {
+    id: 'wa-now-05',
+    kind: 'now',
+    situations: ['water'],
+    households: [],
+    priority: 2,
+    title: '手を洗えない前提で衛生ルールを決める',
+    body: 'アルコール消毒とウェットティッシュをトイレ・食事の動線に置く。「食事の前」「トイレの後」の2回だけは必ず、と家族で決めておく。',
+  },
+  {
+    id: 'wa-hack-01',
+    kind: 'hack',
+    situations: ['water'],
+    households: [],
+    priority: 1,
+    title: '皿にラップを敷いて食べる。洗い物をゼロにする',
+    body: '食べ終わったらラップだけ捨てる。ポリ袋を皿にかぶせても同じ。断水中の「洗う水」は生活用水の中でも真っ先に節約すべき部分。',
+  },
+  {
+    id: 'wa-hack-02',
+    kind: 'hack',
+    situations: ['water'],
+    households: [],
+    priority: 1,
+    title: 'ポリ袋調理なら、鍋の水を繰り返し使える',
+    body: '高密度ポリエチレンの袋に材料を入れて空気を抜き、口を固く結んで鍋で湯せんする。鍋の水は汚れないので何度でも使え、同じ鍋で複数のメニューを同時に作れる。',
+  },
+  {
+    id: 'wa-hack-03',
+    kind: 'hack',
+    situations: ['water'],
+    households: [],
+    priority: 2,
+    title: 'ペットボトルのキャップに穴を開けて簡易蛇口にする',
+    body: '直接注ぐより水量を細かく調整でき、手洗いや歯みがきの水を10分の1程度に抑えられる。逆さにして片手で使えるのも利点。',
+  },
+  {
+    id: 'wa-hack-04',
+    kind: 'hack',
+    situations: ['water'],
+    households: [],
+    priority: 2,
+    title: '段ボール＋厚手のポリ袋で、即席の給水タンクが作れる',
+    body: '段ボール箱に大きめのポリ袋を二重に入れて水を注ぐ。専用のポリタンクがなくても20L近く運べる。台車があると腰を痛めずに済む。',
+  },
+  {
+    id: 'wa-hack-05',
+    kind: 'hack',
+    situations: ['water'],
+    households: [],
+    priority: 2,
+    title: '体を洗えない期間は「拭く」に切り替える',
+    body: '大判のボディシート、ドライシャンプー、蒸しタオル（少量の水を温めて絞る）。特に足と首まわりを拭くと体感が大きく変わり、睡眠の質が上がる。',
+  },
+  {
+    id: 'wa-hack-06',
+    kind: 'hack',
+    situations: ['water'],
+    households: [],
+    priority: 3,
+    title: '紙皿・紙コップ・割り箸は「衛生用品」として備える',
+    body: '断水時の食器は消耗品と割り切る。1人1日3セットで計算し、家族×日数分を確保しておく。',
+  },
+  {
+    id: 'wa-hack-07',
+    kind: 'hack',
+    situations: ['water'],
+    households: [],
+    priority: 3,
+    title: '洗い物は「拭き取ってから」。汚れは水で落とさない',
+    body: 'キッチンペーパーや新聞紙で油と食べ残しを拭き取れば、すすぐ水はごくわずかで済む。復旧後の排水管の詰まり防止にもなる。',
+  },
+  {
+    id: 'wa-hack-08',
+    kind: 'hack',
+    situations: ['water'],
+    households: [],
+    priority: 3,
+    title: '洗濯はしない前提。下着と靴下を多めに用意する',
+    body: '在宅避難で最初に困るのが衣類。使い捨ての下着や、水なしで使える洗濯シートが役に立つ。汗をかいた衣類は乾かしてから畳むと臭いが抑えられる。',
+  },
+  {
+    id: 'wa-caution-01',
+    kind: 'caution',
+    situations: ['water'],
+    households: [],
+    priority: 1,
+    title: '井戸水・川の水・貯水槽の水を、消毒せずに飲まない',
+    body: '見た目が澄んでいても細菌や化学物質を含むことがある。断水下での下痢は脱水に直結し、医療機関にもかかりにくい。',
+  },
+  {
+    id: 'wa-caution-02',
+    kind: 'caution',
+    situations: ['water'],
+    households: [],
+    priority: 2,
+    title: '復旧直後の濁った水は、透明になるまで飲用・洗濯に使わない',
+    body: '配管内のさびや空気が混じる。しばらく流して透明になり、においが無くなってから使う。心配なときは自治体の水道局の案内を確認する。',
+  },
+  {
+    id: 'wa-caution-03',
+    kind: 'caution',
+    situations: ['water'],
+    households: [],
+    priority: 3,
+    title: '口を付けたペットボトルの水は、その日のうちに飲みきる',
+    body: '口の中の細菌が入り、常温では急速に増える。飲みかけは名前を書いて各自が管理し、共用の飲料水はコップに移して飲む。',
+  },
+
+  /* =========================================================================
+     トイレ
+     ====================================================================== */
+  {
+    id: 'to-now-01',
+    kind: 'now',
+    situations: ['toilet'],
+    households: [],
+    priority: 1,
+    title: '排水管の無事が確認できるまで、水を流さない',
+    body: '地震で配管が壊れていると、汚水が階下や自室の床に逆流する。集合住宅では自分の1回の水洗が下の階の被害になる。管理会社・自治体の確認が取れるまで流さない。',
+  },
+  {
+    id: 'to-now-02',
+    kind: 'now',
+    situations: ['toilet'],
+    households: [],
+    priority: 1,
+    title: '便座にポリ袋を二重にかけ、吸収材を入れて簡易トイレにする',
+    body: '1枚目は便器を覆う保護用（付けたまま）、2枚目が使い捨て。2枚目の中に凝固剤・新聞紙・ペットシーツを入れる。用を足したら2枚目だけを縛って捨てる。',
+  },
+  {
+    id: 'to-now-03',
+    kind: 'now',
+    situations: ['toilet'],
+    households: [],
+    priority: 1,
+    title: '使用後の袋は口を固く結び、フタ付き容器にまとめる',
+    body: 'ゴミ収集が再開するまで数日〜数週間かかることがある。防臭袋やペール缶に入れ、直射日光の当たらない屋外に置く。',
+  },
+  {
+    id: 'to-now-04',
+    kind: 'now',
+    situations: ['toilet'],
+    households: [],
+    priority: 2,
+    title: '必要な回数を計算する。1人1日5回が目安',
+    body: '4人家族の1週間なら140回分。袋・凝固剤・防臭袋がその数だけ要る。足りない分は代用品（新聞紙・猫砂・ペットシーツ）で補う計画を今立てる。',
+  },
+  {
+    id: 'to-hack-01',
+    kind: 'hack',
+    situations: ['toilet'],
+    households: [],
+    priority: 1,
+    title: '凝固剤の代用は、猫砂・ペットシーツ・新聞紙・紙おむつ',
+    body: '吸水するものなら代用できる。新聞紙は細かくちぎるほど吸う。丸めたものを底に敷き、その上から使う。',
+  },
+  {
+    id: 'to-hack-02',
+    kind: 'hack',
+    situations: ['toilet'],
+    households: [],
+    priority: 2,
+    title: 'においは「密閉」と「重曹」で抑える',
+    body: '袋の口を空気を抜いて固く結ぶのが最も効く。防臭袋があれば理想的。重曹や新聞紙を一緒に入れると、においの立ち上がりが遅くなる。',
+  },
+  {
+    id: 'to-hack-03',
+    kind: 'hack',
+    situations: ['toilet'],
+    households: [],
+    priority: 2,
+    title: 'アルコールとウェットティッシュをトイレの真横に固定配置する',
+    body: '断水中の感染症は、トイレから食卓へ手で運ばれる。「トイレを出る前に必ず消毒」を家族のルールにし、道具を動かさない。',
+  },
+  {
+    id: 'to-hack-04',
+    kind: 'hack',
+    situations: ['toilet'],
+    households: [],
+    priority: 3,
+    title: '夜間用の簡易トイレを、寝る場所の近くに置く',
+    body: '暗い中の移動は転倒の原因になる。段ボール製の簡易便座や、バケツ＋ポリ袋で足りる。目隠しのために大判のポンチョやレジャーシートを用意する。',
+  },
+  {
+    id: 'to-caution-01',
+    kind: 'caution',
+    situations: ['toilet'],
+    households: [],
+    priority: 1,
+    title: 'トイレを我慢するために水分を控えない',
+    body: '脱水・血栓（エコノミークラス症候群）・膀胱炎・便秘を招き、命に関わる。水分は普段どおり取り、その分だけ排泄の準備を厚くする。',
+  },
+  {
+    id: 'to-caution-02',
+    kind: 'caution',
+    situations: ['toilet'],
+    households: [],
+    priority: 2,
+    title: '汚物の処理担当を決め、使い捨て手袋を使う',
+    body: 'ノロウイルスなどは家庭内で一気に広がる。担当者を固定し、処理のあとは必ず手指消毒。嘔吐物の処理にも同じ道具を使う。',
+  },
+
+  /* =========================================================================
+     通信障害
+     ====================================================================== */
+  {
+    id: 'co-now-01',
+    kind: 'now',
+    situations: ['comms'],
+    households: [],
+    priority: 1,
+    title: '緊急通報（110・118・119）は圏外表示でも試す',
+    body: '契約している回線が使えなくても、他社の基地局につながって発信できる場合がある。命に関わるときは「圏外だから無理」と諦めない。',
+  },
+  {
+    id: 'co-now-02',
+    kind: 'now',
+    situations: ['comms'],
+    households: [],
+    priority: 1,
+    title: '通話ではなくSMS・メッセージアプリのテキストで連絡する',
+    body: '音声通話は回線が混み合うと真っ先につながらなくなる。テキストは少ないデータ量で、電波が一瞬でも届けば送信される。',
+  },
+  {
+    id: 'co-now-03',
+    kind: 'now',
+    situations: ['comms'],
+    households: [],
+    priority: 1,
+    title: '安否は災害用伝言ダイヤル（171）・web171・各社の災害用伝言板へ',
+    body: '「無事」の一言を1か所に置けば、家族全員がそこを見に行けばよくなる。個別の連絡を減らすことが、結果的にいちばん早い。',
+  },
+  {
+    id: 'co-now-04',
+    kind: 'now',
+    situations: ['comms'],
+    households: [],
+    priority: 2,
+    title: '機内モードのON/OFFで再接続を試す',
+    body: '一度切って戻すと基地局を探し直す。それでもつながらないなら、機内モードのままにして電池を守る。圏外のまま置くと、電波を探し続けて急速に消耗する。',
+  },
+  {
+    id: 'co-hack-01',
+    kind: 'hack',
+    situations: ['comms'],
+    households: [],
+    priority: 1,
+    title: '00000JAPAN（ファイブゼロジャパン）を確認する',
+    body: '大規模災害時に、携帯各社や施設が誰でも使える無料Wi-Fiとして開放することがある。Wi-Fi設定の一覧に出ていれば、パスワードなしで接続できる。',
+  },
+  {
+    id: 'co-hack-02',
+    kind: 'hack',
+    situations: ['comms'],
+    households: [],
+    priority: 2,
+    title: '連絡は「時刻を決めて1日2回」に集約する',
+    body: '安否確認のたびに画面を点けると電池が尽きる。朝と夕方など時間を決め、その時だけ確認・送信する。家族にもその時間を伝えておく。',
+  },
+  {
+    id: 'co-hack-03',
+    kind: 'hack',
+    situations: ['comms'],
+    households: [],
+    priority: 2,
+    title: '遠くに住む親戚を「安否の中継役」にする',
+    body: '被災地の中どうしは回線が混み合う。被災地の外に1人だけ中継役を決め、全員がその人に連絡すれば、少ない通信で全体の状況が共有できる。',
+  },
+  {
+    id: 'co-hack-04',
+    kind: 'hack',
+    situations: ['comms'],
+    households: [],
+    priority: 3,
+    title: '公衆電話の場所を確認する。10円玉とテレホンカードを持つ',
+    body: '公衆電話は災害時に優先的につながる回線として扱われ、無料開放されることもある。ただし停電時は硬貨のみで、テレホンカードが使えない機種がある。',
+  },
+  {
+    id: 'co-hack-05',
+    kind: 'hack',
+    situations: ['comms'],
+    households: [],
+    priority: 3,
+    title: '地図・資料はダウンロードしてから外に出る',
+    body: '地図アプリのオフライン地図、避難所一覧のPDF、このアプリのようなオフライン対応ページ。通信が生きているうちに端末へ落としておく。',
+  },
+  {
+    id: 'co-caution-01',
+    kind: 'caution',
+    situations: ['comms'],
+    households: [],
+    priority: 1,
+    title: '00000JAPAN は暗号化されていない。ID・パスワード・決済情報を入力しない',
+    body: '誰でもつなげる代わりに通信内容が保護されない。安否確認や公式情報の閲覧に使い、ネットバンキングや買い物には使わない。',
+  },
+  {
+    id: 'co-caution-02',
+    kind: 'caution',
+    situations: ['comms'],
+    households: [],
+    priority: 2,
+    title: '出所の分からない情報を転送しない',
+    body: '災害のたびに「〇〇が危ない」という未確認情報が広がる。発信元が公的機関か報道機関かを確かめ、確かめられないものは自分で止める。',
+  },
+
+  /* =========================================================================
+     ガス停止
+     ====================================================================== */
+  {
+    id: 'ga-now-01',
+    kind: 'now',
+    situations: ['gas'],
+    households: [],
+    priority: 1,
+    title: 'ガスのにおいがしたら、火も電気スイッチも触らずに窓を開ける',
+    body: '換気扇のスイッチ、照明、インターホンの操作でも火花が出て引火する。窓と扉を開け、元栓を閉め、屋外に出てからガス会社へ連絡する。',
+  },
+  {
+    id: 'ga-now-02',
+    kind: 'now',
+    situations: ['gas'],
+    households: [],
+    priority: 2,
+    title: 'マイコンメーターの復帰操作を確認する',
+    body: '地震の揺れでガスメーターが安全のために自動遮断していることがある。赤いランプが点滅していれば、表示に従って自分で復帰できる場合がある。手順はメーター本体かガス会社の案内に従う。',
+  },
+  {
+    id: 'ga-now-03',
+    kind: 'now',
+    situations: ['gas'],
+    households: [],
+    priority: 2,
+    title: 'カセットコンロとボンベの本数を数える',
+    body: 'ボンベ1本で強火なら約1時間が目安。1週間の在宅避難なら6〜10本あると安心できる。使い切る前に本数を把握しておくと、調理の計画が立てられる。',
+  },
+  {
+    id: 'ga-now-04',
+    kind: 'now',
+    situations: ['gas'],
+    households: [],
+    priority: 3,
+    title: 'お風呂とお湯は使えない前提に切り替える',
+    body: '都市ガスの復旧は1軒ずつの安全確認が必要なため、電気や水道より時間がかかることが多い。体を拭く・湯たんぽで温まる方法に早めに切り替える。',
+  },
+  {
+    id: 'ga-hack-01',
+    kind: 'hack',
+    situations: ['gas'],
+    households: [],
+    priority: 2,
+    title: '「温かい汁物1杯」を1日1回は確保する',
+    body: '限られた燃料の使いどころ。温かいものを口にすると体温も気力も戻る。汁物なら水分も同時に取れて、洗い物も1つで済む。',
+  },
+  {
+    id: 'ga-hack-02',
+    kind: 'hack',
+    situations: ['gas'],
+    households: [],
+    priority: 3,
+    title: '電気が生きているなら、電気ケトル・電子レンジ・炊飯器が代役になる',
+    body: 'ガスだけが止まっている状況では、加熱手段は残っている。使える家電を書き出しておくと、無駄にボンベを消費しない。',
+  },
+  {
+    id: 'ga-hack-03',
+    kind: 'hack',
+    situations: ['gas'],
+    households: [],
+    priority: 3,
+    title: '湯たんぽ・カイロ・着る毛布で暖を取る',
+    body: '空間を暖めるのではなく、体に触れるものを暖める。ペットボトル（熱湯対応のもの）にお湯を入れてタオルで包めば簡易湯たんぽになる。',
+  },
+  {
+    id: 'ga-caution-01',
+    kind: 'caution',
+    situations: ['gas'],
+    households: [],
+    priority: 1,
+    title: 'カセットコンロを2台並べて大きな鉄板や鍋を乗せない',
+    body: '隣のボンベが加熱されて破裂する。コンロより大きい調理器具も、輻射熱でボンベを温めるため使わない。',
+  },
+  {
+    id: 'ga-caution-02',
+    kind: 'caution',
+    situations: ['gas'],
+    households: [],
+    priority: 1,
+    title: 'ボンベは使用後に外し、車内や暖房の近くに置かない',
+    body: '直射日光の当たる車内は40℃を超える。ボンベの保管は直射日光を避けた40℃以下の場所と決められている。',
+  },
+  {
+    id: 'ga-caution-03',
+    kind: 'caution',
+    situations: ['gas'],
+    households: [],
+    priority: 2,
+    title: '復旧作業を名乗る訪問者に、その場で料金を払わない',
+    body: '災害後は点検や修理を装う訪問が増える。ガス会社の作業員は身分証を携帯している。不安なときは契約しているガス会社に電話で確認する。',
+  },
+
+  /* =========================================================================
+     食料不足
+     ====================================================================== */
+  {
+    id: 'fo-now-01',
+    kind: 'now',
+    situations: ['food'],
+    households: [],
+    priority: 1,
+    title: '家にある食べ物を全部出して床に並べる',
+    body: '冷蔵庫・戸棚・防災リュック・菓子箱まで全部。見えるようにすると「あと何日分あるか」が分かり、無駄な不安と無駄な消費が同時に減る。',
+  },
+  {
+    id: 'fo-now-02',
+    kind: 'now',
+    situations: ['food'],
+    households: [],
+    priority: 1,
+    title: '食べる順番を紙に書く。冷蔵 → 冷凍 → 常温',
+    body: '傷みやすい順に消費する。書いて貼っておけば、家族の誰が開けても同じ判断ができる。',
+  },
+  {
+    id: 'fo-now-03',
+    kind: 'now',
+    situations: ['food'],
+    households: [],
+    priority: 2,
+    title: '1日に必要な量の下限を決める',
+    body: '成人でおよそ1日2,000kcal、水3Lが目安。厳しいときも、子ども・高齢者・持病のある人の分を先に確保してから残りを分ける。',
+  },
+  {
+    id: 'fo-now-04',
+    kind: 'now',
+    situations: ['food'],
+    households: [],
+    priority: 2,
+    title: '炊き出し・配給の情報を確認する',
+    body: '在宅避難でも、最寄りの避難所で配給を受けられることが多い。自治体の発表や避難所の掲示で、時間と対象を確認する。',
+  },
+  {
+    id: 'fo-hack-01',
+    kind: 'hack',
+    situations: ['food'],
+    households: [],
+    priority: 1,
+    title: 'ポリ袋調理ならご飯も炊ける',
+    body: '米1：水1.2の割合で高密度ポリエチレン袋に入れ、空気を抜いて口を結び、沸騰した鍋で約20〜30分湯せんし、10分蒸らす。鍋の水は汚れないので使い回せる。',
+  },
+  {
+    id: 'fo-hack-02',
+    kind: 'hack',
+    situations: ['food'],
+    households: [],
+    priority: 2,
+    title: '調味料があるだけで、同じ食材が続いても食べられる',
+    body: '塩・砂糖・しょうゆ・みそ・マヨネーズ・ふりかけ。味が変わるだけで食欲が戻る。缶詰やアルファ米に加えるだけでよい。',
+  },
+  {
+    id: 'fo-hack-03',
+    kind: 'hack',
+    situations: ['food'],
+    households: [],
+    priority: 2,
+    title: 'チョコ・ようかん・ビスケットは「気力の食料」として温存する',
+    body: '高カロリーで水がいらず、日持ちする。落ち込んだとき、寒いとき、子どもが不安なときのために少し残しておく。',
+  },
+  {
+    id: 'fo-hack-04',
+    kind: 'hack',
+    situations: ['food'],
+    households: [],
+    priority: 3,
+    title: '缶詰の汁は捨てない',
+    body: '塩分と栄養が溶けている。スープや雑炊のだしとして使えば、貴重な水と調味料の節約になる。',
+  },
+  {
+    id: 'fo-hack-05',
+    kind: 'hack',
+    situations: ['food'],
+    households: [],
+    priority: 3,
+    title: '食べたものと日付をメモしておく',
+    body: '体調を崩したときの原因の手がかりになり、支援物資の要望を伝えるときにも役立つ。「何が足りないか」を数字で言えると支援は届きやすい。',
+  },
+  {
+    id: 'fo-caution-01',
+    kind: 'caution',
+    situations: ['food'],
+    households: [],
+    priority: 1,
+    title: 'アレルギーのある人の食料は、配給に頼らず自分で確保する',
+    body: '配給の食品は原材料表示が分からないことがある。アレルギー対応食は家庭で1週間分を確保し、本人が食べられるものをリストにして持ち歩く。',
+  },
+  {
+    id: 'fo-caution-02',
+    kind: 'caution',
+    situations: ['food'],
+    households: [],
+    priority: 2,
+    title: '「もったいない」で傷んだものを食べない',
+    body: '断水・通信障害の中での食中毒は、脱水と受診困難が重なって深刻になる。少しでも異常を感じたら食べない。',
+  },
+  {
+    id: 'fo-caution-03',
+    kind: 'caution',
+    situations: ['food'],
+    households: [],
+    priority: 2,
+    title: '開けた缶詰・レトルトはその場で食べきる',
+    body: '冷蔵保存ができない前提で、1回で食べきれる量を開ける。家族の人数に合わせてサイズを選ぶ。',
+  },
+
+  /* =========================================================================
+     組み合わせ（複数の状況が重なったとき最優先で出す）
+     ====================================================================== */
+  {
+    id: 'cb-bo-wa-01',
+    kind: 'now',
+    situations: ['blackout', 'water'],
+    households: [],
+    combo: ['blackout', 'water'],
+    priority: 1,
+    title: '【停電＋断水】加熱も水も要らない食品を最優先で食べる',
+    body: 'そのまま食べられる缶詰、パン、シリアル、ゼリー飲料。調理は「1日1回、温かいものを作る」だけに絞り、水と燃料を残す。',
+  },
+  {
+    id: 'cb-bo-wa-02',
+    kind: 'now',
+    situations: ['blackout', 'water'],
+    households: [],
+    combo: ['blackout', 'water'],
+    priority: 1,
+    title: '【停電＋断水】マンションは受水槽のポンプ停止が原因かもしれない',
+    body: '停電が原因の断水なら、電気の復旧とともに水も戻る。管理会社に確認できれば、給水所に並ぶ前に見通しが立つ。',
+  },
+  {
+    id: 'cb-wa-to-01',
+    kind: 'now',
+    situations: ['water', 'toilet'],
+    households: [],
+    combo: ['water', 'toilet'],
+    priority: 1,
+    title: '【断水＋トイレ】浴槽の水でトイレを流す前に、配管の無事を確認する',
+    body: '水があっても、配管が壊れていれば流してはいけない。確認が取れるまでは袋式の簡易トイレを使い、浴槽の水は手洗いと掃除に回す。',
+  },
+  {
+    id: 'cb-bo-co-01',
+    kind: 'now',
+    situations: ['blackout', 'comms'],
+    households: [],
+    combo: ['blackout', 'comms'],
+    priority: 1,
+    title: '【停電＋通信障害】スマホは1台だけ「連絡係」にして、他は電源を切る',
+    body: '充電手段がない中で全員が電波を探すと、家族全体の通信手段が同時に尽きる。1台を残し、他は完全に電源オフにして予備電源にする。',
+  },
+  {
+    id: 'cb-bo-fo-01',
+    kind: 'hack',
+    situations: ['blackout', 'food'],
+    households: [],
+    combo: ['blackout', 'food'],
+    priority: 1,
+    title: '【停電＋食料不足】冷凍庫は開ける前に献立を決める',
+    body: '溶けはじめた冷凍食品は最優先で消費する。1回開けるごとに庫内温度が上がるので、取り出すものを紙に書いてから一度で出す。',
+  },
+  {
+    id: 'cb-ga-wa-01',
+    kind: 'hack',
+    situations: ['gas', 'water'],
+    households: [],
+    combo: ['gas', 'water'],
+    priority: 1,
+    title: '【ガス停止＋断水】献立は「洗い物が出ないもの」から選ぶ',
+    body: '調理はポリ袋、器はラップを敷いた皿、箸は割り箸。加熱の回数と洗う水を同時に減らせる組み合わせを最初に決めておく。',
+  },
+
+  /* =========================================================================
+     乳幼児・子ども
+     ====================================================================== */
+  {
+    id: 'ba-now-01',
+    kind: 'now',
+    situations: [],
+    households: ['baby'],
+    priority: 1,
+    title: 'ミルクは液体ミルク＋使い捨て哺乳瓶が最も確実',
+    body: '粉ミルクは安全な湯と洗浄が必要で、断水・停電下では条件がそろわない。液体ミルクは常温のまま飲ませられる。紙コップでの授乳も新生児から可能とされている。',
+  },
+  {
+    id: 'ba-now-02',
+    kind: 'now',
+    situations: [],
+    households: ['baby'],
+    priority: 1,
+    title: 'おむつとおしりふきの残数を数え、1日分×日数で計算する',
+    body: 'おしりふきは体拭き・食器拭き・手拭きにも使える最重要の消耗品。足りないときはキッチンペーパーを水で湿らせて代用する。',
+  },
+  {
+    id: 'ba-now-03',
+    kind: 'now',
+    situations: [],
+    households: ['baby'],
+    priority: 2,
+    title: '名前・連絡先・血液型を書いたカードを衣服に入れる',
+    body: 'はぐれたときの命綱になる。保護者の名前と、被災地外の親戚の連絡先も併記しておく。上着のポケットや靴の中に。',
+  },
+  {
+    id: 'ba-hack-01',
+    kind: 'hack',
+    situations: [],
+    households: ['baby'],
+    priority: 2,
+    title: '日課と遊びを止めない',
+    body: '絵本・折り紙・シール・お絵かき帳。いつもと同じことが1つでも続くと、子どもは驚くほど落ち着く。寝る前の習慣は特に守る。',
+  },
+  {
+    id: 'ba-hack-02',
+    kind: 'hack',
+    situations: ['blackout'],
+    households: ['baby'],
+    priority: 1,
+    title: '暗さが怖い子には、小さなライトを自分で持たせる',
+    body: '自分で光を操作できると恐怖が大きく減る。首から下げられるライトや、押すと光るおもちゃでもよい。',
+  },
+  {
+    id: 'ba-hack-03',
+    kind: 'hack',
+    situations: [],
+    households: ['baby'],
+    priority: 3,
+    title: '抱っこひもは避難用具。玄関の近くに置く',
+    body: '瓦礫やガラスの上をベビーカーでは進めない。両手が空くことが、荷物と安全の両方を守る。',
+  },
+  {
+    id: 'ba-caution-01',
+    kind: 'caution',
+    situations: [],
+    households: ['baby'],
+    priority: 1,
+    title: '子どもの前で被災映像を流し続けない',
+    body: '繰り返し見ることで強い不安が残ることがある。ニュースは大人が別の場所で確認し、子どもには「今どうすればいいか」だけを短く伝える。',
+  },
+  {
+    id: 'ba-caution-02',
+    kind: 'caution',
+    situations: [],
+    households: ['baby'],
+    priority: 2,
+    title: '体温調節が未熟。夏の熱中症・冬の低体温に大人より早く陥る',
+    body: '手足ではなく背中やお腹に触れて体温を確かめる。汗をかいていたら着替えさせ、寒いときは1枚多く重ねる。',
+  },
+
+  /* =========================================================================
+     高齢者
+     ====================================================================== */
+  {
+    id: 'el-now-01',
+    kind: 'now',
+    situations: [],
+    households: ['elderly'],
+    priority: 1,
+    title: '常用薬とお薬手帳を、今すぐ1か所にまとめる',
+    body: '残りの日数を数え、1週間を切るなら早めに医療機関か薬局に相談する。お薬手帳はスマホで撮影しておけば、手帳を失っても処方が伝えられる。',
+  },
+  {
+    id: 'el-now-02',
+    kind: 'now',
+    situations: [],
+    households: ['elderly'],
+    priority: 1,
+    title: '水分をこまめに勧める。のどの渇きを感じにくくなっている',
+    body: '脱水は血栓や体調の急変につながる。時間を決めて「一口飲む」を促す。トイレを気にして控えてしまうことが多いので、先にトイレの安心を用意する。',
+  },
+  {
+    id: 'el-now-03',
+    kind: 'now',
+    situations: ['blackout'],
+    households: ['elderly'],
+    priority: 1,
+    title: '足元灯を置き、動線から荷物をどける',
+    body: '暗い室内での転倒・骨折は、そのまま寝たきりにつながる。寝室からトイレまでの経路に明かりを置き、床の障害物をすべて片付ける。',
+  },
+  {
+    id: 'el-hack-01',
+    kind: 'hack',
+    situations: [],
+    households: ['elderly'],
+    priority: 2,
+    title: '足首を回す・かかとを上げ下げする運動を1日数回',
+    body: '同じ姿勢が続くと血栓ができやすくなる（エコノミークラス症候群）。座ったままできる運動を家族で一緒にやると続く。',
+  },
+  {
+    id: 'el-hack-02',
+    kind: 'hack',
+    situations: ['food'],
+    households: ['elderly'],
+    priority: 2,
+    title: 'かたい食べ物より、お粥・栄養補助飲料を優先する',
+    body: '入れ歯が使えない、かむ力が落ちているなどで、配給の食事が食べられないことがある。レトルトのお粥と栄養補助飲料を確保しておく。',
+  },
+  {
+    id: 'el-hack-03',
+    kind: 'hack',
+    situations: [],
+    households: ['elderly'],
+    priority: 3,
+    title: '補聴器の電池、眼鏡、入れ歯の予備を確認する',
+    body: '見える・聞こえる・食べられるが失われると、情報も栄養も届かなくなる。予備と洗浄用品を防災用品と同じ場所に置く。',
+  },
+  {
+    id: 'el-caution-01',
+    kind: 'caution',
+    situations: [],
+    households: ['elderly'],
+    priority: 1,
+    title: '1日2回は声をかけ、様子の変化を見る',
+    body: '「いつもと違う」に本人が気づけないことがある。食事量・トイレの回数・受け答えの様子を見て、迷ったら医療機関や自治体の相談窓口に連絡する。',
+  },
+
+  /* =========================================================================
+     ペット
+     ====================================================================== */
+  {
+    id: 'pe-now-01',
+    kind: 'now',
+    situations: [],
+    households: ['pet'],
+    priority: 1,
+    title: 'フードと水の残量を確認する。最低5〜7日分',
+    body: '支援物資でペット用品が届くまでには時間がかかる。療法食は代替が効かないため、かかりつけの動物病院の連絡先も一緒に確認しておく。',
+  },
+  {
+    id: 'pe-now-02',
+    kind: 'now',
+    situations: [],
+    households: ['pet'],
+    priority: 2,
+    title: 'キャリー・ケージをすぐ出せる場所に移す',
+    body: '同行避難の前提になるだけでなく、余震で怖がった動物を落ち着かせる居場所にもなる。中に普段使っている布を入れておく。',
+  },
+  {
+    id: 'pe-now-03',
+    kind: 'now',
+    situations: [],
+    households: ['pet'],
+    priority: 2,
+    title: '飼い主と一緒に写った写真をスマホに用意する',
+    body: 'はぐれたときの捜索と、飼い主であることの証明に使う。迷子札とマイクロチップの登録内容も確認しておく。',
+  },
+  {
+    id: 'pe-hack-01',
+    kind: 'hack',
+    situations: ['toilet'],
+    households: ['pet'],
+    priority: 1,
+    title: 'ペットシーツと猫砂は、人の簡易トイレにも使える',
+    body: '吸水力が高く、消臭剤入りのものが多い。ペット用として多めに備えておくと、家族全員の備えになる。',
+  },
+  {
+    id: 'pe-hack-02',
+    kind: 'hack',
+    situations: [],
+    households: ['pet'],
+    priority: 2,
+    title: '暗く静かな居場所をつくる',
+    body: '余震や人の出入りが続くと強いストレスを受ける。ケージに布をかけて視界を遮るだけでも落ち着くことが多い。',
+  },
+  {
+    id: 'pe-caution-01',
+    kind: 'caution',
+    situations: [],
+    households: ['pet'],
+    priority: 2,
+    title: '食べない・隠れる・下痢が続くときは受診を検討する',
+    body: 'ストレス性の体調不良は数日遅れて出る。開いている動物病院を自治体や獣医師会の情報で確認しておく。',
+  },
+  {
+    id: 'pe-caution-02',
+    kind: 'caution',
+    situations: [],
+    households: ['pet'],
+    priority: 3,
+    title: '避難所のペット受け入れ条件は場所ごとに違う',
+    body: '同行避難（一緒に避難する）は可能でも、同室で過ごせるとは限らない。ケージに慣れさせておくことが、結果的に一緒にいられる条件になる。',
+  },
+
+  /* =========================================================================
+     持病・医療機器
+     ====================================================================== */
+  {
+    id: 'me-now-01',
+    kind: 'now',
+    situations: ['blackout'],
+    households: ['medical'],
+    priority: 1,
+    title: '在宅酸素・人工呼吸器・吸引器の電源確保を最優先で行う',
+    body: '内蔵バッテリーの残り時間を確認し、医療機器の業者と主治医の緊急連絡先にすぐ連絡する。自動車のシガーソケットから給電できる機種もある。手順書がある場合はそれに従う。',
+  },
+  {
+    id: 'me-now-02',
+    kind: 'now',
+    situations: [],
+    households: ['medical'],
+    priority: 1,
+    title: '常用薬の残り日数を数える。1週間を切ったら相談する',
+    body: '災害時は処方箋なしでも一定期間分を受け取れる特例が取られることがある。お薬手帳（写真でも可）を持って、開いている薬局か避難所の医療班に相談する。',
+  },
+  {
+    id: 'me-now-03',
+    kind: 'now',
+    situations: ['blackout'],
+    households: ['medical'],
+    priority: 1,
+    title: '冷蔵が必要な薬は、保冷剤とクーラーボックスに移す',
+    body: 'インスリンや一部の注射薬は温度管理が必要。凍らせてはいけない薬もあるため、保冷剤が直接触れないようタオルで包む。',
+  },
+  {
+    id: 'me-hack-01',
+    kind: 'hack',
+    situations: [],
+    households: ['medical'],
+    priority: 2,
+    title: '病名・薬・かかりつけ医を1枚の紙にまとめて持ち歩く',
+    body: '意識がないときでも医療者に伝わる。このアプリの「緊急メモ」に入れておけば、通信がなくても画面で見せられる。',
+  },
+  {
+    id: 'me-hack-02',
+    kind: 'hack',
+    situations: [],
+    households: ['medical'],
+    priority: 2,
+    title: '透析・定期通院は、受け入れ先の情報を早めに取る',
+    body: '通っている施設が被災していても、他の施設が受け入れることがある。自治体や都道府県の災害医療の窓口で確認する。',
+  },
+  {
+    id: 'me-caution-01',
+    kind: 'caution',
+    situations: [],
+    households: ['medical'],
+    priority: 1,
+    title: '自己判断で薬を減らしたり止めたりしない',
+    body: '残りが少ないときほど「節約」したくなるが、中断で急激に悪化する薬がある。減らす前に必ず医療者に相談する。',
+  },
+
+  /* =========================================================================
+     妊娠中
+     ====================================================================== */
+  {
+    id: 'pr-now-01',
+    kind: 'now',
+    situations: [],
+    households: ['pregnant'],
+    priority: 1,
+    title: '母子健康手帳と診察券を身につけておく',
+    body: '受診先が変わっても、経過が分かれば適切な処置につながる。写真をスマホにも保存しておく。',
+  },
+  {
+    id: 'pr-now-02',
+    kind: 'now',
+    situations: [],
+    households: ['pregnant'],
+    priority: 1,
+    title: 'かかりつけ産科の状況と、受け入れ先を確認する',
+    body: '被災で分娩を扱えなくなることがある。早い段階で連絡を取り、代替の受け入れ先を聞いておく。',
+  },
+  {
+    id: 'pr-now-03',
+    kind: 'now',
+    situations: ['water'],
+    households: ['pregnant'],
+    priority: 1,
+    title: '水分と休息を最優先にする。我慢が最も危険',
+    body: '脱水と疲労は切迫早産の要因になる。トイレを気にして水を控えることのないよう、簡易トイレを先に整える。',
+  },
+  {
+    id: 'pr-caution-01',
+    kind: 'caution',
+    situations: [],
+    households: ['pregnant'],
+    priority: 1,
+    title: '破水・出血・強い張り・激しい腹痛は、遠慮せず救急へ',
+    body: '「みんな大変だから」と我慢しない。119番は圏外表示でもつながることがある。近隣の人にも状況を伝えて助けを求める。',
+  },
+  {
+    id: 'pr-caution-02',
+    kind: 'caution',
+    situations: [],
+    households: ['pregnant'],
+    priority: 2,
+    title: '長時間同じ姿勢を避け、足を動かす',
+    body: '妊娠中は血栓ができやすい。車中泊は特にリスクが高いため、こまめに姿勢を変え、水分を取る。',
+  },
+];
+
+/**
+ * 選択された状況・世帯条件に対して、表示すべき項目を優先度順に返す。
+ *
+ * 並び順のルール（上から順に適用）
+ *   1. combo（複数の状況が重なったとき専用の項目）を最優先
+ *   2. priority の小さい順
+ *   3. 世帯条件つきの項目を、同じ priority の中では前に出す
+ *      （その人にしか当てはまらない情報は埋もれやすいため）
+ *
+ * @param {string[]} situations 選択中の状況 id
+ * @param {string[]} households 選択中の世帯条件 id
+ * @returns {object[]} 表示対象の項目
+ */
+function filterItems(situations, households) {
+  const sit = new Set(situations);
+  const hh = new Set(households);
+
+  return ITEMS.filter((item) => {
+    // combo は指定された状況が「すべて」選ばれているときだけ表示する
+    if (item.combo) {
+      return item.combo.every((id) => sit.has(id));
+    }
+
+    const needsSituation = item.situations.length > 0;
+    const needsHousehold = item.households.length > 0;
+
+    const situationOk = needsSituation && item.situations.some((id) => sit.has(id));
+    const householdOk = needsHousehold && item.households.some((id) => hh.has(id));
+
+    if (needsSituation && needsHousehold) return situationOk && householdOk;
+    if (needsSituation) return situationOk;
+    if (needsHousehold) return householdOk;
+    return false;
+  }).sort((a, b) => {
+    const comboDiff = (b.combo ? 1 : 0) - (a.combo ? 1 : 0);
+    if (comboDiff !== 0) return comboDiff;
+
+    if (a.priority !== b.priority) return a.priority - b.priority;
+
+    const hhDiff = (b.households.length ? 1 : 0) - (a.households.length ? 1 : 0);
+    if (hhDiff !== 0) return hhDiff;
+
+    return a.id.localeCompare(b.id);
+  });
+}
+
+/**
+ * ライフハック集ページ用。カテゴリ（状況 id もしくは世帯条件 id）で全件から抜き出す。
+ * 絞り込みの状態に関係なく、そのカテゴリの内容をすべて返す。
+ *
+ * @param {string} categoryId 状況 id または世帯条件 id
+ */
+function itemsByCategory(categoryId) {
+  return ITEMS.filter(
+    (item) => item.situations.includes(categoryId) || item.households.includes(categoryId)
+  ).sort((a, b) => {
+    if (a.priority !== b.priority) return a.priority - b.priority;
+    return a.id.localeCompare(b.id);
+  });
+}
+
+/* ===== assets/js/data/links.js ===== */
+/**
+ * ライフラインサポート — 公的機関・ライフライン事業者リンク集
+ * -----------------------------------------------------------------------------
+ * ■ このファイルの方針
+ *   ・リンク先は原則として「変わりにくいトップページ」を指す。
+ *     災害時に深い階層のURLへ直接飛ばすと、リンク切れで行き止まりになるため。
+ *   ・すべてのカードに検索用のキーワード（search）を持たせ、
+ *     万一URLが変わっていても検索で辿り着けるようにする。
+ *   ・外部リンクは通信が必要。オフライン時はその旨をUIで明示する。
+ *
+ * ■ データ構造
+ *   id        … 一意
+ *   category  … CATEGORIES の id
+ *   name      … 機関・事業者名
+ *   url       … リンク先
+ *   note      … 何が見られるか（1行）
+ *   situations… ホーム画面で「困ったとき」に出す対象の状況 id
+ *   power     … 一般送配電事業者の識別子（都道府県から自動選択するために使う）
+ *   search    … 検索フォールバックのキーワード
+ *   tel       … 電話番号リンク（別タブで開かず、そのまま発信させる）
+ *   localSearch … 市区町村名と組み合わせて検索URLを作る（url が空のとき）
+ *   prefSearch  … 都道府県名と組み合わせて検索URLを作る（url が空のとき）
+ *   localName   … 地域が設定されているときの表示名（「熊本市東区の水道局」など）
+ */
+
+const CATEGORIES = [
+  { id: 'emergency', label: '緊急', icon: '🚨', lead: '命に関わるときは迷わず連絡する。' },
+  { id: 'quake', label: '地震・気象', icon: '🌏', lead: '揺れ・津波・天気の一次情報。' },
+  { id: 'evacuation', label: '避難・自治体', icon: '🏢', lead: '避難所・給水・罹災証明はすべて自治体が窓口。' },
+  { id: 'power', label: '停電（電力）', icon: '⚡', lead: '停電情報は「一般送配電事業者」が発表する。' },
+  { id: 'water', label: '水道', icon: '💧', lead: '断水と給水は市区町村の水道局が窓口。' },
+  { id: 'gas', label: 'ガス', icon: '🔥', lead: '都市ガスは供給会社、プロパンは販売店へ。' },
+  { id: 'comms', label: '通信・安否確認', icon: '📱', lead: '通信障害情報と、安否を残す仕組み。' },
+  { id: 'traffic', label: '交通・道路', icon: '🚗', lead: '通行止め・鉄道の運行状況。' },
+  { id: 'medical', label: '医療・健康', icon: '🏥', lead: '受診先とこころのケア。' },
+  { id: 'support', label: '生活再建・支援', icon: '📋', lead: '罹災証明、支援金、住まいの再建。' },
+  { id: 'watchout', label: '悪質商法への注意', icon: '🛡', lead: '災害後は必ず便乗商法が起きる。' },
+  { id: 'family', label: 'こども・高齢者・ペット', icon: '👨‍👩‍👧', lead: '配慮が必要な人のための情報。' },
+  { id: 'prepare', label: '平時の備え', icon: '🎒', lead: '落ち着いたら、次に備える。' },
+];
+
+const LINKS = [
+  /* ---------------------------------------------------------------- 緊急 */
+  {
+    id: 'em-119',
+    category: 'emergency',
+    name: '119番（消防・救急）',
+    url: 'tel:119',
+    note: '火事・けが・急病。携帯が圏外表示でも、他社回線につながって発信できることがある。',
+    tel: true,
+    search: '消防庁 119',
+  },
+  {
+    id: 'em-110',
+    category: 'emergency',
+    name: '110番（警察）',
+    url: 'tel:110',
+    note: '事件・事故・行方不明。',
+    tel: true,
+    search: '警察庁 110',
+  },
+  {
+    id: 'em-118',
+    category: 'emergency',
+    name: '118番（海上保安庁）',
+    url: 'tel:118',
+    note: '海での事故・油の流出など。',
+    tel: true,
+    search: '海上保安庁 118',
+  },
+  {
+    id: 'em-7119',
+    category: 'emergency',
+    name: '#7119（救急安心センター）',
+    url: 'tel:7119',
+    note: '救急車を呼ぶか迷ったときの相談窓口。実施していない地域がある。',
+    tel: true,
+    search: '救急安心センター #7119',
+  },
+  {
+    id: 'em-8000',
+    category: 'emergency',
+    name: '#8000（こども医療でんわ相談）',
+    url: 'tel:8000',
+    note: '夜間・休日に子どもの症状を相談できる。全国共通。',
+    tel: true,
+    search: 'こども医療でんわ相談 #8000',
+  },
+  {
+    id: 'em-fdma',
+    category: 'emergency',
+    name: '総務省消防庁',
+    url: 'https://www.fdma.go.jp/',
+    note: '災害情報と被害状況の発表。',
+    search: '総務省消防庁',
+  },
+
+  /* ------------------------------------------------------- 地震・気象 */
+  {
+    id: 'qk-jma',
+    category: 'quake',
+    name: '気象庁',
+    url: 'https://www.jma.go.jp/',
+    note: '地震・津波・噴火・気象警報の一次情報。まずここを見る。',
+    situations: ['blackout', 'water', 'comms', 'gas', 'toilet', 'food'],
+    search: '気象庁 地震情報',
+  },
+  {
+    id: 'qk-jma-quake',
+    category: 'quake',
+    name: '気象庁 防災情報（地震・津波マップ）',
+    url: 'https://www.jma.go.jp/bosai/map.html',
+    note: '震度・震源・津波の状況を地図で確認できる。',
+    search: '気象庁 防災情報 地震',
+  },
+  {
+    id: 'qk-jma-kikikuru',
+    category: 'quake',
+    name: '気象庁 キキクル（危険度分布）',
+    url: 'https://www.jma.go.jp/bosai/risk/',
+    note: '土砂災害・浸水・洪水の危険度を色で表示。余震後の雨で二次災害が起きやすい。',
+    search: '気象庁 キキクル',
+  },
+  {
+    id: 'qk-bousai',
+    category: 'quake',
+    name: '内閣府 防災情報のページ',
+    url: 'https://www.bousai.go.jp/',
+    note: '政府の災害対応と、被災者支援制度のまとめ。',
+    search: '内閣府 防災情報のページ',
+  },
+  {
+    id: 'qk-nhk',
+    category: 'quake',
+    name: 'NHK ニュース・防災',
+    url: 'https://www3.nhk.or.jp/news/',
+    note: '報道と、地域ごとのライフライン情報。',
+    search: 'NHK ニュース 防災',
+  },
+  {
+    id: 'qk-yahoo',
+    category: 'quake',
+    name: 'Yahoo! 防災速報',
+    url: 'https://emg.yahoo.co.jp/',
+    note: '地域を登録すると通知が届く。避難情報・停電・断水の集約も早い。',
+    search: 'Yahoo 防災速報',
+  },
+
+  /* ------------------------------------------------ 避難・自治体 */
+  {
+    id: 'ev-city',
+    category: 'evacuation',
+    name: 'お住まいの市区町村',
+    url: '',
+    note: '避難所の開設状況、給水所、罹災証明、ごみの出し方。災害時にいちばん使う窓口。「地域を設定」すると検索リンクになる。',
+    localSearch: '災害 情報',
+    localName: '災害情報・避難所',
+    situations: ['blackout', 'water', 'comms', 'gas', 'toilet', 'food'],
+    search: '市区町村 災害情報',
+  },
+  {
+    id: 'ev-pref',
+    category: 'evacuation',
+    name: 'お住まいの都道府県',
+    url: '',
+    note: '広域の被害状況、医療機関の稼働、支援制度。市区町村より広い情報が集まる。',
+    prefSearch: '災害 情報',
+    localName: '災害情報（都道府県）',
+    search: '都道府県 災害情報',
+  },
+  {
+    id: 'ev-hinan',
+    category: 'evacuation',
+    name: '国土地理院 ハザードマップポータルサイト',
+    url: 'https://disaportal.gsi.go.jp/',
+    note: '自宅周辺の浸水・土砂災害の危険度と、指定避難所の位置。',
+    search: 'ハザードマップポータルサイト',
+  },
+  {
+    id: 'ev-jrc',
+    category: 'evacuation',
+    name: '日本赤十字社',
+    url: 'https://www.jrc.or.jp/',
+    note: '救護活動と義援金の受付。',
+    search: '日本赤十字社',
+  },
+  {
+    id: 'ev-jvoad',
+    category: 'evacuation',
+    name: '全国災害ボランティア支援団体ネットワーク（JVOAD）',
+    url: 'https://jvoad.jp/',
+    note: '支援団体の動きと、支援を受けたいときの相談先。',
+    search: 'JVOAD 全国災害ボランティア支援団体ネットワーク',
+  },
+
+  /* -------------------------------------------------------- 停電 */
+  {
+    id: 'pw-hepco',
+    category: 'power',
+    name: '北海道電力ネットワーク',
+    url: 'https://www.hepco.co.jp/network/',
+    note: '北海道の停電情報・復旧見通し。',
+    situations: ['blackout'],
+    power: 'hepco',
+    search: '北海道電力ネットワーク 停電情報',
+  },
+  {
+    id: 'pw-tohoku',
+    category: 'power',
+    name: '東北電力ネットワーク',
+    url: 'https://nw.tohoku-epco.co.jp/',
+    note: '東北6県と新潟県の停電情報。',
+    situations: ['blackout'],
+    power: 'tohoku',
+    search: '東北電力ネットワーク 停電情報',
+  },
+  {
+    id: 'pw-tepco',
+    category: 'power',
+    name: '東京電力パワーグリッド 停電情報',
+    url: 'https://teideninfo.tepco.co.jp/',
+    note: '関東1都6県ほかの停電情報。市区町村単位で確認できる。',
+    situations: ['blackout'],
+    power: 'tepco',
+    search: '東京電力パワーグリッド 停電情報',
+  },
+  {
+    id: 'pw-chuden',
+    category: 'power',
+    name: '中部電力パワーグリッド',
+    url: 'https://powergrid.chuden.co.jp/',
+    note: '中部エリアの停電情報。',
+    situations: ['blackout'],
+    power: 'chuden',
+    search: '中部電力パワーグリッド 停電情報',
+  },
+  {
+    id: 'pw-rikuden',
+    category: 'power',
+    name: '北陸電力送配電',
+    url: 'https://www.rikuden.co.jp/nw/',
+    note: '富山・石川・福井の停電情報。',
+    situations: ['blackout'],
+    power: 'rikuden',
+    search: '北陸電力送配電 停電情報',
+  },
+  {
+    id: 'pw-kansai',
+    category: 'power',
+    name: '関西電力送配電',
+    url: 'https://www.kansai-td.co.jp/',
+    note: '関西エリアの停電情報。',
+    situations: ['blackout'],
+    power: 'kansai',
+    search: '関西電力送配電 停電情報',
+  },
+  {
+    id: 'pw-energia',
+    category: 'power',
+    name: '中国電力ネットワーク',
+    url: 'https://www.energia.co.jp/nw/',
+    note: '中国5県の停電情報。',
+    situations: ['blackout'],
+    power: 'energia',
+    search: '中国電力ネットワーク 停電情報',
+  },
+  {
+    id: 'pw-yonden',
+    category: 'power',
+    name: '四国電力送配電',
+    url: 'https://www.yonden.co.jp/nw/',
+    note: '四国4県の停電情報。',
+    situations: ['blackout'],
+    power: 'yonden',
+    search: '四国電力送配電 停電情報',
+  },
+  {
+    id: 'pw-kyuden',
+    category: 'power',
+    name: '九州電力送配電',
+    url: 'https://www.kyuden.co.jp/',
+    note: '九州7県の停電情報。',
+    situations: ['blackout'],
+    power: 'kyuden',
+    search: '九州電力送配電 停電情報',
+  },
+  {
+    id: 'pw-okiden',
+    category: 'power',
+    name: '沖縄電力',
+    url: 'https://www.okiden.co.jp/',
+    note: '沖縄県の停電情報。',
+    situations: ['blackout'],
+    power: 'okiden',
+    search: '沖縄電力 停電情報',
+  },
+  {
+    id: 'pw-occto',
+    category: 'power',
+    name: '電力広域的運営推進機関（OCCTO）',
+    url: 'https://www.occto.or.jp/',
+    note: '全国の需給状況。計画停電が検討される局面で参照される。',
+    search: '電力広域的運営推進機関',
+  },
+
+  /* -------------------------------------------------------- 水道 */
+  {
+    id: 'wt-city',
+    category: 'water',
+    name: 'お住まいの市区町村の水道局',
+    url: '',
+    note: '断水の範囲・復旧見通し・給水所の場所と時間。水道は市区町村ごとの運営。',
+    localSearch: '水道局 断水 給水',
+    localName: '水道局（断水・給水）',
+    situations: ['water'],
+    search: '水道局 断水情報',
+  },
+  {
+    id: 'wt-jwwa',
+    category: 'water',
+    name: '公益社団法人 日本水道協会',
+    url: 'https://www.jwwa.or.jp/',
+    note: '全国の水道事業者の相互応援。広域の断水状況の目安になる。',
+    search: '日本水道協会',
+  },
+  {
+    id: 'wt-mlit',
+    category: 'water',
+    name: '国土交通省（水管理・国土保全）',
+    url: 'https://www.mlit.go.jp/',
+    note: '水道行政の所管。上下水道の被害と復旧の全国状況。',
+    search: '国土交通省 上下水道',
+  },
+
+  /* -------------------------------------------------------- ガス */
+  {
+    id: 'gs-local',
+    category: 'gas',
+    name: 'ご契約中のガス会社',
+    url: '',
+    note: 'ガス臭・復旧見通し・マイコンメーターの復帰方法。検針票や請求書に連絡先がある。',
+    localSearch: 'ガス 供給 復旧',
+    localName: 'ガス会社',
+    situations: ['gas'],
+    search: '都市ガス 供給状況',
+  },
+  {
+    id: 'gs-jga',
+    category: 'gas',
+    name: '一般社団法人 日本ガス協会',
+    url: 'https://www.gas.or.jp/',
+    note: '全国の都市ガス事業者の一覧と、災害時の供給状況。',
+    situations: ['gas'],
+    search: '日本ガス協会',
+  },
+  {
+    id: 'gs-lpg',
+    category: 'gas',
+    name: '一般社団法人 全国LPガス協会',
+    url: 'https://www.japanlpg.or.jp/',
+    note: 'プロパンガスの取り扱いと、災害時の相談先。',
+    situations: ['gas'],
+    search: '全国LPガス協会',
+  },
+  {
+    id: 'gs-tokyogas',
+    category: 'gas',
+    name: '東京ガス',
+    url: 'https://www.tokyo-gas.co.jp/',
+    note: '関東エリアの都市ガス。',
+    search: '東京ガス 供給状況',
+  },
+  {
+    id: 'gs-osakagas',
+    category: 'gas',
+    name: '大阪ガス',
+    url: 'https://www.osakagas.co.jp/',
+    note: '近畿エリアの都市ガス。',
+    search: '大阪ガス 供給状況',
+  },
+  {
+    id: 'gs-tohogas',
+    category: 'gas',
+    name: '東邦ガス',
+    url: 'https://www.tohogas.co.jp/',
+    note: '中部エリアの都市ガス。',
+    search: '東邦ガス 供給状況',
+  },
+  {
+    id: 'gs-saibugas',
+    category: 'gas',
+    name: '西部ガス',
+    url: 'https://www.saibugas.co.jp/',
+    note: '九州エリアの都市ガス。',
+    search: '西部ガス 供給状況',
+  },
+
+  /* ------------------------------------------- 通信・安否確認 */
+  {
+    id: 'cm-171',
+    category: 'comms',
+    name: '災害用伝言ダイヤル 171',
+    url: 'tel:171',
+    note: '「171」に電話し、案内に従って自宅の電話番号で録音・再生する。公衆電話からも使える。',
+    tel: true,
+    situations: ['comms'],
+    search: '災害用伝言ダイヤル 171 使い方',
+  },
+  {
+    id: 'cm-web171',
+    category: 'comms',
+    name: '災害用伝言板 web171',
+    url: 'https://www.web171.jp/',
+    note: '電話番号をキーに、文字で安否を残せる。家族で「この番号に残す」と決めておく。',
+    situations: ['comms'],
+    search: 'web171 災害用伝言板',
+  },
+  {
+    id: 'cm-docomo',
+    category: 'comms',
+    name: 'NTTドコモ',
+    url: 'https://www.docomo.ne.jp/',
+    note: '通信障害情報と災害用伝言板。',
+    situations: ['comms'],
+    search: 'ドコモ 障害情報',
+  },
+  {
+    id: 'cm-au',
+    category: 'comms',
+    name: 'au（KDDI）',
+    url: 'https://www.au.com/',
+    note: '通信障害情報と災害用伝言板。',
+    situations: ['comms'],
+    search: 'au 障害情報',
+  },
+  {
+    id: 'cm-softbank',
+    category: 'comms',
+    name: 'ソフトバンク',
+    url: 'https://www.softbank.jp/',
+    note: '通信障害情報と災害用伝言板。',
+    situations: ['comms'],
+    search: 'ソフトバンク 障害情報',
+  },
+  {
+    id: 'cm-rakuten',
+    category: 'comms',
+    name: '楽天モバイル',
+    url: 'https://network.mobile.rakuten.co.jp/',
+    note: '通信障害情報。',
+    situations: ['comms'],
+    search: '楽天モバイル 障害情報',
+  },
+  {
+    id: 'cm-ntte',
+    category: 'comms',
+    name: 'NTT東日本',
+    url: 'https://www.ntt-east.co.jp/',
+    note: '固定電話・光回線の障害情報。東日本エリア。',
+    situations: ['comms'],
+    search: 'NTT東日本 故障情報',
+  },
+  {
+    id: 'cm-nttw',
+    category: 'comms',
+    name: 'NTT西日本',
+    url: 'https://www.ntt-west.co.jp/',
+    note: '固定電話・光回線の障害情報。西日本エリア。',
+    situations: ['comms'],
+    search: 'NTT西日本 故障情報',
+  },
+  {
+    id: 'cm-wlan',
+    category: 'comms',
+    name: '00000JAPAN（無線LANビジネス推進連絡会）',
+    url: 'https://www.wlan-business.org/',
+    note: '災害時に開放される無料Wi-Fi。暗号化されていないため、ID・パスワード・決済情報は入力しない。',
+    situations: ['comms'],
+    search: '00000JAPAN 災害時無料Wi-Fi',
+  },
+  {
+    id: 'cm-soumu',
+    category: 'comms',
+    name: '総務省',
+    url: 'https://www.soumu.go.jp/',
+    note: '通信の確保に関する発表、被災地への支援措置。',
+    search: '総務省 災害 通信',
+  },
+
+  /* ------------------------------------------------- 交通・道路 */
+  {
+    id: 'tr-mlit',
+    category: 'traffic',
+    name: '国土交通省',
+    url: 'https://www.mlit.go.jp/',
+    note: '道路・鉄道・港湾の被害と復旧の全国状況。',
+    search: '国土交通省 災害情報',
+  },
+  {
+    id: 'tr-jartic',
+    category: 'traffic',
+    name: '日本道路交通情報センター（JARTIC）',
+    url: 'https://www.jartic.or.jp/',
+    note: '全国の通行止め・渋滞情報。',
+    search: '日本道路交通情報センター',
+  },
+  {
+    id: 'tr-nexco-e',
+    category: 'traffic',
+    name: 'NEXCO 東日本',
+    url: 'https://www.e-nexco.co.jp/',
+    note: '北海道・東北・関東・新潟の高速道路。',
+    search: 'NEXCO東日本 通行止め',
+  },
+  {
+    id: 'tr-nexco-c',
+    category: 'traffic',
+    name: 'NEXCO 中日本',
+    url: 'https://www.c-nexco.co.jp/',
+    note: '中部・東海・北陸の高速道路。',
+    search: 'NEXCO中日本 通行止め',
+  },
+  {
+    id: 'tr-nexco-w',
+    category: 'traffic',
+    name: 'NEXCO 西日本',
+    url: 'https://www.w-nexco.co.jp/',
+    note: '近畿・中国・四国・九州の高速道路。',
+    search: 'NEXCO西日本 通行止め',
+  },
+  {
+    id: 'tr-rail',
+    category: 'traffic',
+    name: '鉄道の運行情報（各社）',
+    url: '',
+    note: '利用する路線の運行情報。「地域を設定」すると検索リンクになる。',
+    prefSearch: '鉄道 運行情報',
+    localName: '鉄道の運行情報',
+    search: '鉄道 運行情報',
+  },
+
+  /* ------------------------------------------------- 医療・健康 */
+  {
+    id: 'md-mhlw',
+    category: 'medical',
+    name: '厚生労働省',
+    url: 'https://www.mhlw.go.jp/',
+    note: '医薬品の特例、医療機関の稼働、避難生活の健康管理。',
+    search: '厚生労働省 災害',
+  },
+  {
+    id: 'md-emis',
+    category: 'medical',
+    name: '広域災害救急医療情報システム（EMIS）',
+    url: 'https://www.wds.emis.go.jp/',
+    note: '被災地の医療機関の稼働状況。',
+    search: 'EMIS 広域災害救急医療情報システム',
+  },
+  {
+    id: 'md-kokoro',
+    category: 'medical',
+    name: '厚生労働省「まもろうよ こころ」',
+    url: 'https://www.mhlw.go.jp/mamorouyokokoro/',
+    note: '眠れない・不安が強いときの相談窓口一覧。被災後しばらくしてから出る不調にも。',
+    search: 'まもろうよこころ 相談窓口',
+  },
+  {
+    id: 'md-pharmacy',
+    category: 'medical',
+    name: '日本薬剤師会',
+    url: 'https://www.nichiyaku.or.jp/',
+    note: '被災地での調剤対応、お薬手帳の活用。',
+    search: '日本薬剤師会 災害',
+  },
+
+  /* --------------------------------------------- 生活再建・支援 */
+  {
+    id: 'sp-risai',
+    category: 'support',
+    name: '罹災証明書の申請（市区町村）',
+    url: '',
+    note: '各種支援の入口になる書類。申請前に、被害状況を写真で撮っておく（全景と被害箇所を複数枚）。',
+    localSearch: '罹災証明書',
+    localName: '罹災証明書の申請',
+    search: '罹災証明書 申請',
+  },
+  {
+    id: 'sp-bousai-shien',
+    category: 'support',
+    name: '内閣府 被災者支援に関する各種制度',
+    url: 'https://www.bousai.go.jp/',
+    note: '被災者生活再建支援金、災害弔慰金、税・保険料の減免などの一覧。',
+    search: '内閣府 被災者支援 制度',
+  },
+  {
+    id: 'sp-jhf',
+    category: 'support',
+    name: '住宅金融支援機構',
+    url: 'https://www.jhf.go.jp/',
+    note: '災害復興住宅融資、返済の相談。',
+    search: '住宅金融支援機構 災害復興',
+  },
+  {
+    id: 'sp-zenginkyo',
+    category: 'support',
+    name: '一般社団法人 全国銀行協会',
+    url: 'https://www.zenginkyo.or.jp/',
+    note: '通帳・印鑑・キャッシュカードを失ったときの引き出し、ローンの相談。',
+    search: '全国銀行協会 災害 預金',
+  },
+  {
+    id: 'sp-sonpo',
+    category: 'support',
+    name: '日本損害保険協会',
+    url: 'https://www.sonpo.or.jp/',
+    note: '地震保険の請求、契約内容が分からないときの照会制度。',
+    search: '日本損害保険協会 地震保険 照会',
+  },
+  {
+    id: 'sp-nta',
+    category: 'support',
+    name: '国税庁',
+    url: 'https://www.nta.go.jp/',
+    note: '雑損控除・災害減免法による所得税の軽減、申告期限の延長。',
+    search: '国税庁 災害 雑損控除',
+  },
+
+  /* ------------------------------------------- 悪質商法への注意 */
+  {
+    id: 'wo-188',
+    category: 'watchout',
+    name: '消費者ホットライン 188（いやや）',
+    url: 'tel:188',
+    note: '「屋根を直します」「保険金が出ます」などの訪問販売に迷ったら、契約前に電話する。',
+    tel: true,
+    search: '消費者ホットライン 188',
+  },
+  {
+    id: 'wo-caa',
+    category: 'watchout',
+    name: '消費者庁',
+    url: 'https://www.caa.go.jp/',
+    note: '災害に便乗した悪質商法への注意喚起。',
+    search: '消費者庁 災害 便乗商法',
+  },
+  {
+    id: 'wo-kokusen',
+    category: 'watchout',
+    name: '国民生活センター',
+    url: 'https://www.kokusen.go.jp/',
+    note: '実際に起きた相談事例。手口を知っておくと防げる。',
+    search: '国民生活センター 災害 修理',
+  },
+  {
+    id: 'wo-npa',
+    category: 'watchout',
+    name: '警察庁',
+    url: 'https://www.npa.go.jp/',
+    note: '義援金詐欺・空き巣への注意喚起。',
+    search: '警察庁 災害 詐欺 注意',
+  },
+
+  /* ------------------------------- こども・高齢者・ペット */
+  {
+    id: 'fm-env-pet',
+    category: 'family',
+    name: '環境省 動物の愛護と適切な管理',
+    url: 'https://www.env.go.jp/nature/dobutsu/aigo/',
+    note: 'ペットの災害対策、同行避難の考え方。',
+    search: '環境省 ペット 災害対策 同行避難',
+  },
+  {
+    id: 'fm-vet',
+    category: 'family',
+    name: '公益社団法人 日本獣医師会',
+    url: 'https://www.nichiju.or.jp/',
+    note: '被災地での動物医療の支援情報。',
+    search: '日本獣医師会 災害',
+  },
+  {
+    id: 'fm-cfa',
+    category: 'family',
+    name: 'こども家庭庁',
+    url: 'https://www.cfa.go.jp/',
+    note: '子育て家庭への支援、保育・学校の再開情報。',
+    search: 'こども家庭庁 災害',
+  },
+  {
+    id: 'fm-mext',
+    category: 'family',
+    name: '文部科学省',
+    url: 'https://www.mext.go.jp/',
+    note: '学校の再開状況、就学支援。',
+    search: '文部科学省 災害 学校',
+  },
+  {
+    id: 'fm-care',
+    category: 'family',
+    name: '地域包括支援センター（市区町村）',
+    url: '',
+    note: '高齢者の介護・生活の相談窓口。ヘルパーやデイサービスの再開状況も分かる。',
+    localSearch: '地域包括支援センター',
+    localName: '地域包括支援センター',
+    search: '地域包括支援センター',
+  },
+
+  /* ------------------------------------------------- 平時の備え */
+  {
+    id: 'pr-govonline',
+    category: 'prepare',
+    name: '政府広報オンライン',
+    url: 'https://www.gov-online.go.jp/',
+    note: '備蓄・家具固定・避難行動の解説。読みやすくまとまっている。',
+    search: '政府広報オンライン 防災',
+  },
+  {
+    id: 'pr-bichiku',
+    category: 'prepare',
+    name: '東京備蓄ナビ（東京都）',
+    url: 'https://www.bichiku.metro.tokyo.lg.jp/',
+    note: '家族構成を入れると必要な備蓄量を計算してくれる。東京都以外の人にも使える。',
+    search: '東京備蓄ナビ',
+  },
+  {
+    id: 'pr-tokyo-bousai',
+    category: 'prepare',
+    name: '東京都防災ホームページ',
+    url: 'https://www.bousai.metro.tokyo.lg.jp/',
+    note: '「東京防災」など、実践的な冊子が無料で読める。',
+    search: '東京都防災ホームページ 東京防災',
+  },
+  {
+    id: 'pr-jishin',
+    category: 'prepare',
+    name: '地震調査研究推進本部',
+    url: 'https://www.jishin.go.jp/',
+    note: '自宅周辺で想定される地震と、その確率。',
+    search: '地震調査研究推進本部',
+  },
+];
+
+/**
+ * ホーム画面の「困ったとき」に出すリンクを状況から絞り込む。
+ * 電力会社は、地域設定があればその1社だけに絞る（選択肢が多いと迷うため）。
+ *
+ * @param {string[]} situations 選択中の状況 id
+ * @param {string} powerId 都道府県から決まった一般送配電事業者の id（未設定なら空文字）
+ */
+function linksForSituations(situations, powerId) {
+  const sit = new Set(situations);
+
+  return LINKS.filter((link) => {
+    if (!link.situations || !link.situations.some((id) => sit.has(id))) return false;
+    // 電力会社は地域が設定されていれば該当1社のみ、未設定なら全社を出す
+    if (link.power && powerId) return link.power === powerId;
+    return true;
+  });
+}
+
+/** カテゴリ id からリンクを取り出す */
+const linksByCategory = (categoryId) => LINKS.filter((l) => l.category === categoryId);
+
+/* ===== assets/js/modules/state.js ===== */
+/**
+ * ライフラインサポート — 状態管理
+ * -----------------------------------------------------------------------------
+ * 利用者の選択（状況・世帯条件・地域・チェック済み項目・緊急メモ）を
+ * localStorage に保存する。サーバーには一切送信しない。
+ *
+ * ■ 設計方針
+ *   ・localStorage が使えない環境（プライベートブラウズ等）でも
+ *     アプリが落ちないよう、メモリ上の保存にフォールバックする。
+ *   ・保存キーにはバージョンを含める。構造を変えるときはキーを上げ、
+ *     古いデータを読み違えないようにする。
+ *   ・購読（subscribe）で画面を更新する。DOM の更新はここでは行わない。
+ */
+
+const STORAGE_KEY = 'lifeline-support.v1';
+
+/** 初期状態。保存データに欠けたキーがあってもここで補われる。 */
+const DEFAULT_STATE = {
+  situations: [],   // 選択中の状況 id
+  households: [],   // 選択中の世帯条件 id
+  prefecture: '',   // 都道府県 id
+  city: '',         // 市区町村名（自由入力・検索リンクの生成に使う）
+  done: {},         // { [itemId]: true } チェック済みの「今すぐやること」
+  theme: 'auto',    // 'auto' | 'light' | 'dark'
+  saver: false,     // 省電力表示モード
+  memo: {
+    contacts: '',   // 家族・親族の連絡先
+    meetup: '',     // 落ち合う場所
+    medical: '',    // 持病・常用薬・かかりつけ医
+    other: '',      // その他（保険証番号のメモなど）
+    updatedAt: '',
+  },
+};
+
+/** localStorage が使えないときの代替。ページを閉じるまでは保持される。 */
+let memoryFallback = null;
+
+const canUseStorage = (() => {
+  try {
+    const probe = '__lls_probe__';
+    window.localStorage.setItem(probe, '1');
+    window.localStorage.removeItem(probe);
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
+/** 保存データと初期値をマージする。memo は入れ子なので個別に扱う。 */
+const merge = (saved) => ({
+  ...DEFAULT_STATE,
+  ...saved,
+  memo: { ...DEFAULT_STATE.memo, ...(saved && saved.memo) },
+});
+
+const read = () => {
+  if (!canUseStorage) return merge(memoryFallback);
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return merge(raw ? JSON.parse(raw) : null);
+  } catch {
+    // 壊れたJSONが入っていても初期状態で起動する
+    return merge(null);
+  }
+};
+
+let state = read();
+const listeners = new Set();
+
+const write = () => {
+  if (!canUseStorage) {
+    memoryFallback = state;
+    return;
+  }
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // 容量超過などで保存できなくても、画面の動作は続ける
+    memoryFallback = state;
+  }
+};
+
+/** 現在の状態（読み取り専用のつもりで扱うこと） */
+const getState = () => state;
+
+/** 保存が有効かどうか。UIで「保存されません」と伝えるために使う。 */
+const isPersistent = () => canUseStorage;
+
+/**
+ * 状態を部分更新して保存し、購読者に通知する。
+ * @param {object} patch 上書きしたいキーだけを持つオブジェクト
+ */
+function update(patch) {
+  state = { ...state, ...patch };
+  write();
+  listeners.forEach((fn) => fn(state));
+}
+
+/**
+ * 状態の変化を購読する。
+ * @param {(state: object) => void} fn
+ * @returns {() => void} 購読解除
+ */
+function subscribe(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
+/** 配列型の項目（situations / households）を1件トグルする */
+function toggleInList(key, id) {
+  const list = state[key] || [];
+  const next = list.includes(id) ? list.filter((v) => v !== id) : [...list, id];
+  update({ [key]: next });
+}
+
+/** 「今すぐやること」のチェックを1件トグルする */
+function toggleDone(itemId) {
+  const done = { ...state.done };
+  if (done[itemId]) {
+    delete done[itemId];
+  } else {
+    done[itemId] = true;
+  }
+  update({ done });
+}
+
+/** チェック済みの記録だけを消す（状況の選択は残す） */
+function clearDone() {
+  update({ done: {} });
+}
+
+/** 状況と世帯条件の選択をすべて解除する */
+function clearSelection() {
+  update({ situations: [], households: [] });
+}
+
+/** 緊急メモを保存する。更新日時も一緒に記録する。 */
+function saveMemo(memo) {
+  update({
+    memo: {
+      ...state.memo,
+      ...memo,
+      updatedAt: new Date().toISOString(),
+    },
+  });
+}
+
+/** この端末に保存されているデータをすべて消す */
+function resetAll() {
+  state = merge(null);
+  memoryFallback = null;
+  if (canUseStorage) {
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* 消せなくても初期状態には戻っている */
+    }
+  }
+  listeners.forEach((fn) => fn(state));
+}
+
+/* ===== assets/js/modules/render.js ===== */
+/**
+ * ライフラインサポート — カードの描画
+ * -----------------------------------------------------------------------------
+ * ホーム・ライフハック集・リンク集で同じ見た目のカードを使う。
+ * ここに描画を集約し、各ページは「どのデータを渡すか」だけを決める。
+ */
+
+
+
+/**
+ * 項目カード（対策・ライフハック・注意）を1枚つくる。
+ *
+ * kind が 'now' のときだけチェックボックスを付ける。
+ * 「やった / まだ」が残ることが、混乱している最中のいちばんの助けになる。
+ *
+ * @param {object} item items.js の1件
+ * @param {object} options
+ * @param {boolean} options.done チェック済みか
+ * @param {(id: string) => void} [options.onToggle] チェックの切り替え
+ */
+function itemCard(item, { done = false, onToggle } = {}) {
+  const tags = [
+    ...item.situations.map((id) => bySituationId(id)),
+    ...item.households.map((id) => byHouseholdId(id)),
+  ]
+    .filter(Boolean)
+    .map((t) => el('span', { class: 'c-card__tag', text: `${t.icon} ${t.label}` }));
+
+  const body = [
+    el('span', { class: 'c-card__title', text: item.title }),
+    el('span', { class: 'c-card__text', text: item.body }),
+    tags.length ? el('span', { class: 'c-card__tags' }, tags) : null,
+  ];
+
+  const card = el('li', {
+    class: `c-card c-card--${item.kind}${done ? ' is-done' : ''}`,
+    dataset: { id: item.id, priority: String(item.priority) },
+  });
+
+  if (item.kind === 'now' && typeof onToggle === 'function') {
+    const input = el('input', {
+      type: 'checkbox',
+      class: 'c-card__checkbox',
+      id: `check-${item.id}`,
+      checked: done,
+      onChange: () => onToggle(item.id),
+    });
+    card.append(
+      el('label', { class: 'c-card__inner c-card__inner--check', for: `check-${item.id}` }, [
+        input,
+        el('span', { class: 'c-card__mark', 'aria-hidden': 'true' }),
+        el('span', { class: 'c-card__body' }, body),
+      ])
+    );
+  } else {
+    card.append(el('div', { class: 'c-card__inner' }, [el('div', { class: 'c-card__body' }, body)]));
+  }
+
+  return card;
+}
+
+/**
+ * 外部リンクのカードを1枚つくる。
+ *
+ * URLが変わっていても行き止まりにならないよう、必ず検索リンクを添える。
+ * 地域に依存するリンク（自治体・水道局・ガス会社）は、
+ * 設定された市区町村名から検索URLを組み立てる。
+ *
+ * @param {object} link links.js の1件
+ * @param {object} settings { prefecture, city }
+ */
+function linkCard(link, settings = {}) {
+  const pref = byPrefectureId(settings.prefecture);
+  const city = (settings.city || '').trim();
+  const prefLabel = pref ? pref.label : '';
+
+  // 地域依存リンクの解決
+  let href = link.url;
+  let hint = '';
+
+  if (!href && link.localSearch) {
+    const place = city || prefLabel;
+    if (place) {
+      href = searchUrl(`${place} ${link.localSearch}`);
+    } else {
+      hint = '「地域を設定」しておくと、ここから直接ひらけます';
+    }
+  } else if (!href && link.prefSearch) {
+    if (prefLabel) {
+      href = searchUrl(`${prefLabel} ${link.prefSearch}`);
+    } else {
+      hint = '「地域を設定」しておくと、ここから直接ひらけます';
+    }
+  }
+
+  const isTel = Boolean(link.tel);
+
+  // 地域が設定されていれば「熊本市東区の水道局」のように具体的な名前にする。
+  // 「お住まいの〜」のままでは、誰の窓口なのかが一目で分からないため。
+  const place = city || prefLabel;
+  const nameText =
+    link.localName && place ? `${place}の${link.localName}` : link.name;
+
+  const head = href
+    ? el(
+        'a',
+        {
+          class: `c-link__name${isTel ? ' c-link__name--tel' : ''}`,
+          href,
+          ...(isTel ? {} : { target: '_blank', rel: 'noopener noreferrer' }),
+        },
+        [
+          el('span', { text: nameText }),
+          el('span', {
+            class: 'c-link__mark',
+            'aria-hidden': 'true',
+            text: isTel ? '☎' : '↗',
+          }),
+        ]
+      )
+    : el('span', { class: 'c-link__name c-link__name--disabled', text: nameText });
+
+  const children = [
+    settings.highlight
+      ? el('p', { class: 'c-link__badge', text: '📍 あなたの地域の窓口' })
+      : null,
+    head,
+    el('p', { class: 'c-link__note', text: link.note }),
+  ].filter(Boolean);
+
+  if (hint) {
+    children.push(el('p', { class: 'c-link__hint', text: hint }));
+  }
+
+  if (link.search) {
+    children.push(
+      el(
+        'a',
+        {
+          class: 'c-link__search',
+          href: searchUrl(link.search),
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        },
+        ['🔎 検索して探す']
+      )
+    );
+  }
+
+  return el(
+    'li',
+    { class: `c-link${settings.highlight ? ' is-highlight' : ''}`, dataset: { id: link.id } },
+    children
+  );
+}
+
+/** 見出し（アイコン＋ラベル＋件数）をつくる */
+function sectionHead(icon, label, count, note) {
+  return el('div', { class: 'c-head' }, [
+    el('h2', { class: 'c-head__title' }, [
+      el('span', { class: 'c-head__icon', 'aria-hidden': 'true', text: icon }),
+      el('span', { text: label }),
+      typeof count === 'number' ? el('span', { class: 'c-head__count', text: `${count}件` }) : null,
+    ]),
+    note ? el('p', { class: 'c-head__note', text: note }) : null,
+  ]);
+}
+
+/** 何も選ばれていないときなどに出す空状態 */
+function emptyState(title, text) {
+  return el('div', { class: 'c-empty' }, [
+    el('p', { class: 'c-empty__title', text: title }),
+    el('p', { class: 'c-empty__text', text: text }),
+  ]);
+}
+
+/* ===== assets/js/modules/region-form.js ===== */
+/**
+ * ライフラインサポート — 地域設定フォーム
+ * -----------------------------------------------------------------------------
+ * ホームとリンク集の両方に置くため、共通部品として切り出している。
+ * 都道府県を選ぶと一般送配電事業者が決まり、市区町村名を入れると
+ * 自治体・水道局・ガス会社を探す検索リンクが自動で作られる。
+ *
+ * root を渡すとその中だけを探す。1つの画面に複数の版を並べる
+ * （プレビュー版のような）場合でも取り違えない。
+ */
+
+
+
+
+/**
+ * @param {ParentNode} root 探索範囲
+ * @param {() => void} [onChange] 変更後に呼ばれる（一覧の再描画など）
+ */
+function initRegionForm(root = document, onChange) {
+  const select = qs('[data-prefecture]', root);
+  const cityInput = qs('[data-city]', root);
+  const note = qs('[data-region-note]', root);
+  if (!select || !cityInput) return;
+
+  // 二重初期化で選択肢が倍に増えるのを防ぐ
+  if (select.options.length === 0) {
+    select.append(el('option', { value: '', text: '選択してください' }));
+    PREFECTURES.forEach((pref) => {
+      select.append(el('option', { value: pref.id, text: pref.label }));
+    });
+  }
+
+  const syncNote = () => {
+    if (!note) return;
+    const pref = byPrefectureId(getState().prefecture);
+    note.textContent = pref && pref.note ? `※ ${pref.note}` : '';
+  };
+
+  select.value = getState().prefecture;
+  cityInput.value = getState().city;
+  syncNote();
+
+  select.addEventListener('change', () => {
+    update({ prefecture: select.value });
+    syncNote();
+    if (onChange) onChange();
+  });
+
+  // 入力のたびに保存すると書き込みが多すぎるため、離れたときに保存する
+  cityInput.addEventListener('change', () => {
+    update({ city: cityInput.value.trim() });
+    if (onChange) onChange();
+  });
+}
+
+/* ===== assets/js/modules/theme.js ===== */
+/**
+ * ライフラインサポート — 表示モード
+ * -----------------------------------------------------------------------------
+ * ダークモードは好みの問題ではなく、停電時の実用機能として扱う。
+ *   ・暗闇で明るい画面を見ると目が慣れず、周囲が見えなくなる
+ *   ・有機ELでは黒い画面のほうが消費電力が小さい
+ * そのため「省電力表示」を独立したスイッチとして用意している。
+ */
+
+
+const THEME_COLORS = {
+  light: '#0f3b5c',
+  dark: '#0a0f14',
+};
+
+/** <html> に属性を反映し、ブラウザUIの色も合わせる */
+function apply(state) {
+  const root = document.documentElement;
+  root.dataset.theme = state.theme;
+  root.dataset.saver = state.saver ? 'on' : 'off';
+
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = state.saver || state.theme === 'dark' || (state.theme === 'auto' && prefersDark);
+
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', isDark ? THEME_COLORS.dark : THEME_COLORS.light);
+}
+
+/**
+ * 表示モードを初期化する。
+ * 対象のボタンが無いページでも apply だけは行う（全ページで見た目を揃えるため）。
+ */
+function initTheme() {
+  apply(getState());
+
+  // OS 側の設定変更にも追従する（theme が 'auto' のときだけ意味を持つ）
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    apply(getState());
+  });
+
+  const themeButtons = Array.from(document.querySelectorAll('[data-theme-value]'));
+  const saverToggle = document.querySelector('[data-saver-toggle]');
+
+  const sync = () => {
+    const state = getState();
+    themeButtons.forEach((button) => {
+      const active = button.dataset.themeValue === state.theme;
+      button.setAttribute('aria-pressed', String(active));
+    });
+    if (saverToggle) saverToggle.checked = state.saver;
+    apply(state);
+  };
+
+  themeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      update({ theme: button.dataset.themeValue });
+      sync();
+    });
+  });
+
+  if (saverToggle) {
+    saverToggle.addEventListener('change', () => {
+      update({ saver: saverToggle.checked });
+      sync();
+    });
+  }
+
+  sync();
+}
+
+/* ===== assets/js/modules/pwa.js ===== */
+/**
+ * ライフラインサポート — オフライン対応（PWA）
+ * -----------------------------------------------------------------------------
+ * このアプリの中核。通信が無いときこそ必要になる道具なので、
+ * 「初回に開いた時点で、全部の情報が端末に入っている」状態をつくる。
+ *
+ * ここでは以下を担当する。
+ *   1. Service Worker の登録（＝全ページ・全データの端末保存）
+ *   2. オンライン / オフラインの表示
+ *   3. ホーム画面への追加（インストール）の案内
+ *   4. 新しい内容が届いたときの更新案内
+ */
+
+/**
+ * 各ページ共通のステータス表示を更新する。
+ * ヘッダーのバッジは1語だけにし、詳しい説明は本文側の帯に出す
+ * （ヘッダーで折り返すとタイトルが潰れるため）。
+ */
+function renderNetworkStatus() {
+  const online = navigator.onLine;
+
+  document.querySelectorAll('[data-net-status]').forEach((node) => {
+    node.dataset.state = online ? 'online' : 'offline';
+    node.textContent = online ? 'オンライン' : 'オフライン';
+  });
+
+  const note = document.querySelector('[data-offline-note]');
+  if (note) note.hidden = online;
+
+  // 外部リンクは通信が要る。オフラインのときはその旨を各リンクに添える。
+  document.documentElement.dataset.online = online ? 'yes' : 'no';
+}
+
+/** Service Worker を登録し、更新があれば案内を出す */
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  // file:// で開いたときなど、安全なコンテキストでなければ登録できない
+  if (!window.isSecureContext) return;
+
+  // sw.js はアプリのルートに置き、下層ページも同じ1つを共有する。
+  // 下層から見た相対位置は <html data-app-root="../"> で受け取る。
+  const root = document.documentElement.dataset.appRoot || './';
+  const swUrl = new URL(`${root}sw.js`, location.href).href;
+
+  navigator.serviceWorker
+    .register(swUrl)
+    .then((registration) => {
+      const saved = document.querySelector('[data-offline-ready]');
+      if (saved && (registration.active || navigator.serviceWorker.controller)) {
+        saved.hidden = false;
+      }
+
+      registration.addEventListener('updatefound', () => {
+        const installing = registration.installing;
+        if (!installing) return;
+
+        installing.addEventListener('statechange', () => {
+          // 既に動いている SW がある状態で installed になった＝更新版が届いた
+          if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+            const banner = document.querySelector('[data-update-banner]');
+            if (!banner) return;
+            banner.hidden = false;
+            const button = banner.querySelector('[data-update-apply]');
+            if (button) {
+              button.addEventListener(
+                'click',
+                () => {
+                  installing.postMessage({ type: 'SKIP_WAITING' });
+                  window.location.reload();
+                },
+                { once: true }
+              );
+            }
+          }
+        });
+      });
+    })
+    .catch((error) => {
+      console.error('[pwa] Service Worker の登録に失敗しました', error);
+    });
+
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'CACHE_READY') {
+      const saved = document.querySelector('[data-offline-ready]');
+      if (saved) saved.hidden = false;
+    }
+  });
+}
+
+/** ホーム画面への追加を案内する */
+function setupInstallPrompt() {
+  const button = document.querySelector('[data-install]');
+  if (!button) return;
+
+  let deferred = null;
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    // 既定のミニバーを抑え、自前のボタンから出す
+    event.preventDefault();
+    deferred = event;
+    button.hidden = false;
+  });
+
+  button.addEventListener('click', async () => {
+    if (!deferred) return;
+    deferred.prompt();
+    await deferred.userChoice;
+    deferred = null;
+    button.hidden = true;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    button.hidden = true;
+  });
+}
+
+/** オンライン / オフラインの監視だけを始める（Service Worker を伴わない場合に使う） */
+function initNetworkStatus() {
+  renderNetworkStatus();
+  window.addEventListener('online', renderNetworkStatus);
+  window.addEventListener('offline', renderNetworkStatus);
+}
+
+function initPwa() {
+  initNetworkStatus();
+  registerServiceWorker();
+  setupInstallPrompt();
+}
+
+/* ===== assets/js/modules/status-bar.js ===== */
+/**
+ * ライフラインサポート — 「現在の状況」バー
+ * -----------------------------------------------------------------------------
+ * 選択中の状況（停電中・断水中…）を全ページの上部に出す。
+ * どのページを見ていても「自分が今どの状況にいるか」が視界に入り続けることが、
+ * 情報を読み違えない一番の防波堤になる。
+ */
+
+
+
+
+function renderStatusBar(container) {
+  const state = getState();
+  clear(container);
+
+  const situations = SITUATIONS.filter((s) => state.situations.includes(s.id)).sort(
+    (a, b) => a.order - b.order
+  );
+  const households = HOUSEHOLDS.filter((h) => state.households.includes(h.id));
+
+  if (situations.length === 0 && households.length === 0) {
+    container.hidden = true;
+    return;
+  }
+
+  container.hidden = false;
+  container.append(el('span', { class: 'c-status__label', text: '現在' }));
+
+  situations.forEach((s) => {
+    container.append(
+      el('span', { class: 'c-status__chip', text: `${s.icon} ${s.statusLabel}` })
+    );
+  });
+
+  households.forEach((h) => {
+    container.append(
+      el('span', { class: 'c-status__chip c-status__chip--household', text: `${h.icon} ${h.label}` })
+    );
+  });
+}
+
+function initStatusBar() {
+  const container = document.querySelector('[data-status-bar]');
+  if (!container) return;
+
+  renderStatusBar(container);
+  subscribe(() => renderStatusBar(container));
+}
+
+/* ===== assets/js/pages/home.js ===== */
+/**
+ * ライフラインサポート — ホーム画面
+ * -----------------------------------------------------------------------------
+ * 「今困っていること」を選ぶと、その状況で優先度の高い対策だけが上から並ぶ。
+ * ここがこのアプリの中心で、他のページは補助にすぎない。
+ *
+ * 描画の流れ
+ *   1. 状況スイッチ・世帯条件・地域設定を組み立てる（1回だけ）
+ *   2. 状態が変わるたびに結果を描き直す
+ */
+
+
+
+
+
+
+
+
+/* ------------------------------------------------------------------ 選択UI */
+
+/**
+ * 大きなトグルスイッチを1つつくる。
+ * チェックボックスを土台にしているので、キーボードでも読み上げでもそのまま動く。
+ */
+function toggleTile(item, { name, checked, onChange, modifier = '' }) {
+  const id = `${name}-${item.id}`;
+  const input = el('input', {
+    type: 'checkbox',
+    class: 'c-tile__input',
+    id,
+    checked,
+    onChange: () => onChange(item.id),
+  });
+
+  return el('li', { class: 'c-tile-item' }, [
+    input,
+    el('label', { class: `c-tile${modifier}`, for: id }, [
+      el('span', { class: 'c-tile__icon', 'aria-hidden': 'true', text: item.icon }),
+      el('span', { class: 'c-tile__label', text: item.label }),
+      el('span', { class: 'c-tile__state', 'aria-hidden': 'true' }),
+    ]),
+  ]);
+}
+
+function buildSituationGrid(container) {
+  const state = getState();
+  clear(container);
+  [...SITUATIONS]
+    .sort((a, b) => a.order - b.order)
+    .forEach((situation) => {
+      container.append(
+        toggleTile(situation, {
+          name: 'situation',
+          checked: state.situations.includes(situation.id),
+          onChange: (id) => toggleInList('situations', id),
+        })
+      );
+    });
+}
+
+function buildHouseholdGrid(container) {
+  const state = getState();
+  clear(container);
+  HOUSEHOLDS.forEach((household) => {
+    container.append(
+      toggleTile(household, {
+        name: 'household',
+        checked: state.households.includes(household.id),
+        onChange: (id) => toggleInList('households', id),
+        modifier: ' c-tile--sub',
+      })
+    );
+  });
+}
+
+/* ------------------------------------------------------------------ 結果 */
+
+function buildResults(container, summary) {
+  const state = getState();
+  clear(container);
+
+  if (state.situations.length === 0) {
+    if (summary) summary.textContent = '';
+    container.append(
+      emptyState(
+        'まず、いま困っていることを選んでください',
+        '選んだ状況に合わせて、優先度の高い対策だけを上から順に表示します。複数選ぶと、その組み合わせ専用の注意も出ます。'
+      )
+    );
+    return;
+  }
+
+  const items = filterItems(state.situations, state.households);
+
+  // 選択中の状況の要点を、結果の前にひとことずつ置く
+  const leads = SITUATIONS.filter((s) => state.situations.includes(s.id)).sort(
+    (a, b) => a.order - b.order
+  );
+  container.append(
+    el(
+      'ul',
+      { class: 'p-lead' },
+      leads.map((s) =>
+        el('li', { class: 'p-lead__item' }, [
+          el('span', { class: 'p-lead__icon', 'aria-hidden': 'true', text: s.icon }),
+          el('span', { class: 'p-lead__text', text: s.lead }),
+        ])
+      )
+    )
+  );
+
+  const nowItems = items.filter((i) => i.kind === 'now');
+  const doneCount = nowItems.filter((i) => state.done[i.id]).length;
+  if (summary) {
+    summary.textContent = `${items.length}件の対策を表示中。今すぐやること ${nowItems.length}件のうち ${doneCount}件が完了しています。`;
+  }
+
+  KINDS.forEach((kind) => {
+    const group = items.filter((item) => item.kind === kind.id);
+    if (group.length === 0) return;
+
+    const section = el('section', { class: `p-group p-group--${kind.id}` });
+    section.append(sectionHead(kind.icon, kind.label, group.length, kind.note));
+
+    if (kind.id === 'now' && nowItems.length > 0) {
+      section.append(
+        el('div', { class: 'p-progress' }, [
+          el('div', { class: 'p-progress__bar' }, [
+            el('div', {
+              class: 'p-progress__fill',
+              style: `width:${Math.round((doneCount / nowItems.length) * 100)}%`,
+            }),
+          ]),
+          el('p', { class: 'p-progress__text', text: `${doneCount} / ${nowItems.length} 完了` }),
+        ])
+      );
+    }
+
+    section.append(
+      el(
+        'ul',
+        { class: 'c-card-list' },
+        group.map((item) =>
+          itemCard(item, {
+            done: Boolean(state.done[item.id]),
+            onToggle: toggleDone,
+          })
+        )
+      )
+    );
+
+    container.append(section);
+  });
+}
+
+/* -------------------------------------------------------------- 困ったとき */
+
+function buildQuickLinks(container) {
+  const state = getState();
+  clear(container);
+
+  if (state.situations.length === 0) {
+    container.hidden = true;
+    return;
+  }
+
+  const pref = byPrefectureId(state.prefecture);
+  const links = linksForSituations(state.situations, pref ? pref.power : '');
+  if (links.length === 0) {
+    container.hidden = true;
+    return;
+  }
+
+  container.hidden = false;
+  container.append(
+    sectionHead('🔗', '困ったとき（公式情報）', links.length, '外部サイトへ移動します。通信が必要です。')
+  );
+  container.append(
+    el(
+      'ul',
+      { class: 'c-link-list' },
+      links.map((link) => linkCard(link, { prefecture: state.prefecture, city: state.city }))
+    )
+  );
+  container.append(
+    el('p', { class: 'c-note' }, [
+      '他の窓口は ',
+      el('a', { href: 'links/', class: 'c-note__link', text: '公的機関リンク集' }),
+      ' にまとめています。',
+    ])
+  );
+}
+
+/* ------------------------------------------------------------------ 初期化 */
+
+/**
+ * @param {ParentNode} root ホーム画面のマークアップを含む範囲
+ */
+function initHome(root = document) {
+  const situationGrid = qs('[data-situation-grid]', root);
+  const householdGrid = qs('[data-household-grid]', root);
+  const results = qs('[data-results]', root);
+  const quickLinks = qs('[data-quick-links]', root);
+  const summary = qs('[data-result-summary]', root);
+  if (!situationGrid && !results) return;
+
+  if (situationGrid) buildSituationGrid(situationGrid);
+  if (householdGrid) buildHouseholdGrid(householdGrid);
+  initRegionForm(root);
+
+  const renderAll = () => {
+    if (results) buildResults(results, summary);
+    if (quickLinks) buildQuickLinks(quickLinks);
+  };
+
+  renderAll();
+  subscribe(renderAll);
+
+  const clearButton = qs('[data-clear]', root);
+  if (clearButton) {
+    clearButton.addEventListener('click', () => {
+      clearSelection();
+      // トグルの見た目も戻す
+      if (situationGrid) buildSituationGrid(situationGrid);
+      if (householdGrid) buildHouseholdGrid(householdGrid);
+    });
+  }
+
+  const clearDoneButton = qs('[data-clear-done]', root);
+  if (clearDoneButton) {
+    clearDoneButton.addEventListener('click', () => {
+      if (window.confirm('チェックの記録を消します。よろしいですか？')) clearDone();
+    });
+  }
+
+  // 保存できない環境（プライベートブラウズ等）では、その旨をはっきり伝える
+  if (!isPersistent()) {
+    const warn = qs('[data-storage-warning]', root);
+    if (warn) warn.hidden = false;
+  }
+}
+
+/* ===== assets/js/pages/lifehacks.js ===== */
+/**
+ * ライフラインサポート — ライフハック集
+ * -----------------------------------------------------------------------------
+ * ホームが「今の自分に必要なものだけ」を出すのに対して、
+ * このページは全カテゴリを見渡すためにある。
+ * 落ち着いているとき（＝備えるとき）に読まれることを想定している。
+ */
+
+
+
+
+
+/** カテゴリ = 状況6件 + 世帯条件5件。並び順もこの順に固定する。 */
+const LIFEHACK_CATEGORIES = [
+  ...[...SITUATIONS].sort((a, b) => a.order - b.order),
+  ...HOUSEHOLDS,
+];
+
+let currentCategory = 'all';
+
+function buildCategoryChips(container, onSelect) {
+  clear(container);
+
+  const chip = (id, icon, label) =>
+    el('li', {}, [
+      el(
+        'button',
+        {
+          type: 'button',
+          class: `c-chip${currentCategory === id ? ' is-active' : ''}`,
+          'aria-pressed': String(currentCategory === id),
+          dataset: { category: id },
+          onClick: () => onSelect(id),
+        },
+        [
+          icon ? el('span', { 'aria-hidden': 'true', text: icon }) : null,
+          el('span', { text: label }),
+        ]
+      ),
+    ]);
+
+  container.append(chip('all', '📚', 'すべて'));
+  LIFEHACK_CATEGORIES.forEach((category) => {
+    container.append(chip(category.id, category.icon, category.label));
+  });
+}
+
+function buildLifehackSections(container) {
+  clear(container);
+
+  const targets =
+    currentCategory === 'all'
+      ? LIFEHACK_CATEGORIES
+      : LIFEHACK_CATEGORIES.filter((c) => c.id === currentCategory);
+
+  targets.forEach((category) => {
+    const items = itemsByCategory(category.id);
+    if (items.length === 0) return;
+
+    // id は hack- で始める。リンク集の cat-<カテゴリ> と重ならないようにするため
+    // （1ファイル版では両方が同じ画面に存在する）。
+    const section = el('section', { class: 'p-category', id: `hack-${category.id}` });
+    section.append(sectionHead(category.icon, category.label, items.length, category.lead));
+
+    KINDS.forEach((kind) => {
+      const group = items.filter((item) => item.kind === kind.id);
+      if (group.length === 0) return;
+
+      section.append(
+        el('h3', { class: 'p-category__kind' }, [
+          el('span', { 'aria-hidden': 'true', text: kind.icon }),
+          el('span', { text: kind.label }),
+        ])
+      );
+      section.append(el('ul', { class: 'c-card-list' }, group.map((item) => itemCard(item))));
+    });
+
+    container.append(section);
+  });
+}
+
+/**
+ * @param {ParentNode} root ライフハック集のマークアップを含む範囲
+ */
+function initLifehacks(root = document) {
+  const chips = qs('[data-category-chips]', root);
+  const sections = qs('[data-categories]', root);
+  if (!sections) return;
+
+  const select = (id) => {
+    currentCategory = id;
+    if (chips) buildCategoryChips(chips, select);
+    buildLifehackSections(sections);
+    // 絞り込み直後は一覧の先頭に視線を戻す
+    sections.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  };
+
+  if (chips) buildCategoryChips(chips, select);
+  buildLifehackSections(sections);
+}
+
+/* ===== assets/js/pages/links.js ===== */
+/**
+ * ライフラインサポート — 公的機関リンク集
+ * -----------------------------------------------------------------------------
+ * 災害時に「どこを見ればいいか分からない」が起きないよう、
+ * 窓口をカテゴリごとに一覧化する。地域設定があれば、
+ * 自治体・水道局・ガス会社のリンクがその地域向けに置き換わる。
+ */
+
+
+
+
+
+
+
+let linkKeyword = '';
+
+/** ページ内リンク（カテゴリへの目次） */
+function buildLinkNav(container) {
+  clear(container);
+  CATEGORIES.forEach((category) => {
+    container.append(
+      el('li', {}, [
+        el('a', { class: 'c-chip', href: `#cat-${category.id}` }, [
+          el('span', { 'aria-hidden': 'true', text: category.icon }),
+          el('span', { text: category.label }),
+        ]),
+      ])
+    );
+  });
+}
+
+/** キーワードは名称・説明・検索語のいずれかに含まれていればヒットとする */
+function matchesKeyword(link) {
+  if (!linkKeyword) return true;
+  const haystack = `${link.name} ${link.note} ${link.search || ''}`.toLowerCase();
+  return haystack.includes(linkKeyword.toLowerCase());
+}
+
+function buildLinkSections(container, summary) {
+  const state = getState();
+  clear(container);
+
+  let total = 0;
+  const pref = byPrefectureId(state.prefecture);
+  const userPower = pref ? pref.power : '';
+
+  CATEGORIES.forEach((category) => {
+    let links = linksByCategory(category.id).filter(matchesKeyword);
+    if (links.length === 0) return;
+    total += links.length;
+
+    // 自分の地域の電力会社を先頭に出す。10社の中から探させない。
+    if (userPower) {
+      links = [...links].sort(
+        (a, b) => (b.power === userPower ? 1 : 0) - (a.power === userPower ? 1 : 0)
+      );
+    }
+
+    const section = el('section', { class: 'p-category', id: `cat-${category.id}` });
+    section.append(sectionHead(category.icon, category.label, links.length, category.lead));
+    section.append(
+      el(
+        'ul',
+        { class: 'c-link-list' },
+        links.map((link) =>
+          linkCard(link, {
+            prefecture: state.prefecture,
+            city: state.city,
+            highlight: Boolean(userPower) && link.power === userPower,
+          })
+        )
+      )
+    );
+    container.append(section);
+  });
+
+  if (total === 0) {
+    container.append(
+      el('p', {
+        class: 'c-empty__text',
+        text: '該当する窓口がありませんでした。別のことばで探してみてください。',
+      })
+    );
+  }
+
+  if (summary) {
+    summary.textContent = linkKeyword
+      ? `「${linkKeyword}」に一致する窓口を ${total}件表示しています。`
+      : `${total}件の窓口を表示しています。`;
+  }
+}
+
+/**
+ * @param {ParentNode} root リンク集のマークアップを含む範囲
+ */
+function initLinks(root = document) {
+  const nav = qs('[data-link-nav]', root);
+  const sections = qs('[data-links]', root);
+  const summary = qs('[data-link-summary]', root);
+  const search = qs('[data-link-search]', root);
+  if (!sections) return;
+
+  const render = () => buildLinkSections(sections, summary);
+
+  if (nav) buildLinkNav(nav);
+  initRegionForm(root);
+  render();
+  subscribe(render);
+
+  if (search) {
+    search.addEventListener('input', () => {
+      linkKeyword = search.value.trim();
+      render();
+    });
+  }
+}
+
+/* ===== assets/js/pages/memo.js ===== */
+/**
+ * ライフラインサポート — 緊急メモ
+ * -----------------------------------------------------------------------------
+ * 家族の連絡先・落ち合う場所・持病と薬を、この端末の中だけに保存する。
+ * スマホの電池が持つ限り、通信がなくても開ける「紙の代わり」。
+ *
+ * ■ 扱いに関する約束
+ *   ・入力内容はサーバーへ送らない（送信先が存在しない）
+ *   ・端末を他人に渡すときは「保存内容を消す」で削除できる
+ */
+
+
+
+const FIELDS = ['contacts', 'meetup', 'medical', 'other'];
+
+function formatUpdatedAt(iso) {
+  if (!iso) return 'まだ保存されていません';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return 'まだ保存されていません';
+  const pad = (n) => String(n).padStart(2, '0');
+  return `最終更新 ${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+/**
+ * @param {ParentNode} root 緊急メモのマークアップを含む範囲
+ */
+function initMemo(root = document) {
+  const status = qs('[data-memo-status]', root);
+  const form = qs('[data-memo-form]', root);
+  if (!form) return;
+
+  const inputs = {};
+  FIELDS.forEach((field) => {
+    const node = qs(`[data-memo="${field}"]`, root);
+    if (!node) return;
+    inputs[field] = node;
+    node.value = getState().memo[field] || '';
+  });
+
+  if (status) status.textContent = formatUpdatedAt(getState().memo.updatedAt);
+
+  if (!isPersistent()) {
+    const warn = qs('[data-storage-warning]', root);
+    if (warn) warn.hidden = false;
+  }
+
+  const collect = () => {
+    const memo = {};
+    FIELDS.forEach((field) => {
+      if (inputs[field]) memo[field] = inputs[field].value;
+    });
+    return memo;
+  };
+
+  // 入力欄を離れたタイミングで自動保存する（保存ボタンの押し忘れを防ぐ）
+  Object.values(inputs).forEach((node) => {
+    node.addEventListener('change', () => {
+      saveMemo(collect());
+      if (status) status.textContent = formatUpdatedAt(getState().memo.updatedAt);
+    });
+  });
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    saveMemo(collect());
+    if (status) status.textContent = `保存しました（${formatUpdatedAt(getState().memo.updatedAt)}）`;
+  });
+
+  const resetButton = qs('[data-memo-reset]', root);
+  if (resetButton) {
+    resetButton.addEventListener('click', () => {
+      const ok = window.confirm(
+        'この端末に保存されている内容（緊急メモ・状況の選択・チェックの記録・地域設定）をすべて消します。よろしいですか？'
+      );
+      if (!ok) return;
+      resetAll();
+      FIELDS.forEach((field) => {
+        if (inputs[field]) inputs[field].value = '';
+      });
+      if (status) status.textContent = formatUpdatedAt('');
+    });
+  }
+}
+
+
+/* ===== プレビュー版の起動処理 ===== */
+const VIEW_IDS = ["home","lifehacks","links","memo","about"];
+const VIEW_BY_PATH = {
+  './': 'home', '../': 'home',
+  'lifehacks/': 'lifehacks', '../lifehacks/': 'lifehacks',
+  'links/': 'links', '../links/': 'links',
+  'memo/': 'memo', '../memo/': 'memo',
+  'about/': 'about', '../about/': 'about',
+};
+
+function showView(id) {
+  VIEW_IDS.forEach((viewId) => {
+    const node = document.querySelector('[data-view="' + viewId + '"]');
+    if (node) node.hidden = viewId !== id;
+  });
+  document.querySelectorAll('[data-tab]').forEach((tab) => {
+    const active = tab.dataset.tab === id;
+    tab.setAttribute('aria-current', active ? 'page' : 'false');
+  });
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function boot() {
+  // 埋め込み先が <html data-theme="dark"> のように配色を指定している場合は、
+  // アプリ側の設定で上書きせずそれに従う（切り替えボタンはその後も使える）。
+  const hostTheme = document.documentElement.dataset.theme;
+  if (hostTheme === 'dark' || hostTheme === 'light') update({ theme: hostTheme });
+
+  initTheme();
+  initStatusBar();
+  initNetworkStatus();   // Service Worker はプレビューでは登録しない
+
+  initHome(document.querySelector('[data-view="home"]'));
+  initLifehacks(document.querySelector('[data-view="lifehacks"]'));
+  initLinks(document.querySelector('[data-view="links"]'));
+  initMemo(document.querySelector('[data-view="memo"]'));
+
+  document.querySelectorAll('[data-tab]').forEach((tab) => {
+    tab.addEventListener('click', () => showView(tab.dataset.tab));
+  });
+
+  // 本体ではページ遷移になっているリンクを、ビュー切り替えに読み替える
+  document.addEventListener('click', (event) => {
+    const anchor = event.target.closest('a[href]');
+    if (!anchor) return;
+    const href = anchor.getAttribute('href');
+    if (VIEW_BY_PATH[href]) {
+      event.preventDefault();
+      showView(VIEW_BY_PATH[href]);
+    }
+  });
+
+  showView('home');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot, { once: true });
+} else {
+  boot();
+}
+
+</script>
+</body>
+</html>
