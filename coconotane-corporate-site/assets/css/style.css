@@ -18,8 +18,7 @@
    5. Component        再利用パーツ + セクション単位のブロック
       5-1. 汎用パーツ    skip-link / button / text-link / tel-link / section-head
       5-2. ヘッダー系    brand / global-nav / hamburger
-      5-3. ブロック      hero / message / value-card / business-card /
-                        def-list / contact / form / footer-nav
+      5-3. ブロック      hero / message / business-card / def-list / footer-nav
       5-4. 固定UI       sp-cta / page-top
       5-5. 下層ページ    breadcrumb / policy
    6. Utility          最小限のユーティリティ
@@ -547,8 +546,12 @@ strong {
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
-  color: var(--color-brand);
+  color: var(--color-ink); /* ロゴマークの線色。種の赤はSVG側で固定 */
   flex-shrink: 0;
+}
+
+.brand--footer {
+  color: #fff;
 }
 
 /* ドロワー（position:fixed）より前面に置き、展開中もロゴを見せる */
@@ -819,24 +822,6 @@ strong {
   padding-block: clamp(2.5rem, 1.5rem + 4vw, 5.5rem) var(--section-py);
 }
 
-/* 背景に敷く控えめな面（右上の色面 / PCのみ） */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto auto;
-  display: none;
-  width: min(46%, 560px);
-  height: 62%;
-  background-color: var(--color-bg-alt);
-  border-bottom-left-radius: var(--radius-lg);
-}
-
-@media (min-width: 1025px) {
-  .hero::before {
-    display: block;
-  }
-}
-
 .hero__inner {
   position: relative;
   display: grid;
@@ -933,10 +918,6 @@ strong {
     align-items: center;
     gap: clamp(2rem, 4vw, 4.5rem);
   }
-
-  .hero__figure img {
-    aspect-ratio: 5 / 6;
-  }
 }
 
 /* Message ------------------------------------------------------------------ */
@@ -961,48 +942,6 @@ strong {
   .message {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
     gap: clamp(2rem, 4vw, 4.5rem);
-  }
-}
-
-/* Value card（3つの姿勢） --------------------------------------------------- */
-.value-list {
-  display: grid;
-  gap: var(--space-md);
-  margin-top: var(--space-xl);
-}
-
-.value-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: clamp(1.5rem, 1.2rem + 1vw, 2rem);
-  background-color: var(--color-bg);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-lg);
-  border-top: 3px solid var(--color-brand);
-}
-
-.value-card__label {
-  color: var(--color-ink-muted);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-}
-
-.value-card__title {
-  margin-top: var(--space-xs);
-  font-size: var(--fs-h3);
-}
-
-.value-card__text {
-  margin-top: var(--space-sm);
-  font-size: var(--fs-sm);
-}
-
-@media (min-width: 768px) {
-  .value-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1117,7 +1056,8 @@ strong {
 
 @media (min-width: 1025px) {
   .business-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 3vw, 3rem);
   }
 }
 
@@ -1157,206 +1097,6 @@ strong {
   .def-list__desc {
     margin-top: 0;
   }
-}
-
-/* Contact ------------------------------------------------------------------ */
-.contact__grid {
-  display: grid;
-  gap: var(--space-xl);
-  align-items: start;
-}
-
-.contact__direct {
-  display: grid;
-  gap: var(--space-md);
-}
-
-.contact-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xs);
-  padding: clamp(1.25rem, 1rem + 1vw, 1.75rem);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-bg);
-  transition: border-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
-}
-
-.contact-card:hover,
-.contact-card:focus-visible {
-  border-color: var(--color-brand);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-}
-
-.contact-card__label {
-  color: var(--color-brand-deep);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: var(--letter-spacing-wide);
-  text-transform: uppercase;
-}
-
-.contact-card__value {
-  color: var(--color-ink);
-  font-size: clamp(1.375rem, 1.1rem + 1.1vw, 1.75rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  overflow-wrap: anywhere;
-}
-
-.contact-card__note {
-  color: var(--color-ink-muted);
-  font-size: var(--fs-xs);
-}
-
-.contact__sns {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-xs) var(--space-sm);
-  padding: var(--space-md);
-  background-color: var(--color-bg-alt);
-  border-radius: var(--radius);
-  font-size: var(--fs-sm);
-}
-
-.contact__sns-label {
-  font-weight: 700;
-  letter-spacing: var(--letter-spacing-wide);
-  color: var(--color-ink);
-  text-transform: uppercase;
-}
-
-.contact__sns-status {
-  color: var(--color-ink-muted);
-  font-size: var(--fs-xs);
-}
-
-@media (min-width: 1025px) {
-  .contact__grid {
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    gap: clamp(2rem, 4vw, 4rem);
-  }
-}
-
-/* Form --------------------------------------------------------------------- */
-.form {
-  display: grid;
-  gap: var(--space-md);
-  padding: clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem);
-  background-color: var(--color-bg-alt);
-  border-radius: var(--radius-lg);
-}
-
-.form__note {
-  font-size: var(--fs-xs);
-  color: var(--color-ink-muted);
-}
-
-.form__required-mark,
-.form__required {
-  color: var(--color-brand-deep);
-}
-
-.form__row {
-  display: grid;
-  gap: var(--space-2xs);
-}
-
-.form__label {
-  color: var(--color-ink);
-  font-size: var(--fs-sm);
-  font-weight: 700;
-}
-
-.form__input,
-.form__select,
-.form__textarea {
-  width: 100%;
-  min-height: 3rem;
-  padding: 0.7rem 0.9rem;
-  background-color: var(--color-bg);
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius);
-  font-size: var(--fs-body);
-  transition: border-color var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
-}
-
-.form__textarea {
-  min-height: 9rem;
-  resize: vertical;
-  line-height: 1.7;
-}
-
-.form__input:hover,
-.form__select:hover,
-.form__textarea:hover {
-  border-color: var(--color-ink-muted);
-}
-
-.form__input:focus,
-.form__select:focus,
-.form__textarea:focus {
-  border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px var(--color-brand-tint);
-  outline: none;
-}
-
-/* キーボード操作時はリングも重ねて明示 */
-.form__input:focus-visible,
-.form__select:focus-visible,
-.form__textarea:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 1px;
-}
-
-.form__input::placeholder,
-.form__textarea::placeholder {
-  color: #8d939c;
-}
-
-.form__hint {
-  font-size: var(--fs-xs);
-  color: var(--color-ink-muted);
-}
-
-/* エラーメッセージ枠：中身が入ったときだけ表示される構造 */
-.form__error {
-  display: none;
-  color: var(--color-brand-deep);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-}
-
-.form__error:not(:empty) {
-  display: block;
-}
-
-.form__row--check {
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: var(--space-sm);
-  margin-top: var(--space-xs);
-}
-
-.form__checkbox {
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-top: 0.2rem;
-  accent-color: var(--color-brand-strong);
-}
-
-.form__label--inline {
-  font-weight: 400;
-  color: var(--color-ink-body);
-}
-
-.form__submit {
-  margin-top: var(--space-xs);
 }
 
 /* Footer nav --------------------------------------------------------------- */
@@ -1654,14 +1394,8 @@ strong {
 }
 
 /* リスト内は少しずつ遅らせて自然な連なりにする */
-.is-reveal-ready .value-list > li:nth-child(2),
 .is-reveal-ready .business-list > li:nth-child(2) {
-  transition-delay: 0.1s;
-}
-
-.is-reveal-ready .value-list > li:nth-child(3),
-.is-reveal-ready .business-list > li:nth-child(3) {
-  transition-delay: 0.2s;
+  transition-delay: 0.12s;
 }
 
 /* モーション低減設定を尊重する */
