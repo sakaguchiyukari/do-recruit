@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ==========================================================
+       SEO / Meta
+       WP: header.php の wp_head() 側へ移設（Yoast / SEO SIMPLE PACK 等）
+       ========================================================== -->
+  <title>株式会社COCONOTANE｜サブリース・賃貸売買・外国人材の住まい支援</title>
+  <meta name="description" content="株式会社COCONOTANE（ココノタネ）は、サブリースによる賃貸経営支援、賃貸・売買の仲介、外国人材の住まい探し支援を行う不動産会社です。オーナー様と入居者様の双方に、安心して続けられる住まいのかたちをご提案します。">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://coconotane.co.jp/">
+  <!-- ステージング環境では下記を有効化して検索避けを行う
+  <meta name="robots" content="noindex, nofollow">
+  -->
+
+  <!-- Open Graph / Twitter Card -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="株式会社COCONOTANE">
+  <meta property="og:title" content="株式会社COCONOTANE｜サブリース・賃貸売買・外国人材の住まい支援">
+  <meta property="og:description" content="サブリースによる賃貸経営支援、賃貸・売買の仲介、外国人材の住まい探し支援。オーナー様と入居者様の双方に、安心して続けられる住まいのかたちを。">
+  <meta property="og:url" content="https://coconotane.co.jp/">
+  <meta property="og:image" content="https://coconotane.co.jp/assets/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Favicon -->
+  <link rel="icon" href="./assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/images/apple-touch-icon.png">
+
+  <!-- Fonts: Noto Sans JP / font-display:swap は css2 API 側で付与される -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+
+  <!-- Style -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+  <!-- Script（描画をブロックしないよう defer 固定） -->
+  <script src="./assets/js/main.js" defer></script>
+
+  <!-- 構造化データ: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "株式会社COCONOTANE",
+    "legalName": "株式会社ＣＯＣＯＮＯＴＡＮＥ",
+    "alternateName": "ココノタネ",
+    "url": "https://coconotane.co.jp/",
+    "logo": "https://coconotane.co.jp/assets/images/apple-touch-icon.png",
+    "image": "https://coconotane.co.jp/assets/images/og-image.png",
+    "description": "サブリース事業、不動産の賃貸・売買仲介、外国人材向けの住まい支援を行う不動産会社です。",
+    "email": "info@coconotane.co.jp",
+    "telephone": "+81-238-00-0000",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "JP",
+      "addressRegion": "山形県",
+      "addressLocality": "米沢市",
+      "streetAddress": "〇〇町0-0-0",
+      "postalCode": "000-0000"
+    },
+    "areaServed": {
+      "@type": "AdministrativeArea",
+      "name": "山形県 置賜エリア"
+    },
+    "contactPoint": [{
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "telephone": "+81-238-00-0000",
+      "email": "info@coconotane.co.jp",
+      "availableLanguage": ["Japanese", "English"]
+    }]
+  }
+  </script>
+</head>
+
+<body>
+  <!-- キーボード利用者向けスキップリンク -->
+  <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ==========================================================
+       Header（全ページ共通 / WP: header.php）
+       ========================================================== -->
+  <header class="site-header" id="js-site-header">
+    <div class="site-header__inner">
+      <!-- ロゴ -->
+      <a class="brand" href="./index.html" aria-label="株式会社COCONOTANE トップページ">
+        <svg class="brand__mark" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false">
+          <circle cx="20" cy="20" r="20" fill="currentColor"/>
+          <circle cx="20" cy="20" r="10.6" fill="#fff"/>
+          <circle cx="20" cy="20" r="3.9" fill="currentColor"/>
+        </svg>
+        <span class="brand__text">
+          <span class="brand__name">COCONOTANE</span>
+          <span class="brand__note">株式会社ココノタネ</span>
+        </span>
+      </a>
+
+      <!-- グローバルナビ（SP/TABではドロワーとして展開） -->
+      <nav class="global-nav" id="global-nav" aria-label="グローバルナビゲーション">
+        <ul class="global-nav__list">
+          <li class="global-nav__item"><a class="global-nav__link" href="#message">企業メッセージ</a></li>
+          <li class="global-nav__item"><a class="global-nav__link" href="#business">事業紹介</a></li>
+          <li class="global-nav__item"><a class="global-nav__link" href="#company">会社概要</a></li>
+          <li class="global-nav__item"><a class="global-nav__link" href="#contact">お問い合わせ</a></li>
+        </ul>
+        <p class="global-nav__tel">
+          <a class="tel-link" href="tel:+81238000000">
+            <span class="tel-link__label">お電話でのご相談</span>
+            <span class="tel-link__number">0238-00-0000</span>
+          </a>
+        </p>
+        <p class="global-nav__action">
+          <a class="button button--primary button--sm" href="#contact">お問い合わせ</a>
+        </p>
+      </nav>
+
+      <!-- ハンバーガー（aria-expanded は JS が更新） -->
+      <button class="hamburger" type="button" id="js-nav-toggle" aria-controls="global-nav" aria-expanded="false">
+        <span class="hamburger__bars" aria-hidden="true"></span>
+        <span class="hamburger__label" data-label-open="閉じる">メニュー</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ==========================================================
+         FV / Hero
+         ========================================================== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__inner">
+        <div class="hero__body">
+          <p class="hero__eyebrow">
+            <span class="hero__eyebrow-en" lang="en">Real Estate &amp; Subleasing</span>
+            山形・置賜エリアの不動産パートナー
+          </p>
+          <h1 class="hero__title" id="hero-title">住まいさがしの、<br>その先へ。</h1>
+          <p class="hero__lead">
+            株式会社COCONOTANEは、サブリースによる賃貸経営の支援を軸に、賃貸・売買の仲介、外国人材の住まい探しまで。
+            契約して終わりではなく、暮らしが続くその先まで責任を持つ不動産会社です。
+          </p>
+          <ul class="hero__actions">
+            <li><a class="button button--primary" href="#contact">お問い合わせはこちら</a></li>
+            <li>
+              <a class="button button--outline button--tel" href="tel:+81238000000">
+                <span class="button__sub">お電話でのご相談</span>
+                <span class="button__main">0238-00-0000</span>
+              </a>
+            </li>
+          </ul>
+          <p class="hero__note">受付時間 9:00〜18:00（土日祝を除く）</p>
+        </div>
+
+        <div class="hero__figure">
+          <img src="./assets/images/hero-main.webp"
+               alt="COCONOTANEが取り扱う集合住宅と戸建て住宅が並ぶ街並みのイメージ"
+               width="1200" height="1200" fetchpriority="high" decoding="async">
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         01. 企業メッセージ
+         ========================================================== -->
+    <section class="section section--alt" id="message" aria-labelledby="message-title">
+      <div class="l-container">
+        <header class="section-head" data-reveal>
+          <p class="section-head__label">
+            <span class="section-head__num">01</span>
+            <span lang="en">Message</span>
+          </p>
+          <h2 class="section-head__title" id="message-title">「ここ」に、<br class="u-br-sp">暮らしの種を蒔く。</h2>
+        </header>
+
+        <div class="message" data-reveal>
+          <div class="message__text">
+            <p>
+              COCONOTANE（ココノタネ）という社名には、<b>“ここ”という場所に、これからの暮らしの“種”を蒔いていきたい</b>という想いを込めました。
+            </p>
+            <p>
+              不動産は、契約が終わりではありません。オーナー様にとっては長く続く資産運用の始まりであり、
+              入居者様にとっては新しい生活の始まりです。私たちは、その「始まり」のあとまで責任を持てる会社でありたいと考えています。
+            </p>
+            <p>
+              安定した賃貸経営を支えるサブリース。地域の相場を知り尽くした賃貸・売買の仲介。
+              そして、言葉や慣習の壁で住まいが決まりにくい外国人材の方々への支援。
+              すべては、この街で安心して暮らせる人を一人でも増やすための取り組みです。
+            </p>
+          </div>
+
+          <figure class="message__figure">
+            <img src="./assets/images/message-main.webp"
+                 alt="やわらかな自然光が差し込む住まいの室内イメージ"
+                 width="1080" height="810" loading="lazy" decoding="async">
+          </figure>
+        </div>
+
+        <!-- 3つの姿勢（繰り返しパターン / WP: ACFリピーター想定） -->
+        <ul class="value-list">
+          <li class="value-card" data-reveal>
+            <p class="value-card__label" lang="en">Transparency</p>
+            <h3 class="value-card__title">透明であること</h3>
+            <p class="value-card__text">費用も、リスクも、判断に必要な情報は先にお伝えします。都合の悪いことこそ、隠しません。</p>
+          </li>
+          <li class="value-card" data-reveal>
+            <p class="value-card__label" lang="en">Partnership</p>
+            <h3 class="value-card__title">伴走すること</h3>
+            <p class="value-card__text">契約して終わりにしない。入居後・運用開始後のご相談まで、同じ担当者が受け止めます。</p>
+          </li>
+          <li class="value-card" data-reveal>
+            <p class="value-card__label" lang="en">Openness</p>
+            <h3 class="value-card__title">ひらかれていること</h3>
+            <p class="value-card__text">国籍や言語を理由に、住まいの選択肢が狭まらない地域をつくることを目指しています。</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         02. 事業紹介
+         ========================================================== -->
+    <section class="section" id="business" aria-labelledby="business-title">
+      <div class="l-container">
+        <header class="section-head" data-reveal>
+          <p class="section-head__label">
+            <span class="section-head__num">02</span>
+            <span lang="en">Business</span>
+          </p>
+          <h2 class="section-head__title" id="business-title">3つの事業で、<br class="u-br-sp">地域の「住む」を支える。</h2>
+          <p class="section-head__lead">
+            賃貸経営を続けるオーナー様から、これから住まいを探す方まで。
+            立場の異なる皆さまの「困った」に、ひとつの窓口でお応えします。
+          </p>
+        </header>
+
+        <!-- 繰り返しパターン / WP: while ( have_posts() ) 想定 -->
+        <ul class="business-list">
+          <li data-reveal>
+            <article class="business-card">
+              <figure class="business-card__figure">
+                <img src="./assets/images/business-sublease.webp"
+                     alt="一括借り上げによって満室運営される集合住宅のイメージ"
+                     width="960" height="640" loading="lazy" decoding="async">
+              </figure>
+              <div class="business-card__body">
+                <p class="business-card__num" lang="en">Service 01</p>
+                <h3 class="business-card__title">サブリース事業</h3>
+                <p class="business-card__text">
+                  オーナー様から物件を一括で借り上げ、当社が転貸人として運営します。
+                  空室や滞納に左右されない安定収入と、煩雑な管理業務からの解放を。
+                </p>
+                <ul class="business-card__points">
+                  <li>家賃保証にもとづく安定した収支計画</li>
+                  <li>入居者の募集・審査・契約手続きの代行</li>
+                  <li>原状回復と設備トラブルの一次対応</li>
+                </ul>
+              </div>
+            </article>
+          </li>
+
+          <li data-reveal>
+            <article class="business-card">
+              <figure class="business-card__figure">
+                <img src="./assets/images/business-brokerage.webp"
+                     alt="住まいの購入・売却相談をイメージした戸建て住宅のイラスト"
+                     width="960" height="640" loading="lazy" decoding="async">
+              </figure>
+              <div class="business-card__body">
+                <p class="business-card__num" lang="en">Service 02</p>
+                <h3 class="business-card__title">賃貸・売買仲介</h3>
+                <p class="business-card__text">
+                  お部屋探しから、マイホームの購入、ご所有不動産の売却まで。
+                  地域の相場と物件の実情をふまえ、無理にお勧めしない提案を徹底します。
+                </p>
+                <ul class="business-card__points">
+                  <li>賃貸物件のご紹介・内見・契約サポート</li>
+                  <li>売買仲介（購入・売却）と無料価格査定</li>
+                  <li>住み替え・相続にともなうご相談</li>
+                </ul>
+              </div>
+            </article>
+          </li>
+
+          <li data-reveal>
+            <article class="business-card">
+              <figure class="business-card__figure">
+                <img src="./assets/images/business-global.webp"
+                     alt="国籍の異なる人々が住まいを通じてつながることを表した図形イメージ"
+                     width="960" height="640" loading="lazy" decoding="async">
+              </figure>
+              <div class="business-card__body">
+                <p class="business-card__num" lang="en">Service 03</p>
+                <h3 class="business-card__title">外国人材の住まい支援</h3>
+                <p class="business-card__text">
+                  受け入れ企業様と働く方の双方に寄り添い、物件探しから入居後の生活まで伴走します。
+                  言語や保証人の壁で住まいが決まらない状況を、地域からなくしていきます。
+                </p>
+                <ul class="business-card__points">
+                  <li>やさしい日本語・多言語での物件案内</li>
+                  <li>保証会社・連帯保証人まわりの調整</li>
+                  <li>ゴミ出しなど生活ルールの説明サポート</li>
+                </ul>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         03. 会社概要
+         ========================================================== -->
+    <section class="section section--alt" id="company" aria-labelledby="company-title">
+      <div class="l-container">
+        <header class="section-head" data-reveal>
+          <p class="section-head__label">
+            <span class="section-head__num">03</span>
+            <span lang="en">Company</span>
+          </p>
+          <h2 class="section-head__title" id="company-title">会社概要</h2>
+        </header>
+
+        <!-- TODO: 公開前に実データへ差し替え（〇 / 0 はすべて仮の値） -->
+        <div class="company" data-reveal>
+          <dl class="def-list">
+            <div class="def-list__row">
+              <dt class="def-list__term">商号</dt>
+              <dd class="def-list__desc">株式会社ＣＯＣＯＮＯＴＡＮＥ（COCONOTANE Inc.）</dd>
+            </div>
+            <div class="def-list__row">
+              <dt class="def-list__term">代表者</dt>
+              <dd class="def-list__desc">代表取締役　〇〇 〇〇</dd>
+            </div>
+            <div class="def-list__row">
+              <dt class="def-list__term">所在地</dt>
+              <dd class="def-list__desc">〒000-0000　山形県米沢市〇〇町0-0-0</dd>
+            </div>
+            <div class="def-list__row">
+              <dt class="def-list__term">設立</dt>
+              <dd class="def-list__desc">0000年0月</dd>
+            </div>
+            <div class="def-list__row">
+              <dt class="def-list__term">事業内容</dt>
+              <dd class="def-list__desc">サブリース事業／不動産の賃貸・売買仲介／外国人材向け住まい支援</dd>
+            </div>
+            <div class="def-list__row">
+              <dt class="def-list__term">免許番号</dt>
+              <dd class="def-list__desc">宅地建物取引業　山形県知事免許（0）第00000号</dd>
+            </div>
+            <div class="def-list__row">
+              <dt class="def-list__term">電話番号</dt>
+              <dd class="def-list__desc"><a class="text-link" href="tel:+81238000000">0238-00-0000</a></dd>
+            </div>
+            <div class="def-list__row">
+              <dt class="def-list__term">メールアドレス</dt>
+              <dd class="def-list__desc"><a class="text-link" href="mailto:info@coconotane.co.jp">info@coconotane.co.jp</a></dd>
+            </div>
+            <div class="def-list__row">
+              <dt class="def-list__term">営業時間</dt>
+              <dd class="def-list__desc">9:00〜18:00（土日祝を除く）</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         04. お問い合わせ導線
+         ========================================================== -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="l-container">
+        <header class="section-head" data-reveal>
+          <p class="section-head__label">
+            <span class="section-head__num">04</span>
+            <span lang="en">Contact</span>
+          </p>
+          <h2 class="section-head__title" id="contact-title">ご相談は、無料です。</h2>
+          <p class="section-head__lead">
+            賃貸経営のご相談、お部屋探し、外国人材の住まいについて。
+            「まだ具体的ではないけれど」という段階でも、どうぞお気軽にご連絡ください。
+          </p>
+        </header>
+
+        <div class="contact__grid">
+          <!-- 直接の連絡先 -->
+          <div class="contact__direct" data-reveal>
+            <a class="contact-card contact-card--tel" href="tel:+81238000000">
+              <span class="contact-card__label" lang="en">Tel</span>
+              <span class="contact-card__value">0238-00-0000</span>
+              <span class="contact-card__note">受付時間 9:00〜18:00（土日祝を除く）</span>
+            </a>
+
+            <a class="contact-card contact-card--mail" href="mailto:info@coconotane.co.jp">
+              <span class="contact-card__label" lang="en">Mail</span>
+              <span class="contact-card__value">info@coconotane.co.jp</span>
+              <span class="contact-card__note">2営業日以内にご返信いたします</span>
+            </a>
+
+            <p class="contact__sns">
+              <span class="contact__sns-label" lang="en">Instagram</span>
+              <span class="contact__sns-status">準備中です。開設しだいこちらでご案内します。</span>
+            </p>
+          </div>
+
+          <!-- お問い合わせフォーム
+               WP: Contact Form 7 / Snow Monkey Forms 等へ置換（class はそのまま流用可） -->
+          <form class="form" action="#" method="post" data-reveal>
+            <p class="form__note">
+              <span class="form__required-mark" aria-hidden="true">＊</span>
+              は必須項目です。
+            </p>
+
+            <div class="form__row">
+              <label class="form__label" for="company-name">会社名・団体名</label>
+              <input class="form__input" type="text" id="company-name" name="company"
+                     autocomplete="organization" placeholder="株式会社ココノタネ">
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="name">
+                お名前
+                <span class="form__required" aria-hidden="true">＊</span>
+              </label>
+              <input class="form__input" type="text" id="name" name="name"
+                     autocomplete="name" placeholder="山形 太郎"
+                     required aria-required="true" aria-describedby="name-error">
+              <strong class="form__error" id="name-error" role="alert" aria-live="polite"></strong>
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="email">
+                メールアドレス
+                <span class="form__required" aria-hidden="true">＊</span>
+              </label>
+              <input class="form__input" type="email" id="email" name="email"
+                     autocomplete="email" inputmode="email" placeholder="example@coconotane.co.jp"
+                     required aria-required="true" aria-describedby="email-error">
+              <strong class="form__error" id="email-error" role="alert" aria-live="polite"></strong>
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="tel">電話番号</label>
+              <input class="form__input" type="tel" id="tel" name="tel"
+                     autocomplete="tel" inputmode="tel" placeholder="0238-00-0000"
+                     pattern="[0-9\-]{10,14}" aria-describedby="tel-hint">
+              <span class="form__hint" id="tel-hint">半角数字とハイフンでご入力ください。</span>
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="subject">
+                お問い合わせ種別
+                <span class="form__required" aria-hidden="true">＊</span>
+              </label>
+              <select class="form__select" id="subject" name="subject" required aria-required="true">
+                <option value="">選択してください</option>
+                <option value="sublease">サブリース・賃貸経営について</option>
+                <option value="rent">お部屋探し（賃貸）について</option>
+                <option value="sale">売買・査定について</option>
+                <option value="global">外国人材の住まいについて</option>
+                <option value="other">その他</option>
+              </select>
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="message-body">
+                お問い合わせ内容
+                <span class="form__required" aria-hidden="true">＊</span>
+              </label>
+              <textarea class="form__textarea" id="message-body" name="message" rows="6"
+                        placeholder="ご相談内容をご記入ください。"
+                        required aria-required="true" aria-describedby="message-error"></textarea>
+              <strong class="form__error" id="message-error" role="alert" aria-live="polite"></strong>
+            </div>
+
+            <div class="form__row form__row--check">
+              <input class="form__checkbox" type="checkbox" id="consent" name="consent"
+                     value="agreed" required aria-required="true">
+              <label class="form__label form__label--inline" for="consent">
+                <a class="text-link" href="./privacy.html">プライバシーポリシー</a>に同意します
+                <span class="form__required" aria-hidden="true">＊</span>
+              </label>
+            </div>
+
+            <p class="form__submit">
+              <button class="button button--primary button--block" type="submit">この内容で送信する</button>
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================
+       Footer（全ページ共通 / WP: footer.php）
+       ========================================================== -->
+  <footer class="site-footer">
+    <div class="l-container site-footer__inner">
+      <div class="site-footer__brand">
+        <a class="brand brand--footer" href="./index.html" aria-label="株式会社COCONOTANE トップページ">
+          <svg class="brand__mark" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false">
+            <circle cx="20" cy="20" r="20" fill="currentColor"/>
+            <circle cx="20" cy="20" r="10.6" fill="#101319"/>
+            <circle cx="20" cy="20" r="3.9" fill="currentColor"/>
+          </svg>
+          <span class="brand__text">
+            <span class="brand__name">COCONOTANE</span>
+            <span class="brand__note">株式会社ココノタネ</span>
+          </span>
+        </a>
+        <address class="site-footer__address">
+          〒000-0000　山形県米沢市〇〇町0-0-0<br>
+          TEL <a class="text-link" href="tel:+81238000000">0238-00-0000</a>（9:00〜18:00／土日祝を除く）<br>
+          MAIL <a class="text-link" href="mailto:info@coconotane.co.jp">info@coconotane.co.jp</a>
+        </address>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="フッターナビゲーション">
+        <ul class="footer-nav">
+          <li><a class="footer-nav__link" href="#message">企業メッセージ</a></li>
+          <li><a class="footer-nav__link" href="#business">事業紹介</a></li>
+          <li><a class="footer-nav__link" href="#company">会社概要</a></li>
+          <li><a class="footer-nav__link" href="#contact">お問い合わせ</a></li>
+          <li><a class="footer-nav__link" href="./privacy.html">プライバシーポリシー</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <p class="site-footer__copyright">
+      <small>&copy; 2026 COCONOTANE Inc.</small>
+    </p>
+
+    <!-- ページトップボタン（position:fixed のため footer 内に置いても表示位置は変わらない。
+         landmark の外に浮かせないための配置 / 表示状態は JS が制御） -->
+    <a class="page-top" id="js-page-top" href="#top">
+      <span class="u-visually-hidden">ページの先頭へ戻る</span>
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+        <path d="M12 5.5 4.5 13l1.4 1.4L11 9.3V19h2V9.3l5.1 5.1 1.4-1.4z" fill="currentColor"/>
+      </svg>
+    </a>
+  </footer>
+
+  <!-- SP固定CTA（スマホでCTAが埋もれないための常時導線） -->
+  <nav class="sp-cta" aria-label="お問い合わせ導線">
+    <a class="sp-cta__item sp-cta__item--tel" href="tel:+81238000000">電話する</a>
+    <a class="sp-cta__item sp-cta__item--contact" href="#contact">お問い合わせ</a>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ==========================================================
+       SEO / Meta
+       WP: パーマリンクを /privacy/ にする場合は canonical / og:url も揃える
+       ========================================================== -->
+  <title>プライバシーポリシー｜株式会社COCONOTANE</title>
+  <meta name="description" content="株式会社COCONOTANEにおける個人情報の取得・利用目的・第三者提供・安全管理措置、および開示等のご請求方法についてご説明します。">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://coconotane.co.jp/privacy.html">
+  <!-- ステージング環境では下記を有効化して検索避けを行う
+  <meta name="robots" content="noindex, nofollow">
+  -->
+
+  <!-- Open Graph / Twitter Card -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="株式会社COCONOTANE">
+  <meta property="og:title" content="プライバシーポリシー｜株式会社COCONOTANE">
+  <meta property="og:description" content="株式会社COCONOTANEにおける個人情報の取り扱いについてご説明します。">
+  <meta property="og:url" content="https://coconotane.co.jp/privacy.html">
+  <meta property="og:image" content="https://coconotane.co.jp/assets/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Favicon -->
+  <link rel="icon" href="./assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/images/apple-touch-icon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+
+  <!-- Style -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+  <!-- Script（描画をブロックしないよう defer 固定） -->
+  <script src="./assets/js/main.js" defer></script>
+
+  <!-- 構造化データ: BreadcrumbList（下層ページのみ） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "ホーム",
+        "item": "https://coconotane.co.jp/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "プライバシーポリシー",
+        "item": "https://coconotane.co.jp/privacy.html"
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <!-- キーボード利用者向けスキップリンク -->
+  <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ==========================================================
+       Header（全ページ共通 / WP: header.php ＝ index.html と同一）
+       ========================================================== -->
+  <header class="site-header" id="js-site-header">
+    <div class="site-header__inner">
+      <!-- ロゴ -->
+      <a class="brand" href="./index.html" aria-label="株式会社COCONOTANE トップページ">
+        <svg class="brand__mark" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false">
+          <circle cx="20" cy="20" r="20" fill="currentColor"/>
+          <circle cx="20" cy="20" r="10.6" fill="#fff"/>
+          <circle cx="20" cy="20" r="3.9" fill="currentColor"/>
+        </svg>
+        <span class="brand__text">
+          <span class="brand__name">COCONOTANE</span>
+          <span class="brand__note">株式会社ココノタネ</span>
+        </span>
+      </a>
+
+      <!-- グローバルナビ（SP/TABではドロワーとして展開） -->
+      <nav class="global-nav" id="global-nav" aria-label="グローバルナビゲーション">
+        <ul class="global-nav__list">
+          <li class="global-nav__item"><a class="global-nav__link" href="./index.html#message">企業メッセージ</a></li>
+          <li class="global-nav__item"><a class="global-nav__link" href="./index.html#business">事業紹介</a></li>
+          <li class="global-nav__item"><a class="global-nav__link" href="./index.html#company">会社概要</a></li>
+          <li class="global-nav__item"><a class="global-nav__link" href="./index.html#contact">お問い合わせ</a></li>
+        </ul>
+        <p class="global-nav__tel">
+          <a class="tel-link" href="tel:+81238000000">
+            <span class="tel-link__label">お電話でのご相談</span>
+            <span class="tel-link__number">0238-00-0000</span>
+          </a>
+        </p>
+        <p class="global-nav__action">
+          <a class="button button--primary button--sm" href="./index.html#contact">お問い合わせ</a>
+        </p>
+      </nav>
+
+      <!-- ハンバーガー（aria-expanded は JS が更新） -->
+      <button class="hamburger" type="button" id="js-nav-toggle" aria-controls="global-nav" aria-expanded="false">
+        <span class="hamburger__bars" aria-hidden="true"></span>
+        <span class="hamburger__label" data-label-open="閉じる">メニュー</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ==========================================================
+         ページ見出し
+         ========================================================== -->
+    <header class="page-head">
+      <div class="l-container">
+        <p class="page-head__label" lang="en">Privacy Policy</p>
+        <h1 class="page-head__title">プライバシーポリシー</h1>
+      </div>
+    </header>
+
+    <!-- ==========================================================
+         パンくずリスト（下層ページのみ）
+         ========================================================== -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <div class="l-container">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="./index.html">ホーム</a>
+          </li>
+          <li class="breadcrumb__item" aria-current="page">プライバシーポリシー</li>
+        </ol>
+      </div>
+    </nav>
+
+    <!-- ==========================================================
+         本文
+         ========================================================== -->
+    <article class="section">
+      <div class="l-container">
+        <div class="policy">
+          <p class="policy__intro">
+            株式会社ＣＯＣＯＮＯＴＡＮＥ（以下「当社」といいます）は、不動産の賃貸・売買仲介ならびにサブリース事業を通じて
+            お客様の個人情報をお預かりする立場にあることを重く受け止め、
+            個人情報の保護に関する法律その他の関係法令およびガイドラインを遵守し、
+            以下の方針に基づいて個人情報を適切に取り扱います。
+          </p>
+
+          <!-- 1. 定義 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">01</span>
+              個人情報の定義
+            </h2>
+            <p>
+              本ポリシーにおける「個人情報」とは、個人情報の保護に関する法律第2条第1項に定める個人情報、
+              すなわち生存する個人に関する情報であって、氏名、生年月日、住所、電話番号、メールアドレスその他の記述等により
+              特定の個人を識別することができるもの（他の情報と容易に照合することができ、それにより特定の個人を識別することが
+              できることとなるものを含みます）をいいます。
+            </p>
+          </section>
+
+          <!-- 2. 取得 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">02</span>
+              個人情報の取得
+            </h2>
+            <p>
+              当社は、適法かつ公正な手段によって個人情報を取得します。主に以下の場面で個人情報をお預かりします。
+            </p>
+            <ul class="policy__list policy__list--disc">
+              <li>本ウェブサイトのお問い合わせフォームへのご入力時</li>
+              <li>お電話・メール・ご来店等によるお問い合わせ、ご相談時</li>
+              <li>賃貸借契約、売買契約、媒介契約その他の契約手続き時</li>
+              <li>サブリース契約にともなう物件管理・入居者対応時</li>
+            </ul>
+          </section>
+
+          <!-- 3. 利用目的 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">03</span>
+              利用目的
+            </h2>
+            <p>当社は、取得した個人情報を以下の目的の範囲内で利用します。</p>
+            <ol class="policy__list">
+              <li>お問い合わせ、ご相談に対する回答および必要な資料の送付</li>
+              <li>不動産の賃貸・売買・仲介に関する物件のご紹介およびご提案</li>
+              <li>賃貸借契約、売買契約、媒介契約等の締結、履行および管理</li>
+              <li>サブリース契約にもとづく物件の運営、入居者募集および管理業務</li>
+              <li>外国人材の住まい支援における受け入れ企業様および関係機関との連絡調整</li>
+              <li>アフターサービス、各種ご案内その他のご連絡</li>
+              <li>法令にもとづく対応および当社の業務品質向上のための統計分析</li>
+            </ol>
+            <p>
+              当社は、あらかじめご本人の同意を得ることなく、上記の利用目的の達成に必要な範囲を超えて
+              個人情報を取り扱うことはいたしません。
+            </p>
+          </section>
+
+          <!-- 4. 第三者提供 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">04</span>
+              第三者への提供
+            </h2>
+            <p>
+              当社は、次のいずれかに該当する場合を除き、あらかじめご本人の同意を得ることなく
+              個人情報を第三者に提供することはありません。
+            </p>
+            <ol class="policy__list">
+              <li>法令にもとづく場合</li>
+              <li>人の生命、身体または財産の保護のために必要があり、ご本人の同意を得ることが困難である場合</li>
+              <li>公衆衛生の向上または児童の健全な育成の推進のために特に必要があり、ご本人の同意を得ることが困難である場合</li>
+              <li>国の機関もしくは地方公共団体またはその委託を受けた者が法令の定める事務を遂行することに対して協力する必要があり、ご本人の同意を得ることにより当該事務の遂行に支障を及ぼすおそれがある場合</li>
+            </ol>
+            <p>
+              なお、賃貸借契約または売買契約の締結にあたっては、貸主、買主、売主、管理会社、家賃債務保証会社、
+              金融機関、火災保険会社等に対し、契約の履行に必要な範囲で個人情報を提供することがあります。
+              この場合は、事前にその旨をご説明のうえ同意をいただきます。
+            </p>
+          </section>
+
+          <!-- 5. 委託 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">05</span>
+              業務委託先の監督
+            </h2>
+            <p>
+              当社は、利用目的の達成に必要な範囲において、個人情報の取り扱いを外部に委託する場合があります。
+              この場合、委託先について適切な選定を行うとともに、契約により個人情報の適正な管理を義務づけ、
+              必要かつ適切な監督を行います。
+            </p>
+          </section>
+
+          <!-- 6. 安全管理措置 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">06</span>
+              安全管理措置
+            </h2>
+            <p>
+              当社は、個人情報の漏えい、滅失またはき損の防止その他の安全管理のために、
+              以下を含む必要かつ適切な措置を講じます。
+            </p>
+            <ul class="policy__list policy__list--disc">
+              <li>個人情報を取り扱う従業者の範囲の明確化と定期的な教育の実施</li>
+              <li>個人情報を含む書類の施錠保管および持ち出しルールの整備</li>
+              <li>取り扱い機器へのアクセス制御、パスワード管理およびウイルス対策</li>
+              <li>保存期間を経過した個人情報の適切な廃棄・消去</li>
+            </ul>
+          </section>
+
+          <!-- 7. 開示等の請求 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">07</span>
+              開示・訂正・利用停止等のご請求
+            </h2>
+            <p>
+              ご本人から、保有個人データの利用目的の通知、開示、内容の訂正・追加・削除、
+              利用の停止・消去および第三者への提供の停止をお求めいただいた場合、
+              ご本人であることを確認のうえ、法令の定めに従って遅滞なく対応いたします。
+              ご請求の方法については、下記のお問い合わせ窓口までご連絡ください。
+            </p>
+          </section>
+
+          <!-- 8. Cookie / アクセス解析 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">08</span>
+              Cookie およびアクセス解析について
+            </h2>
+            <p>
+              本ウェブサイトでは、サービスの品質向上を目的として Cookie を利用したアクセス解析ツールを
+              使用する場合があります。これらのツールはトラフィックデータを収集しますが、
+              収集されるデータは匿名で行われており、個人を特定するものではありません。
+              Cookie の利用を望まれない場合は、ご利用のブラウザの設定により無効にすることができます。
+            </p>
+          </section>
+
+          <!-- 9. 見直し -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">09</span>
+              本ポリシーの見直し
+            </h2>
+            <p>
+              当社は、法令の改正や事業内容の変更等に応じて、本ポリシーの内容を適宜見直し、改善に努めます。
+              変更後の本ポリシーは、本ウェブサイトに掲載した時点から効力を生じるものとします。
+            </p>
+          </section>
+
+          <!-- 10. 窓口 -->
+          <section class="policy__block">
+            <h2 class="policy__heading">
+              <span class="policy__heading-num" aria-hidden="true">10</span>
+              お問い合わせ窓口
+            </h2>
+            <p>
+              本ポリシーに関するご質問、個人情報の取り扱いに関するご相談は、下記の窓口までご連絡ください。
+            </p>
+            <!-- TODO: 公開前に実データへ差し替え（〇 / 0 はすべて仮の値） -->
+            <address class="policy__contact">
+              株式会社ＣＯＣＯＮＯＴＡＮＥ　個人情報お問い合わせ窓口<br>
+              〒000-0000　山形県米沢市〇〇町0-0-0<br>
+              TEL <a class="text-link" href="tel:+81238000000">0238-00-0000</a>（9:00〜18:00／土日祝を除く）<br>
+              MAIL <a class="text-link" href="mailto:info@coconotane.co.jp">info@coconotane.co.jp</a>
+            </address>
+          </section>
+
+          <p class="policy__updated">
+            <time datetime="2026-08-04">2026年8月4日</time> 制定
+          </p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ==========================================================
+       Footer（全ページ共通 / WP: footer.php ＝ index.html と同一）
+       ========================================================== -->
+  <footer class="site-footer">
+    <div class="l-container site-footer__inner">
+      <div class="site-footer__brand">
+        <a class="brand brand--footer" href="./index.html" aria-label="株式会社COCONOTANE トップページ">
+          <svg class="brand__mark" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" focusable="false">
+            <circle cx="20" cy="20" r="20" fill="currentColor"/>
+            <circle cx="20" cy="20" r="10.6" fill="#101319"/>
+            <circle cx="20" cy="20" r="3.9" fill="currentColor"/>
+          </svg>
+          <span class="brand__text">
+            <span class="brand__name">COCONOTANE</span>
+            <span class="brand__note">株式会社ココノタネ</span>
+          </span>
+        </a>
+        <address class="site-footer__address">
+          〒000-0000　山形県米沢市〇〇町0-0-0<br>
+          TEL <a class="text-link" href="tel:+81238000000">0238-00-0000</a>（9:00〜18:00／土日祝を除く）<br>
+          MAIL <a class="text-link" href="mailto:info@coconotane.co.jp">info@coconotane.co.jp</a>
+        </address>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="フッターナビゲーション">
+        <ul class="footer-nav">
+          <li><a class="footer-nav__link" href="./index.html#message">企業メッセージ</a></li>
+          <li><a class="footer-nav__link" href="./index.html#business">事業紹介</a></li>
+          <li><a class="footer-nav__link" href="./index.html#company">会社概要</a></li>
+          <li><a class="footer-nav__link" href="./index.html#contact">お問い合わせ</a></li>
+          <li><a class="footer-nav__link" href="./privacy.html" aria-current="page">プライバシーポリシー</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <p class="site-footer__copyright">
+      <small>&copy; 2026 COCONOTANE Inc.</small>
+    </p>
+
+    <!-- ページトップボタン（position:fixed のため footer 内に置いても表示位置は変わらない。
+         landmark の外に浮かせないための配置 / 表示状態は JS が制御） -->
+    <a class="page-top" id="js-page-top" href="#top">
+      <span class="u-visually-hidden">ページの先頭へ戻る</span>
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+        <path d="M12 5.5 4.5 13l1.4 1.4L11 9.3V19h2V9.3l5.1 5.1 1.4-1.4z" fill="currentColor"/>
+      </svg>
+    </a>
+  </footer>
+
+  <!-- SP固定CTA（スマホでCTAが埋もれないための常時導線） -->
+  <nav class="sp-cta" aria-label="お問い合わせ導線">
+    <a class="sp-cta__item sp-cta__item--tel" href="tel:+81238000000">電話する</a>
+    <a class="sp-cta__item sp-cta__item--contact" href="./index.html#contact">お問い合わせ</a>
+  </nav>
+</body>
+</html>
