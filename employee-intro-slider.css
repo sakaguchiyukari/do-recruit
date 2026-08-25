@@ -1,0 +1,353 @@
+/* ================================================================
+   社員紹介セクション（Swiper スライダー）
+   SWELL WordPress テーマ用 / カスタマイザー > 追加CSS
+   ================================================================ */
+
+/* ================================================================
+   CSS Variable
+   ※ SWELL 本体の変数と衝突しないよう --emp- 接頭辞を付与
+   ================================================================ */
+:root {
+  --emp-color-primary:   #4A9EFF;
+  --emp-color-text-dark: #4a5560;
+  --emp-color-text-mid:  #4a5560;
+  --emp-color-border:    #E8E8E8;
+  --emp-color-card-bg:   #FFFFFF;
+  --emp-color-image-bg:  #F9F9F9;
+
+  --emp-shadow-card:  0 4px 24px rgba(0, 0, 0, 0.07);
+  --emp-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.13);
+  --emp-shadow-btn:   0 2px 12px rgba(0, 0, 0, 0.08);
+
+  --emp-radius-card: 16px;
+
+  --emp-transition-base: 0.3s ease;
+}
+
+/* ================================================================
+   Base Reset（セクション内にスコープ限定）
+   ================================================================ */
+.employee-section *,
+.employee-section *::before,
+.employee-section *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.employee-section img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ================================================================
+   Section Layout
+   ================================================================ */
+.employee-section {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  padding-inline: clamp(24px, 3vw, 48px);
+}
+
+.employee-section__inner {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+/* ================================================================
+   Slider Wrapper（ナビボタン用の横余白を確保）
+   ================================================================ */
+.employee-slider-wrap {
+  position: relative;
+  padding-inline: clamp(36px, 5vw, 56px);
+}
+
+/* ================================================================
+   Swiper Override
+   ================================================================ */
+.employee-slider {
+  overflow: hidden;
+}
+
+/* スライドの高さを揃える（カードの height:100% を効かせるため必須） */
+.employee-slider .swiper-slide {
+  height: auto;
+  display: flex;
+}
+
+/* ================================================================
+   Card Link
+   カード全体をリンク化。矢印ボタンは必ずこの外側に置くこと。
+   ================================================================ */
+.employee-card-link {
+  display: flex;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--emp-radius-card);
+}
+
+.employee-card-link:focus-visible {
+  outline: 3px solid var(--emp-color-primary);
+  outline-offset: 3px;
+}
+
+/* ================================================================
+   Employee Card（BEM）
+   ================================================================ */
+.employee-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--emp-color-card-bg);
+  border-radius: var(--emp-radius-card);
+  overflow: hidden;
+  box-shadow: var(--emp-shadow-card);
+
+  /* フェードイン初期状態 */
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease,
+    box-shadow var(--emp-transition-base);
+}
+
+/* フェードイン完了（JSで付与） */
+.employee-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ホバー浮き上がり */
+.employee-card-link:hover .employee-card.is-visible,
+.employee-card-link:focus-visible .employee-card.is-visible {
+  transform: translateY(-6px);
+  box-shadow: var(--emp-shadow-hover);
+}
+
+/* ---------------- 画像エリア ---------------- */
+.employee-card__image-wrap {
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--emp-color-image-bg);
+}
+
+.employee-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.5s ease;
+}
+
+.employee-card-link:hover .employee-card__image,
+.employee-card-link:focus-visible .employee-card__image {
+  transform: scale(1.04);
+}
+
+/* ---------------- テキストエリア ---------------- */
+.employee-card__body {
+  flex: 1;
+  padding: clamp(16px, 2.5vw, 24px);
+}
+
+/* ---------------- 会社名・部署 ---------------- */
+.employee-card__meta {
+  margin-bottom: 10px;
+}
+
+.employee-card__company {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--emp-color-text-dark);
+  margin-bottom: 3px;
+}
+
+.employee-card__dept {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--emp-color-primary);
+}
+
+/* ---------------- 名前 ---------------- */
+.employee-card__name {
+  font-size: clamp(17px, 2vw, 20px);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--emp-color-text-dark);
+  margin-bottom: 12px;
+}
+
+.employee-card__name-suffix {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--emp-color-text-mid);
+  margin-left: 3px;
+}
+
+/* ---------------- コメント ---------------- */
+.employee-card__comment {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--emp-color-text-mid);
+
+  /* 3行で省略 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ================================================================
+   Slider Navigation Buttons
+   z-index でカードリンクより手前に重ねる
+   ================================================================ */
+.employee-slider__btn {
+  position: absolute;
+  top: 38%; /* 画像の中央あたり */
+  transform: translateY(-50%);
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: clamp(36px, 4vw, 48px);
+  height: clamp(36px, 4vw, 48px);
+  border-radius: 50%;
+  border: 2px solid var(--emp-color-border);
+  background: var(--emp-color-card-bg);
+  color: var(--emp-color-text-mid);
+  cursor: pointer;
+  box-shadow: var(--emp-shadow-btn);
+
+  transition:
+    border-color var(--emp-transition-base),
+    background var(--emp-transition-base),
+    color var(--emp-transition-base),
+    transform var(--emp-transition-base);
+}
+
+.employee-slider__btn:hover,
+.employee-slider__btn:focus-visible {
+  border-color: var(--emp-color-primary);
+  background: var(--emp-color-primary);
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.employee-slider__btn:focus-visible {
+  outline: 3px solid var(--emp-color-primary);
+  outline-offset: 3px;
+}
+
+.employee-slider__btn--prev { left: 0; }
+.employee-slider__btn--next { right: 0; }
+
+/* 無効状態（ループ無効時のみ付与される） */
+.employee-slider__btn.swiper-button-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ================================================================
+   Pagination
+   ================================================================ */
+.employee-slider__pagination {
+  text-align: center;
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+.employee-slider__pagination .swiper-pagination-bullet {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background: var(--emp-color-border);
+  opacity: 1;
+  cursor: pointer;
+  transition:
+    background var(--emp-transition-base),
+    width var(--emp-transition-base);
+}
+
+.employee-slider__pagination .swiper-pagination-bullet-active {
+  width: 24px;
+  border-radius: 4px;
+  background: var(--emp-color-primary);
+}
+
+/* ================================================================
+   フェードイン（セクション全体）
+   ================================================================ */
+.js-fade-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.js-fade-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================================================================
+   Responsive
+   ================================================================ */
+
+/* ---------------- タブレット ---------------- */
+@media (max-width: 900px) {
+  .employee-slider__btn {
+    top: 35%;
+  }
+}
+
+/* ---------------- スマホ ---------------- */
+@media (max-width: 600px) {
+  .employee-slider-wrap {
+    padding-inline: 32px;
+  }
+
+  .employee-slider__btn {
+    top: 32%;
+  }
+
+  .employee-card__comment {
+    -webkit-line-clamp: 4;
+  }
+}
+
+@media (max-width: 380px) {
+  .employee-slider-wrap {
+    padding-inline: 28px;
+  }
+
+  .employee-slider__btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ================================================================
+   モーション低減設定への配慮
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .js-fade-section,
+  .employee-card,
+  .employee-card__image,
+  .employee-slider__btn {
+    transition-duration: 0.01ms !important;
+  }
+
+  .js-fade-section,
+  .employee-card {
+    opacity: 1;
+    transform: none;
+  }
+}

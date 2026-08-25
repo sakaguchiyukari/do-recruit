@@ -1,0 +1,189 @@
+<!--
+  ============================================================
+  社員紹介セクション（Swiper スライダー）
+  SWELL WordPress テーマ用 / カスタムHTMLブロックに貼り付け
+  ============================================================
+
+  【設置手順】
+  1. このHTMLを「カスタムHTML」ブロックに貼り付ける
+     ※「段落」や「クラシック」ブロックには絶対に貼らないこと。
+       リッチテキスト側に貼るとエディタがタグを自動補正し、
+       <a> の開閉位置が壊れてスライダー全体がリンク化します。
+  2. employee-intro-slider.css の内容を
+     カスタマイザー > 追加CSS に貼り付ける
+  3. 末尾の <script> 2行はこのブロック内に残したままでOK
+     （functions.php で wp_enqueue_script する場合は削除する）
+
+  【重要ルール】
+  - <a class="employee-card-link"> は必ず
+    <div class="swiper-slide"> の「内側」で開いて「内側」で閉じる。
+  - 矢印ボタン / ページネーションは <a> の外側に置く。
+    （HTML仕様上 <a> の中に <button> は入れられません）
+-->
+
+<!-- Swiper のスタイル（SWELL側で既に読み込まれている場合は削除可） -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<section class="employee-section js-fade-section">
+  <div class="employee-section__inner">
+
+    <!-- ========== スライダー本体 ========== -->
+    <div class="employee-slider-wrap">
+
+      <div class="swiper employee-slider">
+        <div class="swiper-wrapper">
+
+          <!-- ---------- カード 1 ---------- -->
+          <div class="swiper-slide">
+            <a class="employee-card-link" href="https://recruit.doyg.jp/interview/no-01/">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img class="employee-card__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/06/Interview-iu-top.webp" alt="株式会社DNS ドコモショップ I.Uさん" width="400" height="533" loading="lazy" decoding="async">
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社DNS</p>
+                    <p class="employee-card__dept">ドコモショップ</p>
+                  </div>
+                  <p class="employee-card__name">I.U<span class="employee-card__name-suffix">さん</span></p>
+                  <p class="employee-card__comment">
+                    お客様の笑顔が一番のやりがいです。先輩がしっかりサポートしてくれたので、入社後すぐに自信を持って働けました。
+                  </p>
+                </div>
+              </article>
+            </a>
+          </div>
+
+          <!-- ---------- カード 2 ---------- -->
+          <div class="swiper-slide">
+            <a class="employee-card-link" href="https://recruit.doyg.jp/interview/no-02/">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img class="employee-card__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/06/Interview-ss-top.webp" alt="株式会社ドゥ.ヨネザワ 飲食事業部 S.Sさん" width="400" height="533" loading="lazy" decoding="async">
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社ドゥ.ヨネザワ</p>
+                    <p class="employee-card__dept">飲食事業部</p>
+                  </div>
+                  <p class="employee-card__name">S.S<span class="employee-card__name-suffix">さん</span></p>
+                  <p class="employee-card__comment">
+                    チームで一体となって作り上げる達成感が好きです。グループ内での異動もあり、自分のキャリアの幅が広がりました。
+                  </p>
+                </div>
+              </article>
+            </a>
+          </div>
+
+          <!-- ---------- カード 3 ---------- -->
+          <div class="swiper-slide">
+            <a class="employee-card-link" href="https://recruit.doyg.jp/interview/no-03/">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img class="employee-card__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/06/Interview-ms-top.webp" alt="株式会社モトーレンフロイデ BMW下通店 M.Yさん" width="400" height="533" loading="lazy" decoding="async">
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社モトーレンフロイデ</p>
+                    <p class="employee-card__dept">BMW下通店</p>
+                  </div>
+                  <p class="employee-card__name">M.Y<span class="employee-card__name-suffix">さん</span></p>
+                  <p class="employee-card__comment">
+                    好きな車に囲まれて働ける環境が最高です。お客様と長くお付き合いできることがこの仕事の一番の魅力だと感じています。
+                  </p>
+                </div>
+              </article>
+            </a>
+          </div>
+
+          <!-- ---------- カード 4 ---------- -->
+          <div class="swiper-slide">
+            <a class="employee-card-link" href="https://recruit.doyg.jp/interview/no-04/">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img class="employee-card__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/07/20250318_0088-scaled.jpg" alt="株式会社ドゥ.ヨネザワ 総務部 K.Tさん" width="400" height="533" loading="lazy" decoding="async">
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社ドゥ.ヨネザワ</p>
+                    <p class="employee-card__dept">総務部</p>
+                  </div>
+                  <p class="employee-card__name">K.T<span class="employee-card__name-suffix">さん</span></p>
+                  <p class="employee-card__comment">
+                    入社前は不安でしたが、研修制度が充実していて安心できました。先輩がいつでも相談に乗ってくれる温かい職場です。
+                  </p>
+                </div>
+              </article>
+            </a>
+          </div>
+
+          <!-- ---------- カード 5 ---------- -->
+          <div class="swiper-slide">
+            <a class="employee-card-link" href="https://recruit.doyg.jp/interview/no-05/">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img class="employee-card__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/07/20250318_0088-scaled.jpg" alt="株式会社ドゥ.ヨネザワ 総務部 K.Tさん" width="400" height="533" loading="lazy" decoding="async">
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社ドゥ.ヨネザワ</p>
+                    <p class="employee-card__dept">総務部</p>
+                  </div>
+                  <p class="employee-card__name">K.T<span class="employee-card__name-suffix">さん</span></p>
+                  <p class="employee-card__comment">
+                    入社前は不安でしたが、研修制度が充実していて安心できました。先輩がいつでも相談に乗ってくれる温かい職場です。
+                  </p>
+                </div>
+              </article>
+            </a>
+          </div>
+
+          <!-- ---------- カード 6 ---------- -->
+          <div class="swiper-slide">
+            <a class="employee-card-link" href="https://recruit.doyg.jp/interview/no-06/">
+              <article class="employee-card js-fade-card">
+                <div class="employee-card__image-wrap">
+                  <img class="employee-card__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/06/20260605_0013-scaled.jpg" alt="株式会社DNS 法人営業部 R.Oさん" width="400" height="533" loading="lazy" decoding="async">
+                </div>
+                <div class="employee-card__body">
+                  <div class="employee-card__meta">
+                    <p class="employee-card__company">株式会社DNS</p>
+                    <p class="employee-card__dept">法人営業部</p>
+                  </div>
+                  <p class="employee-card__name">R.O<span class="employee-card__name-suffix">さん</span></p>
+                  <p class="employee-card__comment">
+                    法人のお客様と深い信頼関係を築くことが醍醐味です。大型案件が決まった瞬間は本当に大きなやりがいを感じます。
+                  </p>
+                </div>
+              </article>
+            </a>
+          </div>
+
+        </div><!-- /.swiper-wrapper -->
+      </div><!-- /.swiper.employee-slider -->
+
+      <!-- ========== ナビゲーションボタン（リンクの外側） ========== -->
+      <button class="employee-slider__btn employee-slider__btn--prev" type="button" aria-label="前のスライドへ">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+
+      <button class="employee-slider__btn employee-slider__btn--next" type="button" aria-label="次のスライドへ">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+
+    </div><!-- /.employee-slider-wrap -->
+
+    <!-- ========== ページネーション ========== -->
+    <div class="employee-slider__pagination"></div>
+
+  </div><!-- /.employee-section__inner -->
+</section>
+<!-- /社員紹介セクション -->
+
+<!-- Swiper 本体 → 制御スクリプトの順に読み込む（両方 defer） -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+<script src="/wp-content/uploads/js/employee-intro-slider.js" defer></script>
