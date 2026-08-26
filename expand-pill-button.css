@@ -12,16 +12,16 @@
 ========================================== */
 :root {
   --pill-text: #2B2B2B;
-  --pill-accent: #E97E2F;
-  --pill-accent-mid: #F5AE63;
-  --pill-accent-light: #F2C7A9;
+  --pill-accent: #0068B6;
+  --pill-accent-mid: #3B90CE;
+  --pill-accent-light: #8FBFE2;
 
   /* テキストを線から浮かせる白抜き（セクション背景色に合わせる） */
   --pill-bg: #fff;
 
   /* 白背景に浮き出すための影 */
-  --pill-shadow-color: rgba(233, 126, 47, .38);
-  --pill-shadow-color-strong: rgba(233, 126, 47, .50);
+  --pill-shadow-color: rgba(0, 104, 182, .32);
+  --pill-shadow-color-strong: rgba(0, 104, 182, .44);
   --pill-shadow-neutral: rgba(0, 0, 0, .12);
 }
 
@@ -30,8 +30,8 @@
 ========================================== */
 .expand-pill {
   /* サイズ設計（SP〜PCで自然に可変） */
-  --plus-size: clamp(42px, 5.2vw, 58px);        /* +の基本サイズ */
-  --plus-thickness: clamp(6px, .8vw, 9px);       /* 線の太さ（太め） */
+  --plus-size: clamp(48px, 6vw, 66px);           /* +の基本サイズ */
+  --plus-thickness: clamp(12px, 1.6vw, 18px);    /* 線の太さ（極太） */
   --plus-extend: clamp(115px, 18vw, 210px);     /* ホバー時の横線の長さ */
   --plus-offset: clamp(12px, 1.6vw, 18px);      /* ラベル左の余白（+がテキスト背面に潜り込む） */
 
@@ -72,12 +72,13 @@
 
   /* 背面の線が文字に重なっても読めるよう、白のハローで抜く */
   text-shadow:
+     0   0   8px var(--pill-bg),
      0   0   6px var(--pill-bg),
      0   0   4px var(--pill-bg),
-     2px 0   3px var(--pill-bg),
-    -2px 0   3px var(--pill-bg),
-     0   2px 3px var(--pill-bg),
-     0  -2px 3px var(--pill-bg);
+     3px 0   4px var(--pill-bg),
+    -3px 0   4px var(--pill-bg),
+     0   3px 4px var(--pill-bg),
+     0  -3px 4px var(--pill-bg);
 }
 
 /* ==========================================
