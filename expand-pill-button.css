@@ -1,0 +1,210 @@
+/* ================================================
+   Expand Pill Button（+ 装飾版）
+   SWELL WordPress テーマ用 / カスタムHTMLブロック
+   ------------------------------------------------
+   丸背景・矢印を廃止し、「+」の装飾に置き換え。
+   白背景から浮き出るソフトシャドウ付き。
+   ホバー時は「+」の横線の右側だけが右へ伸びる。
+   ================================================ */
+
+/* ==========================================
+   カラー・共通設定
+========================================== */
+:root {
+  --pill-text: #2B2B2B;
+  --pill-accent: #E97E2F;
+  --pill-accent-mid: #F5AE63;
+  --pill-accent-light: #F2C7A9;
+
+  /* 白背景に浮き出すための影 */
+  --pill-shadow-color: rgba(233, 126, 47, .38);
+  --pill-shadow-color-strong: rgba(233, 126, 47, .50);
+  --pill-shadow-neutral: rgba(0, 0, 0, .12);
+}
+
+/* ==========================================
+   ボタン本体
+========================================== */
+.expand-pill {
+  /* サイズ設計（SP〜PCで自然に可変） */
+  --plus-size: clamp(20px, 2.4vw, 26px);   /* +の基本サイズ */
+  --plus-thickness: 2px;                    /* 線の太さ */
+  --plus-extend: clamp(52px, 8vw, 84px);    /* ホバー時の横線の長さ */
+  --plus-gap: clamp(12px, 1.8vw, 20px);     /* ラベルと+の間隔 */
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--plus-gap);
+
+  padding: 10px 0;
+  line-height: 1;
+  color: var(--pill-text);
+  text-decoration: none;
+  white-space: nowrap;
+
+  font-weight: 500;
+  font-size: clamp(14px, 1.5vw, 16px);
+  letter-spacing: .04em;
+
+  transition: color .3s ease;
+}
+
+.expand-pill:hover,
+.expand-pill:focus-visible {
+  color: var(--pill-accent);
+}
+
+.expand-pill:focus-visible {
+  outline: 2px solid var(--pill-accent);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+
+/* ==========================================
+   ラベル
+========================================== */
+.expand-pill__label {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================
+   + 装飾
+   ------------------------------------------
+   ::before = 縦線 / ::after = 横線
+   横線は左端を固定し、width を伸ばすことで
+   「右側だけ右へ伸びる」動きを表現する。
+========================================== */
+.expand-pill__plus {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+
+  width: var(--plus-size);
+  height: var(--plus-size);
+
+  /* 白背景から浮き出るソフトシャドウ */
+  filter:
+    drop-shadow(0 4px 10px var(--pill-shadow-color))
+    drop-shadow(0 1px 2px var(--pill-shadow-neutral));
+
+  transition: filter .4s ease;
+}
+
+.expand-pill__plus::before,
+.expand-pill__plus::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    135deg,
+    var(--pill-accent) 0%,
+    var(--pill-accent-mid) 55%,
+    var(--pill-accent-light) 100%
+  );
+}
+
+/* 縦線（中央固定・伸びない） */
+.expand-pill__plus::before {
+  top: 0;
+  left: 50%;
+
+  width: var(--plus-thickness);
+  height: 100%;
+
+  transform: translateX(-50%);
+}
+
+/* 横線（左端固定 → 右へ伸びる） */
+.expand-pill__plus::after {
+  top: 50%;
+  left: 0;
+
+  width: var(--plus-size);
+  height: var(--plus-thickness);
+
+  transform: translateY(-50%);
+
+  transition: width .55s cubic-bezier(.2, .9, .2, 1);
+}
+
+/* ホバー / フォーカス：横線の右側だけが伸びる */
+.expand-pill:hover .expand-pill__plus::after,
+.expand-pill:focus-visible .expand-pill__plus::after {
+  width: var(--plus-extend);
+}
+
+/* ホバー時は影も少し強く */
+.expand-pill:hover .expand-pill__plus,
+.expand-pill:focus-visible .expand-pill__plus {
+  filter:
+    drop-shadow(0 6px 16px var(--pill-shadow-color-strong))
+    drop-shadow(0 2px 4px var(--pill-shadow-neutral));
+}
+
+/* ==========================================
+   配置（右寄せ）
+   伸びた横線がはみ出さないよう余白を確保
+========================================== */
+.news-button {
+  display: flex;
+  justify-content: flex-end;
+
+  /* 伸長分（--plus-extend - --plus-size）を吸収する余白 */
+  padding-right: clamp(28px, 7vw, 70px);
+}
+
+/* ==========================================
+   フェードイン演出（JS で .is-visible を付与）
+========================================== */
+.js-fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .8s ease, transform .8s cubic-bezier(.2, .9, .2, 1);
+}
+
+.js-fade-in.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================
+   モーション軽減設定への配慮
+========================================== */
+@media (prefers-reduced-motion: reduce) {
+  .expand-pill,
+  .expand-pill__plus,
+  .expand-pill__plus::after,
+  .js-fade-in {
+    transition: none;
+  }
+
+  .js-fade-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ==========================================
+   NEWSの英語（横向き）
+========================================== */
+.bg-english {
+  position: relative;
+  overflow: hidden; /* はみ出しを隠す */
+}
+
+/* ==========================================
+   縦書き版（固定）
+========================================== */
+.bg-english--vertical .bg-english__text {
+  writing-mode: vertical-rl;
+  color: rgba(0, 0, 0, .06);
+  margin: 0 auto;
+  font-size: clamp(48px, 8vw, 160px);
+
+  /* アニメーションしない */
+  animation: none;
+  transform: none;
+}
