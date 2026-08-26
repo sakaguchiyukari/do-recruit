@@ -16,13 +16,15 @@
   --fv-plus-rgb: 0, 104, 182;
 
   /* ＋の塗り：グラデーションなしのフラット単色
-     最後の数値（0〜1）が濃さ。1 にすると #0068b6 そのままのベタ塗り */
-  --fv-plus-color: rgba(var(--fv-plus-rgb), 0.22);
+     最後の数値（0〜1）が濃さ。1 が #0068b6 そのままのベタ塗り
+     ※ 数値は必ず書くこと。省略した rgba(0,104,182) は新しい書き方のため、
+       古いブラウザでは指定ごと無効になり＋が透明になる */
+  --fv-plus-color: rgba(var(--fv-plus-rgb), 1);
 
   /* ＋の線の太さ。2つの合計が必ず 100% になるように指定する
-     28%/72% ＝ 太め（線幅が一辺の44%）。細くするなら 36%/64% など */
-  --fv-plus-thin: 28%;
-  --fv-plus-thick: 72%;
+     32%/68% ＝ 線幅が一辺の36%。太くするなら 28%/72%、細くするなら 36%/64% */
+  --fv-plus-thin: 32%;
+  --fv-plus-thick: 68%;
 
   --fv-space-block: clamp(1.2rem, 3vw, 2.4rem);
   --fv-space-inline: clamp(1rem, 4vw, 2rem);
@@ -171,7 +173,9 @@
 .fv-hero__plus {
   position: absolute;
   display: block;
-  bottom: -70px;
+  /* 一番大きい＋（76px）より下に置く。ここが浅いと、大きい＋の上端が
+     待機中（animation-delay 中）に画面内へはみ出して静止して見える */
+  bottom: -100px;
   width: 28px;
   height: 28px;
   background: var(--fv-plus-color);
@@ -191,7 +195,9 @@
     var(--fv-plus-thin)  var(--fv-plus-thin)
   );
 
-  animation: fv-animate 24s linear infinite;
+  /* backwards ＝ animation-delay の待機中も 0%（opacity:0）の状態を適用する。
+     これが無いと待機中は「アニメ前の素の状態」で表示され、静止して見える */
+  animation: fv-animate 24s linear infinite backwards;
 }
 
 /* 位置・大きさ・速度のばらつき（サイズは1つずつ大きめのまま） */
