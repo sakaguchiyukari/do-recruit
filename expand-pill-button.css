@@ -16,6 +16,9 @@
   --pill-accent-mid: #F5AE63;
   --pill-accent-light: #F2C7A9;
 
+  /* テキストを線から浮かせる白抜き（セクション背景色に合わせる） */
+  --pill-bg: #fff;
+
   /* 白背景に浮き出すための影 */
   --pill-shadow-color: rgba(233, 126, 47, .38);
   --pill-shadow-color-strong: rgba(233, 126, 47, .50);
@@ -28,7 +31,7 @@
 .expand-pill {
   /* サイズ設計（SP〜PCで自然に可変） */
   --plus-size: clamp(42px, 5.2vw, 58px);        /* +の基本サイズ */
-  --plus-thickness: clamp(4px, .55vw, 6px);     /* 線の太さ（太め） */
+  --plus-thickness: clamp(6px, .8vw, 9px);       /* 線の太さ（太め） */
   --plus-extend: clamp(115px, 18vw, 210px);     /* ホバー時の横線の長さ */
   --plus-offset: clamp(12px, 1.6vw, 18px);      /* ラベル左の余白（+がテキスト背面に潜り込む） */
 
@@ -54,11 +57,6 @@
   transition: color .3s ease;
 }
 
-.expand-pill:hover,
-.expand-pill:focus-visible {
-  color: var(--pill-accent);
-}
-
 .expand-pill:focus-visible {
   outline: 2px solid var(--pill-accent);
   outline-offset: 6px;
@@ -71,6 +69,15 @@
 .expand-pill__label {
   position: relative;
   z-index: 1;
+
+  /* 背面の線が文字に重なっても読めるよう、白のハローで抜く */
+  text-shadow:
+     0   0   6px var(--pill-bg),
+     0   0   4px var(--pill-bg),
+     2px 0   3px var(--pill-bg),
+    -2px 0   3px var(--pill-bg),
+     0   2px 3px var(--pill-bg),
+     0  -2px 3px var(--pill-bg);
 }
 
 /* ==========================================
