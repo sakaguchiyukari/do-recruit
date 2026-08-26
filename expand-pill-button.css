@@ -27,17 +27,21 @@
 ========================================== */
 .expand-pill {
   /* サイズ設計（SP〜PCで自然に可変） */
-  --plus-size: clamp(20px, 2.4vw, 26px);   /* +の基本サイズ */
-  --plus-thickness: 2px;                    /* 線の太さ */
-  --plus-extend: clamp(52px, 8vw, 84px);    /* ホバー時の横線の長さ */
-  --plus-gap: clamp(12px, 1.8vw, 20px);     /* ラベルと+の間隔 */
+  --plus-size: clamp(42px, 5.2vw, 58px);        /* +の基本サイズ */
+  --plus-thickness: clamp(4px, .55vw, 6px);     /* 線の太さ（太め） */
+  --plus-extend: clamp(115px, 18vw, 210px);     /* ホバー時の横線の長さ */
+  --plus-offset: clamp(12px, 1.6vw, 18px);      /* ラベル左の余白（+がテキスト背面に潜り込む） */
 
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--plus-gap);
 
-  padding: 10px 0;
+  /* 重なり順をボタン内で完結させる */
+  isolation: isolate;
+
+  /* +が左に潜り込む分の余白 */
+  padding: 14px 0 14px var(--plus-offset);
+
   line-height: 1;
   color: var(--pill-text);
   text-decoration: none;
@@ -62,7 +66,7 @@
 }
 
 /* ==========================================
-   ラベル
+   ラベル（+より前面）
 ========================================== */
 .expand-pill__label {
   position: relative;
@@ -72,22 +76,27 @@
 /* ==========================================
    + 装飾
    ------------------------------------------
+   ラベル（View...）の背面に潜り込ませて配置。
    ::before = 縦線 / ::after = 横線
-   横線は左端を固定し、width を伸ばすことで
+   横線は左端を固定し width を伸ばすことで
    「右側だけ右へ伸びる」動きを表現する。
 ========================================== */
 .expand-pill__plus {
-  position: relative;
-  display: block;
-  flex-shrink: 0;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 0;               /* ラベルの背面 */
 
   width: var(--plus-size);
   height: var(--plus-size);
 
+  transform: translateY(-50%);
+  pointer-events: none;
+
   /* 白背景から浮き出るソフトシャドウ */
   filter:
-    drop-shadow(0 4px 10px var(--pill-shadow-color))
-    drop-shadow(0 1px 2px var(--pill-shadow-neutral));
+    drop-shadow(0 5px 12px var(--pill-shadow-color))
+    drop-shadow(0 2px 3px var(--pill-shadow-neutral));
 
   transition: filter .4s ease;
 }
@@ -140,7 +149,7 @@
 .expand-pill:hover .expand-pill__plus,
 .expand-pill:focus-visible .expand-pill__plus {
   filter:
-    drop-shadow(0 6px 16px var(--pill-shadow-color-strong))
+    drop-shadow(0 8px 20px var(--pill-shadow-color-strong))
     drop-shadow(0 2px 4px var(--pill-shadow-neutral));
 }
 
@@ -153,7 +162,7 @@
   justify-content: flex-end;
 
   /* 伸長分（--plus-extend - --plus-size）を吸収する余白 */
-  padding-right: clamp(28px, 7vw, 70px);
+  padding-right: clamp(32px, 8vw, 90px);
 }
 
 /* ==========================================
