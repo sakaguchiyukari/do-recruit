@@ -1,0 +1,130 @@
+<!--
+  ============================================================
+  SWELL WordPress テーマ用
+  採用ファーストビュー（ヒーロー）＋ 文字の真後ろで動く「＋」装飾
+  ============================================================
+
+  【使い方】
+  ・この中身をまるごと「カスタムHTML」ブロックに貼り付け（JSも同梱）
+  ・CSS … hero-animated-plus.css の中身を
+    「外観 > カスタマイズ > 追加CSS」に貼り付け
+
+  【注意】
+  ・装飾のクラス名を .circles / li から
+    .fv-hero__decor / .fv-hero__plus に変更しています。
+    HTMLとCSSは必ず「両方セット」で差し替えてください。
+    （片方だけだと装飾が表示されません）
+  ・SWELLのカスタムHTMLブロックはブロック内の <script> をそのまま実行するため、
+    JSは別欄ではなくこのブロック内に入れています。
+-->
+<div class="fv-area">
+  <section class="fv-hero" id="fvHero">
+
+    <!-- 背景装飾：文字の真後ろを流れる「＋」 -->
+    <ul class="fv-hero__decor" aria-hidden="true">
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+      <li class="fv-hero__plus"></li>
+    </ul>
+
+    <!-- キャッチコピー -->
+    <h1 class="fv-hero__copy fv-hero__fade">
+      <span class="fv-hero__word" id="fvWord">営業のしごと</span>も<br>
+      全部ここにある。
+    </h1>
+
+    <!-- サブコピー -->
+    <p class="fv-hero__sub fv-hero__fade fv-hero__fade--delay1">
+      10の企業法人、社会福祉法人、医療法人社団。<br>
+      まいにちに「プラス」をつぎつぎと届ける、多彩な仕事と出会える企業グループです。
+    </p>
+
+  </section>
+</div>
+
+<script>
+(() => {
+  /* =========================================
+     設定値（速度調整はここだけ触ればOK）
+     ========================================= */
+  const INTERVAL    = 2600; // ワード切替の周期(ms)
+  const FADE        = 400;  // フェード時間(ms)　※CSSのtransitionと必ず揃える
+  const FIRST_DELAY = 800;  // 1回目の切り替えまでの待ち時間(ms)。0に近いほど即切替
+
+  /* 表示する業種ワード */
+  const WORDS = [
+    "営業のしごと",
+    "福祉のしごと",
+    "事務のしごと",
+    "技術のしごと",
+    "サービスのしごと"
+  ];
+
+  const run = () => {
+    /* -----------------------------------------
+       1. 業種ワードの切り替え
+       ----------------------------------------- */
+    const wordEl = document.getElementById("fvWord");
+
+    if (wordEl) {
+      let index = 0;
+
+      // 1回分の切り替え処理を関数化（使い回すため）
+      const changeWord = () => {
+        // フェードアウト開始
+        wordEl.classList.add("is-changing");
+
+        // フェードが消えきってからテキストを差し替え
+        setTimeout(() => {
+          index = (index + 1) % WORDS.length;
+          wordEl.textContent = WORDS[index];
+          wordEl.classList.remove("is-changing");
+        }, FADE);
+      };
+
+      // 1回目を早め（FIRST_DELAY後）に実行 → 以降は通常周期でループ
+      setTimeout(() => {
+        changeWord();                       // 最初の切り替え
+        setInterval(changeWord, INTERVAL);  // 2回目以降
+      }, FIRST_DELAY);
+    }
+
+    /* -----------------------------------------
+       2. IntersectionObserver によるフェードイン
+       ----------------------------------------- */
+    const faders = document.querySelectorAll(".fv-hero__fade");
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target); // 一度出したら監視解除
+          }
+        });
+      }, { threshold: 0.2 });
+
+      faders.forEach((el) => observer.observe(el));
+    } else {
+      // 非対応ブラウザは即時表示（フォールバック）
+      faders.forEach((el) => el.classList.add("is-visible"));
+    }
+  };
+
+  /* -----------------------------------------
+     3. 実行タイミング制御
+     ----------------------------------------- */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+})();
+</script>
