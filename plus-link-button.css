@@ -1,0 +1,212 @@
+/* ================================================
+   Plus Link Button（+ 装飾リンク）
+   SWELL WordPress テーマ用 / カスタムHTMLブロック
+   ------------------------------------------------
+   既存の .news-button / .expand-pill（丸＋矢印版）とは
+   クラス名・CSS変数をすべて分けているため、
+   両方を同じページに置いても干渉しない。
+
+   名前空間:
+     ブロック  .plus-link
+     ラッパー  .plus-button
+     CSS変数   --pl-*
+   ================================================ */
+
+/* ==========================================
+   カラー・共通設定
+   （変数名は --pl- 接頭辞で完全に独立）
+========================================== */
+:root {
+  --pl-text: #2B2B2B;
+  --pl-accent: #0068B6;
+  --pl-accent-mid: #3B90CE;
+  --pl-accent-light: #8FBFE2;
+
+  /* テキストを線から浮かせる白抜き（セクション背景色に合わせる） */
+  --pl-bg: #fff;
+
+  /* 白背景に浮き出すための影 */
+  --pl-shadow-color: rgba(0, 104, 182, .32);
+  --pl-shadow-color-strong: rgba(0, 104, 182, .44);
+  --pl-shadow-neutral: rgba(0, 0, 0, .12);
+}
+
+/* ==========================================
+   ボタン本体
+========================================== */
+.plus-link {
+  /* サイズ設計（SP〜PCで自然に可変） */
+  --pl-size: clamp(48px, 6vw, 66px);          /* +の基本サイズ */
+  --pl-thickness: clamp(12px, 1.6vw, 18px);   /* 線の太さ */
+  --pl-extend: clamp(115px, 18vw, 210px);     /* ホバー時の横線の長さ */
+  --pl-offset: clamp(12px, 1.6vw, 18px);      /* ラベル左の余白（+がテキスト背面に潜り込む） */
+  --pl-radius: 999px;                          /* 線の角丸（0 で直角） */
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  /* 重なり順をボタン内で完結させる */
+  isolation: isolate;
+
+  /* +が左に潜り込む分の余白 */
+  padding: 14px 0 14px var(--pl-offset);
+
+  line-height: 1;
+  color: var(--pl-text);
+  text-decoration: none;
+  white-space: nowrap;
+
+  font-weight: 500;
+  font-size: clamp(14px, 1.5vw, 16px);
+  letter-spacing: .04em;
+
+  transition: color .3s ease;
+}
+
+.plus-link:focus-visible {
+  outline: 2px solid var(--pl-accent);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+
+/* ==========================================
+   ラベル（+より前面）
+========================================== */
+.plus-link__label {
+  position: relative;
+  z-index: 1;
+
+  /* 背面の線が文字に重なっても読めるよう、背景色のハローで抜く */
+  text-shadow:
+     0   0   8px var(--pl-bg),
+     0   0   6px var(--pl-bg),
+     0   0   4px var(--pl-bg),
+     3px 0   4px var(--pl-bg),
+    -3px 0   4px var(--pl-bg),
+     0   3px 4px var(--pl-bg),
+     0  -3px 4px var(--pl-bg);
+}
+
+/* ==========================================
+   + 装飾
+   ------------------------------------------
+   ラベルの背面に潜り込ませて配置。
+   ::before = 縦線 / ::after = 横線
+   横線は左端を固定し width を伸ばすことで
+   「右側だけ右へ伸びる」動きを表現する。
+========================================== */
+.plus-link__mark {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 0;               /* ラベルの背面 */
+
+  width: var(--pl-size);
+  height: var(--pl-size);
+
+  transform: translateY(-50%);
+  pointer-events: none;
+
+  /* 白背景から浮き出るソフトシャドウ */
+  filter:
+    drop-shadow(0 5px 12px var(--pl-shadow-color))
+    drop-shadow(0 2px 3px var(--pl-shadow-neutral));
+
+  transition: filter .4s ease;
+}
+
+.plus-link__mark::before,
+.plus-link__mark::after {
+  content: "";
+  position: absolute;
+  border-radius: var(--pl-radius);
+
+  background: linear-gradient(
+    135deg,
+    var(--pl-accent) 0%,
+    var(--pl-accent-mid) 55%,
+    var(--pl-accent-light) 100%
+  );
+}
+
+/* 縦線（中央固定・伸びない） */
+.plus-link__mark::before {
+  top: 0;
+  left: 50%;
+
+  width: var(--pl-thickness);
+  height: 100%;
+
+  transform: translateX(-50%);
+}
+
+/* 横線（左端固定 → 右へ伸びる） */
+.plus-link__mark::after {
+  top: 50%;
+  left: 0;
+
+  width: var(--pl-size);
+  height: var(--pl-thickness);
+
+  transform: translateY(-50%);
+
+  transition: width .55s cubic-bezier(.2, .9, .2, 1);
+}
+
+/* ホバー / フォーカス：横線の右側だけが伸びる */
+.plus-link:hover .plus-link__mark::after,
+.plus-link:focus-visible .plus-link__mark::after {
+  width: var(--pl-extend);
+}
+
+/* ホバー時は影も少し強く */
+.plus-link:hover .plus-link__mark,
+.plus-link:focus-visible .plus-link__mark {
+  filter:
+    drop-shadow(0 8px 20px var(--pl-shadow-color-strong))
+    drop-shadow(0 2px 4px var(--pl-shadow-neutral));
+}
+
+/* ==========================================
+   配置（右寄せ）
+   伸びた横線がはみ出さないよう余白を確保
+========================================== */
+.plus-button {
+  display: flex;
+  justify-content: flex-end;
+
+  /* 伸長分（--pl-extend - --pl-size）を吸収する余白 */
+  padding-right: clamp(32px, 8vw, 90px);
+}
+
+/* ==========================================
+   フェードイン演出（JS で .is-plus-shown を付与）
+========================================== */
+.js-plus-fade {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .8s ease, transform .8s cubic-bezier(.2, .9, .2, 1);
+}
+
+.js-plus-fade.is-plus-shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================
+   モーション軽減設定への配慮
+========================================== */
+@media (prefers-reduced-motion: reduce) {
+  .plus-link,
+  .plus-link__mark,
+  .plus-link__mark::after,
+  .js-plus-fade {
+    transition: none;
+  }
+
+  .js-plus-fade {
+    opacity: 1;
+    transform: none;
+  }
+}

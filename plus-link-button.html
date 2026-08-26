@@ -1,0 +1,23 @@
+<!--
+  SWELL WordPress テーマ用
+  Plus Link Button（+ 装飾リンク）
+
+  既存の .news-button / .expand-pill（丸＋矢印版）とは
+  クラス名・CSS変数をすべて分けてあるため、
+  同じページに並べて置いても互いに干渉しない。
+
+  使い方:
+  1. SWELLカスタマイザー > 追加CSS に plus-link-button.css の内容を追記
+     （既存CSSは消さずに、そのまま下へ追記でOK）
+  2. 表示したい箇所のカスタムHTMLブロックに下記 HTML を貼り付け
+  3. フェードインさせる場合のみ plus-link-button.js を読み込む
+     （例: <script src="/path/to/plus-link-button.js" defer></script>）
+-->
+
+<!-- ===================== +装飾ボタン ===================== -->
+<div class="plus-button js-plus-fade">
+  <a class="plus-link" href="https://doyg.jp/">
+    <span class="plus-link__label">View Website</span>
+    <span class="plus-link__mark" aria-hidden="true"></span>
+  </a>
+</div>
