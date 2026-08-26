@@ -29,6 +29,11 @@
   --fv-plus-thin: 34%;
   --fv-plus-thick: 66%;
 
+  /* ＋が流れきるまでに回転する角度
+     90deg なら始点も終点も「＋」の向きに揃う（途中は×の見え方を通過）
+     0deg にすると回転なし。180deg / 360deg でも向きは揃う */
+  --fv-plus-turn: 90deg;
+
   --fv-space-block: clamp(1.2rem, 3vw, 2.4rem);
   --fv-space-inline: clamp(1rem, 4vw, 2rem);
 
@@ -199,6 +204,11 @@
   animation: fv-animate 24s linear infinite;
 }
 
+/* 1つおきに逆回りにして、動きが揃いすぎないようにする */
+.fv-hero__plus:nth-child(even) {
+  --fv-plus-turn: -90deg;
+}
+
 /* 位置・大きさ・速度のばらつき（＋は丸より細く見えるため一回り大きめに） */
 .fv-hero__plus:nth-child(1)  { left: 25%; width: 46px; height: 46px; animation-delay: 0s; }
 .fv-hero__plus:nth-child(2)  { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 16s; }
@@ -213,7 +223,7 @@
 
 @keyframes fv-animate {
   0% {
-    transform: translateY(0);
+    transform: translateY(0) rotate(0deg);
     opacity: 0;
   }
   10% {
@@ -223,7 +233,8 @@
     opacity: 1;
   }
   100% {
-    transform: translateY(-620px); /* 上の余白の一番上まで届く距離 */
+    /* 上の余白の一番上まで届く距離 ＋ ゆっくり回転 */
+    transform: translateY(-620px) rotate(var(--fv-plus-turn));
     opacity: 0;
   }
 }
