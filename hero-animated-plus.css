@@ -10,20 +10,27 @@
   --fv-color-text: #4a5560;
   --fv-color-accent: #0068b6;
 
-  /* ▼ 装飾「＋」のベースカラー（RGB値）
-     ここ1行を変えるだけで＋の色が全部変わります
+  /* ▼ 影の色（RGB値）
+     ここ1行を変えるだけで＋の影の色味が全部変わります
      例）#0068b6 → 0, 104, 182 */
   --fv-plus-rgb: 0, 104, 182;
 
-  /* ＋の塗り：透過 → 中間 → 濃いブルーのグラデーション
-     ・各stopの最後の数値（0〜1）で濃さを調整
-     ・角度は 160deg（上→下）。斜めにするなら 135deg など */
+  /* ＋の塗り：白（上をわずかに明るく、下に淡い青みを残して立体感を出す） */
   --fv-plus-gradient: linear-gradient(
     160deg,
-    rgba(var(--fv-plus-rgb), 0.08) 0%,
-    rgba(var(--fv-plus-rgb), 0.26) 45%,
-    rgba(var(--fv-plus-rgb), 0.46) 100%
+    #ffffff 0%,
+    #ffffff 55%,
+    #f2f8fd 100%
   );
+
+  /* ＋の影：白背景に白い＋を浮かせるための影
+     ・clip-path で切り抜いた形に沿わせるため box-shadow ではなく
+       filter: drop-shadow() を使用（box-shadow だとクリップされて消える）
+     ・近距離＝輪郭の締まり、遠距離＝浮遊感 の2枚重ね
+     ・目立たせたい場合は各行の最後の数値（不透明度）を上げる */
+  --fv-plus-shadow:
+    drop-shadow(0 0 3px rgba(var(--fv-plus-rgb), 0.50))
+    drop-shadow(0 4px 10px rgba(var(--fv-plus-rgb), 0.32));
 
   /* ＋の線の太さ（数値が小さいほど細い）。34%/66% で標準的な太さ */
   --fv-plus-thin: 34%;
@@ -172,13 +179,26 @@
   );
 }
 
-/* ＋の形は clip-path で切り出す（1要素にグラデーションが通しで乗る） */
+/* ＋の外枠。影はこちらに掛ける
+   ※ 描画順が「filter → clip-path」のため、同じ要素に両方を指定すると
+     影が＋の形に切り取られて消えてしまう。
+     そのため 形（clip-path）は ::before、影（filter）は本体、と役割を分ける */
 .fv-hero__plus {
   position: absolute;
   display: block;
   bottom: -60px;
   width: 22px;
   height: 22px;
+  filter: var(--fv-plus-shadow);
+  animation: fv-animate 24s linear infinite;
+}
+
+/* ＋の形は clip-path で切り出す（1要素にグラデーションが通しで乗る） */
+.fv-hero__plus::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
   background: var(--fv-plus-gradient);
 
   clip-path: polygon(
@@ -195,8 +215,6 @@
     0%                   var(--fv-plus-thin),
     var(--fv-plus-thin)  var(--fv-plus-thin)
   );
-
-  animation: fv-animate 24s linear infinite;
 }
 
 /* 位置・大きさ・速度のばらつき（＋は丸より細く見えるため一回り大きめに） */
