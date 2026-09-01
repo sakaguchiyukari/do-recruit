@@ -255,55 +255,41 @@
 ========================================================= */
 
 /* ---------------------------------------------------------
-   タブレット：レーンは7本。＋は10個すべて表示する。
-
-   1レーンに2個入れる場合は「縦位置が必ず離れている」ことを
-   保証する必要があるため、同じレーンの2個は
-     ・animation-duration を完全に同じにする
-     ・animation-delay を「周期のちょうど半分」だけずらす
-   の2点を必ず守ること。こうすると2個は常に
-   移動距離の半分（620px ÷ 2 ＝ 310px）だけ縦に離れ続け、
-   ＋の最大サイズ（76px）より十分大きいので重ならない。
-
-   ※ delay をマイナスにするのは「途中から再生」の意味。
-     読み込み直後から＋が画面に居る状態になる。
+   タブレット：レーン7本・＋は7個（1レーン1個）。8個目以降は非表示。
 --------------------------------------------------------- */
 @media (max-width: 900px) {
   .fv-hero__decor {
     --fv-lanes: 7;
   }
 
-  /* レーン0（24秒周期・半分は12秒） */
   .fv-hero__plus:nth-child(1) { --fv-lane: 0; animation-duration: 24s; animation-delay:   0s; }
-  .fv-hero__plus:nth-child(8) { --fv-lane: 0; animation-duration: 24s; animation-delay: -12s; }
-
-  /* レーン1（16秒周期・半分は8秒） */
   .fv-hero__plus:nth-child(2) { --fv-lane: 1; animation-duration: 16s; animation-delay:  -2s; }
-  .fv-hero__plus:nth-child(9) { --fv-lane: 1; animation-duration: 16s; animation-delay: -10s; }
+  .fv-hero__plus:nth-child(3) { --fv-lane: 2; animation-duration: 24s; animation-delay:  -8s; }
+  .fv-hero__plus:nth-child(4) { --fv-lane: 3; animation-duration: 19s; animation-delay:   3s; }
+  .fv-hero__plus:nth-child(5) { --fv-lane: 4; animation-duration: 24s; animation-delay: -14s; }
+  .fv-hero__plus:nth-child(6) { --fv-lane: 5; animation-duration: 27s; animation-delay:   5s; }
+  .fv-hero__plus:nth-child(7) { --fv-lane: 6; animation-duration: 14s; animation-delay:  -4s; }
 
-  /* レーン2（20秒周期・半分は10秒） */
-  .fv-hero__plus:nth-child(3)  { --fv-lane: 2; animation-duration: 20s; animation-delay:  -4s; }
-  .fv-hero__plus:nth-child(10) { --fv-lane: 2; animation-duration: 20s; animation-delay: -14s; }
-
-  /* レーン3〜6（1レーン1個） */
-  .fv-hero__plus:nth-child(4) { --fv-lane: 3; animation-duration: 19s; animation-delay:  -6s; }
-  .fv-hero__plus:nth-child(5) { --fv-lane: 4; animation-duration: 24s; animation-delay:  -3s; }
-  .fv-hero__plus:nth-child(6) { --fv-lane: 5; animation-duration: 27s; animation-delay:  -5s; }
-  .fv-hero__plus:nth-child(7) { --fv-lane: 6; animation-duration: 14s; animation-delay:  -1s; }
-}
-
-/* スマホ */
-@media (max-width: 767px) {
-  .fv-hero__sub {
-    font-size: 1rem !important;
-    line-height: 1.8;
-    letter-spacing: 0.03em;
+  .fv-hero__plus:nth-child(n + 8) {
+    display: none;
   }
 }
 
 /* ---------------------------------------------------------
-   スマホ：レーンは5本。＋は10個すべて表示（1レーンに2個ずつ）。
-   ルールはタブレットと同じ（同一レーンは同じ周期＋半周期ずらし）。
+   スマホ：レーン5本・＋は7個。
+   レーン0とレーン1だけ2個入れ、残り3レーンは1個ずつ。
+
+   ▼ 同じレーンに2個入れるときの必須ルール
+     ・animation-duration を完全に同じにする
+     ・animation-delay を「周期のちょうど半分」だけずらす
+   これで2個は常に移動距離の半分（310px）だけ縦に離れ続け、
+   ＋の最大サイズ（76px）に対して十分な余裕があるため重ならない。
+
+   ▼ delay の符号について
+     マイナス＝「途中から再生」。読み込んだ瞬間から画面に居る。
+     プラス ＝ その秒数だけ待ってから登場する。
+     全部マイナスにすると開いた瞬間に一斉に出て渋滞するので、
+     半分ほどはプラスにして、後から入ってくるようにしている。
 --------------------------------------------------------- */
 @media (max-width: 600px) {
   .fv-hero__decor {
@@ -311,24 +297,21 @@
   }
 
   /* レーン0（24秒周期・半分は12秒） */
-  .fv-hero__plus:nth-child(1) { --fv-lane: 0; animation-duration: 24s; animation-delay:   0s; }
-  .fv-hero__plus:nth-child(6) { --fv-lane: 0; animation-duration: 24s; animation-delay: -12s; }
+  .fv-hero__plus:nth-child(1) { --fv-lane: 0; animation-duration: 24s; animation-delay:   2s; }
+  .fv-hero__plus:nth-child(6) { --fv-lane: 0; animation-duration: 24s; animation-delay: -10s; }
 
   /* レーン1（16秒周期・半分は8秒） */
-  .fv-hero__plus:nth-child(2) { --fv-lane: 1; animation-duration: 16s; animation-delay:  -2s; }
-  .fv-hero__plus:nth-child(7) { --fv-lane: 1; animation-duration: 16s; animation-delay: -10s; }
+  .fv-hero__plus:nth-child(2) { --fv-lane: 1; animation-duration: 16s; animation-delay:   5s; }
+  .fv-hero__plus:nth-child(7) { --fv-lane: 1; animation-duration: 16s; animation-delay:  -3s; }
 
-  /* レーン2（20秒周期・半分は10秒） */
-  .fv-hero__plus:nth-child(3) { --fv-lane: 2; animation-duration: 20s; animation-delay:  -4s; }
-  .fv-hero__plus:nth-child(8) { --fv-lane: 2; animation-duration: 20s; animation-delay: -14s; }
+  /* レーン2〜4（1レーン1個） */
+  .fv-hero__plus:nth-child(3) { --fv-lane: 2; animation-duration: 20s; animation-delay:   1s; }
+  .fv-hero__plus:nth-child(4) { --fv-lane: 3; animation-duration: 18s; animation-delay:   7s; }
+  .fv-hero__plus:nth-child(5) { --fv-lane: 4; animation-duration: 22s; animation-delay:  -9s; }
 
-  /* レーン3（18秒周期・半分は9秒） */
-  .fv-hero__plus:nth-child(4) { --fv-lane: 3; animation-duration: 18s; animation-delay:  -6s; }
-  .fv-hero__plus:nth-child(9) { --fv-lane: 3; animation-duration: 18s; animation-delay: -15s; }
-
-  /* レーン4（22秒周期・半分は11秒） */
-  .fv-hero__plus:nth-child(5)  { --fv-lane: 4; animation-duration: 22s; animation-delay:  -8s; }
-  .fv-hero__plus:nth-child(10) { --fv-lane: 4; animation-duration: 22s; animation-delay: -19s; }
+  .fv-hero__plus:nth-child(n + 8) {
+    display: none;
+  }
 }
 
 /* =========================================================
