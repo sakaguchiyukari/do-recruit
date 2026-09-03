@@ -337,7 +337,6 @@
    ・色は背景の＋装飾と同じ #0068b6 に揃える
    ・面で塗るのは小さなピル型ボタンだけに留める
    ・補足文はボタンの外に小さく置き、サブコピーと同じトーンにする
-   ・アイコンは背景の＋と同じ形にしてモチーフを反復させる
 ========================================================= */
 
 /* この区間だけのリセット。
@@ -403,30 +402,6 @@
 .fv-cta__btn:focus-visible {
   outline: 3px solid var(--cta-bg);
   outline-offset: 4px;
-}
-
-/* 背景の＋装飾と同じ形のアイコン */
-.fv-cta__plus {
-  flex-shrink: 0;
-  width: 15px;
-  height: 15px;
-  background: currentColor;
-
-  /* 第2引数は、＋装飾の指定を消しても四角にならないようにする保険 */
-  clip-path: polygon(
-    var(--fv-plus-thin, 32%)  0%,
-    var(--fv-plus-thick, 68%) 0%,
-    var(--fv-plus-thick, 68%) var(--fv-plus-thin, 32%),
-    100%                      var(--fv-plus-thin, 32%),
-    100%                      var(--fv-plus-thick, 68%),
-    var(--fv-plus-thick, 68%) var(--fv-plus-thick, 68%),
-    var(--fv-plus-thick, 68%) 100%,
-    var(--fv-plus-thin, 32%)  100%,
-    var(--fv-plus-thin, 32%)  var(--fv-plus-thick, 68%),
-    0%                        var(--fv-plus-thick, 68%),
-    0%                        var(--fv-plus-thin, 32%),
-    var(--fv-plus-thin, 32%)  var(--fv-plus-thin, 32%)
-  );
 }
 
 .fv-cta__arrow {
