@@ -95,6 +95,10 @@
   transition-delay: 0.25s;
 }
 
+.fv-hero__fade--delay2 {
+  transition-delay: 0.5s;
+}
+
 /* =========================================================
    Copy
 ========================================================= */
@@ -323,3 +327,157 @@
     opacity: 0;
   }
 }
+
+/* =========================================================
+   ▼▼▼ CTAボタン ここから ▼▼▼
+   不要になったら、この区切りから「▲▲▲ ここまで ▲▲▲」までを
+   まるごと削除してください。他のスタイルには影響しません。
+========================================================= */
+/* この区間だけのリセット。
+   ヒーロー側に全体リセットが無いため、これが無いと
+   幅100%＋余白が加算されてボタンが画面からはみ出す */
+.fv-cta,
+.fv-cta * {
+  box-sizing: border-box;
+}
+
+.fv-cta {
+  /* ▼ 色・形の設定はこの5行だけ触ればOK */
+  --cta-bg: #F98F0C;          /* ボタンの地色 */
+  --cta-bg-hover: #E97C00;    /* ホバー時の地色 */
+  --cta-text: #fff;           /* 文字色 */
+  --cta-notch: 22px;          /* 右下の角を斜めに切る量（0で直角） */
+  --cta-radius: 4px;          /* 角丸 */
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 20px);
+
+  position: relative;
+  z-index: 1;                 /* ＋装飾より前面 */
+
+  margin-top: clamp(1.5rem, 4vw, 2.75rem);
+}
+
+.fv-cta__btn {
+  position: relative;
+  overflow: hidden;           /* はみ出した飾り文字を切り取る */
+
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 20px);
+
+  min-width: min(100%, 420px);
+  padding: clamp(14px, 2.4vw, 22px) clamp(20px, 3.5vw, 34px);
+
+  border-radius: var(--cta-radius);
+  background: var(--cta-bg);
+  color: var(--cta-text);
+  text-decoration: none;
+  text-align: left;
+
+  /* 右下の角を斜めに落とす */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--cta-notch)),
+    calc(100% - var(--cta-notch)) 100%,
+    0 100%
+  );
+
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.fv-cta__btn:hover,
+.fv-cta__btn:focus-visible {
+  background: var(--cta-bg-hover);
+  transform: translateY(-3px);
+}
+
+.fv-cta__btn:focus-visible {
+  outline: 3px solid var(--cta-bg);
+  outline-offset: 4px;
+}
+
+/* 背景に薄く敷く飾り文字「ENTRY」 */
+.fv-cta__ghost {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  z-index: 0;
+
+  /* ボタン幅より必ず大きくして、左右を断ち切る＝背景テクスチャとして見せる。
+     中途半端に収まると「NTRY」のように読めて誤字に見えるため */
+  font-size: clamp(7.5rem, 13vw, 11rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  white-space: nowrap;
+
+  color: rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+}
+
+.fv-cta__body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fv-cta__label {
+  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+/* 補足行。不要ならこの span ごとHTMLから削除 */
+.fv-cta__note {
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.fv-cta__arrow {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: clamp(20px, 2.6vw, 26px);
+  height: clamp(20px, 2.6vw, 26px);
+
+  transition: transform 0.3s ease;
+}
+
+.fv-cta__btn:hover .fv-cta__arrow,
+.fv-cta__btn:focus-visible .fv-cta__arrow {
+  transform: translateX(5px);
+}
+
+/* スマホ：画面幅いっぱいに広げる */
+@media (max-width: 600px) {
+  .fv-cta__btn {
+    min-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fv-cta__btn,
+  .fv-cta__arrow {
+    transition: none;
+  }
+
+  .fv-cta__btn:hover,
+  .fv-cta__btn:focus-visible {
+    transform: none;
+  }
+}
+/* =========================================================
+   ▲▲▲ CTAボタン ここまで ▲▲▲
+========================================================= */

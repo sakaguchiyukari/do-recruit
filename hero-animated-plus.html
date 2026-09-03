@@ -46,6 +46,36 @@
       まいにちに「プラス」をつぎつぎと届ける、多彩な仕事と出会える企業グループです。
     </p>
 
+    <!-- ============================================================
+         ▼▼▼ CTAボタン ここから ▼▼▼
+         不要になったら、この <div class="fv-cta"> ごと削除してください。
+         CSS側も「▼▼▼ CTAボタン ここから ▼▼▼」の区間を削除すれば完全に消えます。
+         JSは追加していないので、他への影響はありません。
+
+         ・リンク先は href を書き換えるだけ
+         ・ボタンを増やす場合は <a class="fv-cta__btn"> を複製
+           （自動で横並び＋スマホでは縦積みになります）
+         ============================================================ -->
+    <div class="fv-cta fv-hero__fade fv-hero__fade--delay2">
+
+      <a class="fv-cta__btn" href="https://recruit.doyg.jp/recruit/">
+        <!-- 背景に薄く敷く飾り文字（読み上げ対象外） -->
+        <span class="fv-cta__ghost" aria-hidden="true">ENTRY</span>
+
+        <span class="fv-cta__body">
+          <span class="fv-cta__label">募集要項を見る</span>
+          <span class="fv-cta__note">各社の応募先・お問い合わせ先はこちら</span>
+        </span>
+
+        <svg class="fv-cta__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </a>
+
+    </div>
+    <!-- ▲▲▲ CTAボタン ここまで ▲▲▲ -->
+
   </section>
 </div>
 
