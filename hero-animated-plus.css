@@ -332,66 +332,71 @@
    ▼▼▼ CTAボタン ここから ▼▼▼
    不要になったら、この区切りから「▲▲▲ ここまで ▲▲▲」までを
    まるごと削除してください。他のスタイルには影響しません。
+
+   デザイン方針：ヒーロー全体の白基調・軽さを崩さないよう、
+   ・色は背景の＋装飾と同じ #0068b6 に揃える
+   ・面で塗るのは小さなピル型ボタンだけに留める
+   ・補足文はボタンの外に小さく置き、サブコピーと同じトーンにする
+   ・アイコンは背景の＋と同じ形にしてモチーフを反復させる
 ========================================================= */
+
 /* この区間だけのリセット。
    ヒーロー側に全体リセットが無いため、これが無いと
-   幅100%＋余白が加算されてボタンが画面からはみ出す */
+   幅＋余白が加算されてスマホでボタンがはみ出す */
 .fv-cta,
 .fv-cta * {
   box-sizing: border-box;
 }
 
 .fv-cta {
-  /* ▼ 色・形の設定はこの5行だけ触ればOK */
-  --cta-bg: #F98F0C;          /* ボタンの地色 */
-  --cta-bg-hover: #E97C00;    /* ホバー時の地色 */
-  --cta-text: #fff;           /* 文字色 */
-  --cta-notch: 22px;          /* 右下の角を斜めに切る量（0で直角） */
-  --cta-radius: 4px;          /* 角丸 */
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: clamp(12px, 2vw, 20px);
+  /* ▼ 触るのはこの4行だけでOK */
+  --cta-bg: #0068B6;        /* ボタンの地色（＋装飾と同じ色） */
+  --cta-bg-hover: #00568F;  /* ホバー時の地色 */
+  --cta-text: #fff;         /* 文字色 */
+  --cta-shadow: 0, 104, 182;/* 影の色（RGB） */
 
   position: relative;
-  z-index: 1;                 /* ＋装飾より前面 */
+  z-index: 1;               /* ＋装飾より前面 */
 
-  margin-top: clamp(1.5rem, 4vw, 2.75rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: clamp(1.75rem, 4vw, 2.75rem);
 }
 
 .fv-cta__btn {
-  position: relative;
-  overflow: hidden;           /* はみ出した飾り文字を切り取る */
-
   display: inline-flex;
   align-items: center;
-  gap: clamp(12px, 2vw, 20px);
+  gap: clamp(10px, 1.4vw, 14px);
 
-  min-width: min(100%, 420px);
-  padding: clamp(14px, 2.4vw, 22px) clamp(20px, 3.5vw, 34px);
+  padding: clamp(14px, 1.8vw, 18px) clamp(26px, 3vw, 38px);
+  border-radius: 999px;
 
-  border-radius: var(--cta-radius);
   background: var(--cta-bg);
   color: var(--cta-text);
   text-decoration: none;
-  text-align: left;
 
-  /* 右下の角を斜めに落とす */
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - var(--cta-notch)),
-    calc(100% - var(--cta-notch)) 100%,
-    0 100%
-  );
+  font-size: clamp(15px, 1.6vw, 17px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
 
-  transition: background 0.3s ease, transform 0.3s ease;
+  /* 白背景から軽く浮かせる。色は青みでページ全体と揃える */
+  box-shadow: 0 6px 18px rgba(var(--cta-shadow), 0.26);
+
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 .fv-cta__btn:hover,
 .fv-cta__btn:focus-visible {
   background: var(--cta-bg-hover);
+  box-shadow: 0 10px 26px rgba(var(--cta-shadow), 0.34);
   transform: translateY(-3px);
 }
 
@@ -400,70 +405,63 @@
   outline-offset: 4px;
 }
 
-/* 背景に薄く敷く飾り文字「ENTRY」 */
-.fv-cta__ghost {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -58%);
-  z-index: 0;
+/* 背景の＋装飾と同じ形のアイコン */
+.fv-cta__plus {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  background: currentColor;
 
-  /* ボタン幅より必ず大きくして、左右を断ち切る＝背景テクスチャとして見せる。
-     中途半端に収まると「NTRY」のように読めて誤字に見えるため */
-  font-size: clamp(7.5rem, 13vw, 11rem);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  white-space: nowrap;
-
-  color: rgba(255, 255, 255, 0.16);
-  pointer-events: none;
-}
-
-.fv-cta__body {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.fv-cta__label {
-  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
-}
-
-/* 補足行。不要ならこの span ごとHTMLから削除 */
-.fv-cta__note {
-  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  line-height: 1.5;
-  opacity: 0.9;
+  /* 第2引数は、＋装飾の指定を消しても四角にならないようにする保険 */
+  clip-path: polygon(
+    var(--fv-plus-thin, 32%)  0%,
+    var(--fv-plus-thick, 68%) 0%,
+    var(--fv-plus-thick, 68%) var(--fv-plus-thin, 32%),
+    100%                      var(--fv-plus-thin, 32%),
+    100%                      var(--fv-plus-thick, 68%),
+    var(--fv-plus-thick, 68%) var(--fv-plus-thick, 68%),
+    var(--fv-plus-thick, 68%) 100%,
+    var(--fv-plus-thin, 32%)  100%,
+    var(--fv-plus-thin, 32%)  var(--fv-plus-thick, 68%),
+    0%                        var(--fv-plus-thick, 68%),
+    0%                        var(--fv-plus-thin, 32%),
+    var(--fv-plus-thin, 32%)  var(--fv-plus-thin, 32%)
+  );
 }
 
 .fv-cta__arrow {
-  position: relative;
-  z-index: 1;
   flex-shrink: 0;
-  width: clamp(20px, 2.6vw, 26px);
-  height: clamp(20px, 2.6vw, 26px);
-
+  width: 18px;
+  height: 18px;
   transition: transform 0.3s ease;
 }
 
 .fv-cta__btn:hover .fv-cta__arrow,
 .fv-cta__btn:focus-visible .fv-cta__arrow {
-  transform: translateX(5px);
+  transform: translateX(4px);
 }
 
-/* スマホ：画面幅いっぱいに広げる */
-@media (max-width: 600px) {
+/* 補足文。サブコピーと同じトーンで軽く */
+.fv-cta__note {
+  margin: 0;
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--fv-color-text);
+  opacity: 0.65;
+
+  /* 背面を＋装飾が通過しても読めるよう、背景色のハローで抜く */
+  text-shadow:
+    0 0 6px #fff,
+    0 0 4px #fff,
+    0 0 3px #fff;
+}
+
+/* スマホ：横幅いっぱいまでは広げず、内容に合わせる */
+@media (max-width: 480px) {
   .fv-cta__btn {
-    min-width: 100%;
+    width: 100%;
+    justify-content: center;
   }
 }
 
