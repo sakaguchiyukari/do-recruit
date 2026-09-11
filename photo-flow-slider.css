@@ -1,0 +1,233 @@
+/* =========================================================
+   Photo Flow Slider
+   SWELL「外観 > カスタマイズ > 追加CSS」に貼り付け
+
+   prefix : pflow-
+   構成   : 1.設定 / 2.外枠 / 3.行 / 4.写真 / 5.サイズ
+            6.縦位置 / 7.状態 / 8.モーション配慮
+========================================================= */
+
+
+/* =========================================================
+   1. 設定（調整はこのブロックだけで完結する）
+========================================================= */
+.pflow {
+  /* レイアウト */
+  --pflow-gap: clamp(0.875rem, 0.46rem + 1.03vw, 1.25rem); /* 写真同士の間隔 14→20px */
+  --pflow-padding-block: clamp(2.25rem, 3.5vw, 3.5rem); /* 影と縦ズレの逃げ幅 */
+  --pflow-radius: 8px;
+
+  /* 流れる速さ（数値が大きいほどゆっくり） */
+  --pflow-duration: 46s;
+
+  /* 見た目 */
+  --pflow-item-bg: #ffffff;
+  --pflow-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    0 18px 40px -12px rgba(0, 0, 0, 0.16);
+  --pflow-shadow-hover:
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 10px 24px rgba(0, 0, 0, 0.12),
+    0 26px 56px -14px rgba(0, 0, 0, 0.22);
+
+  /* フェードイン */
+  --pflow-fade-duration: 0.8s;
+
+  /* 内部制御用（直接編集しない） */
+  --pflow-play: running;
+}
+
+
+/* =========================================================
+   2. 外枠（本文幅を飛び出して画面いっぱいに広げる）
+
+   ・margin-inline の負値で親要素の幅制限から抜ける
+   ・max-width だけはテーマ側の指定に負けるため !important を許容
+   ・横スクロールバーが出る場合は、テーマ側の本文ラッパーに
+     overflow-x: hidden; を指定して対処する
+========================================================= */
+.pflow {
+  position: relative;
+  max-width: none !important;
+  margin-inline: calc(50% - 50vw);
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   3. 行（横に流れる帯）
+========================================================= */
+.pflow__row {
+  display: flex;
+  align-items: center;
+  gap: var(--pflow-gap);
+  width: max-content;
+  padding-block: var(--pflow-padding-block);
+
+  animation-duration: var(--pflow-duration);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: var(--pflow-play);
+  will-change: transform;
+}
+
+/* 流れる方向（複製後の幅がちょうど2倍になる前提） */
+.pflow__row--left  { animation-name: pflow-scroll-left; }
+.pflow__row--right { animation-name: pflow-scroll-right; }
+
+@keyframes pflow-scroll-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes pflow-scroll-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+
+/* =========================================================
+   4. 写真カード
+========================================================= */
+.pflow__item {
+  flex: 0 0 auto;
+  margin: 0;                     /* figure の初期余白を打ち消す */
+  width: var(--pflow-item-width);
+  aspect-ratio: var(--pflow-item-ratio);
+  border-radius: var(--pflow-radius);
+  overflow: hidden;
+  background-color: var(--pflow-item-bg);
+  box-shadow: var(--pflow-shadow);
+
+  /* 縦位置のズレ。transform ではなく translate を使い、
+     ホバーの scale と干渉させない */
+  translate: 0 var(--pflow-shift, 0);
+  transition:
+    scale 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.4s ease;
+}
+
+.pflow__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ホバー（マウス環境のみ） */
+@media (hover: hover) {
+  .pflow__item:hover {
+    scale: 1.03;
+    box-shadow: var(--pflow-shadow-hover);
+  }
+
+  /* カーソルを重ねている間は流れを止めて写真を見やすくする */
+  .pflow:hover {
+    --pflow-play: paused;
+  }
+}
+
+
+/* =========================================================
+   5. サイズバリエーション
+
+   幅   : clamp() で 640px時のSPサイズ 〜 1220px時のPCサイズへ
+          なめらかに可変（メディアクエリ不要）
+   高さ : aspect-ratio から自動算出（数値の二重管理を避ける）
+========================================================= */
+.pflow__item--tall {
+  --pflow-item-width: clamp(150px, 4.55rem + 12.07vw, 220px);
+  --pflow-item-ratio: 22 / 34;
+}
+
+.pflow__item--square {
+  --pflow-item-width: clamp(170px, 4.42rem + 15.52vw, 260px);
+  --pflow-item-ratio: 1 / 1;
+}
+
+.pflow__item--wide {
+  --pflow-item-width: clamp(230px, 5.41rem + 22.41vw, 360px);
+  --pflow-item-ratio: 36 / 22;
+}
+
+.pflow__item--small {
+  --pflow-item-width: clamp(130px, 4.68rem + 8.62vw, 180px);
+  --pflow-item-ratio: 1 / 1;
+}
+
+.pflow__item--portrait {
+  --pflow-item-width: clamp(140px, 4.61rem + 10.34vw, 200px);
+  --pflow-item-ratio: 2 / 3;
+}
+
+.pflow__item--large {
+  --pflow-item-width: clamp(200px, 5.61rem + 17.24vw, 300px);
+  --pflow-item-ratio: 30 / 38;
+}
+
+
+/* =========================================================
+   6. 縦位置オフセット（ランダム風の配置）
+   nth-child ではなくクラス指定にすることで、
+   写真を増減しても複製部分と並びがズレない
+========================================================= */
+.pflow__item--shift-up-lg   { --pflow-shift: clamp(-1.75rem, -2.2vw, -1rem); }
+.pflow__item--shift-up-sm   { --pflow-shift: clamp(-0.75rem, -0.95vw, -0.5rem); }
+.pflow__item--shift-down-sm { --pflow-shift: clamp(0.625rem, 1.4vw, 1.125rem); }
+.pflow__item--shift-down-lg { --pflow-shift: clamp(1rem, 2.3vw, 1.875rem); }
+
+
+/* =========================================================
+   7. 状態（JavaScript が付与するクラス）
+   pflow--ready   : JSが動作している
+   pflow--visible : 一度でも画面内に入った → フェードイン
+   pflow--running : 現在画面内にある → アニメーション再生
+========================================================= */
+.pflow--ready {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity var(--pflow-fade-duration) ease,
+    transform var(--pflow-fade-duration) cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.pflow--ready.pflow--visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* 画面外では流さない */
+.pflow--ready:not(.pflow--running) {
+  --pflow-play: paused;
+}
+
+
+/* =========================================================
+   8. モーション配慮
+   アニメーションを止めるかわりに、手動で横スクロールできるようにする
+========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .pflow {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pflow--ready {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .pflow__row {
+    animation: none;
+  }
+
+  .pflow__item {
+    transition: none;
+  }
+
+  .pflow__item:hover {
+    scale: 1;
+  }
+}

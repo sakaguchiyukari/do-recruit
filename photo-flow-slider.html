@@ -1,0 +1,136 @@
+<!--
+  ============================================================
+  Photo Flow Slider（写真が横に流れる無限スライダー）
+  SWELL WordPress テーマ / カスタムHTMLブロック用
+
+  【設置手順】
+  1. photo-flow-slider.css の内容を
+     「外観 > カスタマイズ > 追加CSS」に貼り付ける
+  2. このファイルの内容を、設置したい場所の
+     「カスタムHTML」ブロックにそのまま貼り付ける
+
+  【写真の増減】
+  .pflow__item を増減するだけ。複製・ループ処理はJSが自動で行う。
+  サイズ    … pflow__item--tall / --square / --wide / --small / --portrait / --large
+  縦位置    … pflow__item--shift-up-lg / --shift-up-sm / --shift-down-sm / --shift-down-lg
+
+  【2段にしたい場合】
+  下記 .pflow__row をコピーし、--left を --right に変えると逆方向に流れる。
+  ============================================================
+-->
+
+<div class="pflow" data-pflow>
+
+  <!-- ===== ROW A：左へ流れる ===== -->
+  <div class="pflow__row pflow__row--left" data-pflow-row>
+
+    <figure class="pflow__item pflow__item--tall pflow__item--shift-up-lg">
+      <img class="pflow__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/07/20250318_0083-scaled.jpg" alt="" loading="lazy" decoding="async">
+    </figure>
+
+    <figure class="pflow__item pflow__item--square pflow__item--shift-down-sm">
+      <img class="pflow__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/07/imgi_63_img-service03@2x.jpg" alt="" loading="lazy" decoding="async">
+    </figure>
+
+    <figure class="pflow__item pflow__item--wide pflow__item--shift-up-sm">
+      <img class="pflow__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/316A4191-scaled.png" alt="" loading="lazy" decoding="async">
+    </figure>
+
+    <figure class="pflow__item pflow__item--small pflow__item--shift-down-lg">
+      <img class="pflow__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/07/imgi_27_top_service_main_list_item_bg01.jpg" alt="" loading="lazy" decoding="async">
+    </figure>
+
+    <figure class="pflow__item pflow__item--large pflow__item--shift-up-lg">
+      <img class="pflow__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/07/20260605_0031-scaled.jpg" alt="" loading="lazy" decoding="async">
+    </figure>
+
+    <figure class="pflow__item pflow__item--portrait pflow__item--shift-down-sm">
+      <img class="pflow__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/08/316A3939-scaled.jpg" alt="" loading="lazy" decoding="async">
+    </figure>
+
+    <figure class="pflow__item pflow__item--square pflow__item--shift-up-sm">
+      <img class="pflow__image" src="https://recruit.doyg.jp/wp-content/uploads/2026/06/20250604_0139-scaled.jpg" alt="" loading="lazy" decoding="async">
+    </figure>
+
+  </div>
+
+</div>
+
+<!--
+  JavaScript
+  ※インラインの <script> に defer は効かないため、
+    DOM構築の完了をスクリプト側（readyState）で判定している。
+  ※子テーマでエンキューして読み込みたい場合は、下の <script> の中身を
+    そのまま photo-flow-slider.js として保存し、このブロックを削除する。
+-->
+<script>
+(() => {
+  'use strict';
+
+  const ROOT_SELECTOR = '[data-pflow]';
+  const ROW_SELECTOR  = '[data-pflow-row]';
+
+  /* ---------------------------------------------------------
+     行の中身を複製して、途切れない無限ループをつくる
+     （CSS側が translateX(-50%) で戻るため、必ず2セット必要）
+  --------------------------------------------------------- */
+  const duplicateRow = (row) => {
+    if (row.dataset.pflowCloned === 'true') return; // 二重複製の防止
+
+    const fragment = document.createDocumentFragment();
+
+    Array.from(row.children).forEach((item) => {
+      const clone = item.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');    // 複製分は支援技術から隠す
+      fragment.appendChild(clone);
+    });
+
+    row.appendChild(fragment);
+    row.dataset.pflowCloned = 'true';
+  };
+
+  /* ---------------------------------------------------------
+     IntersectionObserver
+     画面内 … フェードイン＋アニメーション再生
+     画面外 … アニメーション停止（描画負荷の軽減）
+  --------------------------------------------------------- */
+  const createObserver = () => {
+    if (!('IntersectionObserver' in window)) return null;
+
+    return new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('pflow--running', entry.isIntersecting);
+        if (entry.isIntersecting) {
+          entry.target.classList.add('pflow--visible'); // フェードインは一度だけ
+        }
+      });
+    }, { threshold: 0, rootMargin: '10% 0px' });
+  };
+
+  /* ---------------------------------------------------------
+     初期化
+  --------------------------------------------------------- */
+  const init = () => {
+    const roots = document.querySelectorAll(ROOT_SELECTOR);
+    if (roots.length === 0) return;
+
+    const observer = createObserver();
+
+    roots.forEach((root) => {
+      root.querySelectorAll(ROW_SELECTOR).forEach(duplicateRow);
+
+      // JSが動く環境でのみ初期状態を非表示にする（JS無効時は表示されたまま）
+      if (observer) {
+        root.classList.add('pflow--ready');
+        observer.observe(root);
+      }
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+</script>
