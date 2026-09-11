@@ -17,7 +17,11 @@
   --pflow-padding-block: clamp(2.25rem, 3.5vw, 3.5rem); /* 影と縦ズレの逃げ幅 */
   --pflow-radius: 8px;
 
-  /* 流れる速さ（数値が大きいほどゆっくり） */
+  /* 流れる速さ：1秒あたり何px動かすか（数値が大きいほど速い） */
+  --pflow-speed: 40;
+
+  /* 実際の再生時間。JSが画面幅に応じて上書きする
+     （JSが動かない場合のフォールバック値） */
   --pflow-duration: 46s;
 
   /* 見た目 */
@@ -61,7 +65,6 @@
 .pflow__row {
   display: flex;
   align-items: center;
-  gap: var(--pflow-gap);
   width: max-content;
   padding-block: var(--pflow-padding-block);
 
@@ -72,7 +75,10 @@
   will-change: transform;
 }
 
-/* 流れる方向（複製後の幅がちょうど2倍になる前提） */
+/* 流れる方向
+   ※写真の間隔は gap ではなく .pflow__item の margin で確保している。
+     gap だと「1セット分の幅 ≠ 全体の50%」となり、
+     ループの継ぎ目で gap 半個分の空白が生じるため。 */
 .pflow__row--left  { animation-name: pflow-scroll-left; }
 .pflow__row--right { animation-name: pflow-scroll-right; }
 
@@ -92,7 +98,8 @@
 ========================================================= */
 .pflow__item {
   flex: 0 0 auto;
-  margin: 0;                     /* figure の初期余白を打ち消す */
+  /* figure の初期余白を打ち消しつつ、右側に写真同士の間隔を持たせる */
+  margin: 0 var(--pflow-gap) 0 0;
   width: var(--pflow-item-width);
   aspect-ratio: var(--pflow-item-ratio);
   border-radius: var(--pflow-radius);
@@ -120,11 +127,6 @@
   .pflow__item:hover {
     scale: 1.03;
     box-shadow: var(--pflow-shadow-hover);
-  }
-
-  /* カーソルを重ねている間は流れを止めて写真を見やすくする */
-  .pflow:hover {
-    --pflow-play: paused;
   }
 }
 

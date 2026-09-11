@@ -58,9 +58,9 @@
 
 <!--
   JavaScript
-  ※インラインの <script> に defer は効かないため、
+  ※インラインのスクリプトには defer が効かないため、
     DOM構築の完了をスクリプト側（readyState）で判定している。
-  ※子テーマでエンキューして読み込みたい場合は、下の <script> の中身を
+  ※子テーマでエンキューして読み込みたい場合は、下のスクリプトの中身を
     そのまま photo-flow-slider.js として保存し、このブロックを削除する。
 -->
 <script>
@@ -69,24 +69,50 @@
 
   const ROOT_SELECTOR = '[data-pflow]';
   const ROW_SELECTOR  = '[data-pflow-row]';
+  const MAX_DOUBLING  = 6;      // 複製の上限（暴走防止）
+  const FALLBACK_SPEED = 40;    // --pflow-speed が読めない場合の速度(px/秒)
 
   /* ---------------------------------------------------------
-     行の中身を複製して、途切れない無限ループをつくる
-     （CSS側が translateX(-50%) で戻るため、必ず2セット必要）
+     行の中身を「倍」にする
+     倍々で増やすことで、常に translateX(-50%) が
+     ちょうど整数セット分の移動になり、継ぎ目が生まれない
   --------------------------------------------------------- */
-  const duplicateRow = (row) => {
-    if (row.dataset.pflowCloned === 'true') return; // 二重複製の防止
-
+  const doubleRow = (row) => {
     const fragment = document.createDocumentFragment();
 
     Array.from(row.children).forEach((item) => {
       const clone = item.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true');    // 複製分は支援技術から隠す
+      clone.setAttribute('aria-hidden', 'true');   // 複製分は支援技術から隠す
       fragment.appendChild(clone);
     });
 
     row.appendChild(fragment);
-    row.dataset.pflowCloned = 'true';
+  };
+
+  /* ---------------------------------------------------------
+     画面幅の2倍以上になるまで複製を追加する
+     （1周分の幅が画面幅未満だと、折り返し時に空白が見えてしまう）
+     すでに足りている場合は何もしないので、リサイズ時に呼んでも増え続けない
+  --------------------------------------------------------- */
+  const fillRow = (row, minWidth) => {
+    let count = 0;
+
+    while (row.scrollWidth < minWidth && count < MAX_DOUBLING) {
+      doubleRow(row);
+      count += 1;
+    }
+  };
+
+  /* ---------------------------------------------------------
+     速度を一定に保つ
+     複製数や画面幅が変わっても見た目の流れる速さを揃えるため、
+     移動距離（全体幅の半分）から再生時間を逆算する
+  --------------------------------------------------------- */
+  const updateDuration = (root, row) => {
+    const speed = parseFloat(getComputedStyle(root).getPropertyValue('--pflow-speed')) || FALLBACK_SPEED;
+    const distance = row.scrollWidth / 2;
+
+    row.style.setProperty('--pflow-duration', `${(distance / speed).toFixed(2)}s`);
   };
 
   /* ---------------------------------------------------------
@@ -111,19 +137,44 @@
      初期化
   --------------------------------------------------------- */
   const init = () => {
-    const roots = document.querySelectorAll(ROOT_SELECTOR);
+    const roots = Array.from(document.querySelectorAll(ROOT_SELECTOR));
     if (roots.length === 0) return;
 
     const observer = createObserver();
 
-    roots.forEach((root) => {
-      root.querySelectorAll(ROW_SELECTOR).forEach(duplicateRow);
+    // { root, rows } の組を保持し、リサイズ時に使い回す
+    const sliders = roots.map((root) => ({
+      root,
+      rows: Array.from(root.querySelectorAll(ROW_SELECTOR))
+    }));
 
+    // まず全行を2セットにする（ループの前提条件）
+    sliders.forEach(({ rows }) => rows.forEach(doubleRow));
+
+    const layout = () => {
+      sliders.forEach(({ root, rows }) => {
+        rows.forEach((row) => {
+          fillRow(row, root.clientWidth * 2);
+          updateDuration(root, row);
+        });
+      });
+    };
+
+    layout();
+
+    sliders.forEach(({ root }) => {
       // JSが動く環境でのみ初期状態を非表示にする（JS無効時は表示されたまま）
       if (observer) {
         root.classList.add('pflow--ready');
         observer.observe(root);
       }
+    });
+
+    // 画面幅の変化に追従（写真幅が clamp() で変わるため再計算する）
+    let timer = 0;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(layout, 200);
     });
   };
 
