@@ -1,0 +1,299 @@
+@charset "UTF-8";
+/* =========================================================================
+   ドゥ.ヨネザワ企業グループ 採用サイト - 社員紹介一覧（Members Index）
+   - 絞り込み：部署名（ドコモショップ／営業部／管理部）※仮
+   ========================================================================= */
+
+/* ==========================================================================
+   1. Design Tokens（デザイントークン）
+   ========================================================================= */
+:root {
+  /* --- Color：柔らかく親しみやすい × 元気のあるアクセント --- */
+  --c-base:         #f9f9f9;  /* ベース（温かいオフホワイト） */
+  --c-base-deep:    #f4ece0;  /* ベースの一段濃い色 */
+  --c-surface:      #ffffff;  /* カード面 */
+  --c-line:         #ece3d6;  /* 罫線 */
+  --c-sub:          #8a8178;  /* 補助テキスト（部署名など） */
+  --c-primary:      #ff6b4a;  /* メインアクセント：コーラル */
+  --c-primary-d:    #f4502c;  /* コーラル濃 */
+  --c-accent:       #1fb6a6;  /* サブアクセント：ミント */
+  --c-primary-pale: #ffe6dd;  /* コーラル淡（タグ背景など） */
+  --c-accent-pale:  #d9f4f0;  /* ミント淡 */
+
+  /* --- Typography --- */
+  --ff-display: "M PLUS Rounded 1c", "Noto Sans JP", system-ui, sans-serif;
+  --ff-body:    "Noto Sans JP", system-ui, -apple-system, sans-serif;
+  --ff-en:      "Outfit", "Noto Sans JP", sans-serif;
+
+  /* --- Radius / Shadow（角丸は控えめに） --- */
+  --radius-card:  10px;
+  --shadow-card:  0 10px 30px -12px rgba(43, 38, 34, 0.18);
+  --shadow-hover: 0 22px 48px -16px rgba(255, 107, 74, 0.35);
+
+  /* --- Easing --- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Layout --- */
+  --content-max: 1280px;
+}
+
+/* ==========================================================================
+   2. Section Base（セクションベース / フルワイド）
+   ========================================================================== */
+.doyg-members {
+  font-family: var(--ff-body);
+  color: var(--c-ink);
+  background-color: var(--c-base);
+
+  /* フルワイド：コンテンツ幅を突き抜けて画面いっぱいに */
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  overflow-x: clip;
+
+  /* セクション上下余白（一旦削除）
+　padding-block: clamp(3.5rem, 8vw, 7rem);
+  position: relative; */
+
+}
+
+/* 中央寄せコンテナ（左右余白もclamp可変） */
+.doyg-members__inner {
+  width: min(100% - clamp(2rem, 6vw, 6rem), var(--content-max));
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   3. Filter（カテゴリー絞り込み）
+   ========================================================================== */
+.doyg-members__filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.5rem, 1.6vw, 0.85rem);
+  margin-bottom: clamp(2rem, 4.5vw, 3.25rem);
+}
+
+.doyg-filter__btn {
+  font-family: var(--ff-display);
+  font-weight: 700;
+  font-size: clamp(0.8rem, 2.2vw, 0.95rem);
+  line-height: 1;
+  padding: clamp(0.6rem, 1.8vw, 0.8rem) clamp(1rem, 3vw, 1.5rem);
+  border-radius: 99px;
+  background: var(--c-surface);
+  color: var(--c-sub);
+  border: 2px solid var(--c-line);
+  cursor: pointer;
+  transition:
+    transform 0.25s var(--ease-out),
+    background-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+
+.doyg-filter__btn:active {
+  transform: scale(0.96);
+}
+
+/* ホバー対応端末のみ */
+@media (hover: hover) and (pointer: fine) {
+  .doyg-filter__btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--c-primary);
+    color: var(--c-primary-d);
+  }
+}
+
+/* 選択中 */
+.doyg-filter__btn.is-active {
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+  color: #fff;
+  box-shadow: var(--shadow-hover);
+}
+
+/* ==========================================================================
+   4. Card Grid（カードグリッド）
+   - SP:2列 / タブレット以上:3列（現在6枚のため3列で2段の整列に）
+   ========================================================================== */
+.doyg-members__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(0.9rem, 2.4vw, 1.75rem);
+}
+
+@media (min-width: 600px) {
+  .doyg-members__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 全13枚公開時にPCを4列へ戻す場合はこちらを有効化*/
+@media (min-width: 1024px) {
+  .doyg-members__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+
+/* ==========================================================================
+   5. Card（社員カード）
+   ========================================================================== */
+.doyg-card {
+  position: relative;
+  background: var(--c-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition:
+    transform 0.4s var(--ease-out),
+    box-shadow 0.4s var(--ease-out);
+}
+
+/* カード全体をリンクに（タップ領域を大きく確保） */
+.doyg-card__link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* --- サムネイル --- */
+.doyg-card__thumb {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--c-base-deep);
+}
+
+.doyg-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
+/* 写真下部のグラデーション（奥行き演出） */
+.doyg-card__thumb::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 45%;
+  background: linear-gradient(transparent, rgba(43, 38, 34, 0.35));
+}
+
+/* 年次バッジ（写真左上） */
+.doyg-card__year {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1;
+  font-family: var(--ff-en);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: rgba(43, 38, 34, 0.55);
+  backdrop-filter: blur(4px);
+  padding: 0.3em 0.7em;
+  border-radius: 99px;
+}
+
+/* --- 本文 --- */
+.doyg-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding:
+    clamp(0.95rem, 2.6vw, 1.4rem)
+    clamp(0.9rem, 2.4vw, 1.35rem)
+    clamp(1.1rem, 2.8vw, 1.5rem);
+}
+
+/* 会社名タグ */
+.doyg-card__dept {
+  align-self: flex-start;
+  font-family: var(--ff-display);
+  font-weight: 700;
+  font-size: clamp(0.68rem, 1.9vw, 0.78rem);
+  line-height: 1;
+  color: var(--c-primary-d);
+  background: var(--c-primary-pale);
+  padding: 0.45em 0.75em;
+  border-radius: 99px;
+}
+
+/* ミント系タグのバリエーション（modifier） */
+.doyg-card__dept--accent {
+  color: #0f8a7d;
+  background: var(--c-accent-pale);
+}
+
+/* 部署名（会社名の下） */
+.doyg-card__division {
+  margin: 0;
+  font-size: clamp(0.72rem, 2vw, 0.82rem);
+  line-height: 1.4;
+  color: var(--c-sub);
+  letter-spacing: 0.03em;
+}
+
+/* 名前（イニシャル表記 / #1e1e1e） */
+.doyg-card__name {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-weight: 800;
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+}
+
+/* --- ホバー演出（カード浮き＋写真ズーム / ホバー対応端末のみ） --- */
+@media (hover: hover) and (pointer: fine) {
+  .doyg-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+  }
+  .doyg-card:hover .doyg-card__img {
+    transform: scale(1.08);
+  }
+}
+
+/* ==========================================================================
+   6. Filtering State（絞り込み非表示）
+   ========================================================================== */
+.doyg-card.is-hidden {
+  display: none;
+}
+
+/* ==========================================================================
+   7. Fade-in（IntersectionObserverによるスクロール演出）
+   ========================================================================== */
+.js-fade {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+  will-change: opacity, transform;
+}
+.js-fade.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* モーション軽減設定を尊重 */
+@media (prefers-reduced-motion: reduce) {
+  .doyg-members *,
+  .doyg-members *::before,
+  .doyg-members *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .js-fade {
+    opacity: 1;
+    transform: none;
+  }
+}
