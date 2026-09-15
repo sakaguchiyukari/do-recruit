@@ -1,0 +1,113 @@
+<!--
+  SWELL WordPress テーマ用
+  フローティング写真スライダー（左へ無限ループ）
+
+  使い方:
+  1. 「外観 > カスタマイズ > 追加CSS」に flow-photo-slider.css の内容を貼り付け
+  2. 固定ページ・投稿の「カスタムHTML」ブロックに下記HTMLを貼り付け
+     （末尾の script は flow-photo-slider.js と同一内容。
+       子テーマから wp_enqueue_script で読み込む場合は script タグを削除し、
+       外部ファイル側に defer を付与して読み込むこと）
+
+  注意:
+  ・写真の枚数は「4の倍数」にすること（縦位置ずらしが 4n 周期のため）
+  ・画像は表示サイズに合わせてリサイズ＋WebP化を推奨（現状はフルサイズPNG）
+-->
+
+<!-- ===================== HTML ===================== -->
+<div class="dy-flow">
+
+  <!-- 行1：左へ流れる -->
+  <div class="dy-flow__row dy-flow__row--left">
+    <div class="dy-flow__item dy-flow__item--tall">
+      <img class="dy-flow__img" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/imgi_6_BD9N4FiCXvpyjt0cZabSVr6Kkz32Eg8R-1.png" alt="" decoding="async" fetchpriority="low">
+    </div>
+    <div class="dy-flow__item dy-flow__item--square">
+      <img class="dy-flow__img" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/imgi_47_DSC04423-scaled-e1783312804577-1024x927-1.png" alt="" decoding="async" fetchpriority="low">
+    </div>
+    <div class="dy-flow__item dy-flow__item--wide">
+      <img class="dy-flow__img" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/316A4191-scaled.png" alt="" decoding="async" fetchpriority="low">
+    </div>
+    <div class="dy-flow__item dy-flow__item--small">
+      <img class="dy-flow__img" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/imgi_27_top_service_main_list_item_bg01.png" alt="" decoding="async" fetchpriority="low">
+    </div>
+    <div class="dy-flow__item dy-flow__item--large">
+      <img class="dy-flow__img" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/new.png" alt="" decoding="async" fetchpriority="low">
+    </div>
+    <div class="dy-flow__item dy-flow__item--portrait">
+      <img class="dy-flow__img" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/316A4071-1.png" alt="" decoding="async" fetchpriority="low">
+    </div>
+    <div class="dy-flow__item dy-flow__item--square">
+      <img class="dy-flow__img" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/20260605_0363.png" alt="" decoding="async" fetchpriority="low">
+    </div>
+    <div class="dy-flow__item dy-flow__item--square">
+      <img class="dy-flow__img" src="https://recruit.doyg.jp/wp-content/uploads/2026/09/IMG_0811287-scaled.png" alt="" decoding="async" fetchpriority="low">
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== JavaScript ===================== -->
+<script>
+(() => {
+  'use strict';
+
+  const ROW_SELECTOR = '.dy-flow__row';
+  const SBW_PROPERTY = '--dy-flow-sbw';
+
+  /**
+   * スクロールバー幅をCSS変数へ反映する
+   * 100vw はスクロールバー幅を含むため、そのまま使うと
+   * PCで横スクロールバーが発生する。実測値を差し引いて防ぐ
+   */
+  const updateScrollbarWidth = () => {
+    const width = window.innerWidth - document.documentElement.clientWidth;
+    document.documentElement.style.setProperty(SBW_PROPERTY, `${Math.max(width, 0)}px`);
+  };
+
+  /**
+   * 行の中身を1セット複製し、シームレスな無限ループを成立させる
+   * （CSS側は translateX(-50%) = 1セット分の移動を前提にしている）
+   */
+  const duplicateRow = (row) => {
+    if (row.dataset.dyFlowReady === 'true') return; // 二重複製ガード
+
+    const fragment = document.createDocumentFragment();
+    Array.from(row.children).forEach((item) => {
+      fragment.appendChild(item.cloneNode(true));
+    });
+    row.appendChild(fragment);
+
+    // 複製が終わってからアニメーションを開始させる
+    row.dataset.dyFlowReady = 'true';
+  };
+
+  const init = () => {
+    updateScrollbarWidth();
+
+    // モーション低減設定時はループさせない（CSS側で横スクロール可能にする）
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    document.querySelectorAll(ROW_SELECTOR).forEach(duplicateRow);
+  };
+
+  // リサイズ時のスクロールバー幅再計算（rAFで間引く）
+  let resizeTicking = false;
+  const handleResize = () => {
+    if (resizeTicking) return;
+    resizeTicking = true;
+    window.requestAnimationFrame(() => {
+      updateScrollbarWidth();
+      resizeTicking = false;
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  window.addEventListener('resize', handleResize, { passive: true });
+})();
+</script>
