@@ -1,0 +1,134 @@
+/* ==========================================================================
+   Recruit Fixed CTA（スマホのみ／画面下部に固定）
+   - 専用プレフィックスでSWELL標準CSSとの競合を避ける
+   - PC・タブレットでは非表示
+   ========================================================================== */
+.recruit-fixed-cta {
+  /* Color */
+  --rfc-navy: #2f6ea0;
+  --rfc-navy-dark: #1c3a5e;
+  --rfc-white: #ffffff;
+  --rfc-text-muted: #5b6570;
+  --rfc-rule: #e4e8ed;
+  --rfc-bg: rgba(255, 255, 255, 0.94);
+
+  /* Style */
+  --rfc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --rfc-dur: 300ms;
+
+  /* PC・タブレットでは表示しない */
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   スマートフォンのみ表示
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .recruit-fixed-cta {
+    display: grid;
+    gap: 0.5rem;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* SWELLのトップへ戻るボタン等と重なる場合はこの値を調整する */
+    z-index: 99;
+    padding: 0.75rem 1rem;
+    /* iPhoneのホームバー分を確保する */
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--rfc-rule);
+    background-color: var(--rfc-bg);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -6px 20px rgba(11, 37, 69, 0.08);
+  }
+
+  /* 固定バーがページ末尾のコンテンツに被らないよう余白を確保する
+     （高さはJSが --rfc-height に代入する） */
+  body.recruit-fixed-cta-active {
+    padding-bottom: var(--rfc-height, 100px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   メインボタン
+   -------------------------------------------------------------------------- */
+.recruit-fixed-cta__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  background-color: var(--rfc-navy);
+  color: var(--rfc-white);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(47, 110, 160, 0.3);
+  transition: background-color var(--rfc-dur) var(--rfc-ease),
+    transform var(--rfc-dur) var(--rfc-ease);
+}
+
+.recruit-fixed-cta__button:active {
+  transform: scale(0.98);
+}
+
+.recruit-fixed-cta__icon {
+  display: grid;
+  place-items: center;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.recruit-fixed-cta__icon svg {
+  width: 100%;
+  height: auto;
+  fill: currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   サブリンク
+   -------------------------------------------------------------------------- */
+.recruit-fixed-cta__sub {
+  color: var(--rfc-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--rfc-dur) var(--rfc-ease);
+}
+
+/* --------------------------------------------------------------------------
+   フォーカス・ホバー
+   -------------------------------------------------------------------------- */
+.recruit-fixed-cta__button:focus-visible,
+.recruit-fixed-cta__sub:focus-visible {
+  outline: 2px solid var(--rfc-navy-dark);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .recruit-fixed-cta__button:hover {
+    background-color: var(--rfc-navy-dark);
+  }
+
+  .recruit-fixed-cta__sub:hover {
+    color: var(--rfc-navy);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recruit-fixed-cta__button,
+  .recruit-fixed-cta__sub {
+    transition: none;
+  }
+
+  .recruit-fixed-cta__button:active {
+    transform: none;
+  }
+}
