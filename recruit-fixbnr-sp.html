@@ -1,0 +1,61 @@
+<!--
+  ============================================================================
+  採用サイト 追従バナー【SP版】（〜959px で表示）
+  WordPress テーマ SWELL / カスタムHTMLブロック用
+  ----------------------------------------------------------------------------
+  導線:
+    新卒採用 → マイナビ（外部サイト / 別タブ）
+    中途採用 → 採用サイト内のエントリーフォーム
+  ----------------------------------------------------------------------------
+  使い方:
+    1. recruit-fixbnr-sp.css の内容を「外観 > カスタマイズ > 追加CSS」に貼り付け
+    2. recruit-fixbnr-sp.js を子テーマ等から defer 付きで読み込む
+       （例）<script src=".../recruit-fixbnr-sp.js" defer></script>
+    3. 下記HTMLをカスタムHTMLブロックに貼り付け（全ページ表示なら wp_footer へ）
+  ----------------------------------------------------------------------------
+  ★ href の URL は必ず実際のものに差し替えてください
+  ============================================================================
+-->
+
+<!-- ===================== SP追従バナー ===================== -->
+<nav class="recruit-fixbnr-sp js-recruit-fixbnr-sp" aria-label="採用エントリー">
+  <ul class="recruit-fixbnr-sp__list">
+
+    <!-- 新卒採用：マイナビ（外部リンク） -->
+    <li class="recruit-fixbnr-sp__item">
+      <a
+        class="recruit-fixbnr-sp__link recruit-fixbnr-sp__link--new"
+        href="https://job.mynavi.jp/27/pc/search/corp000000/outline.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="recruit-fixbnr-sp__label">新卒採用</span>
+        <span class="recruit-fixbnr-sp__text">
+          マイナビへ
+          <svg class="recruit-fixbnr-sp__icon" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+            <path d="M4.5 1.5h6v6M10.5 1.5 5.2 6.8M9 7.5v3H1.5V3h3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="recruit-fixbnr-sp__assistive">別ウィンドウで開きます</span>
+      </a>
+    </li>
+
+    <!-- 中途採用：自社エントリーフォーム -->
+    <li class="recruit-fixbnr-sp__item">
+      <a
+        class="recruit-fixbnr-sp__link recruit-fixbnr-sp__link--mid"
+        href="/recruit/entry/"
+      >
+        <span class="recruit-fixbnr-sp__label">中途採用</span>
+        <span class="recruit-fixbnr-sp__text">
+          エントリー
+          <svg class="recruit-fixbnr-sp__icon" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true" focusable="false">
+            <path d="M1 6h11M7.8 1.8 12 6l-4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+<!-- ===================== /SP追従バナー ===================== -->

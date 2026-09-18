@@ -1,0 +1,79 @@
+<!--
+  ============================================================================
+  採用サイト 追従バナー【PC版】（960px 以上で表示）
+  WordPress テーマ SWELL / カスタムHTMLブロック用
+  ----------------------------------------------------------------------------
+  導線:
+    新卒採用 → マイナビ（外部サイト / 別タブ）
+    中途採用 → 採用サイト内のエントリーフォーム
+  ----------------------------------------------------------------------------
+  使い方:
+    1. recruit-fixbnr-pc.css の内容を「外観 > カスタマイズ > 追加CSS」に貼り付け
+    2. recruit-fixbnr-pc.js を子テーマ等から defer 付きで読み込む
+       （例）<script src=".../recruit-fixbnr-pc.js" defer></script>
+    3. 下記HTMLをカスタムHTMLブロックに貼り付け（全ページ表示なら wp_footer へ）
+  ----------------------------------------------------------------------------
+  ★ href の URL は必ず実際のものに差し替えてください
+  ★ 画面右中央に固定。SWELLの「トップへ戻るボタン」（右下）とは干渉しません
+  ============================================================================
+-->
+
+<!-- ===================== PC追従バナー ===================== -->
+<aside class="recruit-fixbnr-pc js-recruit-fixbnr-pc" aria-label="採用エントリー">
+
+  <!-- 見出し -->
+  <p class="recruit-fixbnr-pc__head">
+    <span class="recruit-fixbnr-pc__head-en">ENTRY</span>
+    <span class="recruit-fixbnr-pc__head-jp">採用エントリー</span>
+  </p>
+
+  <!-- 導線 -->
+  <ul class="recruit-fixbnr-pc__list">
+
+    <!-- 新卒採用：マイナビ（外部リンク） -->
+    <li class="recruit-fixbnr-pc__item">
+      <a
+        class="recruit-fixbnr-pc__link recruit-fixbnr-pc__link--new"
+        href="https://job.mynavi.jp/27/pc/search/corp000000/outline.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="recruit-fixbnr-pc__label">新卒採用</span>
+        <span class="recruit-fixbnr-pc__text">
+          マイナビへ
+          <svg class="recruit-fixbnr-pc__icon" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+            <path d="M4.5 1.5h6v6M10.5 1.5 5.2 6.8M9 7.5v3H1.5V3h3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="recruit-fixbnr-pc__assistive">別ウィンドウで開きます</span>
+      </a>
+    </li>
+
+    <!-- 中途採用：自社エントリーフォーム -->
+    <li class="recruit-fixbnr-pc__item">
+      <a
+        class="recruit-fixbnr-pc__link recruit-fixbnr-pc__link--mid"
+        href="/recruit/entry/"
+      >
+        <span class="recruit-fixbnr-pc__label">中途採用</span>
+        <span class="recruit-fixbnr-pc__text">
+          エントリーフォーム
+          <svg class="recruit-fixbnr-pc__icon" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true" focusable="false">
+            <path d="M1 6h11M7.8 1.8 12 6l-4.2 4.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </a>
+    </li>
+
+  </ul>
+
+  <!-- 閉じる -->
+  <button type="button" class="recruit-fixbnr-pc__close js-recruit-fixbnr-pc-close">
+    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+      <path d="m2 2 8 8M10 2l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+    </svg>
+    <span class="recruit-fixbnr-pc__assistive">採用バナーを閉じる</span>
+  </button>
+
+</aside>
+<!-- ===================== /PC追従バナー ===================== -->

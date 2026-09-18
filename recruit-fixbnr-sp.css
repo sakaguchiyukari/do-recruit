@@ -1,0 +1,223 @@
+@charset "UTF-8";
+/* ==========================================================================
+   採用サイト 追従バナー【SP版】 recruit-fixbnr-sp
+   --------------------------------------------------------------------------
+   ・959px 以下でのみ表示（PC版バナーとは完全に排他）
+   ・ファーストビューを通過したらフェードイン（IntersectionObserver）
+   ・SWELL 本文（.post_content）内に置かれても崩れないよう、
+     ul / li / a のスタイルはコンポーネント内で明示的に打ち消す
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Root : デザイントークンはこのコンポーネント内で完結させる
+   -------------------------------------------------------------------------- */
+.recruit-fixbnr-sp {
+  /* Color */
+  --rfb-sp-color-new: #1b6ca8;        /* 新卒（マイナビ） */
+  --rfb-sp-color-new-hi: #2b83c4;
+  --rfb-sp-color-mid: #0b2545;        /* 中途（エントリー） */
+  --rfb-sp-color-mid-hi: #1c3a5e;
+  --rfb-sp-color-text: #ffffff;
+  --rfb-sp-color-label: rgba(255, 255, 255, 0.78);
+  --rfb-sp-color-focus: #ffd166;
+
+  /* Layout */
+  --rfb-sp-inset: clamp(8px, 2.5vw, 16px);
+  --rfb-sp-gap: clamp(6px, 2vw, 10px);
+  --rfb-sp-min-height: 60px;
+  --rfb-sp-radius: 14px;
+  --rfb-sp-shadow: 0 10px 28px rgba(6, 23, 39, 0.26);
+
+  /* Typography */
+  --rfb-sp-fs-label: clamp(0.625rem, 2.6vw, 0.6875rem);  /* 10 → 11px */
+  --rfb-sp-fs-text: clamp(0.8125rem, 3.4vw, 0.9375rem);  /* 13 → 15px */
+
+  /* Motion */
+  --rfb-sp-dur: 0.45s;
+  --rfb-sp-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  /* SWELL のヘッダー(z-index:99前後)より前面。重なる場合はこの値で調整する */
+  z-index: 999;
+  padding: var(--rfb-sp-inset);
+  /* iPhone のホームインジケータ領域を避ける */
+  padding-block-end: calc(var(--rfb-sp-inset) + env(safe-area-inset-bottom, 0px));
+
+  /* 初期状態：画面下に退避＋非表示（表示前はタップを妨げない） */
+  opacity: 0;
+  transform: translateY(115%);
+  pointer-events: none;
+  transition:
+    opacity var(--rfb-sp-dur) var(--rfb-sp-ease),
+    transform var(--rfb-sp-dur) var(--rfb-sp-ease);
+}
+
+/* 表示状態（JSで付与） */
+.recruit-fixbnr-sp.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* PC・大型タブレットではPC版バナーに役割を渡す */
+@media (min-width: 960px) {
+  .recruit-fixbnr-sp {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   List : 2カラム
+   -------------------------------------------------------------------------- */
+.recruit-fixbnr-sp__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--rfb-sp-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recruit-fixbnr-sp__item {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* SWELL 本文用リストマーカーの打ち消し */
+.recruit-fixbnr-sp__item::before,
+.recruit-fixbnr-sp__item::after {
+  content: none;
+}
+
+/* --------------------------------------------------------------------------
+   Link : タップターゲットは 60px 以上を確保
+   -------------------------------------------------------------------------- */
+.recruit-fixbnr-sp__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--rfb-sp-min-height);
+  padding: 10px 8px;
+  border-radius: var(--rfb-sp-radius);
+  box-shadow: var(--rfb-sp-shadow);
+  color: var(--rfb-sp-color-text);
+  text-decoration: none;
+  text-align: center;
+  line-height: 1.3;
+  transition:
+    transform 0.25s var(--rfb-sp-ease),
+    background-color 0.25s var(--rfb-sp-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 押した瞬間のフィードバック（ホバー前提にしない） */
+.recruit-fixbnr-sp__link:active {
+  transform: scale(0.97);
+}
+
+.recruit-fixbnr-sp__link:focus-visible {
+  outline: 3px solid var(--rfb-sp-color-focus);
+  outline-offset: 2px;
+}
+
+/* 新卒：マイナビ */
+.recruit-fixbnr-sp__link--new {
+  background-color: var(--rfb-sp-color-new);
+}
+
+.recruit-fixbnr-sp__link--new:active {
+  background-color: var(--rfb-sp-color-new-hi);
+}
+
+/* 中途：エントリーフォーム */
+.recruit-fixbnr-sp__link--mid {
+  background-color: var(--rfb-sp-color-mid);
+}
+
+.recruit-fixbnr-sp__link--mid:active {
+  background-color: var(--rfb-sp-color-mid-hi);
+}
+
+/* --------------------------------------------------------------------------
+   Text
+   -------------------------------------------------------------------------- */
+.recruit-fixbnr-sp__label {
+  font-size: var(--rfb-sp-fs-label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--rfb-sp-color-label);
+}
+
+.recruit-fixbnr-sp__text {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--rfb-sp-fs-text);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.recruit-fixbnr-sp__icon {
+  flex-shrink: 0;
+}
+
+/* スクリーンリーダー専用テキスト */
+.recruit-fixbnr-sp__assistive {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Sentinel : JSが生成する表示切り替え用の目印（1px・不可視）
+   -------------------------------------------------------------------------- */
+.recruit-fixbnr-sp__sentinel {
+  position: absolute;
+  inset-block-start: 60vh;   /* この位置を通過したらバナーを表示 */
+  inset-inline-start: 0;
+  width: 1px;
+  height: 1px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Motion : 動きを減らす設定を尊重する
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .recruit-fixbnr-sp,
+  .recruit-fixbnr-sp__link {
+    transition-duration: 0.01ms;
+  }
+
+  .recruit-fixbnr-sp {
+    transform: none;
+  }
+
+  .recruit-fixbnr-sp__link:active {
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   任意 : フッター最下部がバナーで隠れる場合はコメントを外して使用する
+   （SWELLのフッター要素に余白を足す）
+   -------------------------------------------------------------------------- */
+/*
+@media (max-width: 959px) {
+  .l-footer {
+    padding-block-end: 92px;
+  }
+}
+*/
