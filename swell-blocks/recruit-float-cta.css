@@ -1,0 +1,102 @@
+/* ==========================================================================
+   Recruit Float CTA（追従する丸ボタン）
+   - SWELL標準のページトップボタン（#pagetop）のすぐ上に配置する
+   - 専用プレフィックスでSWELL標準CSSとの競合を避ける
+   ========================================================================== */
+.recruit-float-cta {
+  /* Color */
+  --rfc-navy: #2f6ea0;
+  --rfc-navy-dark: #255a83;
+  --rfc-white: #ffffff;
+
+  /* Size
+     ページトップボタンの実寸に合わせて下の2つを調整すると位置が揃う */
+  --rfc-size: 5rem;            /* この丸ボタンの直径（80px） */
+  --rfc-pagetop-size: 44px;    /* SWELLのページトップボタンの直径 */
+  --rfc-pagetop-bottom: 16px;  /* SWELLのページトップボタンの下余白 */
+  --rfc-gap: 12px;             /* 2つのボタンの間隔 */
+  --rfc-right: 16px;           /* 画面右端からの距離 */
+
+  /* Style */
+  --rfc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --rfc-dur: 300ms;
+
+  /* 枠線込みで直径を --rfc-size に揃える */
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  gap: 0.0625rem;
+  position: fixed;
+  right: var(--rfc-right);
+  bottom: calc(
+    var(--rfc-pagetop-bottom) + var(--rfc-pagetop-size) + var(--rfc-gap)
+  );
+  /* 他の固定要素より前面に出す */
+  z-index: 9999;
+  width: var(--rfc-size);
+  height: var(--rfc-size);
+  border: 2px solid var(--rfc-white);
+  border-radius: 50%;
+  background-color: var(--rfc-navy);
+  color: var(--rfc-white);
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(11, 37, 69, 0.24);
+
+  /* スクロールされるまでは隠しておく */
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity var(--rfc-dur) var(--rfc-ease),
+    transform var(--rfc-dur) var(--rfc-ease),
+    background-color var(--rfc-dur) var(--rfc-ease);
+}
+
+.recruit-float-cta.is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* --------------------------------------------------------------------------
+   ラベル・アイコン
+   -------------------------------------------------------------------------- */
+.recruit-float-cta__text {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.recruit-float-cta__icon {
+  display: grid;
+  place-items: center;
+  width: 0.625rem;
+  height: 0.625rem;
+}
+
+.recruit-float-cta__icon svg {
+  width: 100%;
+  height: auto;
+  fill: currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   ホバー・フォーカス
+   -------------------------------------------------------------------------- */
+.recruit-float-cta:focus-visible {
+  outline: 2px solid var(--rfc-navy-dark);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .recruit-float-cta:hover {
+    background-color: var(--rfc-navy-dark);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recruit-float-cta {
+    transition: none;
+  }
+}
