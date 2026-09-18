@@ -8,6 +8,7 @@
   --rfc-navy: #2f6ea0;
   --rfc-navy-dark: #255a83;
   --rfc-white: #ffffff;
+  --rfc-rule: #e4e8ed;
   --rfc-bg: rgba(255, 255, 255, 0.94);
 
   /* Style */
@@ -29,8 +30,8 @@
     right: 0;
     bottom: 0;
     left: 0;
-    /* SWELLのトップへ戻るボタン等と重なる場合はこの値を調整する */
-    z-index: 99;
+    /* 他の固定要素より前面に出す */
+    z-index: 9999;
     padding: 0.75rem 1rem;
     /* iPhoneのホームバー分を確保する */
     padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
@@ -68,7 +69,8 @@
   transform: scale(0.99);
 }
 
-.recruit-fixed-cta__button:focus-visible {
+.recruit-fixed-cta__button:focus-visible,
+.recruit-fixed-cta__totop:focus-visible {
   outline: 2px solid var(--rfc-navy-dark);
   outline-offset: 2px;
 }
@@ -111,16 +113,69 @@
 }
 
 /* --------------------------------------------------------------------------
+   トップへ戻る（バーの右上に丸で配置）
+   SWELL標準のページトップボタンはバーに隠れるため、ここで再現する
+   -------------------------------------------------------------------------- */
+.recruit-fixed-cta__totop {
+  position: absolute;
+  right: 1rem;
+  bottom: 100%;
+  margin-bottom: 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--rfc-rule);
+  border-radius: 50%;
+  background-color: var(--rfc-white);
+  color: var(--rfc-navy);
+  box-shadow: 0 4px 14px rgba(11, 37, 69, 0.16);
+  cursor: pointer;
+  /* スクロールされるまでは隠しておく */
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity var(--rfc-dur) var(--rfc-ease),
+    transform var(--rfc-dur) var(--rfc-ease),
+    background-color var(--rfc-dur) var(--rfc-ease);
+}
+
+.recruit-fixed-cta__totop.is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.recruit-fixed-cta__totop-icon {
+  display: grid;
+  place-items: center;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.recruit-fixed-cta__totop-icon svg {
+  width: 100%;
+  height: auto;
+  fill: currentColor;
+}
+
+/* --------------------------------------------------------------------------
    ホバー・モーション軽減
    -------------------------------------------------------------------------- */
 @media (hover: hover) {
   .recruit-fixed-cta__button:hover {
     background-color: var(--rfc-navy-dark);
   }
+
+  .recruit-fixed-cta__totop:hover {
+    background-color: #f4f7fb;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .recruit-fixed-cta__button {
+  .recruit-fixed-cta__button,
+  .recruit-fixed-cta__totop {
     transition: none;
   }
 
