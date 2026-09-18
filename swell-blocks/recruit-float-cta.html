@@ -1,15 +1,47 @@
 <!-- ==========================================================================
-     Recruit Float CTA（追従する丸ボタン／SWELLのページトップボタンの上に配置）
+     Recruit Float CTA（追従する円形バナー／SWELLのページトップボタンの上に配置）
      SWELL カスタムHTMLブロック用
      CSSは recruit-float-cta.css / スクリプトは recruit-float-cta.js
-     ※リンク先とラベルは実際の内容に差し替えてください
+     ※リンク先・各テキストは実際の内容に差し替えてください
+     ※1ページに2つ置く場合は circle の id と href を別名にしてください
      ========================================================================== -->
 
-<a class="recruit-float-cta" href="/recruit/">
-  <span class="recruit-float-cta__text">採用情報</span>
-  <span class="recruit-float-cta__icon" aria-hidden="true">
-    <svg viewBox="0 0 24 24" focusable="false">
-      <path d="M9.3 5.3a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 1 1-1.4-1.4l5.3-5.3-5.3-5.3a1 1 0 0 1 0-1.4z"></path>
+<div class="recruit-float-cta">
+  <!-- 閉じるボタン -->
+  <button class="recruit-float-cta__close" type="button" aria-label="バナーを閉じる">
+    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+      <path d="M12 10.6 6.7 5.3a1 1 0 1 0-1.4 1.4l5.3 5.3-5.3 5.3a1 1 0 1 0 1.4 1.4l5.3-5.3 5.3 5.3a1 1 0 0 0 1.4-1.4L13.4 12l5.3-5.3a1 1 0 1 0-1.4-1.4z"></path>
     </svg>
-  </span>
-</a>
+  </button>
+
+  <a class="recruit-float-cta__body" href="/recruit/">
+    <!-- 円周を回るテキスト -->
+    <svg class="recruit-float-cta__ring" viewBox="0 0 200 200" aria-hidden="true">
+      <defs>
+        <path id="recruit-float-cta-circle"
+          d="M100,100 m-82,0 a82,82 0 1,1 164,0 a82,82 0 1,1 -164,0"></path>
+      </defs>
+      <text>
+        <!-- textLength に円周（2πr = 約515）を指定して、文字数が変わっても
+             ちょうど1周に収まるようにしている -->
+        <textPath href="#recruit-float-cta-circle" xlink:href="#recruit-float-cta-circle"
+          textLength="515" lengthAdjust="spacing">WE ARE HIRING ★ JOIN OUR TEAM ★ WE ARE HIRING ★ JOIN OUR TEAM ★</textPath>
+      </text>
+    </svg>
+
+    <!-- 中央のコンテンツ -->
+    <span class="recruit-float-cta__inner">
+      <span class="recruit-float-cta__lead">グループ各社の</span>
+      <span class="recruit-float-cta__title">採用情報</span>
+      <span class="recruit-float-cta__note">職種・勤務地いろいろ</span>
+      <span class="recruit-float-cta__button">
+        詳しく見る
+        <span class="recruit-float-cta__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M9.3 5.3a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 1 1-1.4-1.4l5.3-5.3-5.3-5.3a1 1 0 0 1 0-1.4z"></path>
+          </svg>
+        </span>
+      </span>
+    </span>
+  </a>
+</div>
