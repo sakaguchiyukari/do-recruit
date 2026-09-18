@@ -2,20 +2,22 @@
      Recruit Fixed CTA（スマホのみ／画面下部に固定）
      SWELL カスタムHTMLブロック用
      CSSは recruit-fixed-cta.css / スクリプトは recruit-fixed-cta.js
-     ※リンク先2箇所とラベルは実際のURL・文言に差し替えてください
+     ※リンク先とラベル・補足テキストは実際の内容に差し替えてください
      ========================================================================== -->
 
 <nav class="recruit-fixed-cta" aria-label="応募メニュー">
-  <!-- メインボタン -->
-  <a class="recruit-fixed-cta__button" href="/recruit/entry/">
-    <span class="recruit-fixed-cta__button-text">応募する</span>
-    <span class="recruit-fixed-cta__icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" focusable="false">
-        <path d="M9.3 5.3a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 1 1-1.4-1.4l5.3-5.3-5.3-5.3a1 1 0 0 1 0-1.4z"></path>
-      </svg>
+  <a class="recruit-fixed-cta__button" href="/recruit/">
+    <!-- メインラベル -->
+    <span class="recruit-fixed-cta__main">
+      採用情報を見る
+      <span class="recruit-fixed-cta__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M9.3 5.3a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 1 1-1.4-1.4l5.3-5.3-5.3-5.3a1 1 0 0 1 0-1.4z"></path>
+        </svg>
+      </span>
     </span>
-  </a>
 
-  <!-- サブリンク -->
-  <a class="recruit-fixed-cta__sub" href="/recruit/">各社の採用情報を見る</a>
+    <!-- 補足テキスト -->
+    <span class="recruit-fixed-cta__sub">グループ各社の求人を掲載中</span>
+  </a>
 </nav>
