@@ -1,0 +1,2008 @@
+@charset "UTF-8";
+/* ==========================================================================
+   DO MATCH — 副業・リファラル採用マッチング（社内コミュニティ）
+   --------------------------------------------------------------------------
+   1ページ構成のため、CSSは本ファイル1つにまとめている。
+   設計：FLOCSS ベースのレイヤー順 + BEM
+     1. Foundation  … 変数 / リセット / ベース
+     2. Layout      … l-  （ヘッダー / コンテナ / フッター）
+     3. Component   … c-  （ボタン / フォーム部品 / カード / モーダル）
+     4. Project     … p-  （ヒーロー / 検索 / 利用の流れ / ルール / 掲載CTA）
+     5. Utility     … u-
+     6. Motion      … フェードイン / reduced-motion
+   色・余白・角丸・影・モーションの生の値は :root に集約し、
+   以降のレイヤーでは必ず変数経由で参照すること。
+   ブランドカラーは doyg-corporate-site の _variables.css と揃えている。
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. Foundation / Variables
+   ========================================================================== */
+:root {
+  /* ---------- Brand ---------- */
+  --color-navy: #0b2545;
+  --color-navy-deep: #061727;
+  --color-blue: #1b6ca8;
+  --color-blue-pale: #edf4fa;
+  --color-green: #2e6e4f;
+  --color-green-pale: #eef5f1;
+
+  /* ---------- 案件タイプ色（副業=Blue / リファラル=Green） ---------- */
+  --color-side: var(--color-blue);
+  --color-side-pale: var(--color-blue-pale);
+  --color-referral: var(--color-green);
+  --color-referral-pale: var(--color-green-pale);
+
+  /* ---------- Base / Text / Line ---------- */
+  --color-white: #ffffff;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f7f9;
+  --color-text: #14181c;
+  --color-text-strong: #0b2545;
+  --color-text-muted: #5b6570;
+  --color-text-inverse: #ffffff;
+  --color-text-inverse-muted: #b8c4d0;
+  --color-rule: #dce1e6;
+  --color-rule-soft: #e9edf1;
+
+  /* ---------- State ---------- */
+  --color-focus: #1b6ca8;
+  --color-error: #b3261e;
+  --color-error-pale: #fcefee;
+  --color-warning: #8a5a00;
+  --color-warning-pale: #fff4dc;
+
+  /* ---------- Typography ---------- */
+  --font-jp: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  --font-en: "Inter", "Helvetica Neue", Arial, var(--font-jp);
+
+  --fs-h1: clamp(2rem, 1.2rem + 3.2vw, 3.75rem);
+  --fs-h2: clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem);
+  --fs-h3: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --fs-lead: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-caption: 0.75rem;
+
+  --lh-heading: 1.4;
+  --lh-body: 1.85;
+  --ls-body: 0.04em;
+  --ls-label: 0.16em;
+  --measure: 34em;              /* 本文1行あたり30〜40字に抑える */
+
+  /* ---------- Space（clamp で自然に可変） ---------- */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  --space-lg: clamp(1.75rem, 1.3rem + 2vw, 3rem);
+  --space-xl: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
+  --space-section: clamp(4rem, 2.5rem + 7vw, 8.5rem);
+  --gutter: clamp(1rem, 0.4rem + 3vw, 3rem);
+
+  /* ---------- Layout ---------- */
+  --container-width: 1200px;
+  --container-width-narrow: 760px;
+  --header-height: clamp(3.5rem, 3rem + 1.5vw, 4.5rem);
+  --aside-width: 320px;
+
+  /* ---------- Shape / Shadow ---------- */
+  --radius-sm: 8px;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --radius-full: 999px;
+  --shadow-sm: 0 1px 2px rgba(11, 37, 69, 0.06);
+  --shadow: 0 2px 6px rgba(11, 37, 69, 0.04), 0 12px 32px rgba(11, 37, 69, 0.06);
+  --shadow-hover: 0 4px 10px rgba(11, 37, 69, 0.06), 0 20px 48px rgba(11, 37, 69, 0.12);
+
+  /* ---------- Motion ---------- */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 200ms;
+  --dur-base: 300ms;
+  --dur-slow: 800ms;
+  --reveal-y: 1.5rem;
+  --stagger: 70ms;
+
+  /* ---------- Z-index ---------- */
+  --z-header: 40;
+  --z-sp-cta: 30;
+  --z-skip-link: 60;
+}
+
+
+/* ==========================================================================
+   1. Foundation / Reset
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* 固定ヘッダーの下にアンカー先が隠れないようにする */
+  scroll-padding-top: calc(var(--header-height) + var(--space-sm));
+}
+
+body,
+h1, h2, h3, p, ul, ol, dl, dd, figure, fieldset {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+fieldset {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+[hidden] {
+  display: none !important; /* display を持つコンポーネントより hidden 属性を常に優先させるための唯一の例外 */
+}
+
+
+/* ==========================================================================
+   1. Foundation / Base
+   ========================================================================== */
+body {
+  font-family: var(--font-jp);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--ls-body);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+
+/* モーダル表示中は背面をスクロールさせない */
+body:has(.c-modal[open]) {
+  overflow: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================================
+   2. Layout / Container
+   ========================================================================== */
+.l-container {
+  width: 100%;
+  max-width: calc(var(--container-width) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.l-container--narrow {
+  max-width: calc(var(--container-width-narrow) + var(--gutter) * 2);
+}
+
+
+/* ==========================================================================
+   2. Layout / Header
+   ========================================================================== */
+.l-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background-color: rgba(255, 255, 255, 0.86);
+  border-bottom: 1px solid var(--color-rule-soft);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+}
+
+.l-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  max-width: calc(var(--container-width) + var(--gutter) * 2);
+  height: var(--header-height);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.l-header__logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  margin-right: auto;
+}
+
+.l-header__logo-mark {
+  font-family: var(--font-en);
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-strong);
+}
+
+.l-header__logo-sub {
+  display: none;                  /* SPではCTAと競合するため非表示 */
+  font-size: 0.625rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+}
+
+@media (min-width: 480px) {
+  .l-header__logo-sub {
+    display: block;
+  }
+}
+
+/* SPではページ内ナビを省略（CTAのみ残す） */
+.l-header__nav {
+  display: none;
+}
+
+.l-header__nav-list {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.l-header__nav-link {
+  position: relative;
+  display: inline-block;
+  padding-block: var(--space-2xs);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.l-header__nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0.25rem;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-base) var(--ease);
+}
+
+@media (hover: hover) {
+  .l-header__nav-link:hover {
+    color: var(--color-text-strong);
+  }
+
+  .l-header__nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+@media (min-width: 768px) {
+  .l-header__nav {
+    display: block;
+  }
+}
+
+
+/* ==========================================================================
+   2. Layout / Footer
+   ========================================================================== */
+.l-footer {
+  padding-block: var(--space-xl);
+  /* SP固定CTAに最終行が隠れないよう下余白を確保 */
+  padding-bottom: calc(var(--space-xl) + 5rem);
+  color: var(--color-text-inverse-muted);
+  background-color: var(--color-navy-deep);
+}
+
+.l-footer__inner {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.l-footer__name {
+  font-size: var(--fs-small);
+  color: var(--color-text-inverse);
+}
+
+.l-footer__note,
+.l-footer__copy {
+  font-size: var(--fs-caption);
+}
+
+.l-footer__copy {
+  margin-top: var(--space-sm);
+  font-family: var(--font-en);
+  letter-spacing: 0.08em;
+}
+
+@media (min-width: 1024px) {
+  .l-footer {
+    padding-bottom: var(--space-xl);
+  }
+}
+
+
+/* ==========================================================================
+   3. Component / Skip link
+   ========================================================================== */
+.c-skip-link {
+  position: fixed;
+  top: var(--space-2xs);
+  left: var(--space-2xs);
+  z-index: var(--z-skip-link);
+  padding: var(--space-2xs) var(--space-sm);
+  color: var(--color-text-inverse);
+  background-color: var(--color-navy);
+  border-radius: var(--radius-sm);
+  transform: translateY(-200%);
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.c-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+
+/* ==========================================================================
+   3. Component / Eyebrow（英字ラベル）
+   ========================================================================== */
+.c-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-family: var(--font-en);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--color-blue);
+}
+
+.c-eyebrow::before {
+  content: "";
+  width: 1.5rem;
+  height: 1px;
+  background-color: currentColor;
+}
+
+.c-eyebrow--inverse {
+  color: var(--color-text-inverse-muted);
+}
+
+
+/* ==========================================================================
+   3. Component / Section head
+   ========================================================================== */
+.c-section-head {
+  display: grid;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.c-section-head__title {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.01em;
+  color: var(--color-text-strong);
+}
+
+.c-section-head__lead {
+  max-width: var(--measure);
+  color: var(--color-text-muted);
+}
+
+
+/* ==========================================================================
+   3. Component / Button
+   --------------------------------------------------------------------------
+   色は --btn-bg / --btn-fg のローカル変数で切り替える。
+   Modifier はこの2つを上書きするだけにとどめ、構造は共通にする。
+   ========================================================================== */
+.c-button {
+  --btn-bg: var(--color-navy);
+  --btn-fg: var(--color-text-inverse);
+  --btn-border: var(--btn-bg);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-height: 3.25rem;           /* タップ領域 44px 以上を確保 */
+  padding: 0.75rem 1.75rem;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--btn-fg);
+  text-align: center;
+  background-color: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius-full);
+  transition:
+    transform var(--dur-fast) var(--ease),
+    box-shadow var(--dur-base) var(--ease),
+    background-color var(--dur-base) var(--ease),
+    color var(--dur-base) var(--ease);
+}
+
+.c-button--small {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.25rem;
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+}
+
+.c-button--block {
+  width: 100%;
+}
+
+.c-button--side {
+  --btn-bg: var(--color-side);
+}
+
+.c-button--referral {
+  --btn-bg: var(--color-referral);
+}
+
+.c-button--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-text-strong);
+  --btn-border: var(--color-rule);
+}
+
+.c-button--inverse {
+  --btn-bg: var(--color-white);
+  --btn-fg: var(--color-navy);
+}
+
+/* 矢印アイコン（ホバーで右へ動く） */
+.c-button__arrow {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--dur-base) var(--ease);
+}
+
+@media (hover: hover) {
+  .c-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .c-button:hover .c-button__arrow {
+    transform: translateX(3px) rotate(45deg);
+  }
+
+  .c-button--ghost:hover {
+    --btn-bg: var(--color-bg-subtle);
+    box-shadow: none;
+  }
+}
+
+.c-button:active {
+  transform: translateY(0);
+}
+
+
+/* ==========================================================================
+   3. Component / Type badge・dot（案件タイプの識別）
+   ========================================================================== */
+.c-type-badge {
+  --badge-color: var(--color-navy);
+  --badge-bg: var(--color-bg-subtle);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--badge-color);
+  background-color: var(--badge-bg);
+  border-radius: var(--radius-full);
+}
+
+.c-type-badge::before {
+  content: "";
+  width: 0.375rem;
+  height: 0.375rem;
+  background-color: currentColor;
+  border-radius: 50%;
+}
+
+.c-type-badge--side {
+  --badge-color: var(--color-side);
+  --badge-bg: var(--color-side-pale);
+}
+
+.c-type-badge--referral {
+  --badge-color: var(--color-referral);
+  --badge-bg: var(--color-referral-pale);
+}
+
+.c-type-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.c-type-dot--side {
+  background-color: var(--color-side);
+}
+
+.c-type-dot--referral {
+  background-color: var(--color-referral);
+}
+
+
+/* ==========================================================================
+   3. Component / Tags
+   ========================================================================== */
+.c-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.c-tags__item {
+  padding: 0.125rem 0.625rem;
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+}
+
+/* 選択中スキルと一致したタグを強調 */
+.c-tags__item.is-hit {
+  color: var(--color-side);
+  background-color: var(--color-side-pale);
+  border-color: transparent;
+}
+
+
+/* ==========================================================================
+   3. Component / Field（input / select / textarea 共通）
+   ========================================================================== */
+.c-field {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 1rem;                /* 16px未満だとiOSで入力時に拡大される */
+  line-height: 1.5;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.c-field::placeholder {
+  color: #8b949d;
+}
+
+.c-field:focus-visible {
+  outline: none;
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 3px rgba(27, 108, 168, 0.18);   /* outline の代替となるフォーカス表示 */
+}
+
+.c-field[aria-invalid="true"] {
+  border-color: var(--color-error);
+  background-color: var(--color-error-pale);
+}
+
+.c-field--textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+/* select：ネイティブの矢印を消し、統一した矢印を描く */
+.c-select {
+  position: relative;
+}
+
+.c-select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 1.5px solid var(--color-text-muted);
+  border-bottom: 1.5px solid var(--color-text-muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.c-select__field {
+  padding-right: 2.5rem;
+  appearance: none;
+  cursor: pointer;
+}
+
+.c-select--compact .c-select__field {
+  min-height: 2.75rem;
+  font-size: var(--fs-small);
+  border-radius: var(--radius-full);
+  padding-left: 1rem;
+}
+
+
+/* ==========================================================================
+   3. Component / Segment（案件タイプの切り替え）
+   ========================================================================== */
+.c-segment {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-full);
+}
+
+.c-segment__item {
+  position: relative;
+}
+
+.c-segment__input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.c-segment__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-full);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease);
+}
+
+.c-segment__input:checked + .c-segment__label {
+  color: var(--color-text-strong);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm), 0 4px 12px rgba(11, 37, 69, 0.08);
+}
+
+.c-segment__input[value="side"]:checked + .c-segment__label {
+  color: var(--color-side);
+}
+
+.c-segment__input[value="referral"]:checked + .c-segment__label {
+  color: var(--color-referral);
+}
+
+.c-segment__input:focus-visible + .c-segment__label {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+
+/* ==========================================================================
+   3. Component / Chips（複数選択）
+   ========================================================================== */
+.c-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.c-chip {
+  position: relative;
+}
+
+.c-chip__input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.c-chip__label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.375rem 1rem;
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  color: var(--color-text-muted);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+/* チェック時は案件タイプ色で塗る（親ブロックの --chip-color を参照） */
+.c-chip__input:checked + .c-chip__label {
+  color: var(--color-white);
+  background-color: var(--chip-color, var(--color-navy));
+  border-color: var(--chip-color, var(--color-navy));
+}
+
+.c-chip__input:focus-visible + .c-chip__label {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* PCの狭いサイドパネル内では少し詰めて、縦に伸びすぎないようにする */
+@media (min-width: 1024px) {
+  .c-filter .c-chip__label {
+    min-height: 2.5rem;
+    padding-inline: 0.8125rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (hover: hover) {
+  .c-chip__input:not(:checked):hover + .c-chip__label {
+    color: var(--color-text-strong);
+    border-color: var(--color-text-muted);
+  }
+}
+
+
+/* ==========================================================================
+   3. Component / Switch・Check
+   ========================================================================== */
+.c-switch,
+.c-check {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: 2.75rem;
+  cursor: pointer;
+}
+
+.c-switch__input,
+.c-check__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.c-switch__track {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.5rem;
+  background-color: var(--color-rule);
+  border-radius: var(--radius-full);
+  transition: background-color var(--dur-base) var(--ease);
+}
+
+.c-switch__track::after {
+  content: "";
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  background-color: var(--color-white);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.c-switch__input:checked + .c-switch__track {
+  background-color: var(--color-navy);
+}
+
+.c-switch__input:checked + .c-switch__track::after {
+  transform: translateX(1.25rem);
+}
+
+.c-switch__input:focus-visible + .c-switch__track,
+.c-check__input:focus-visible + .c-check__label::before {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.c-switch__label {
+  font-size: var(--fs-small);
+}
+
+.c-check__label {
+  position: relative;
+  padding-left: 2rem;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+.c-check__label::before,
+.c-check__label::after {
+  content: "";
+  position: absolute;
+  top: 0.1rem;
+  left: 0;
+}
+
+.c-check__label::before {
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule);
+  border-radius: 4px;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.c-check__label::after {
+  top: 0.35rem;
+  left: 0.45rem;
+  width: 0.35rem;
+  height: 0.65rem;
+  border-right: 2px solid var(--color-white);
+  border-bottom: 2px solid var(--color-white);
+  transform: rotate(45deg) scale(0);
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.c-check__input:checked + .c-check__label::before {
+  background-color: var(--color-navy);
+  border-color: var(--color-navy);
+}
+
+.c-check__input:checked + .c-check__label::after {
+  transform: rotate(45deg) scale(1);
+}
+
+.c-check__input[aria-invalid="true"] + .c-check__label::before {
+  border-color: var(--color-error);
+}
+
+
+/* ==========================================================================
+   3. Component / Filter（検索・マッチング条件パネル）
+   ========================================================================== */
+.c-filter {
+  display: grid;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.c-filter__group {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.c-filter__legend {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+/* legend は grid の gap が効かないため下余白で調整 */
+legend.c-filter__legend {
+  margin-bottom: var(--space-2xs);
+}
+
+.c-filter__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-sm);
+}
+
+/* 案件タイプ別のマッチング条件ブロック */
+.c-filter__block {
+  --block-color: var(--color-navy);
+  --block-bg: var(--color-bg-subtle);
+
+  display: grid;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background-color: var(--block-bg);
+  border-radius: var(--radius);
+}
+
+.c-filter__block--side {
+  --block-color: var(--color-side);
+  --block-bg: var(--color-side-pale);
+  --chip-color: var(--color-side);
+}
+
+.c-filter__block--referral {
+  --block-color: var(--color-referral);
+  --block-bg: var(--color-referral-pale);
+  --chip-color: var(--color-referral);
+}
+
+.c-filter__block-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  float: left;                    /* legend を特殊描画から外し、grid のアイテムとして gap を効かせる */
+  width: 100%;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--block-color);
+}
+
+.c-filter__footer {
+  display: grid;
+  gap: var(--space-2xs);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-rule-soft);
+}
+
+
+/* ==========================================================================
+   3. Component / Job card（案件カード）
+   ========================================================================== */
+.c-job-card {
+  --card-color: var(--color-navy);
+  --card-pale: var(--color-bg-subtle);
+  display: flex;
+}
+
+.c-job-card--side {
+  --card-color: var(--color-side);
+  --card-pale: var(--color-side-pale);
+}
+
+.c-job-card--referral {
+  --card-color: var(--color-referral);
+  --card-pale: var(--color-referral-pale);
+}
+
+.c-job-card__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: var(--space-md);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition:
+    transform var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease),
+    border-color var(--dur-base) var(--ease);
+}
+
+/* 上端のタイプ色ライン（ホバーで伸びる） */
+.c-job-card__inner::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background-color: var(--card-color);
+  transform: scaleX(0.18);
+  transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.c-job-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  min-height: 3.5rem;
+}
+
+.c-job-card__dept {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+.c-job-card__title {
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  color: var(--color-text-strong);
+}
+
+.c-job-card__summary {
+  font-size: var(--fs-small);
+  line-height: 1.8;
+  color: var(--color-text-muted);
+  /* SPで縦長になりすぎないよう3行で省略 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.c-job-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  font-size: var(--fs-caption);
+  color: var(--color-text);
+}
+
+.c-job-card__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.c-job-card__meta-item::before {
+  content: "";
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: var(--card-color);
+  border-radius: 50%;
+}
+
+.c-job-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-top: auto;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-rule-soft);
+}
+
+.c-job-card__deadline {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+.c-job-card__deadline.is-soon {
+  padding: 0.125rem 0.5rem;
+  color: var(--color-warning);
+  background-color: var(--color-warning-pale);
+  border-radius: var(--radius-full);
+}
+
+/* 詳細ボタン：カード全体をクリック領域にする（::after で覆う） */
+.c-job-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--card-color);
+  background: none;
+  border: 0;
+}
+
+.c-job-card__more::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.c-job-card__more:focus-visible {
+  outline: none;
+}
+
+.c-job-card__more:focus-visible::after {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.c-job-card__more-arrow {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--card-pale);
+  border-radius: 50%;
+  transition: transform var(--dur-base) var(--ease), background-color var(--dur-base) var(--ease);
+}
+
+.c-job-card__more-arrow::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-left: -0.15rem;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+@media (hover: hover) {
+  .c-job-card__inner:hover {
+    transform: translateY(-4px);
+    border-color: transparent;
+    box-shadow: var(--shadow-hover);
+  }
+
+  .c-job-card__inner:hover::before {
+    transform: scaleX(1);
+  }
+
+  .c-job-card__inner:hover .c-job-card__more-arrow {
+    color: var(--color-white);
+    background-color: var(--card-color);
+    transform: translateX(2px);
+  }
+}
+
+
+/* ==========================================================================
+   3. Component / Score（マッチ度リング）
+   --------------------------------------------------------------------------
+   --score（0〜100）は JS がカード単位で設定する。
+   ========================================================================== */
+.c-score {
+  --score: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  flex-shrink: 0;
+}
+
+.c-score__ring {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding-top: 1.3rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  font-family: var(--font-en);
+  color: var(--card-color, var(--color-navy));
+  background: conic-gradient(var(--card-color, var(--color-navy)) calc(var(--score) * 1%), var(--color-rule-soft) 0);
+  border-radius: 50%;
+}
+
+/* 中央を白抜きしてリング状にする */
+.c-score__ring::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background-color: var(--color-white);
+  border-radius: 50%;
+}
+
+.c-score__value,
+.c-score__percent {
+  position: relative;
+  line-height: 1;
+}
+
+.c-score__value {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.c-score__percent {
+  margin-left: 1px;
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.c-score__label {
+  font-family: var(--font-en);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+
+/* ==========================================================================
+   3. Component / Modal（案件詳細・応募）
+   ========================================================================== */
+.c-modal {
+  width: 100%;
+  max-width: 720px;
+  max-height: min(90dvh, 100%);
+  margin: auto auto 0;            /* SP：下からのシート表示 */
+  padding: 0;
+  color: var(--color-text);
+  background-color: var(--color-white);
+  border: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-hover);
+  overscroll-behavior: contain;
+}
+
+.c-modal::backdrop {
+  background-color: rgba(6, 23, 39, 0.5);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.c-modal[open] {
+  animation: modal-in var(--dur-base) var(--ease);
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+}
+
+.c-modal__inner {
+  position: relative;
+  display: grid;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-md) var(--space-lg);
+}
+
+.c-modal__close {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  width: 2.75rem;
+  height: 2.75rem;
+  background-color: var(--color-bg-subtle);
+  border: 0;
+  border-radius: 50%;
+  transition: background-color var(--dur-fast) var(--ease), transform var(--dur-base) var(--ease);
+}
+
+/* × アイコン */
+.c-modal__close::before,
+.c-modal__close::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 1.5px;
+  background-color: var(--color-text-strong);
+}
+
+.c-modal__close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.c-modal__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+@media (hover: hover) {
+  .c-modal__close:hover {
+    background-color: var(--color-rule);
+    transform: rotate(90deg);
+  }
+}
+
+.c-modal__head {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-2xs);
+  padding-right: 3rem;
+}
+
+.c-modal__dept {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+.c-modal__title {
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  color: var(--color-text-strong);
+}
+
+.c-modal__desc {
+  font-size: var(--fs-small);
+  white-space: pre-line;
+}
+
+.c-modal__spec {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2xs) var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-small);
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius);
+}
+
+.c-modal__spec-term {
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.c-modal__done {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-xs);
+  padding-block: var(--space-lg);
+  text-align: center;
+}
+
+.c-modal__done:focus {
+  outline: none;
+}
+
+.c-modal__done-title {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.c-modal__done-text {
+  margin-bottom: var(--space-sm);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 768px) {
+  .c-modal {
+    margin: auto;
+    border-radius: var(--radius-lg);
+  }
+
+  .c-modal__inner {
+    padding: var(--space-xl) var(--space-xl) var(--space-lg);
+  }
+}
+
+
+/* ==========================================================================
+   3. Component / Form（応募・紹介フォーム）
+   ========================================================================== */
+.c-form {
+  display: grid;
+  gap: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-rule-soft);
+}
+
+.c-form__title {
+  font-size: var(--fs-body);
+  color: var(--color-text-strong);
+}
+
+.c-form__row {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.c-form__item {
+  display: grid;
+  gap: 0.375rem;
+  align-content: start;
+}
+
+.c-form__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.c-form__req,
+.c-form__opt {
+  padding: 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  border-radius: 4px;
+}
+
+.c-form__req {
+  color: var(--color-error);
+  background-color: var(--color-error-pale);
+}
+
+.c-form__opt {
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-subtle);
+}
+
+.c-form__hint {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+.c-form__error {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--color-error);
+}
+
+.c-form__error:empty {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .c-form__row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* ==========================================================================
+   4. Project / Hero
+   ========================================================================== */
+.p-hero {
+  position: relative;
+  padding-block: var(--space-xl) var(--space-section);
+  overflow: hidden;
+  /* 地平線を思わせるごく淡いグラデーション */
+  background:
+    radial-gradient(80% 60% at 100% 0%, var(--color-blue-pale) 0%, transparent 70%),
+    radial-gradient(60% 50% at 0% 100%, var(--color-green-pale) 0%, transparent 70%),
+    var(--color-bg);
+}
+
+.p-hero__inner {
+  display: grid;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.p-hero__body {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-md);
+}
+
+.p-hero__title {
+  font-size: var(--fs-h1);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--color-text-strong);
+}
+
+.p-hero__title-accent {
+  background: linear-gradient(90deg, var(--color-side), var(--color-referral));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.p-hero__lead {
+  max-width: var(--measure);
+  font-size: var(--fs-lead);
+  color: var(--color-text-muted);
+}
+
+.p-hero__actions {
+  display: grid;
+  gap: var(--space-xs);
+  width: 100%;
+}
+
+.p-hero__stats {
+  display: flex;
+  gap: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-rule);
+}
+
+.p-hero__stat {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.p-hero__stat-label {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+.p-hero__stat-value {
+  font-family: var(--font-en);
+  font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text-strong);
+}
+
+.p-hero__stat-value small {
+  margin-left: 0.25rem;
+  font-family: var(--font-jp);
+  font-size: var(--fs-small);
+  font-weight: 400;
+}
+
+.p-hero__visual {
+  /* SPでは縦長になりすぎないよう高さを抑える */
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.p-hero__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 600px) {
+  .p-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    width: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .p-hero__inner {
+    grid-template-columns: 1.15fr 1fr;
+  }
+
+  .p-hero__visual {
+    aspect-ratio: 8 / 9;
+  }
+}
+
+
+/* ==========================================================================
+   4. Project / Search（検索・マッチング）
+   ========================================================================== */
+.p-search {
+  padding-block: var(--space-section);
+  background-color: var(--color-bg-subtle);
+}
+
+.p-search__layout {
+  display: grid;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.p-search__aside {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+/* SP：条件パネルの開閉ボタン */
+.p-search__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0 var(--space-md);
+  font-weight: 700;
+  color: var(--color-text-strong);
+  text-align: left;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule-soft);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+}
+
+.p-search__toggle-count {
+  display: grid;
+  place-items: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding-inline: 0.375rem;
+  font-family: var(--font-en);
+  font-size: var(--fs-caption);
+  color: var(--color-white);
+  background-color: var(--color-navy);
+  border-radius: var(--radius-full);
+}
+
+.p-search__toggle-icon {
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+  margin-left: auto;
+}
+
+/* ＋ / − アイコン */
+.p-search__toggle-icon::before,
+.p-search__toggle-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: currentColor;
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.p-search__toggle-icon::after {
+  transform: rotate(90deg);
+}
+
+.p-search__toggle[aria-expanded="true"] .p-search__toggle-icon::after {
+  transform: rotate(0);
+}
+
+/* JS有効時のみ、SPで条件パネルを折りたたむ（JS無効時は常に表示） */
+.js-enabled .p-search__aside .c-filter {
+  display: none;
+}
+
+.js-enabled .p-search__aside .c-filter.is-open {
+  display: grid;
+}
+
+.p-search__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.p-search__count {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+.p-search__count-num {
+  margin-right: 0.25rem;
+  font-family: var(--font-en);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.p-search__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-md);
+}
+
+.p-search__empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xl) var(--space-md);
+  text-align: center;
+  background-color: var(--color-white);
+  border: 1px dashed var(--color-rule);
+  border-radius: var(--radius-lg);
+}
+
+.p-search__empty-title {
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.p-search__empty-text {
+  margin-bottom: var(--space-sm);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+/* PC：左に条件パネルを固定、右に結果 */
+@media (min-width: 1024px) {
+  .p-search__layout {
+    grid-template-columns: var(--aside-width) minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .p-search__aside {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-sm));
+    max-height: calc(100dvh - var(--header-height) - var(--space-md));
+    overflow-y: auto;
+    border-radius: var(--radius-lg);
+    scrollbar-width: thin;
+  }
+
+  .p-search__toggle,
+  .c-filter__apply {
+    display: none;
+  }
+
+  .js-enabled .p-search__aside .c-filter {
+    display: grid;
+  }
+}
+
+
+/* ==========================================================================
+   4. Project / Flow（利用の流れ）
+   ========================================================================== */
+.p-flow {
+  padding-block: var(--space-section);
+}
+
+.p-flow__grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.p-flow__card {
+  --flow-color: var(--color-navy);
+  display: grid;
+  gap: var(--space-md);
+  align-content: start;
+  padding: var(--space-lg) var(--space-md);
+  border: 1px solid var(--color-rule-soft);
+  border-radius: var(--radius-lg);
+  transition: box-shadow var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
+}
+
+.p-flow__card--side {
+  --flow-color: var(--color-side);
+}
+
+.p-flow__card--referral {
+  --flow-color: var(--color-referral);
+}
+
+.p-flow__title {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-xs);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  color: var(--color-text-strong);
+}
+
+.p-flow__steps {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.p-flow__step {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--space-xs);
+  align-items: baseline;
+}
+
+.p-flow__num {
+  font-family: var(--font-en);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--flow-color);
+}
+
+.p-flow__text {
+  font-size: var(--fs-small);
+}
+
+@media (hover: hover) {
+  .p-flow__card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+}
+
+@media (min-width: 768px) {
+  .p-flow__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .p-flow__card {
+    padding: var(--space-xl) var(--space-lg);
+  }
+}
+
+
+/* ==========================================================================
+   4. Project / Rules（利用ルール）
+   ========================================================================== */
+.p-rules {
+  padding-bottom: var(--space-section);
+}
+
+.p-rules__list {
+  display: grid;
+  border-top: 1px solid var(--color-rule);
+  counter-reset: rule;
+}
+
+.p-rules__item {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--space-xs);
+  padding-block: var(--space-md);
+  font-size: var(--fs-small);
+  border-bottom: 1px solid var(--color-rule);
+  counter-increment: rule;
+}
+
+.p-rules__item::before {
+  content: counter(rule, decimal-leading-zero);
+  font-family: var(--font-en);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+
+/* ==========================================================================
+   4. Project / Post CTA（案件掲載の依頼）
+   ========================================================================== */
+.p-post {
+  padding-bottom: var(--space-section);
+}
+
+.p-post__inner {
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: start;
+  padding: var(--space-xl) var(--space-lg);
+  color: var(--color-text-inverse);
+  background:
+    radial-gradient(70% 90% at 100% 0%, rgba(27, 108, 168, 0.55) 0%, transparent 70%),
+    var(--color-navy);
+  border-radius: var(--radius-lg);
+}
+
+.p-post__body {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.p-post__title {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+}
+
+.p-post__text {
+  color: var(--color-text-inverse-muted);
+}
+
+@media (min-width: 1024px) {
+  .p-post__inner {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding: var(--space-xl);
+  }
+}
+
+
+/* ==========================================================================
+   4. Project / SP固定CTA
+   ========================================================================== */
+.p-sp-cta {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: var(--z-sp-cta);
+  padding: var(--space-xs) var(--gutter) calc(var(--space-xs) + env(safe-area-inset-bottom));
+  background-color: rgba(255, 255, 255, 0.92);
+  border-top: 1px solid var(--color-rule-soft);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transform: translateY(110%);
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.p-sp-cta.is-visible {
+  transform: translateY(0);
+}
+
+.p-sp-cta__button {
+  box-shadow: var(--shadow);
+}
+
+@media (min-width: 1024px) {
+  .p-sp-cta {
+    display: none;
+  }
+}
+
+
+/* ==========================================================================
+   5. Utility
+   ========================================================================== */
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ==========================================================================
+   6. Motion / Fade in（IntersectionObserver 連動）
+   --------------------------------------------------------------------------
+   .js-enabled 配下でのみ初期状態を隠す。JS失敗時は最初から表示される。
+   stagger は JS が渡す --i（0始まり）で CSS 側が計算する。
+   ========================================================================== */
+.js-enabled .js-reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-y));
+  transition:
+    opacity var(--dur-slow) var(--ease),
+    transform var(--dur-slow) var(--ease);
+  transition-delay: calc(var(--i, 0) * var(--stagger));
+}
+
+.js-enabled .js-reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* カード自身の transform（ホバー）と干渉しないよう、ホバーは内側要素で行っている */
+
+/* 条件変更後の再描画：短く軽い入れ替え演出 */
+.c-job-card.is-fresh {
+  animation: card-fresh var(--dur-base) var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+@keyframes card-fresh {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js-enabled .js-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;      /* ユーザー設定を最優先するための例外 */
+    transition-duration: 0.01ms !important;
+  }
+}

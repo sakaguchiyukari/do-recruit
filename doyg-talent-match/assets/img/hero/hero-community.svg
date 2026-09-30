@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 1080" width="960" height="1080" role="img" aria-label="HERO プレースホルダ">
+  <!-- 仮画像：社員同士が集まり対話している写真（960×1080 以上、JPG/WebP）に差し替える -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12395F"/>
+      <stop offset="100%" stop-color="#2E6E4F"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="1080" fill="url(#g)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.5">
+    <circle cx="360" cy="520" r="150"/>
+    <circle cx="600" cy="520" r="150"/>
+  </g>
+  <circle cx="360" cy="520" r="10" fill="#7fb2e5"/>
+  <circle cx="600" cy="520" r="10" fill="#8fc4a6"/>
+  <line x1="0" y1="760" x2="960" y2="760" stroke="#ffffff" stroke-opacity="0.25"/>
+  <g font-family="Inter, Helvetica Neue, Arial, sans-serif" fill="#ffffff">
+    <text x="64" y="120" font-size="18" font-weight="500" letter-spacing="14" fill-opacity="0.6">SIDE PROJECT × REFERRAL</text>
+    <text x="64" y="156" font-size="14" fill-opacity="0.4">PLACEHOLDER / hero-community</text>
+  </g>
+</svg>
