@@ -19,6 +19,7 @@
   --rc-gutter: clamp(1rem, 4vw, 2rem);
   --rc-card-padding: clamp(1rem, 3vw, 2rem);
   --rc-icon-size: clamp(2.75rem, 7vw, 3.5rem);
+  --rc-arrow-size: clamp(1.75rem, 5vw, 2.25rem);
   --rc-max-width: 760px;
 
   /* Style */
@@ -73,7 +74,8 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: clamp(0.75rem, 3vw, 1.25rem);
-  padding: clamp(0.875rem, 3vw, 1.25rem) clamp(0.25rem, 2vw, 0.75rem);
+  /* 左右余白は全行共通（アイコン・矢印の縦位置を揃える） */
+  padding: clamp(0.875rem, 3vw, 1.25rem) clamp(0.75rem, 3vw, 1.25rem);
   border-radius: var(--rc-radius-inner);
   color: inherit;
   text-decoration: none;
@@ -126,29 +128,31 @@
   font-feature-settings: "palt";
 }
 
+/* 矢印：電話・フォーム共通の丸型 */
 .recruit-contact__arrow {
   display: grid;
   place-items: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  color: var(--rc-text-muted);
+  width: var(--rc-arrow-size);
+  height: var(--rc-arrow-size);
+  border-radius: 50%;
+  background-color: var(--rc-navy);
+  color: var(--rc-white);
   transition: transform var(--rc-dur) var(--rc-ease),
     color var(--rc-dur) var(--rc-ease),
     background-color var(--rc-dur) var(--rc-ease);
 }
 
 .recruit-contact__arrow svg {
-  width: 100%;
+  width: 55%;
   height: auto;
   fill: currentColor;
 }
 
 /* --------------------------------------------------------------------------
    応募フォームリンク（別ページ遷移）
-   背景色＋丸型の矢印でボタンとして認識しやすくする
+   背景色でボタンとして認識しやすくする
    -------------------------------------------------------------------------- */
 .recruit-contact__link--form {
-  padding-inline: clamp(0.75rem, 3vw, 1.25rem);
   background-color: var(--rc-form-bg);
 }
 
@@ -156,18 +160,6 @@
 .recruit-contact__value--form {
   font-size: clamp(1rem, 0.9rem + 0.6vw, 1.3125rem);
   letter-spacing: 0.06em;
-}
-
-.recruit-contact__link--form .recruit-contact__arrow {
-  width: clamp(1.75rem, 5vw, 2.25rem);
-  height: clamp(1.75rem, 5vw, 2.25rem);
-  border-radius: 50%;
-  background-color: var(--rc-navy);
-  color: var(--rc-white);
-}
-
-.recruit-contact__link--form .recruit-contact__arrow svg {
-  width: 55%;
 }
 
 /* --------------------------------------------------------------------------
@@ -210,18 +202,13 @@
   }
 
   .recruit-contact__link:hover .recruit-contact__arrow {
-    color: var(--rc-navy);
+    background-color: var(--rc-navy-soft);
     transform: translateX(4px);
   }
 
   /* 応募フォーム */
   .recruit-contact__link--form:hover {
     background-color: var(--rc-form-bg-hover);
-  }
-
-  .recruit-contact__link--form:hover .recruit-contact__arrow {
-    background-color: var(--rc-navy-soft);
-    color: var(--rc-white);
   }
 }
 
@@ -261,10 +248,5 @@
 @media (max-width: 480px) {
   .recruit-contact {
     padding-inline: 0;
-  }
-
-  .recruit-contact__arrow {
-    width: 1rem;
-    height: 1rem;
   }
 }
