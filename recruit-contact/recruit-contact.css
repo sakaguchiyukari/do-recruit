@@ -35,8 +35,6 @@
   margin: 0 auto !important;
   padding-inline: var(--rc-gutter);
   color: var(--rc-text);
-  line-height: 1.8;
-  letter-spacing: 0.04em;
 }
 
 /* --------------------------------------------------------------------------
@@ -99,10 +97,15 @@
     transform var(--rc-dur) var(--rc-ease);
 }
 
-.recruit-contact__icon svg {
-  width: 45%;
+/* アイコン・矢印内のSVG共通 */
+.recruit-contact__icon svg,
+.recruit-contact__arrow svg {
   height: auto;
   fill: currentColor;
+}
+
+.recruit-contact__icon svg {
+  width: 45%;
 }
 
 .recruit-contact__body {
@@ -138,14 +141,11 @@
   background-color: var(--rc-navy);
   color: var(--rc-white);
   transition: transform var(--rc-dur) var(--rc-ease),
-    color var(--rc-dur) var(--rc-ease),
     background-color var(--rc-dur) var(--rc-ease);
 }
 
 .recruit-contact__arrow svg {
   width: 55%;
-  height: auto;
-  fill: currentColor;
 }
 
 /* --------------------------------------------------------------------------
@@ -216,10 +216,13 @@
    フェードイン（JSが .is-ready を付与した場合のみ有効）
    JSが動作しない環境ではコンテンツは常に表示される
    -------------------------------------------------------------------------- */
+/* .recruit-contact__reveal はカードと同一要素のため、
+   カードの box-shadow transition もここで併記する */
 .recruit-contact.is-ready .recruit-contact__reveal {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 800ms var(--rc-ease), transform 800ms var(--rc-ease);
+  transition: opacity 800ms var(--rc-ease), transform 800ms var(--rc-ease),
+    box-shadow var(--rc-dur) var(--rc-ease);
 }
 
 .recruit-contact.is-ready .recruit-contact__reveal.is-visible {
@@ -231,13 +234,13 @@
   .recruit-contact.is-ready .recruit-contact__reveal {
     opacity: 1;
     transform: none;
+    transition: none;
   }
 
   .recruit-contact__card,
   .recruit-contact__link,
   .recruit-contact__icon,
-  .recruit-contact__arrow,
-  .recruit-contact__reveal {
+  .recruit-contact__arrow {
     transition: none;
   }
 }
