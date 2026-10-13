@@ -1431,10 +1431,6 @@ textarea {
   animation: status-pulse 1s ease-in-out infinite;
 }
 
-.c-status[data-state="demo"] .c-status__dot {
-  background: var(--cat-mail);
-}
-
 @keyframes status-pulse {
   50% { opacity: 0.3; }
 }
@@ -1549,7 +1545,7 @@ textarea {
   font-size: var(--fs-xs);
 }
 
-/* デモ表示・未設定の案内 */
+/* 読み込みエラーの案内 */
 .p-notice {
   margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
   padding: 0.875rem 1.125rem;

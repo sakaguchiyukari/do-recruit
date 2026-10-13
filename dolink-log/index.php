@@ -1,3 +1,36 @@
+<?php
+/**
+ * Do.Link 運用ログ — ページ本体
+ * 初期データをページに埋め込み、表示後は main.js が api.php と自動同期する
+ */
+
+declare(strict_types=1);
+
+define('DOLINK_LOG', true);
+require __DIR__ . '/inc/bootstrap.php';
+
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: same-origin');
+
+try {
+    start_session();
+    $initial = fetch_payload() + [
+        'isAdmin' => is_admin(),
+        'csrf' => csrf_token(),
+        'refreshSeconds' => max(15, (int) (app_config()['refresh_seconds'] ?? 60)),
+        'passwordIsDefault' => password_is_default(),
+    ];
+    session_write_close();
+    $loadError = '';
+} catch (Throwable $e) {
+    error_log('[dolink-log] ' . $e->getMessage());
+    $initial = ['ok' => false];
+    $loadError = 'データを読み込めませんでした。サーバーの設定（PHPのSQLite対応・data フォルダの書き込み権限）を確認してください。';
+}
+
+// </script> などで埋め込みが壊れないようエスケープしてJSONを出力
+$initialJson = json_encode($initial, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -20,7 +53,6 @@
 
   <!-- Script：すべて defer（記述順に実行される） -->
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
-  <script defer src="assets/js/config.js"></script>
   <script defer src="assets/js/main.js"></script>
 </head>
 <body>
@@ -64,7 +96,7 @@
 
     <!-- 設定前・デモ表示の案内（JSで表示） -->
     <div class="l-container">
-      <p class="p-notice js-notice" role="note" hidden></p>
+      <p class="p-notice js-notice" role="note"<?= $loadError === '' ? ' hidden' : '' ?>><?= h($loadError) ?></p>
     </div>
 
     <div class="l-container l-workspace is-readonly js-workspace">
@@ -343,10 +375,10 @@
   <dialog class="c-dialog js-login" aria-labelledby="login-title">
     <form class="c-dialog__inner c-form js-login-form" method="dialog" novalidate>
       <h2 id="login-title" class="c-dialog__title">管理者ログイン</h2>
-      <p class="c-dialog__text">Apps Script に設定した「管理者キー」を入力してください。キーはこの端末のブラウザにだけ保存されます。</p>
+      <p class="c-dialog__text">config.php に設定した管理者パスワードを入力してください。ログイン状態はこのブラウザで30日間保持されます。</p>
       <div class="c-field">
         <label class="c-field__label" for="login-key">
-          管理者キー
+          パスワード
           <span class="c-field__badge c-field__badge--required">必須</span>
         </label>
         <input
@@ -355,9 +387,9 @@
           id="login-key"
           name="key"
           required
-          minlength="8"
+          minlength="4"
           maxlength="128"
-          placeholder="8文字以上"
+          placeholder="管理者パスワード"
           autocomplete="current-password"
           aria-describedby="login-key-error">
         <p class="c-field__error" id="login-key-error" aria-live="polite"></p>
@@ -368,6 +400,9 @@
       </div>
     </form>
   </dialog>
+
+  <!-- 初期データ（main.js が読み込む。表示後は api.php と自動同期） -->
+  <script type="application/json" id="initial-data"><?= $initialJson ?></script>
 
   <!-- 通知 -->
   <div class="c-toast js-toast" role="status" aria-live="polite"></div>

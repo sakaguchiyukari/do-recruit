@@ -1,7 +1,7 @@
 /* =========================================================
    Do.Link 運用ログ — Script
    1. 設定  2. ユーティリティ  3. 状態・DOM参照
-   4. 通知・同期状態  5. API（Apps Script）  6. 権限表示
+   4. 通知・同期状態  5. API（api.php）  6. 権限表示
    7. 描画（一覧）  8. 描画（GA4グラフ）  9. フォーム
    10. 管理者ログイン  11. 絞り込み  12. GA4取り込み
    13. 書き出し（Excel / CSV）  14. 自動同期
@@ -14,11 +14,17 @@
   document.documentElement.classList.add('js-enabled');
 
   /* ---------- 1. 設定 ---------- */
-  const CONFIG = window.DOLINK_LOG_CONFIG || {};
-  const API_URL = String(CONFIG.apiUrl || '').trim();
-  const REFRESH_MS = Math.max(1, Number(CONFIG.refreshMinutes) || 5) * 60 * 1000;
-  const DEMO_URL = 'assets/data/demo.json';
-  const KEY_STORAGE = 'dolink-log:admin-key';
+  const API_URL = 'api.php';
+
+  // index.php が埋め込んだ初期データ（1回目の表示は通信なしで描画する）
+  const INITIAL = (() => {
+    try {
+      return JSON.parse(document.getElementById('initial-data').textContent) || {};
+    } catch {
+      return {};
+    }
+  })();
+  const REFRESH_MS = Math.max(15, Number(INITIAL.refreshSeconds) || 60) * 1000;
 
   const CATEGORIES = [
     { id: 'top', label: 'TOPお知らせ' },
@@ -115,12 +121,6 @@
   const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
-  // localStorage はプライベートモード等で例外になるため必ず try で包む
-  const storage = {
-    get: (key) => { try { return localStorage.getItem(key) || ''; } catch { return ''; } },
-    set: (key, value) => { try { localStorage.setItem(key, value); } catch { /* 保存できなくても動作は継続 */ } },
-    remove: (key) => { try { localStorage.removeItem(key); } catch { /* noop */ } },
-  };
 
   /* ---------- 3. 状態・DOM参照 ---------- */
   const state = {
@@ -131,14 +131,15 @@
     category: 'all',
     keyword: '',
     editingId: null,
-    mode: API_URL ? 'live' : 'demo', // live：スプレッドシート連携 / demo：デモデータ
     loaded: false,
-    adminKey: '',
+    admin: false, // ログイン状態はサーバーのセッションで管理（画面側は表示の切り替えのみ）
+    csrf: String(INITIAL.csrf || ''),
+    revision: -1,
     syncing: false,
     lastSynced: null,
   };
 
-  const isAdmin = () => state.mode === 'live' && Boolean(state.adminKey);
+  const isAdmin = () => state.admin;
 
   const $ = (selector) => document.querySelector(selector);
   const el = {
@@ -146,7 +147,6 @@
     statusText: $('.js-status-text'),
     refresh: $('.js-refresh'),
     lead: $('.js-lead'),
-    notice: $('.js-notice'),
     workspace: $('.js-workspace'),
     entry: $('.js-entry'),
     formTitle: $('.js-form-title'),
@@ -224,15 +224,11 @@
   };
 
   const showSyncedStatus = () => {
-    if (state.mode === 'demo') {
-      setStatus('demo', 'デモ表示');
-      return;
-    }
     const time = state.lastSynced ? formatTime(state.lastSynced) : '—';
     setStatus(isAdmin() ? 'online' : 'readonly', `${isAdmin() ? '管理者' : '閲覧'}・${time} 更新`);
   };
 
-  /* ---------- 5. API（Apps Script ウェブアプリ） ---------- */
+  /* ---------- 5. API（同じサーバーの api.php） ---------- */
   class ApiError extends Error {
     constructor(code, message) {
       super(message || code);
@@ -240,37 +236,39 @@
     }
   }
 
-  // 読み込み：GETで全データを取得（キャッシュ回避のため時刻を付与）
+  // 読み込み：前回の更新番号を渡し、変化がなければ中身を受け取らない（通信量を抑える）
   const fetchData = async () => {
-    const url = state.mode === 'live'
-      ? `${API_URL}${API_URL.includes('?') ? '&' : '?'}t=${Date.now()}`
-      : DEMO_URL;
-    const response = await fetch(url, { cache: 'no-store' });
-    if (!response.ok) throw new ApiError('network', `HTTP ${response.status}`);
-    const json = await response.json();
-    if (json && json.ok === false) throw new ApiError(json.error || 'server', json.message);
+    const response = await fetch(`${API_URL}?action=data&since=${state.revision}`, {
+      cache: 'no-store',
+      credentials: 'same-origin',
+    });
+    const json = await response.json().catch(() => null);
+    if (!response.ok || !json || json.ok !== true) {
+      throw new ApiError((json && json.error) || 'network', json && json.message);
+    }
     return json;
   };
 
-  // 書き込み：text/plain で送るとCORSのプリフライトが発生しない（Apps Script はOPTIONS非対応のため）
+  // 書き込み：ログインのセッション＋CSRFトークンで本人確認
   const postApi = async (action, payload = {}) => {
-    if (state.mode !== 'live') throw new ApiError('demo');
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action, key: state.adminKey, ...payload }),
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': state.csrf },
+      body: JSON.stringify({ action, ...payload }),
     });
-    if (!response.ok) throw new ApiError('network', `HTTP ${response.status}`);
-    const json = await response.json();
-    if (!json || json.ok !== true) throw new ApiError((json && json.error) || 'server', json && json.message);
+    const json = await response.json().catch(() => null);
+    if (!json || json.ok !== true) throw new ApiError((json && json.error) || 'network', json && json.message);
     return json;
   };
 
   const handleApiError = (error, fallback = '保存できませんでした。時間をおいてもう一度お試しください。') => {
     const code = error && error.code;
     if (code === 'unauthorized') {
-      showToast('管理者キーが正しくありません。もう一度ログインしてください。', 'error');
-      logout(false);
+      showToast('ログインの有効期限が切れました。もう一度ログインしてください。', 'error');
+      setAdmin(false);
+    } else if (code === 'csrf') {
+      showToast('ページの有効期限が切れました。再読み込みしてからもう一度お試しください。', 'error');
     } else if (code === 'invalid') {
       showToast(`入力内容を確認してください。${error.message && error.message !== code ? `（${error.message}）` : ''}`, 'error');
     } else if (code === 'not_found') {
@@ -287,14 +285,11 @@
     el.fab.hidden = !canEdit;
     el.admin.hidden = !canEdit;
     el.workspace.classList.toggle('is-readonly', !canEdit);
-    el.loginOpen.hidden = canEdit || state.mode !== 'live';
+    el.loginOpen.hidden = canEdit;
     el.lead.textContent = canEdit
-      ? '管理者としてログイン中です。記録した内容はスプレッドシートに保存され、閲覧ページにも自動で反映されます。'
+      ? '管理者としてログイン中です。記録した内容は保存と同時に、閲覧している全員の画面へ自動で反映されます。'
       : 'Do.Linkで行った作業と、GA4のアクセス推移を日付ごとに確認できます。必要なときはExcel・CSVで書き出せます。';
 
-    // デモ表示の案内
-    el.notice.hidden = state.mode !== 'demo';
-    el.notice.textContent = 'デモ表示中です。assets/js/config.js に Apps Script のURLを設定すると、スプレッドシートの内容を表示・自動同期します。';
     if (!canEdit) el.fab.classList.remove('is-visible');
   };
 
@@ -781,36 +776,42 @@
     else el.login.removeAttribute('open');
   };
 
-  const logout = (notify = true) => {
-    state.adminKey = '';
-    storage.remove(KEY_STORAGE);
-    resetForm();
+  // 管理者表示の切り替え（権限の判定そのものはサーバー側で行う）
+  const setAdmin = (admin) => {
+    if (state.admin === admin) return;
+    state.admin = admin;
+    if (!admin) resetForm();
     applyRole();
     showSyncedStatus();
     render();
-    if (notify) showToast('ログアウトしました。');
+  };
+
+  const logout = async () => {
+    try {
+      await postApi('logout');
+    } catch {
+      /* 失敗しても画面上はログアウト扱いにする */
+    }
+    setAdmin(false);
+    showToast('ログアウトしました。');
   };
 
   const handleLogin = async (event) => {
     event.preventDefault();
     if (!validateFields([el.loginKey])) return;
-    const key = el.loginKey.value.trim();
     el.loginSubmit.disabled = true;
-    const previous = state.adminKey;
-    state.adminKey = key;
     try {
-      await postApi('verify'); // キーの正否はサーバー側でのみ判定
-      storage.set(KEY_STORAGE, key);
+      await postApi('login', { password: el.loginKey.value });
       closeLogin();
-      applyRole();
-      showSyncedStatus();
-      render();
+      setAdmin(true);
       showToast('管理者としてログインしました。');
     } catch (error) {
-      state.adminKey = previous;
-      setFieldError(el.loginKey, error.code === 'unauthorized'
-        ? '管理者キーが正しくありません。'
-        : '確認できませんでした。通信状況を確認してください。');
+      const messages = {
+        unauthorized: 'パスワードが正しくありません。',
+        not_configured: 'config.php の管理者パスワードが初期値のままです。変更してからログインしてください。',
+        csrf: 'ページの有効期限が切れました。再読み込みしてください。',
+      };
+      setFieldError(el.loginKey, messages[error.code] || '確認できませんでした。通信状況を確認してください。');
     } finally {
       el.loginSubmit.disabled = false;
     }
@@ -820,9 +821,7 @@
     el.loginOpen.addEventListener('click', openLogin);
     el.loginCancel.addEventListener('click', closeLogin);
     el.loginForm.addEventListener('submit', handleLogin);
-    el.logout.addEventListener('click', () => logout(true));
-    // 保存済みのキーで自動ログイン（不正なキーなら最初の書き込み時に解除される）
-    if (state.mode === 'live') state.adminKey = storage.get(KEY_STORAGE);
+    el.logout.addEventListener('click', logout);
   };
 
   /* ---------- 11. 絞り込み ---------- */
@@ -1135,36 +1134,42 @@
     if (latest < current) state.month = latest;
   };
 
+  // サーバーから受け取ったデータを画面の状態に反映
+  const applyPayload = (data) => {
+    if (typeof data.isAdmin === 'boolean' && data.isAdmin !== state.admin) {
+      state.admin = data.isAdmin; // 別タブでのログアウト・期限切れを反映
+      if (!state.admin) resetForm();
+      applyRole();
+    }
+    state.lastSynced = new Date();
+    if (data.unchanged) return false;
+
+    state.revision = Number(data.revision) || 0;
+    state.logs = (Array.isArray(data.logs) ? data.logs : []).map(normalizeLog).filter(Boolean);
+    state.ga4 = normalizeGa4(data.ga4);
+    if (!state.loaded) jumpToLatestMonth();
+    state.loaded = true;
+    // 編集中の記録が他の端末で削除された場合はフォームを戻す
+    if (state.editingId && !state.logs.some((log) => log.id === state.editingId)) resetForm();
+    renderDeptSuggestions();
+    updateGa4Meta();
+    return true;
+  };
+
   const sync = async ({ silent = false } = {}) => {
     if (state.syncing) return;
     setSyncing(true);
     try {
-      const data = await fetchData();
-      state.logs = (Array.isArray(data.logs) ? data.logs : []).map(normalizeLog).filter(Boolean);
-      state.ga4 = normalizeGa4(data.ga4);
-      if (!state.loaded) jumpToLatestMonth();
-      state.loaded = true;
-      state.lastSynced = new Date();
-      // 編集中の記録が他の端末で削除された場合はフォームを戻す
-      if (state.editingId && !state.logs.some((log) => log.id === state.editingId)) resetForm();
-      renderDeptSuggestions();
-      updateGa4Meta();
+      const changed = applyPayload(await fetchData());
       setSyncing(false);
       showSyncedStatus();
-      render();
-      if (!silent) showToast('最新の内容に更新しました。');
+      if (changed) render();
+      if (!silent) showToast(changed ? '最新の内容に更新しました。' : 'すでに最新の内容です。');
     } catch (error) {
       console.error('[dolink-log] 同期に失敗しました', error);
       setSyncing(false);
       setStatus('offline', '同期できません');
-      if (!state.loaded) {
-        el.empty.hidden = false;
-        el.empty.textContent = state.mode === 'demo'
-          ? 'デモデータを読み込めませんでした。ファイルを直接開いている場合は、Webサーバー経由で表示してください。'
-          : 'データを読み込めませんでした。通信状況を確認し、右上の更新ボタンを押してください。';
-      } else if (!silent) {
-        showToast('更新できませんでした。時間をおいてもう一度お試しください。', 'error');
-      }
+      if (!silent) showToast('更新できませんでした。時間をおいてもう一度お試しください。', 'error');
     }
   };
 
@@ -1179,7 +1184,7 @@
     // タブに戻ってきたとき、前回から1分以上経っていれば同期
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'visible' || !state.lastSynced) return;
-      if (Date.now() - state.lastSynced.getTime() > 60 * 1000) sync({ silent: true });
+      if (Date.now() - state.lastSynced.getTime() > 30 * 1000) sync({ silent: true });
     });
   };
 
@@ -1251,7 +1256,16 @@
   // OSのライト／ダーク切り替えに合わせてグラフの色を更新
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => render());
 
+  // 初期表示：埋め込みデータで即描画（通信を待たない）
+  if (INITIAL.ok) {
+    applyPayload(INITIAL);
+    showSyncedStatus();
+  } else {
+    setStatus('offline', '読み込みエラー');
+  }
   applyRole();
   render();
-  sync({ silent: true });
+  if (!INITIAL.ok) {
+    el.empty.textContent = 'データを読み込めませんでした。';
+  }
 })();
