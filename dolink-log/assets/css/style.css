@@ -1,0 +1,1568 @@
+@charset "UTF-8";
+/* =========================================================
+   Do.Link 運用ログ — Stylesheet
+   1. Tokens   2. Base   3. Layout   4. Component
+   5. Project  6. Utility  7. Motion  8. 権限・GA4・書き出し
+   9. 同期・管理者ログイン（静的サイト版で追加）
+========================================================= */
+
+/* ---------------------------------------------------------
+   1. Tokens（カラー・余白・角丸などはここで一元管理）
+--------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  /* Color */
+  /* Brand（ロゴから採色） */
+  --color-brand-blue: #0068b7;
+  --color-brand-red: #bb1e00;
+
+  --color-bg: #f2f5fa;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #e8eef6;
+  --color-ink: #13213a;
+  --color-ink-muted: #556178;
+  --color-rule: #d8e0eb;
+  --color-rule-strong: #b3c0d3;
+  --color-primary: #0068b7;
+  --color-primary-hover: #00559a;
+  --color-on-primary: #ffffff;
+  --gradient-primary: linear-gradient(120deg, #00479e 0%, #0068b7 45%, #2b9de8 100%);
+  --gradient-primary-hover: linear-gradient(120deg, #003c87 0%, #005aa3 45%, #1f8fdc 100%);
+  --color-marker: var(--color-brand-red);
+  --color-marker-soft: rgba(43, 157, 232, 0.28);
+  --color-success: #1f8a5a;
+  --color-danger: #b3261e;
+  --color-on-danger: #ffffff;
+  --color-sun: #c0392b;
+  --color-sat: #0068b7;
+  --color-focus: #2b9de8;
+
+  /* Category（カテゴリ識別色） */
+  --cat-top: #0068b7;
+  --cat-work: #0f8a7e;
+  --cat-topics: #6a4fc4;
+  --cat-company: #2f7d32;
+  --cat-community: #c2477e;
+  --cat-members: #1b7fa6;
+  --cat-mail: #b5651d;
+  --cat-design: #8a5a00;
+  --cat-other: #6b7385;
+
+  /* Typography */
+  --font-base: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Meiryo", sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem);
+  --fs-xl: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);
+
+  /* Space */
+  --space-section: clamp(2.5rem, 6vw, 4.5rem);
+  --space-gutter: clamp(1rem, 4vw, 2.5rem);
+  --space-panel: clamp(1.25rem, 3vw, 2rem);
+
+  /* Radius / Shadow */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 999px;
+  --shadow-soft: 0 1px 2px rgba(19, 33, 58, 0.04), 0 8px 24px rgba(19, 33, 58, 0.06);
+  --shadow-lift: 0 2px 4px rgba(19, 33, 58, 0.05), 0 16px 32px rgba(19, 33, 58, 0.1);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 0.6s;
+  --duration-fast: 0.25s;
+
+  /* Layout */
+  --width-content: 72rem;
+  --width-form: 23rem;
+  --tap: 2.75rem; /* タップ領域 44px 相当 */
+
+  /* Safe area（スマホのシステムバー対策） */
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Dark mode（OS設定に追従） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #0d1422;
+    --color-surface: #151e30;
+    --color-surface-sunken: #1c2740;
+    --color-ink: #e7edf7;
+    --color-ink-muted: #9eabc2;
+    --color-rule: #283550;
+    --color-rule-strong: #3b4c6e;
+    --color-primary: #6cb8f5;
+    --color-primary-hover: #8fcaf8;
+    --color-on-primary: #ffffff;
+    --gradient-primary: linear-gradient(120deg, #0a5cc0 0%, #1a7fd6 45%, #3fa9f0 100%);
+    --gradient-primary-hover: linear-gradient(120deg, #1468cc 0%, #2a8be0 45%, #55b4f3 100%);
+    --color-marker: #ff7a5c;
+    --color-marker-soft: rgba(108, 184, 245, 0.3);
+    --color-success: #6fd0a0;
+    --color-danger: #ff8a80;
+    --color-on-danger: #2b0d0a;
+    --color-sun: #ff8a80;
+    --color-sat: #8ac4f5;
+    --color-focus: #6cb8f5;
+    --cat-top: #6cb8f5;
+    --cat-work: #5fd0c3;
+    --cat-topics: #b4a2f2;
+    --cat-company: #8fd18f;
+    --cat-community: #f08fbb;
+    --cat-members: #6fc8e8;
+    --cat-mail: #f0a868;
+    --cat-design: #e0b45e;
+    --cat-other: #a8b0c0;
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.3), 0 16px 32px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* Dark mode（ビューア側で明示的にダーク指定された場合） */
+:root[data-theme="dark"] {
+  --color-bg: #0d1422;
+  --color-surface: #151e30;
+  --color-surface-sunken: #1c2740;
+  --color-ink: #e7edf7;
+  --color-ink-muted: #9eabc2;
+  --color-rule: #283550;
+  --color-rule-strong: #3b4c6e;
+  --color-primary: #6cb8f5;
+  --color-primary-hover: #8fcaf8;
+  --color-on-primary: #ffffff;
+  --gradient-primary: linear-gradient(120deg, #0a5cc0 0%, #1a7fd6 45%, #3fa9f0 100%);
+  --gradient-primary-hover: linear-gradient(120deg, #1468cc 0%, #2a8be0 45%, #55b4f3 100%);
+  --color-marker: #ff7a5c;
+  --color-marker-soft: rgba(108, 184, 245, 0.3);
+  --color-success: #6fd0a0;
+  --color-danger: #ff8a80;
+  --color-on-danger: #2b0d0a;
+  --color-sun: #ff8a80;
+  --color-sat: #8ac4f5;
+  --color-focus: #6cb8f5;
+  --cat-top: #6cb8f5;
+  --cat-work: #5fd0c3;
+  --cat-topics: #b4a2f2;
+  --cat-company: #8fd18f;
+  --cat-community: #f08fbb;
+  --cat-members: #6fc8e8;
+  --cat-mail: #f0a868;
+  --cat-design: #e0b45e;
+  --cat-other: #a8b0c0;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.3), 0 16px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------------------------------------------------------
+   2. Base
+--------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-base);
+  font-size: var(--fs-base);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* hidden 属性を display 指定より優先（権限で出し分ける要素のため） */
+[hidden] {
+  display: none !important;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------
+   3. Layout
+--------------------------------------------------------- */
+.l-container {
+  width: min(100% - var(--space-gutter) * 2, var(--width-content));
+  margin-inline: auto;
+}
+
+/* Header */
+.l-header {
+  position: relative;
+  padding-block: clamp(0.875rem, 2.5vw, 1.25rem);
+  background: var(--color-surface);
+}
+
+.l-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.l-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ロゴ：黒文字のためダークモードでも白い台座の上に置く */
+.l-header__logo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0.3rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  box-shadow: 0 0 0 1px var(--color-rule);
+}
+
+.l-header__logo-img {
+  display: block;
+  width: auto;
+  height: clamp(2.25rem, 1.9rem + 1.2vw, 2.75rem);
+}
+
+.l-header__name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+
+.l-header__sub {
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+}
+
+/* 狭い画面では補足テキストを省略してヘッダーを1行に保つ */
+@media (max-width: 29.99rem) {
+  .l-header__sub {
+    display: none;
+  }
+}
+
+/* ヘッダー下のブランドライン（グラデーション） */
+.l-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--gradient-primary);
+}
+
+/* Main */
+.l-main {
+  padding-bottom: var(--space-section);
+}
+
+/* Workspace：SPは縦積み / PCはフォーム＋ログの2カラム */
+.l-workspace {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+@media (min-width: 64rem) {
+  .l-workspace {
+    grid-template-columns: var(--width-form) minmax(0, 1fr);
+  }
+}
+
+/* Footer */
+.l-footer {
+  padding-block: 1.5rem clamp(5.5rem, 12vw, 2rem);
+  border-top: 1px solid var(--color-rule);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+}
+
+.l-footer__text {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------
+   4. Component
+--------------------------------------------------------- */
+
+/* Skip link */
+.c-skip {
+  position: absolute;
+  left: 1rem;
+  top: -10rem;
+  z-index: 50;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-ink);
+  color: var(--color-bg);
+  text-decoration: none;
+}
+
+.c-skip:focus {
+  top: calc(env(safe-area-inset-top, 0px) + 1rem);
+}
+
+/* Status（接続状態） */
+.c-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.375rem 0.875rem;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+
+.c-status__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-rule-strong);
+}
+
+.c-status[data-state="online"] .c-status__dot { background: var(--color-success); }
+.c-status[data-state="readonly"] .c-status__dot { background: var(--color-primary); }
+.c-status[data-state="offline"] .c-status__dot { background: var(--color-danger); }
+
+/* Button */
+.c-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease);
+}
+
+.c-button--primary {
+  background: var(--gradient-primary);
+  color: var(--color-on-primary);
+  box-shadow: 0 6px 16px rgba(0, 104, 183, 0.25);
+}
+
+.c-button--ghost {
+  background: transparent;
+  border-color: var(--color-rule-strong);
+  color: var(--color-ink);
+}
+
+@media (hover: hover) {
+  .c-button--primary:hover:not(:disabled) {
+    background: var(--gradient-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(0, 104, 183, 0.32);
+  }
+
+  .c-button--ghost:hover:not(:disabled) {
+    border-color: var(--color-ink-muted);
+    background: var(--color-surface-sunken);
+  }
+}
+
+.c-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Chip（カテゴリ絞り込み・今月ボタン） */
+.c-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: var(--tap);
+  padding: 0.375rem 1rem;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.c-chip__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--tag-color);
+}
+
+.c-chip[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--gradient-primary);
+  color: var(--color-on-primary);
+}
+
+.c-chip[aria-pressed="true"] .c-chip__dot {
+  background: #ffffff;
+}
+
+@media (hover: hover) {
+  .c-chip:hover:not([aria-pressed="true"]):not(:disabled) {
+    border-color: var(--color-rule-strong);
+    color: var(--color-ink);
+  }
+}
+
+.c-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Icon button（月送り） */
+.c-icon-btn {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 1px solid var(--color-rule);
+  border-radius: 50%;
+  background: var(--color-surface);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+}
+
+@media (hover: hover) {
+  .c-icon-btn:hover:not(:disabled) {
+    border-color: var(--color-ink-muted);
+  }
+}
+
+.c-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Text button（編集・削除・CSV） */
+.c-text-btn {
+  min-height: var(--tap);
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .c-text-btn {
+    min-height: 2.125rem;
+  }
+
+  .c-text-btn:hover {
+    background: var(--color-surface-sunken);
+    color: var(--color-ink);
+  }
+}
+
+.c-text-btn--danger {
+  color: var(--color-danger);
+}
+
+.c-text-btn--danger.is-confirm {
+  background: var(--color-danger);
+  color: var(--color-on-danger);
+}
+
+.c-text-btn--accent {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* Tag（カテゴリ表示） */
+.c-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.625rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+  color: var(--tag-color);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.c-tag::before {
+  content: "";
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Form field */
+.c-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.c-form__fieldset {
+  display: grid;
+  gap: 1.125rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.c-form__actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.c-field {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.c-field__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.c-field__badge {
+  padding: 0 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-muted);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+.c-field__badge--required {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary);
+}
+
+.c-field__control {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--color-rule-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: 1rem; /* iOSの入力時ズームを避けるため16px以上 */
+  line-height: 1.6;
+  transition: border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
+}
+
+.c-field__control::placeholder {
+  color: color-mix(in srgb, var(--color-ink-muted) 70%, transparent);
+}
+
+@media (hover: hover) {
+  .c-field__control:hover:not(:disabled) {
+    border-color: var(--color-ink-muted);
+  }
+}
+
+.c-field__control:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.c-field__control[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.c-field__control:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.c-field__control--textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+/* select の矢印 */
+.c-field__select {
+  position: relative;
+}
+
+.c-field__select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--color-ink-muted);
+  border-bottom: 2px solid var(--color-ink-muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.c-field__select .c-field__control {
+  padding-right: 2.5rem;
+  appearance: none;
+}
+
+.c-field__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.c-field__hint,
+.c-field__counter,
+.c-field__error {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+}
+
+.c-field__hint,
+.c-field__counter {
+  color: var(--color-ink-muted);
+}
+
+.c-field__counter {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.c-field__error {
+  color: var(--color-danger);
+}
+
+.c-field__error:empty {
+  display: none;
+}
+
+/* Search */
+.c-search {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: 1rem;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+
+.c-search:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+/* Entry（1件分の記録） */
+.c-entry {
+  padding: clamp(0.875rem, 2.5vw, 1.125rem) clamp(1rem, 2.5vw, 1.375rem);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
+}
+
+.c-entry.is-editing {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+.c-entry__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 0.625rem;
+}
+
+.c-entry__dept {
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.c-entry__title {
+  margin: 0.5rem 0 0;
+  font-size: var(--fs-base);
+  font-weight: 700;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.c-entry__memo {
+  margin: 0.25rem 0 0;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.85;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.c-entry__link {
+  display: inline-block;
+  max-width: 100%;
+  margin-top: 0.5rem;
+  color: var(--color-primary);
+  font-size: var(--fs-xs);
+  text-underline-offset: 0.2em;
+  overflow-wrap: anywhere;
+}
+
+.c-entry__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--color-rule);
+}
+
+.c-entry__actions {
+  display: flex;
+  flex: none;
+  gap: 0.25rem;
+}
+
+@media (hover: hover) {
+  .c-entry:hover {
+    border-color: var(--color-rule-strong);
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-2px);
+  }
+
+}
+
+/* FAB（SP用の記録ボタン：フォームが画面外のときだけ表示） */
+.c-fab {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3.25rem;
+  padding: 0.75rem 1.375rem;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(0, 104, 183, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(1rem);
+  transition:
+    opacity var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease),
+    visibility var(--duration-fast);
+}
+
+.c-fab.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.c-fab__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+@media (min-width: 64rem) {
+  .c-fab {
+    display: none;
+  }
+}
+
+/* Toast（保存結果の通知） */
+.c-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  width: max-content;
+  max-width: min(90vw, 28rem);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--color-ink);
+  color: var(--color-bg);
+  font-size: var(--fs-sm);
+  box-shadow: var(--shadow-lift);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.75rem);
+  transition: opacity var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease);
+}
+
+.c-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.c-toast[data-tone="error"] {
+  background: var(--color-danger);
+  color: var(--color-on-danger);
+}
+
+@media (min-width: 64rem) {
+  .c-toast {
+    bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ---------------------------------------------------------
+   5. Project
+--------------------------------------------------------- */
+
+/* Intro */
+.p-intro {
+  padding-block: clamp(0.75rem, 3vw, 2rem) clamp(1.75rem, 4vw, 3rem);
+}
+
+.p-intro__title {
+  margin: 0 0 0.75rem;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+
+.p-intro__lead {
+  max-width: 38em;
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: clamp(0.875rem, 0.83rem + 0.2vw, 1rem);
+}
+
+/* Entry form */
+@media (min-width: 64rem) {
+  .p-entry {
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 1.5rem);
+  }
+}
+
+.p-entry__panel {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+/* フォーム上端のグラデーションライン */
+.p-entry__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.p-entry__title {
+  margin: 0 0 1.25rem;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.p-entry__notice {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+/* Log */
+.p-log__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.125rem;
+}
+
+.p-log__title {
+  margin: 0;
+  font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+.p-log__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.p-log__tools {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+/* SPはカテゴリを横スクロールにして縦長化を防ぐ */
+.p-log__filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-inline: calc(var(--space-gutter) * -1);
+  padding-inline: var(--space-gutter);
+  padding-bottom: 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.p-log__filters::-webkit-scrollbar {
+  display: none;
+}
+
+/* 検索を上、カテゴリを下に配置（9項目でも2行程度に収める） */
+.p-log__search {
+  order: -1;
+}
+
+@media (min-width: 48rem) {
+  .p-log__search {
+    max-width: 22rem;
+  }
+
+  .p-log__filters {
+    flex-wrap: wrap;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+}
+
+.p-log__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--tap);
+}
+
+.p-log__count {
+  margin: 0;
+  white-space: nowrap;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+}
+
+.p-log__empty {
+  margin: 0.5rem 0 0;
+  padding: clamp(2.5rem, 8vw, 4rem) 1.25rem;
+  border: 1px dashed var(--color-rule-strong);
+  border-radius: var(--radius-lg);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+/* Day（日付ごとのまとまり） */
+.p-day {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: clamp(0.875rem, 3vw, 1.75rem);
+  padding-block: clamp(1.25rem, 3vw, 1.75rem);
+  border-top: 1px solid var(--color-rule);
+}
+
+@media (min-width: 48rem) {
+  .p-day {
+    grid-template-columns: 4.75rem minmax(0, 1fr);
+  }
+}
+
+.p-day__date {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 1rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: start;
+  line-height: 1.1;
+}
+
+.p-day__month {
+  margin-bottom: 0.3rem;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.p-day__num {
+  padding-inline: 0.06em;
+  font-size: clamp(2rem, 1.55rem + 2vw, 2.875rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.p-day__week {
+  margin-top: 0.4rem;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.p-day__week--sun { color: var(--color-sun); }
+.p-day__week--sat { color: var(--color-sat); }
+
+/* 今日：数字に蛍光ペンのような下線 */
+.p-day--today .p-day__num {
+  background: linear-gradient(transparent 60%, var(--color-marker-soft) 60%);
+}
+
+.p-day__today {
+  margin-top: 0.4rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.3rem;
+  background: var(--color-marker);
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.p-day__entries {
+  display: grid;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------------------------------------------------------
+   6. Utility
+--------------------------------------------------------- */
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.u-sp-only {
+  display: inline;
+}
+
+@media (min-width: 48rem) {
+  .u-sp-only {
+    display: none;
+  }
+}
+
+/* カテゴリ色（タグ・チップで共通利用） */
+.u-cat--top { --tag-color: var(--cat-top); }
+.u-cat--work { --tag-color: var(--cat-work); }
+.u-cat--topics { --tag-color: var(--cat-topics); }
+.u-cat--company { --tag-color: var(--cat-company); }
+.u-cat--community { --tag-color: var(--cat-community); }
+.u-cat--members { --tag-color: var(--cat-members); }
+.u-cat--mail { --tag-color: var(--cat-mail); }
+.u-cat--design { --tag-color: var(--cat-design); }
+.u-cat--other { --tag-color: var(--cat-other); }
+
+/* ---------------------------------------------------------
+   7. Motion（IntersectionObserver によるフェードイン）
+--------------------------------------------------------- */
+.js-enabled .u-reveal {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity var(--duration) var(--ease), transform var(--duration) var(--ease);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+
+.js-enabled .u-reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* 再描画時に表示済みの要素を再アニメーションさせない */
+.js-enabled .u-reveal.is-instant {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js-enabled .u-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .c-entry,
+  .c-button,
+  .c-fab,
+  .c-toast {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------
+   8. 追加：権限・GA4パネル・書き出し
+--------------------------------------------------------- */
+
+/* 閲覧のみの人はフォームを出さず、一覧を1カラムで表示 */
+.l-workspace.is-readonly {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 56rem;
+}
+
+/* 小さいボタン（取り込み・書き出し） */
+.c-button--sm {
+  min-height: var(--tap);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+}
+
+/* コンパクトなセレクト（指標・書き出し範囲） */
+.c-mini-select {
+  position: relative;
+  display: inline-flex;
+}
+
+.c-mini-select::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.875rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 2px solid var(--color-ink-muted);
+  border-bottom: 2px solid var(--color-ink-muted);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.c-mini-select__control {
+  min-height: var(--tap);
+  padding: 0.375rem 2.25rem 0.375rem 1rem;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: var(--fs-sm);
+  appearance: none;
+  cursor: pointer;
+}
+
+.c-mini-select__control:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+/* 折りたたみヘルプ */
+.c-help {
+  font-size: var(--fs-sm);
+}
+
+.c-help__summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--color-primary);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.c-help__body {
+  margin: 0.25rem 0 0;
+  padding: 1rem 1.25rem 1rem 2.25rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-muted);
+  line-height: 1.9;
+}
+
+/* GA4パネル */
+.p-insight {
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+  padding: var(--space-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.p-insight__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.p-insight__title {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.p-insight__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.p-insight__chart {
+  position: relative;
+  height: clamp(12rem, 28vw, 16rem);
+}
+
+.p-insight__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0.875rem 0 0;
+  padding: 0;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+  list-style: none;
+}
+
+.p-insight__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.p-insight__swatch {
+  width: 1.25rem;
+  height: 0.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-primary);
+}
+
+.p-insight__swatch--work {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: var(--color-brand-red);
+}
+
+/* 作業あり／なしの平均比較 */
+.p-insight__compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+}
+
+.p-insight__stat {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+}
+
+.p-insight__stat-label {
+  display: block;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+
+.p-insight__stat-value {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.p-insight__note {
+  margin: 0.75rem 0 0;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+  line-height: 1.7;
+}
+
+.p-insight__empty {
+  margin: 0;
+  padding: 2rem 1rem;
+  border: 1px dashed var(--color-rule-strong);
+  border-radius: var(--radius-md);
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+.p-insight__admin {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--color-rule);
+}
+
+.p-insight__admin-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 書き出しバー */
+.p-log__export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 日付ブロック内：その日のGA4数値 */
+.p-day__metric {
+  justify-self: start;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-primary) 9%, transparent);
+  color: var(--color-primary);
+  font-size: var(--fs-xs);
+}
+
+.p-day__metric-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.p-day__body {
+  display: grid;
+  gap: 0.625rem;
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------
+   9. 同期・管理者ログイン（静的サイト版で追加）
+--------------------------------------------------------- */
+
+/* ヘッダー右側：同期状態＋更新ボタン */
+.l-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.c-status[data-state="syncing"] .c-status__dot {
+  background: var(--color-primary);
+  animation: status-pulse 1s ease-in-out infinite;
+}
+
+.c-status[data-state="demo"] .c-status__dot {
+  background: var(--cat-mail);
+}
+
+@keyframes status-pulse {
+  50% { opacity: 0.3; }
+}
+
+/* 更新ボタン：回転アイコン */
+.c-icon-btn--sm {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1rem;
+  color: var(--color-ink-muted);
+}
+
+.c-icon-btn.is-spinning .c-icon-btn__glyph {
+  animation: icon-spin 0.9s linear infinite;
+}
+
+.c-icon-btn__glyph {
+  display: inline-block;
+}
+
+@keyframes icon-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* フッター：管理者ログインのテキストリンク */
+.l-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+.l-footer__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .l-footer__link:hover {
+    color: var(--color-primary);
+  }
+}
+
+/* Dialog（管理者ログイン） */
+.c-dialog {
+  width: min(100% - var(--space-gutter) * 2, 26rem);
+  padding: 0;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-lift);
+}
+
+.c-dialog::backdrop {
+  background: rgba(13, 20, 34, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.c-dialog__inner {
+  position: relative;
+  padding: var(--space-panel);
+}
+
+.c-dialog__inner::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--gradient-primary);
+}
+
+.c-dialog__title {
+  margin: 0 0 0.5rem;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.c-dialog__text {
+  margin: 0 0 1.25rem;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.8;
+}
+
+.c-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+/* 管理者バー（ログイン中の表示とログアウト） */
+.p-entry__admin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  margin: -0.5rem 0 1.25rem;
+  color: var(--color-ink-muted);
+  font-size: var(--fs-xs);
+}
+
+/* デモ表示・未設定の案内 */
+.p-notice {
+  margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
+  padding: 0.875rem 1.125rem;
+  border: 1px solid color-mix(in srgb, var(--cat-mail) 40%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--cat-mail) 10%, transparent);
+  font-size: var(--fs-sm);
+  line-height: 1.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-status[data-state="syncing"] .c-status__dot,
+  .c-icon-btn.is-spinning .c-icon-btn__glyph {
+    animation: none;
+  }
+}
