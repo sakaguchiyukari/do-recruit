@@ -295,6 +295,7 @@ $initialJson = json_encode($initial, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSO
             </p>
           </div>
           <p class="p-insight__note js-insight-note" hidden>平均は参考値です。曜日や季節など、作業以外の要因による増減も含まれます。</p>
+          <p class="p-insight__note js-ga4-sync" hidden></p>
 
           <!-- 管理者のみ：GA4データの手動取り込み（自動同期が使えない場合の予備） -->
           <div class="p-insight__admin js-admin" hidden>
@@ -303,13 +304,34 @@ $initialJson = json_encode($initial, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSO
               <input class="u-visually-hidden js-ga4-input" type="file" id="ga4-file" name="ga4" accept=".csv,text/csv">
             </div>
             <p class="c-field__hint js-ga4-meta">GA4データは未取り込みです。</p>
+            <!-- GA4の自動同期（おすすめ）：Google Apps Script を1回設定するだけ -->
+            <details class="c-help js-ga4-auto">
+              <summary class="c-help__summary">GA4を毎日自動で取り込む設定（おすすめ）</summary>
+              <div class="c-help__body p-sync">
+                <ol class="p-sync__steps">
+                  <li>GA4の閲覧権限があるGoogleアカウントで <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener noreferrer">新しい Apps Script</a> を開きます。</li>
+                  <li>最初からあるコードを全部消し、下のコードを貼り付けます。</li>
+                  <li>コード上部の <code>PROPERTY_ID</code> に、GA4の「管理」→「プロパティの詳細」にあるプロパティID（数字）を入れて保存します。</li>
+                  <li>左メニュー「サービス ＋」→「Google Analytics Data API」→「追加」を押します。</li>
+                  <li>上部の関数選択で <code>firstSetup</code> を選び「実行」。承認画面が出たら許可します。</li>
+                  <li>このページを再読み込みし、グラフ下に「GA4自動同期」の時刻が出れば完了です。翌日から毎朝6時台に自動更新されます。</li>
+                </ol>
+                <div class="p-sync__code">
+                  <label class="u-visually-hidden" for="ga4-script">貼り付けるコード</label>
+                  <textarea class="c-field__control c-field__control--textarea p-sync__textarea js-ga4-script" id="ga4-script" rows="8" readonly>読み込み中…</textarea>
+                  <button class="c-button c-button--primary c-button--sm js-ga4-copy" type="button" disabled>コードをコピー</button>
+                </div>
+                <p class="p-sync__warn">コードにはこのサイト専用の合言葉が含まれています。社外の人には共有しないでください。</p>
+              </div>
+            </details>
+
             <details class="c-help">
-              <summary class="c-help__summary">GA4からCSVを書き出す手順</summary>
+              <summary class="c-help__summary">手動でCSVを取り込む手順（自動同期を使わない場合）</summary>
               <ol class="c-help__body">
                 <li>GA4の左メニュー「探索」→「空白」（自由形式）を開きます。</li>
                 <li>ディメンションに「日付」、指標に「表示回数」「アクティブユーザー数」などを追加します。</li>
                 <li>行に「日付」、値に指標をドラッグし、期間を設定します。</li>
-                <li>右上の「エクスポート」から CSV を選んで保存し、ここで取り込みます。</li>
+                <li>右上の「エクスポート」から CSV を選んで保存し、上のボタンから取り込みます。</li>
               </ol>
             </details>
           </div>

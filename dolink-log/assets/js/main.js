@@ -126,6 +126,7 @@
   const state = {
     logs: [],
     ga4: { metrics: [], days: {} },
+    ga4SyncedAt: 0,
     metric: '',
     month: monthKeyOf(todayKey()),
     category: 'all',
@@ -182,6 +183,10 @@
     admin: $('.js-admin'),
     ga4Input: $('.js-ga4-input'),
     ga4Meta: $('.js-ga4-meta'),
+    ga4Sync: $('.js-ga4-sync'),
+    ga4Auto: $('.js-ga4-auto'),
+    ga4Script: $('.js-ga4-script'),
+    ga4Copy: $('.js-ga4-copy'),
     filters: $('.js-filters'),
     search: $('.js-search'),
     count: $('.js-count'),
@@ -968,10 +973,47 @@
     el.ga4Meta.textContent = keys.length
       ? `取り込み済み：${keys[0].replace(/-/g, '/')}〜${keys[keys.length - 1].replace(/-/g, '/')}（${state.ga4.metrics.join('・')}）`
       : 'GA4データは未取り込みです。';
+
+    // 自動同期の最終実行（誰でも見られる。データの鮮度の目安）
+    el.ga4Sync.hidden = !state.ga4SyncedAt;
+    if (state.ga4SyncedAt) {
+      const d = new Date(state.ga4SyncedAt);
+      el.ga4Sync.textContent = `GA4自動同期：${d.getMonth() + 1}/${d.getDate()} ${formatTime(d)} に最新化（前日分まで）`;
+    }
+  };
+
+  // 自動同期スクリプトは開いたときに1回だけ取得（合言葉を含むため管理者のみ）
+  let ga4ScriptLoaded = false;
+  const loadGa4Script = async () => {
+    if (ga4ScriptLoaded || !isAdmin()) return;
+    try {
+      const response = await fetch(`${API_URL}?action=ga4script`, { cache: 'no-store', credentials: 'same-origin' });
+      const json = await response.json();
+      if (!json.ok) throw new ApiError(json.error);
+      el.ga4Script.value = json.script;
+      el.ga4Copy.disabled = false;
+      ga4ScriptLoaded = true;
+    } catch (error) {
+      el.ga4Script.value = 'コードを読み込めませんでした。ページを再読み込みしてください。';
+      if (error.code === 'unauthorized') setAdmin(false);
+    }
+  };
+
+  const copyGa4Script = async () => {
+    try {
+      await navigator.clipboard.writeText(el.ga4Script.value);
+    } catch {
+      // クリップボードAPIが使えない環境向けの予備
+      el.ga4Script.select();
+      document.execCommand('copy');
+    }
+    showToast('コードをコピーしました。Apps Script に貼り付けてください。');
   };
 
   const initGa4 = () => {
     el.ga4Input.addEventListener('change', () => importGa4File(el.ga4Input.files[0]));
+    el.ga4Auto.addEventListener('toggle', () => { if (el.ga4Auto.open) loadGa4Script(); });
+    el.ga4Copy.addEventListener('click', copyGa4Script);
   };
 
   /* ---------- 13. 書き出し（Excel / CSV：ブラウザで直接ダウンロード） ---------- */
@@ -1147,6 +1189,7 @@
     state.revision = Number(data.revision) || 0;
     state.logs = (Array.isArray(data.logs) ? data.logs : []).map(normalizeLog).filter(Boolean);
     state.ga4 = normalizeGa4(data.ga4);
+    state.ga4SyncedAt = Number(data.ga4SyncedAt) || 0;
     if (!state.loaded) jumpToLatestMonth();
     state.loaded = true;
     // 編集中の記録が他の端末で削除された場合はフォームを戻す

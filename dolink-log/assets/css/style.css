@@ -1562,3 +1562,48 @@ textarea {
     animation: none;
   }
 }
+
+/* GA4自動同期の設定手順 */
+.p-sync {
+  display: grid;
+  gap: 1rem;
+  padding-left: 1.25rem;
+}
+
+.p-sync__steps {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.p-sync__steps code {
+  padding: 0.05rem 0.35rem;
+  border-radius: 0.3rem;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: 0.85em;
+}
+
+.p-sync__steps a {
+  color: var(--color-primary);
+  text-underline-offset: 0.2em;
+}
+
+.p-sync__code {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+}
+
+.p-sync__textarea {
+  min-height: 10rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  white-space: pre;
+}
+
+.p-sync__warn {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--fs-xs);
+}

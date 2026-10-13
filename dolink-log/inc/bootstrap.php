@@ -140,6 +140,20 @@ function meta_set(string $key, string $value): void
         ->execute([$key, $value]);
 }
 
+/**
+ * GA4自動同期用の合言葉（Google Apps Script からの送信を確認する）
+ * 初回に自動で作成し、管理者画面にだけ表示する
+ */
+function ga4_sync_token(): string
+{
+    $token = meta_get('ga4_token');
+    if ($token === '') {
+        $token = bin2hex(random_bytes(24));
+        meta_set('ga4_token', $token);
+    }
+    return $token;
+}
+
 // 更新のたびに番号を進め、画面側は番号が変わったときだけ再描画する
 function bump_revision(): void
 {
@@ -252,6 +266,7 @@ function fetch_payload(): array
         'revision' => (int) meta_get('revision', '0'),
         'logs' => $logs,
         'ga4' => ['metrics' => $metrics, 'days' => (object) $days],
+        'ga4SyncedAt' => (int) meta_get('ga4_synced_at', '0'), // GA4自動同期の最終実行（ミリ秒）
     ];
 }
 
@@ -326,7 +341,7 @@ function delete_log(string $id): bool
 }
 
 /** GA4データを日付単位で上書きマージする */
-function import_ga4($metrics, $days): int
+function import_ga4($metrics, $days, bool $auto = false): int
 {
     if (!is_array($metrics) || !is_array($days)) {
         throw new InvalidArgumentException('GA4データの形式');
@@ -336,6 +351,9 @@ function import_ga4($metrics, $days): int
     $pdo->beginTransaction();
     try {
         $count = write_ga4($pdo, $metrics, $days);
+        if ($auto) {
+            meta_set('ga4_synced_at', (string) now_ms());
+        }
         bump_revision();
         $pdo->commit();
     } catch (Throwable $e) {

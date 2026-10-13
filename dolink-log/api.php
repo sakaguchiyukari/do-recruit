@@ -35,7 +35,25 @@ try {
     /* ---------- 読み込み（誰でも可） ---------- */
     if ($method === 'GET') {
         session_write_close(); // 読み込み中にセッションをロックしない
-        if (($_GET['action'] ?? 'data') !== 'data') {
+        $getAction = (string) ($_GET['action'] ?? 'data');
+
+        // 管理者のみ：GA4自動同期スクリプト（このサイトのURLと合言葉を埋め込んだもの）
+        if ($getAction === 'ga4script') {
+            if (!is_admin()) {
+                fail('unauthorized', 401);
+            }
+            $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+            $dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+            $receiver = ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $dir . '/ga4-receive.php';
+            $script = strtr((string) file_get_contents(__DIR__ . '/inc/ga4-sync.gs'), [
+                '__SITE_URL__' => $receiver,
+                '__TOKEN__' => ga4_sync_token(),
+            ]);
+            respond(['ok' => true, 'script' => $script, 'receiver' => $receiver]);
+        }
+
+        if ($getAction !== 'data') {
             fail('invalid', 400, '不明な操作です');
         }
         $since = isset($_GET['since']) ? (int) $_GET['since'] : -1;
