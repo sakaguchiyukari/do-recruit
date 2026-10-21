@@ -8,7 +8,7 @@
      1. Foundation  … 変数 / リセット / ベース
      2. Layout      … l-  （コンテナ）
      3. Component   … c-  （見出し / ボタン / フォーム部品 / カード / モーダル）
-     4. Project     … p-  （ページ見出し / 流れ / 求人検索 / パスワード画面）
+     4. Project     … p-  （流れ / 求人検索 / パスワード画面）
      5. Utility     … u-
      6. Motion      … フェードイン / reduced-motion
    色・余白・角丸・影・モーションの生の値は :root に集約し、
@@ -55,10 +55,8 @@
   /* 英字見出しは幾何学的なサンセリフ（Windows: Century Gothic / Mac: Avenir Next） */
   --font-en: "Quicksand", "Century Gothic", "Avenir Next", "Futura", "Segoe UI", sans-serif;
 
-  --fs-hero: clamp(1.75rem, 1.2rem + 2.6vw, 3.25rem);
   --fs-heading-en: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
   --fs-h3: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
-  --fs-lead: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
   --fs-body: 1rem;
   --fs-small: 0.875rem;
   --fs-caption: 0.75rem;
@@ -91,7 +89,6 @@
   --shadow-sm: 0 2px 6px rgba(35, 90, 120, 0.08);
   --shadow: 0 6px 20px rgba(35, 90, 120, 0.12);
   --shadow-hover: 0 12px 32px rgba(35, 90, 120, 0.18);
-  --shadow-pill: 0 4px 0 rgba(58, 158, 196, 0.35);   /* ヒーロー見出しの白ピルの影 */
 
   /* ---------- Motion ---------- */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -1247,121 +1244,6 @@ legend.c-filter__legend {
 @media (min-width: 768px) {
   .c-form__row {
     grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-
-/* ==========================================================================
-   4. Project / Page Hero（下層ページ共通の見出しエリア）
-   --------------------------------------------------------------------------
-   TOPのヒーローと同じ空色面＋角丸の下端。下層なので高さは控えめにする。
-   ========================================================================== */
-.p-page-hero {
-  position: relative;
-  padding-block: var(--space-xl);
-  overflow: hidden;
-  background-color: var(--color-sky);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-}
-
-/* 背景の雲（TOPのイラストの雲を簡略化） */
-.p-page-hero::before,
-.p-page-hero::after {
-  content: "";
-  position: absolute;
-  height: 1.75rem;
-  background-color: rgba(255, 255, 255, 0.75);
-  border-radius: var(--radius-full);
-  box-shadow: 1.5rem -0.75rem 0 0.25rem rgba(255, 255, 255, 0.75);
-  pointer-events: none;
-}
-
-.p-page-hero::before {
-  top: 30%;
-  right: 8%;
-  width: 6rem;
-}
-
-.p-page-hero::after {
-  bottom: 18%;
-  left: 52%;
-  width: 4.5rem;
-}
-
-.p-page-hero__inner {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: var(--space-lg);
-}
-
-.p-page-hero__body {
-  display: grid;
-  justify-items: start;
-  gap: var(--space-md);
-}
-
-.p-page-hero__label {
-  font-family: var(--font-en);
-  font-size: var(--fs-small);
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  color: var(--color-white);
-}
-
-/* 「つながる、」「ひろがる。」と同じ白いピル型の見出し */
-.p-page-hero__title {
-  display: grid;
-  justify-items: start;
-  gap: var(--space-xs);
-  font-size: var(--fs-hero);
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: 0.04em;
-  color: var(--color-text-strong);
-}
-
-.p-page-hero__pill {
-  display: inline-block;
-  padding: 0.3em 0.75em;
-  background-color: var(--color-white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-pill);
-}
-
-.p-page-hero__pill--shift {
-  margin-left: 1.25em;
-}
-
-.p-page-hero__accent {
-  color: var(--color-blue);
-}
-
-.p-page-hero__lead {
-  max-width: var(--measure);
-  padding: var(--space-sm) var(--space-md);
-  font-size: var(--fs-lead);
-  font-weight: 700;
-  color: var(--color-text-strong);
-  background-color: rgba(255, 255, 255, 0.85);
-  border-radius: var(--radius);
-}
-
-.p-page-hero__actions {
-  display: grid;
-  gap: var(--space-xs);
-  width: 100%;
-}
-
-@media (min-width: 600px) {
-  .p-page-hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    width: auto;
-  }
-
-  .p-page-hero__actions .c-button {
-    min-width: 14rem;
   }
 }
 

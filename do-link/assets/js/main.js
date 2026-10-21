@@ -625,19 +625,19 @@
   /* ===========================================================================
      9. SP固定CTA
      ---------------------------------------------------------------------------
-     ページ見出しを過ぎ、かつ条件パネルが画面外のときだけ表示する。
+     紹介の流れを過ぎ、かつ条件パネルが画面外のときだけ表示する。
      ======================================================================== */
   const initSpCta = () => {
     const cta = document.querySelector('.js-sp-cta');
     const button = document.querySelector('.js-sp-cta-button');
-    const hero = document.querySelector('.p-page-hero');
+    const flow = document.querySelector('.p-flow');
     const aside = document.querySelector('.p-jobs__aside');
-    if (!cta || !button || !hero || !aside || !('IntersectionObserver' in window)) return;
+    if (!cta || !button || !flow || !aside || !('IntersectionObserver' in window)) return;
 
-    const visible = new Map([[hero, true], [aside, false]]);
+    const visible = new Map([[flow, true], [aside, false]]);
 
     const update = () => {
-      const show = !visible.get(hero) && !visible.get(aside);
+      const show = !visible.get(flow) && !visible.get(aside);
       cta.classList.toggle('is-visible', show);
       cta.setAttribute('aria-hidden', String(!show));
       button.tabIndex = show ? 0 : -1;
@@ -647,7 +647,7 @@
       entries.forEach((entry) => visible.set(entry.target, entry.isIntersecting));
       update();
     });
-    observer.observe(hero);
+    observer.observe(flow);
     observer.observe(aside);
 
     button.addEventListener('click', () => {

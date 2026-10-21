@@ -85,37 +85,9 @@
 
   <main id="main">
 
-    <!-- ====================================================================
-         Page Hero（ページ見出し）
-         ※ ヘッダー・フッター・パンくずは Do.Link 側の共通テンプレートに任せる
-         ==================================================================== -->
-    <section class="p-page-hero" aria-labelledby="page-title">
-      <div class="l-container p-page-hero__inner">
-
-        <div class="p-page-hero__body">
-          <p class="p-page-hero__label js-reveal">REFERRAL</p>
-          <h1 class="p-page-hero__title js-reveal" id="page-title">
-            <span class="p-page-hero__pill">な<span class="p-page-hero__accent">か</span>まを、</span>
-            <span class="p-page-hero__pill p-page-hero__pill--shift">な<span class="p-page-hero__accent">か</span>まに。</span>
-            <span class="u-visually-hidden">リファラル採用</span>
-          </h1>
-          <p class="p-page-hero__lead js-reveal">
-            いっしょに働きたいと思える知人を、グループの求人に紹介できます。
-            知人の経験や希望の働き方を選ぶと、合いそうな求人が見つかります。
-          </p>
-          <div class="p-page-hero__actions js-reveal">
-            <a class="c-button c-button--primary" href="#jobs">
-              求人をさがす
-              <span class="c-button__icon" aria-hidden="true"></span>
-            </a>
-            <a class="c-button c-button--more" href="#flow">
-              紹介の流れ
-              <span class="c-button__icon" aria-hidden="true"></span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- ページ見出し（h1）：見た目上の見出しエリアは置かず、読み上げ・SEO用にのみ置く。
+         ヘッダー・フッター・パンくずは Do.Link 側の共通テンプレートに任せる -->
+    <h1 class="u-visually-hidden">リファラル採用</h1>
 
     <!-- ====================================================================
          Flow（紹介の流れ：TOPの NUMBER カードと同じテイスト）
@@ -310,7 +282,7 @@
   </main>
 
   <!-- ======================================================================
-       SP固定CTA（ページ見出しを過ぎたら表示）
+       SP固定CTA（紹介の流れを過ぎたら表示）
        ====================================================================== -->
   <div class="p-sp-cta js-sp-cta" aria-hidden="true">
     <button class="c-button c-button--primary c-button--block js-sp-cta-button" type="button" tabindex="-1">
