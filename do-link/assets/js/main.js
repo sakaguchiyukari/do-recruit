@@ -9,11 +9,10 @@
  *   5. 検索・描画
  *   6. 条件パネル（SP開閉）
  *   7. 詳細モーダル・紹介フォーム
- *   8. ドロワーメニュー
- *   9. フェードイン（IntersectionObserver）
- *  10. SP固定CTA
- *  11. パスワードゲート
- *  12. 初期化
+ *   8. フェードイン（IntersectionObserver）
+ *   9. SP固定CTA
+ *  10. パスワードゲート
+ *  11. 初期化
  *
  * file:// で直接開いても動くよう、ESモジュールではなく defer の単一ファイル構成にしている。
  * グローバル変数を作らないよう、全体をブロックスコープで囲む。
@@ -585,37 +584,7 @@
 
 
   /* ===========================================================================
-     8. ドロワーメニュー
-     ======================================================================== */
-  const initDrawer = () => {
-    const drawer = document.querySelector('.js-drawer');
-    const toggle = document.querySelector('.js-drawer-toggle');
-    if (!drawer || !toggle) return;
-
-    const setOpen = (isDrawerOpen) => {
-      drawer.hidden = !isDrawerOpen;
-      toggle.setAttribute('aria-expanded', String(isDrawerOpen));
-      toggle.setAttribute('aria-label', isDrawerOpen ? 'メニューを閉じる' : 'メニューを開く');
-    };
-
-    toggle.addEventListener('click', () => setOpen(drawer.hidden));
-
-    // メニュー内のリンクを押したら閉じる（ページ内リンク対策）
-    drawer.addEventListener('click', (event) => {
-      if (event.target.closest('a')) setOpen(false);
-    });
-
-    // Esc で閉じてボタンへフォーカスを戻す
-    document.addEventListener('keydown', (event) => {
-      if (event.key !== 'Escape' || drawer.hidden) return;
-      setOpen(false);
-      toggle.focus();
-    });
-  };
-
-
-  /* ===========================================================================
-     9. フェードイン（IntersectionObserver）
+     8. フェードイン（IntersectionObserver）
      ---------------------------------------------------------------------------
      発火は1回のみ。非対応環境・モーション削減時は即座に表示する。
      ======================================================================== */
@@ -638,7 +607,7 @@
   };
 
   const initReveal = () => {
-    const targets = document.querySelectorAll('main .js-reveal, footer .js-reveal');
+    const targets = document.querySelectorAll('main .js-reveal');
 
     // 同じ親の中で順に遅延させる
     const counters = new Map();
@@ -654,7 +623,7 @@
 
 
   /* ===========================================================================
-     10. SP固定CTA
+     9. SP固定CTA
      ---------------------------------------------------------------------------
      ページ見出しを過ぎ、かつ条件パネルが画面外のときだけ表示する。
      ======================================================================== */
@@ -690,7 +659,7 @@
 
 
   /* ===========================================================================
-     11. パスワードゲート
+     10. パスワードゲート
      ---------------------------------------------------------------------------
      入力されたパスワードを SHA-256 でハッシュ化し、PASSWORD_HASH と比較する。
      ソースにパスワードそのものは書かないが、ブラウザ内だけの判定なので
@@ -859,7 +828,7 @@
 
 
   /* ===========================================================================
-     12. 初期化
+     11. 初期化
      ---------------------------------------------------------------------------
      1つの機能の失敗でページ全体が止まらないよう、個別に例外を捕捉する。
      ======================================================================== */
@@ -867,7 +836,6 @@
     if (!form || !list || !template || !modal) return;
 
     [
-      ['drawer', initDrawer],
       ['reveal', initReveal],
       ['filter', initFilter],
       ['render', render],

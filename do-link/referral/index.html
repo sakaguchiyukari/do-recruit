@@ -83,68 +83,14 @@
     </noscript>
   </div>
 
-  <!-- 本文へのスキップリンク -->
-  <a class="c-skip-link" href="#main">本文へスキップ</a>
-
-  <!-- ======================================================================
-       Header（Do.Link 共通）
-       ※ 共通パーツ。TOP・他の下層ページと内容を揃えること
-       ====================================================================== -->
-  <header class="l-header">
-    <div class="l-header__inner">
-      <a class="l-header__logo" href="../">
-        <!-- ロゴ画像支給後に差し替え：../assets/img/common/logo-dolink.svg -->
-        <span class="l-header__logo-mark">Do.<br>Link</span>
-        <span class="l-header__logo-sub">ドゥ.ヨネザワ企業グループ 社員限定コミュニティサイト</span>
-      </a>
-
-      <div class="l-header__user">
-        <span class="l-header__avatar" aria-hidden="true"></span>
-        <!-- TODO: ログイン機能と連携してログイン中のユーザー名を表示する -->
-        <span class="l-header__user-name">ゲストさん</span>
-      </div>
-
-      <button
-        class="l-header__menu js-drawer-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="drawer"
-        aria-label="メニューを開く"
-      >
-        <span class="l-header__menu-bar" aria-hidden="true"></span>
-      </button>
-    </div>
-
-    <!-- ドロワーメニュー -->
-    <!-- TODO: 各下層ページのURL確定後にリンク先を差し替える -->
-    <nav class="c-drawer js-drawer" id="drawer" aria-label="サイトメニュー" hidden>
-      <ul class="c-drawer__list">
-        <li><a class="c-drawer__link" href="../"><span class="c-drawer__en">TOP</span>トップページ</a></li>
-        <li><a class="c-drawer__link" href="../#community"><span class="c-drawer__en">COMMUNITY</span>コミュニティ</a></li>
-        <li><a class="c-drawer__link" href="../#topics"><span class="c-drawer__en">TOPICS</span>トピックス</a></li>
-        <li><a class="c-drawer__link" href="../#group"><span class="c-drawer__en">GROUP</span>グループ会社情報</a></li>
-        <li><a class="c-drawer__link" href="../#member"><span class="c-drawer__en">MEMBER</span>社員一覧・検索</a></li>
-        <li><a class="c-drawer__link" href="../#works"><span class="c-drawer__en">WORKS</span>グループのお仕事紹介</a></li>
-        <li><a class="c-drawer__link" href="./" aria-current="page"><span class="c-drawer__en">REFERRAL</span>リファラル採用</a></li>
-      </ul>
-    </nav>
-  </header>
-
   <main id="main">
 
     <!-- ====================================================================
-         Page Hero（下層ページ共通の見出しエリア）
+         Page Hero（ページ見出し）
+         ※ ヘッダー・フッター・パンくずは Do.Link 側の共通テンプレートに任せる
          ==================================================================== -->
     <section class="p-page-hero" aria-labelledby="page-title">
       <div class="l-container p-page-hero__inner">
-
-        <!-- パンくず -->
-        <nav class="c-breadcrumb" aria-label="パンくずリスト">
-          <ol class="c-breadcrumb__list">
-            <li class="c-breadcrumb__item"><a class="c-breadcrumb__link" href="../">トップ</a></li>
-            <li class="c-breadcrumb__item" aria-current="page">リファラル採用</li>
-          </ol>
-        </nav>
 
         <div class="p-page-hero__body">
           <p class="p-page-hero__label js-reveal">REFERRAL</p>
@@ -168,17 +114,6 @@
             </a>
           </div>
         </div>
-
-        <figure class="p-page-hero__visual js-reveal">
-          <img
-            class="p-page-hero__image"
-            src="../assets/img/referral/referral-hero.svg"
-            alt=""
-            width="560"
-            height="420"
-            fetchpriority="high"
-          >
-        </figure>
       </div>
     </section>
 
@@ -372,86 +307,7 @@
       </div>
     </section>
 
-    <!-- ====================================================================
-         Rules（紹介のルール：TOPの COMMUNITY 一覧と同じ点線区切り）
-         ==================================================================== -->
-    <section class="p-rules" id="rules" aria-labelledby="rules-title">
-      <div class="l-container l-container--narrow">
-        <h2 class="c-heading js-reveal" id="rules-title">
-          <span class="c-heading__en" aria-hidden="true">RU<span class="c-heading__en-accent">L</span><span class="c-heading__en-light">ES</span></span>
-          <span class="c-heading__ja">紹介のルール</span>
-        </h2>
-
-        <!-- TODO: リファラル制度規程の正式な内容に合わせて人事部門で確定する -->
-        <ul class="p-rules__list js-reveal">
-          <li class="p-rules__item">
-            <span class="c-pill-tag">同意</span>
-            <p class="p-rules__text">紹介する方ご本人の同意を得てから、フォームを送信してください。</p>
-          </li>
-          <li class="p-rules__item">
-            <span class="c-pill-tag">報奨金</span>
-            <p class="p-rules__text">紹介報奨金の支給条件・時期は、グループのリファラル制度規程に準じます。</p>
-          </li>
-          <li class="p-rules__item">
-            <span class="c-pill-tag">選考</span>
-            <p class="p-rules__text">選考は通常の採用と同じ基準で行います。結果の理由はお伝えできない場合があります。</p>
-          </li>
-          <li class="p-rules__item">
-            <span class="c-pill-tag">情報</span>
-            <p class="p-rules__text">求人の内容は社外秘として取り扱い、SNS等への転載はご遠慮ください。</p>
-          </li>
-        </ul>
-      </div>
-    </section>
-
   </main>
-
-  <!-- ======================================================================
-       Footer（Do.Link 共通）
-       ====================================================================== -->
-  <footer class="l-footer">
-    <div class="l-container">
-      <div class="l-footer__card js-reveal">
-        <figure class="l-footer__visual">
-          <!-- TODO: TOPと同じ「まいにちに"プラス"をつむぐ」イラストに差し替え -->
-          <img
-            class="l-footer__image"
-            src="../assets/img/common/footer-building.svg"
-            alt="まいにちに、プラスをつむごう。"
-            width="400"
-            height="280"
-            loading="lazy"
-            decoding="async"
-          >
-        </figure>
-        <ul class="l-footer__links">
-          <li>
-            <a class="c-button c-button--sky c-button--block" href="https://doyg.jp/" target="_blank" rel="noopener">
-              グループホームページ
-              <span class="c-button__icon" aria-hidden="true"></span>
-            </a>
-          </li>
-          <li>
-            <a class="c-button c-button--sky c-button--block" href="https://recruit.doyg.jp/" target="_blank" rel="noopener">
-              グループ採用サイト
-              <span class="c-button__icon" aria-hidden="true"></span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="l-footer__bottom">
-      <!-- TODO: 各ページのURL確定後に差し替える -->
-      <ul class="l-footer__nav">
-        <li><a class="l-footer__nav-link" href="../">トップページ</a></li>
-        <li><a class="l-footer__nav-link" href="../terms/">利用規約</a></li>
-        <li><a class="l-footer__nav-link" href="../privacy/">プライバシーポリシー</a></li>
-        <li><a class="l-footer__nav-link" href="../contact/">お問い合わせ</a></li>
-      </ul>
-      <small class="l-footer__copy">&copy; DO.YONEZAWA CORPORATE GROUP</small>
-    </div>
-  </footer>
 
   <!-- ======================================================================
        SP固定CTA（ページ見出しを過ぎたら表示）
