@@ -7,7 +7,7 @@
      1. Foundation  … 変数 / リセット / ベース
      2. Layout      … l-  （ヘッダー / コンテナ / フッター）
      3. Component   … c-  （ボタン / フォーム部品 / カード / モーダル）
-     4. Project     … p-  （ヒーロー / 検索 / 利用の流れ / ルール / 掲載CTA）
+     4. Project     … p-  （ヒーロー / 検索 / 利用の流れ / ルール / 掲載CTA / パスワード画面）
      5. Utility     … u-
      6. Motion      … フェードイン / reduced-motion
    色・余白・角丸・影・モーションの生の値は :root に集約し、
@@ -1933,6 +1933,126 @@ legend.c-filter__legend {
 @media (min-width: 1024px) {
   .p-sp-cta {
     display: none;
+  }
+}
+
+
+/* ==========================================================================
+   4. Project / Password Gate（閲覧前のパスワード入力）
+   --------------------------------------------------------------------------
+   html に .is-unlocked が付くまでは、ゲート以外の要素をすべて非表示にする。
+   JS無効時も本文は表示しない（ゲート内の noscript 案内のみ出る）。
+   ========================================================================== */
+html:not(.is-unlocked) body > :not(.p-gate) {
+  display: none;
+}
+
+html.is-unlocked .p-gate {
+  display: none;
+}
+
+.p-gate {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--space-lg) var(--gutter);
+  background:
+    radial-gradient(70% 60% at 100% 0%, var(--color-blue-pale) 0%, transparent 70%),
+    radial-gradient(60% 50% at 0% 100%, var(--color-green-pale) 0%, transparent 70%),
+    var(--color-bg-subtle);
+}
+
+.p-gate__card {
+  display: grid;
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-lg) var(--space-md);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.p-gate__card.is-shake {
+  animation: gate-shake 400ms var(--ease);
+}
+
+@keyframes gate-shake {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.p-gate__logo {
+  font-family: var(--font-en);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-blue);
+}
+
+.p-gate__title {
+  margin-top: calc(var(--space-sm) * -0.5);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  color: var(--color-text-strong);
+}
+
+.p-gate__text,
+.p-gate__note {
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+}
+
+.p-gate__note {
+  font-size: var(--fs-caption);
+  text-align: center;
+}
+
+/* パスワード欄＋表示切替ボタン */
+.p-gate__field {
+  position: relative;
+}
+
+.p-gate__input {
+  padding-right: 4.5rem;
+}
+
+.p-gate__toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.25rem;
+  min-width: 3.5rem;
+  min-height: 2.5rem;
+  padding: 0 0.75rem;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--color-blue);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  transform: translateY(-50%);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+@media (hover: hover) {
+  .p-gate__toggle:hover {
+    background-color: var(--color-blue-pale);
+  }
+}
+
+.p-gate__noscript {
+  margin-top: var(--space-md);
+  font-size: var(--fs-small);
+  color: var(--color-error);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .p-gate__card {
+    padding: var(--space-xl) var(--space-lg);
   }
 }
 

@@ -6,7 +6,9 @@
 
   <!-- JS有効判定：フェードインの初期状態(opacity:0)は .js-enabled 配下でのみ適用する。
        JSが無効・読み込み失敗の環境でもコンテンツが見えたままになるよう、この1行は必須 -->
-  <script>document.documentElement.classList.add('js-enabled');</script>
+  <!-- あわせて、同じタブで認証済みならパスワード画面を一瞬でも出さないよう is-unlocked を先に付ける。
+       （正しい認証かどうかは main.js で再確認し、不一致ならロック画面に戻す） -->
+  <script>document.documentElement.classList.add('js-enabled');try{if(sessionStorage.getItem('domatch:auth'))document.documentElement.classList.add('is-unlocked');}catch(e){}</script>
 
   <title>DO MATCH｜副業・リファラル採用マッチング｜ドゥ.ヨネザワ企業グループ</title>
   <meta name="description" content="ドゥ.ヨネザワ企業グループの社内コミュニティ。グループ内の副業案件と、知人を紹介できるリファラル採用の求人を、案件タイプに合わせた条件で検索・マッチングできます。">
@@ -35,6 +37,49 @@
 </head>
 
 <body>
+
+  <!-- ======================================================================
+       Password Gate（閲覧前のパスワード入力）
+       ----------------------------------------------------------------------
+       ※ ブラウザ内だけで判定する簡易ロック。ソースを読めば中身は見られるため、
+         機密情報の保護には使えない。本番はサーバー側の認証（Basic認証・SSO等）で守ること。
+       ====================================================================== -->
+  <div class="p-gate js-gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <form class="p-gate__card js-gate-form" action="#" method="post">
+      <p class="p-gate__logo">DO MATCH</p>
+      <!-- h1 は本文側に1つだけ置くため、ここは p で見出しを表現する -->
+      <p class="p-gate__title" id="gate-title">社内メンバー専用ページです</p>
+      <p class="p-gate__text">閲覧するには、共有されたパスワードを入力してください。</p>
+
+      <div class="c-form__item">
+        <label class="c-form__label" for="gate-password">パスワード</label>
+        <div class="p-gate__field">
+          <input
+            class="c-field p-gate__input js-gate-input"
+            id="gate-password"
+            type="password"
+            name="password"
+            placeholder="パスワードを入力"
+            autocomplete="current-password"
+            required
+            minlength="4"
+            maxlength="64"
+            aria-describedby="gate-error"
+          >
+          <button class="p-gate__toggle js-gate-toggle" type="button" aria-controls="gate-password" aria-pressed="false">表示</button>
+        </div>
+        <p class="c-form__error js-gate-error" id="gate-error" aria-live="assertive"></p>
+      </div>
+
+      <button class="c-button c-button--block" type="submit">ページを開く</button>
+      <p class="p-gate__note">パスワードが分からない場合は、人事部門にお問い合わせください。</p>
+    </form>
+
+    <!-- JS無効時はパスワード判定ができないため案内のみ表示 -->
+    <noscript>
+      <p class="p-gate__noscript">このページを表示するには JavaScript を有効にしてください。</p>
+    </noscript>
+  </div>
 
   <!-- 本文へのスキップリンク -->
   <a class="c-skip-link" href="#main">本文へスキップ</a>
