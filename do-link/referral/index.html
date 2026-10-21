@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- JS有効判定：フェードインの初期状態(opacity:0)は .js-enabled 配下でのみ適用する。
+       あわせて、同じタブで認証済みならパスワード画面を一瞬でも出さないよう is-unlocked を先に付ける。
+       （正しい認証かどうかは main.js で再確認し、不一致ならロック画面に戻す） -->
+  <script>document.documentElement.classList.add('js-enabled');try{if(sessionStorage.getItem('dolink:auth'))document.documentElement.classList.add('is-unlocked');}catch(e){}</script>
+
+  <title>リファラル採用｜Do.Link ドゥ.ヨネザワ企業グループ 社員限定コミュニティサイト</title>
+  <meta name="description" content="Do.Link のリファラル採用ページ。グループで募集中の求人を、知人の経験や希望の働き方からさがして、そのまま紹介できます。">
+
+  <!-- 社員限定サイトのため検索エンジンにインデックスさせない -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- OGP（社内チャット等でURLを共有した際のプレビュー用） -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Do.Link ドゥ.ヨネザワ企業グループ 社員限定コミュニティサイト">
+  <meta property="og:title" content="リファラル採用｜Do.Link">
+  <meta property="og:description" content="なかまを、なかまに。グループで募集中の求人をさがして、信頼できる知人を紹介しよう。">
+  <!-- TODO: 1200×630 の PNG を用意して配置する（SVGはOGPで表示されない） -->
+  <meta property="og:image" content="https://example.com/do-link/assets/img/ogp/ogp-referral.png">
+  <!-- TODO: 公開URL確定後に差し替える -->
+  <meta property="og:url" content="https://example.com/do-link/referral/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#74cde2">
+
+  <!-- Icon（apple-touch-icon は 180×180 PNG を別途用意する） -->
+  <link rel="icon" href="../assets/icon/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script defer src="../assets/js/main.js"></script>
+</head>
+
+<body>
+
+  <!-- ======================================================================
+       Password Gate（閲覧前のパスワード入力）
+       ----------------------------------------------------------------------
+       ※ ブラウザ内だけで判定する簡易ロック。ソースを読めば中身は見られるため、
+         機密情報の保護には使えない。Do.Link 本体にログイン機能がある場合は不要。
+       ====================================================================== -->
+  <div class="p-gate js-gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <form class="p-gate__card js-gate-form" action="#" method="post">
+      <p class="p-gate__logo">Do.Link</p>
+      <!-- h1 は本文側に1つだけ置くため、ここは p で見出しを表現する -->
+      <p class="p-gate__title" id="gate-title">社員限定ページです</p>
+      <p class="p-gate__text">閲覧するには、共有されたパスワードを入力してください。</p>
+
+      <div class="c-form__item">
+        <label class="c-form__label" for="gate-password">パスワード</label>
+        <div class="p-gate__field">
+          <input
+            class="c-field p-gate__input js-gate-input"
+            id="gate-password"
+            type="password"
+            name="password"
+            placeholder="パスワードを入力"
+            autocomplete="current-password"
+            required
+            minlength="4"
+            maxlength="64"
+            aria-describedby="gate-error"
+          >
+          <button class="p-gate__toggle js-gate-toggle" type="button" aria-controls="gate-password" aria-pressed="false">表示</button>
+        </div>
+        <p class="c-form__error js-gate-error" id="gate-error" aria-live="assertive"></p>
+      </div>
+
+      <button class="c-button c-button--primary c-button--block" type="submit">
+        ページを開く
+        <span class="c-button__icon" aria-hidden="true"></span>
+      </button>
+      <p class="p-gate__note">パスワードが分からない場合は、人事部門にお問い合わせください。</p>
+    </form>
+
+    <!-- JS無効時はパスワード判定ができないため案内のみ表示 -->
+    <noscript>
+      <p class="p-gate__noscript">このページを表示するには JavaScript を有効にしてください。</p>
+    </noscript>
+  </div>
+
+  <!-- 本文へのスキップリンク -->
+  <a class="c-skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ======================================================================
+       Header（Do.Link 共通）
+       ※ 共通パーツ。TOP・他の下層ページと内容を揃えること
+       ====================================================================== -->
+  <header class="l-header">
+    <div class="l-header__inner">
+      <a class="l-header__logo" href="../">
+        <!-- ロゴ画像支給後に差し替え：../assets/img/common/logo-dolink.svg -->
+        <span class="l-header__logo-mark">Do.<br>Link</span>
+        <span class="l-header__logo-sub">ドゥ.ヨネザワ企業グループ 社員限定コミュニティサイト</span>
+      </a>
+
+      <div class="l-header__user">
+        <span class="l-header__avatar" aria-hidden="true"></span>
+        <!-- TODO: ログイン機能と連携してログイン中のユーザー名を表示する -->
+        <span class="l-header__user-name">ゲストさん</span>
+      </div>
+
+      <button
+        class="l-header__menu js-drawer-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="drawer"
+        aria-label="メニューを開く"
+      >
+        <span class="l-header__menu-bar" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <!-- ドロワーメニュー -->
+    <!-- TODO: 各下層ページのURL確定後にリンク先を差し替える -->
+    <nav class="c-drawer js-drawer" id="drawer" aria-label="サイトメニュー" hidden>
+      <ul class="c-drawer__list">
+        <li><a class="c-drawer__link" href="../"><span class="c-drawer__en">TOP</span>トップページ</a></li>
+        <li><a class="c-drawer__link" href="../#community"><span class="c-drawer__en">COMMUNITY</span>コミュニティ</a></li>
+        <li><a class="c-drawer__link" href="../#topics"><span class="c-drawer__en">TOPICS</span>トピックス</a></li>
+        <li><a class="c-drawer__link" href="../#group"><span class="c-drawer__en">GROUP</span>グループ会社情報</a></li>
+        <li><a class="c-drawer__link" href="../#member"><span class="c-drawer__en">MEMBER</span>社員一覧・検索</a></li>
+        <li><a class="c-drawer__link" href="../#works"><span class="c-drawer__en">WORKS</span>グループのお仕事紹介</a></li>
+        <li><a class="c-drawer__link" href="./" aria-current="page"><span class="c-drawer__en">REFERRAL</span>リファラル採用</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ====================================================================
+         Page Hero（下層ページ共通の見出しエリア）
+         ==================================================================== -->
+    <section class="p-page-hero" aria-labelledby="page-title">
+      <div class="l-container p-page-hero__inner">
+
+        <!-- パンくず -->
+        <nav class="c-breadcrumb" aria-label="パンくずリスト">
+          <ol class="c-breadcrumb__list">
+            <li class="c-breadcrumb__item"><a class="c-breadcrumb__link" href="../">トップ</a></li>
+            <li class="c-breadcrumb__item" aria-current="page">リファラル採用</li>
+          </ol>
+        </nav>
+
+        <div class="p-page-hero__body">
+          <p class="p-page-hero__label js-reveal">REFERRAL</p>
+          <h1 class="p-page-hero__title js-reveal" id="page-title">
+            <span class="p-page-hero__pill">な<span class="p-page-hero__accent">か</span>まを、</span>
+            <span class="p-page-hero__pill p-page-hero__pill--shift">な<span class="p-page-hero__accent">か</span>まに。</span>
+            <span class="u-visually-hidden">リファラル採用</span>
+          </h1>
+          <p class="p-page-hero__lead js-reveal">
+            いっしょに働きたいと思える知人を、グループの求人に紹介できます。
+            知人の経験や希望の働き方を選ぶと、合いそうな求人が見つかります。
+          </p>
+          <div class="p-page-hero__actions js-reveal">
+            <a class="c-button c-button--primary" href="#jobs">
+              求人をさがす
+              <span class="c-button__icon" aria-hidden="true"></span>
+            </a>
+            <a class="c-button c-button--more" href="#flow">
+              紹介の流れ
+              <span class="c-button__icon" aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+
+        <figure class="p-page-hero__visual js-reveal">
+          <img
+            class="p-page-hero__image"
+            src="../assets/img/referral/referral-hero.svg"
+            alt=""
+            width="560"
+            height="420"
+            fetchpriority="high"
+          >
+        </figure>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         Flow（紹介の流れ：TOPの NUMBER カードと同じテイスト）
+         ==================================================================== -->
+    <section class="p-flow" id="flow" aria-labelledby="flow-title">
+      <div class="l-container">
+        <h2 class="c-heading js-reveal" id="flow-title">
+          <span class="c-heading__en" aria-hidden="true">FL<span class="c-heading__en-accent">O</span><span class="c-heading__en-light">W</span></span>
+          <span class="c-heading__ja">紹介の流れ</span>
+        </h2>
+
+        <ol class="p-flow__list">
+          <li class="c-number-card js-reveal">
+            <div class="c-number-card__head">
+              <span class="c-number-card__num">STEP.01</span>
+              <span class="c-number-card__title">求人をさがす</span>
+            </div>
+            <p class="c-number-card__text">知人の経験や希望の働き方を選んで、合いそうな求人を見つけます。</p>
+          </li>
+          <li class="c-number-card js-reveal">
+            <div class="c-number-card__head">
+              <span class="c-number-card__num">STEP.02</span>
+              <span class="c-number-card__title">本人に声をかける</span>
+            </div>
+            <p class="c-number-card__text">求人の内容を伝え、紹介してよいか本人の同意をもらいます。</p>
+          </li>
+          <li class="c-number-card js-reveal">
+            <div class="c-number-card__head">
+              <span class="c-number-card__num">STEP.03</span>
+              <span class="c-number-card__title">フォームで紹介</span>
+            </div>
+            <p class="c-number-card__text">求人詳細の紹介フォームから送信。人事から本人へ連絡します。</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         Jobs（求人検索・マッチング）
+         ==================================================================== -->
+    <section class="p-jobs" id="jobs" aria-labelledby="jobs-title">
+      <div class="l-container">
+        <h2 class="c-heading js-reveal" id="jobs-title">
+          <span class="c-heading__en" aria-hidden="true">JO<span class="c-heading__en-accent">B</span><span class="c-heading__en-light">S</span></span>
+          <span class="c-heading__ja">募集中の求人</span>
+        </h2>
+        <p class="p-jobs__lead js-reveal">
+          紹介したい知人の経験を選ぶと、求人ごとの「マッチ度」が表示されます。
+        </p>
+
+        <div class="p-jobs__layout">
+
+          <!-- ---------- 検索フォーム ---------- -->
+          <div class="p-jobs__aside">
+
+            <!-- SPのみ表示：条件パネルの開閉ボタン -->
+            <button
+              class="p-jobs__toggle js-filter-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="filter-panel"
+            >
+              <span class="p-jobs__toggle-dot" aria-hidden="true"></span>
+              <span>条件でしぼりこむ</span>
+              <span class="p-jobs__toggle-count js-active-count" hidden></span>
+              <span class="p-jobs__toggle-icon" aria-hidden="true"></span>
+            </button>
+
+            <form class="c-filter js-filter-form" id="filter-panel" role="search" aria-label="求人の検索とマッチング条件" novalidate>
+
+              <!-- キーワード -->
+              <div class="c-filter__group">
+                <label class="c-filter__legend" for="filter-keyword">キーワード</label>
+                <input
+                  class="c-field"
+                  id="filter-keyword"
+                  type="search"
+                  name="keyword"
+                  placeholder="例：整備士、接客、エンジニア"
+                  maxlength="50"
+                  autocomplete="off"
+                  enterkeyhint="search"
+                >
+              </div>
+
+              <!-- 事業領域（TOPの WORKS と同じ4事業＋本部） -->
+              <div class="c-filter__group">
+                <label class="c-filter__legend" for="filter-category">事業領域</label>
+                <div class="c-select">
+                  <select class="c-field c-select__field" id="filter-category" name="category">
+                    <option value="">すべての事業</option>
+                    <option value="ict">インフォメーション&amp;コミュニケーション事業</option>
+                    <option value="car">カーライフ事業</option>
+                    <option value="golf">ゴルフ事業</option>
+                    <option value="wellness">ライフ&amp;ウェルネス事業</option>
+                    <option value="corporate">グループ本部・管理部門</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- マッチング条件 -->
+              <fieldset class="c-filter__block">
+                <legend class="c-filter__block-title">マッチング条件</legend>
+
+                <fieldset class="c-filter__group">
+                  <legend class="c-filter__legend">紹介したい知人の経験（複数選択可）</legend>
+                  <div class="c-chips">
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="jobTypes" value="sales"><span class="c-chip__label">営業・販売</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="jobTypes" value="service"><span class="c-chip__label">接客・サービス</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="jobTypes" value="engineer"><span class="c-chip__label">IT・エンジニア</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="jobTypes" value="mechanic"><span class="c-chip__label">整備・技術職</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="jobTypes" value="care"><span class="c-chip__label">介護・医療</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="jobTypes" value="office"><span class="c-chip__label">事務・管理</span></label>
+                  </div>
+                </fieldset>
+
+                <div class="c-filter__row">
+                  <div class="c-filter__group">
+                    <label class="c-filter__legend" for="filter-employment">雇用形態</label>
+                    <div class="c-select">
+                      <select class="c-field c-select__field" id="filter-employment" name="employment">
+                        <option value="">指定しない</option>
+                        <option value="fulltime">正社員</option>
+                        <option value="contract">契約社員</option>
+                        <option value="parttime">パート・アルバイト</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="c-filter__group">
+                    <label class="c-filter__legend" for="filter-area">勤務エリア</label>
+                    <div class="c-select">
+                      <select class="c-field c-select__field" id="filter-area" name="area">
+                        <option value="">指定しない</option>
+                        <option value="kumamoto-city">熊本市内</option>
+                        <option value="kumamoto-other">熊本県内（市外）</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <label class="c-switch">
+                  <input class="c-switch__input" type="checkbox" name="matchedOnly" value="1">
+                  <span class="c-switch__track" aria-hidden="true"></span>
+                  <span class="c-switch__label">マッチ度50%以上だけ表示</span>
+                </label>
+              </fieldset>
+
+              <div class="c-filter__footer">
+                <button class="c-button c-button--more c-button--block" type="reset">条件をリセット</button>
+                <!-- SPのみ表示：パネルを閉じて結果へ移動する -->
+                <button class="c-button c-button--primary c-button--block c-filter__apply js-filter-apply" type="button">
+                  <span><span class="js-result-count-apply">0</span>件の求人を見る</span>
+                  <span class="c-button__icon" aria-hidden="true"></span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ---------- 検索結果 ---------- -->
+          <div class="p-jobs__main" id="results">
+            <div class="p-jobs__bar">
+              <p class="p-jobs__count" aria-live="polite">
+                <span class="p-jobs__count-num js-result-count">0</span>件の求人
+              </p>
+              <div class="c-select c-select--pill">
+                <label class="u-visually-hidden" for="sort">並び順</label>
+                <select class="c-field c-select__field js-sort" id="sort" name="sort" form="filter-panel">
+                  <option value="match">マッチ度が高い順</option>
+                  <option value="new">新着順</option>
+                  <option value="deadline">締切が近い順</option>
+                </select>
+              </div>
+            </div>
+
+            <ul class="p-jobs__list js-result-list" aria-label="検索結果"></ul>
+
+            <!-- 0件時 -->
+            <div class="p-jobs__empty js-empty" hidden>
+              <p class="p-jobs__empty-title">条件に合う求人が見つかりませんでした</p>
+              <p class="p-jobs__empty-text">条件を少しゆるめるか、リセットしてもう一度お試しください。</p>
+              <button class="c-button c-button--more js-empty-reset" type="button">
+                条件をリセット
+                <span class="c-button__icon" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         Rules（紹介のルール：TOPの COMMUNITY 一覧と同じ点線区切り）
+         ==================================================================== -->
+    <section class="p-rules" id="rules" aria-labelledby="rules-title">
+      <div class="l-container l-container--narrow">
+        <h2 class="c-heading js-reveal" id="rules-title">
+          <span class="c-heading__en" aria-hidden="true">RU<span class="c-heading__en-accent">L</span><span class="c-heading__en-light">ES</span></span>
+          <span class="c-heading__ja">紹介のルール</span>
+        </h2>
+
+        <!-- TODO: リファラル制度規程の正式な内容に合わせて人事部門で確定する -->
+        <ul class="p-rules__list js-reveal">
+          <li class="p-rules__item">
+            <span class="c-pill-tag">同意</span>
+            <p class="p-rules__text">紹介する方ご本人の同意を得てから、フォームを送信してください。</p>
+          </li>
+          <li class="p-rules__item">
+            <span class="c-pill-tag">報奨金</span>
+            <p class="p-rules__text">紹介報奨金の支給条件・時期は、グループのリファラル制度規程に準じます。</p>
+          </li>
+          <li class="p-rules__item">
+            <span class="c-pill-tag">選考</span>
+            <p class="p-rules__text">選考は通常の採用と同じ基準で行います。結果の理由はお伝えできない場合があります。</p>
+          </li>
+          <li class="p-rules__item">
+            <span class="c-pill-tag">情報</span>
+            <p class="p-rules__text">求人の内容は社外秘として取り扱い、SNS等への転載はご遠慮ください。</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       Footer（Do.Link 共通）
+       ====================================================================== -->
+  <footer class="l-footer">
+    <div class="l-container">
+      <div class="l-footer__card js-reveal">
+        <figure class="l-footer__visual">
+          <!-- TODO: TOPと同じ「まいにちに"プラス"をつむぐ」イラストに差し替え -->
+          <img
+            class="l-footer__image"
+            src="../assets/img/common/footer-building.svg"
+            alt="まいにちに、プラスをつむごう。"
+            width="400"
+            height="280"
+            loading="lazy"
+            decoding="async"
+          >
+        </figure>
+        <ul class="l-footer__links">
+          <li>
+            <a class="c-button c-button--sky c-button--block" href="https://doyg.jp/" target="_blank" rel="noopener">
+              グループホームページ
+              <span class="c-button__icon" aria-hidden="true"></span>
+            </a>
+          </li>
+          <li>
+            <a class="c-button c-button--sky c-button--block" href="https://recruit.doyg.jp/" target="_blank" rel="noopener">
+              グループ採用サイト
+              <span class="c-button__icon" aria-hidden="true"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="l-footer__bottom">
+      <!-- TODO: 各ページのURL確定後に差し替える -->
+      <ul class="l-footer__nav">
+        <li><a class="l-footer__nav-link" href="../">トップページ</a></li>
+        <li><a class="l-footer__nav-link" href="../terms/">利用規約</a></li>
+        <li><a class="l-footer__nav-link" href="../privacy/">プライバシーポリシー</a></li>
+        <li><a class="l-footer__nav-link" href="../contact/">お問い合わせ</a></li>
+      </ul>
+      <small class="l-footer__copy">&copy; DO.YONEZAWA CORPORATE GROUP</small>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       SP固定CTA（ページ見出しを過ぎたら表示）
+       ====================================================================== -->
+  <div class="p-sp-cta js-sp-cta" aria-hidden="true">
+    <button class="c-button c-button--primary c-button--block js-sp-cta-button" type="button" tabindex="-1">
+      条件で求人をさがす
+      <span class="c-button__icon" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <!-- ======================================================================
+       求人詳細・紹介モーダル
+       ====================================================================== -->
+  <dialog class="c-modal js-modal" aria-labelledby="modal-title">
+    <div class="c-modal__inner">
+      <button class="c-modal__close js-modal-close" type="button" aria-label="閉じる"></button>
+
+      <!-- 詳細 -->
+      <div class="c-modal__head">
+        <span class="c-pill-tag js-modal-category"></span>
+        <p class="c-modal__dept js-modal-dept"></p>
+        <h2 class="c-modal__title js-modal-title" id="modal-title"></h2>
+      </div>
+      <p class="c-modal__desc js-modal-desc"></p>
+      <dl class="c-modal__spec js-modal-spec"></dl>
+
+      <!-- 紹介フォーム -->
+      <!-- TODO: 送信先（社内ワークフロー / Googleフォーム / API 等）確定後に action と method を設定する -->
+      <form class="c-form js-apply-form" action="#" method="post">
+        <h3 class="c-form__title">この求人に知人を紹介する</h3>
+
+        <div class="c-form__row">
+          <div class="c-form__item">
+            <label class="c-form__label" for="ref-name">あなたの氏名<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="ref-name" type="text" name="name" placeholder="例：米澤 太郎" autocomplete="name" required maxlength="40" aria-describedby="ref-name-error">
+            <p class="c-form__error" id="ref-name-error"></p>
+          </div>
+          <div class="c-form__item">
+            <label class="c-form__label" for="ref-employee">社員番号<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="ref-employee" type="text" name="employeeId" placeholder="例：123456" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="off" required aria-describedby="ref-employee-hint ref-employee-error">
+            <p class="c-form__hint" id="ref-employee-hint">半角数字6桁</p>
+            <p class="c-form__error" id="ref-employee-error"></p>
+          </div>
+        </div>
+
+        <div class="c-form__row">
+          <div class="c-form__item">
+            <label class="c-form__label" for="ref-candidate">紹介する方の氏名<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="ref-candidate" type="text" name="candidateName" placeholder="例：熊本 花子" autocomplete="off" required maxlength="40" aria-describedby="ref-candidate-error">
+            <p class="c-form__error" id="ref-candidate-error"></p>
+          </div>
+          <div class="c-form__item">
+            <label class="c-form__label" for="ref-relation">ご関係<span class="c-form__req">必須</span></label>
+            <div class="c-select">
+              <select class="c-field c-select__field" id="ref-relation" name="relation" required aria-describedby="ref-relation-error">
+                <option value="">選択してください</option>
+                <option value="former-colleague">前職の同僚</option>
+                <option value="friend">友人・知人</option>
+                <option value="school">学校の先輩・後輩</option>
+                <option value="other">その他</option>
+              </select>
+            </div>
+            <p class="c-form__error" id="ref-relation-error"></p>
+          </div>
+        </div>
+
+        <div class="c-form__row">
+          <div class="c-form__item">
+            <label class="c-form__label" for="ref-candidate-email">紹介する方のメールアドレス<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="ref-candidate-email" type="email" name="candidateEmail" placeholder="例：hanako@example.com" autocomplete="off" inputmode="email" required maxlength="100" aria-describedby="ref-candidate-email-error">
+            <p class="c-form__error" id="ref-candidate-email-error"></p>
+          </div>
+          <div class="c-form__item">
+            <label class="c-form__label" for="ref-candidate-tel">紹介する方の電話番号<span class="c-form__opt">任意</span></label>
+            <input class="c-field" id="ref-candidate-tel" type="tel" name="candidateTel" placeholder="例：09012345678" inputmode="numeric" pattern="0[0-9]{9,10}" maxlength="11" autocomplete="off" aria-describedby="ref-candidate-tel-hint ref-candidate-tel-error">
+            <p class="c-form__hint" id="ref-candidate-tel-hint">ハイフンなし・半角数字</p>
+            <p class="c-form__error" id="ref-candidate-tel-error"></p>
+          </div>
+        </div>
+
+        <div class="c-form__item">
+          <label class="c-form__label" for="ref-message">推薦理由<span class="c-form__req">必須</span></label>
+          <textarea class="c-field c-field--textarea" id="ref-message" name="message" rows="4" placeholder="例：前職で一緒に店舗運営をしていました。お客様対応がとても丁寧な方です。" required minlength="20" maxlength="400" aria-describedby="ref-message-hint ref-message-error"></textarea>
+          <p class="c-form__hint" id="ref-message-hint">20〜400文字</p>
+          <p class="c-form__error" id="ref-message-error"></p>
+        </div>
+
+        <div class="c-form__item">
+          <label class="c-check">
+            <input class="c-check__input" type="checkbox" name="consent" value="1" required aria-describedby="ref-consent-error">
+            <span class="c-check__label">紹介する方ご本人から、個人情報を人事部門へ提供することの同意を得ています</span>
+          </label>
+          <p class="c-form__error" id="ref-consent-error"></p>
+        </div>
+
+        <button class="c-button c-button--primary c-button--block" type="submit">
+          この内容で紹介する
+          <span class="c-button__icon" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <!-- 送信完了 -->
+      <div class="c-modal__done js-modal-done" hidden tabindex="-1">
+        <p class="c-modal__done-title">紹介ありがとうございます！</p>
+        <p class="c-modal__done-text">人事部門からご本人へ連絡します。進捗はあなたの社用メールにもお知らせします。</p>
+        <button class="c-button c-button--more js-modal-close" type="button">
+          閉じる
+          <span class="c-button__icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ======================================================================
+       Template：求人カード（JSで複製して描画する）
+       ====================================================================== -->
+  <template id="job-card-template">
+    <li class="c-job-card">
+      <article class="c-job-card__inner">
+        <div class="c-job-card__head">
+          <div class="c-job-card__group">
+            <span class="c-job-card__group-icon" aria-hidden="true"></span>
+            <span class="c-job-card__group-name" data-slot="category"></span>
+          </div>
+          <!-- マッチ度（条件未入力時は hidden） -->
+          <div class="c-score" data-slot="score" hidden>
+            <span class="c-score__ring">
+              <span class="c-score__value" data-slot="score-value"></span><span class="c-score__percent">%</span>
+            </span>
+            <span class="c-score__label">MATCH</span>
+          </div>
+        </div>
+        <p class="c-job-card__dept" data-slot="dept"></p>
+        <h3 class="c-job-card__title" data-slot="title"></h3>
+        <p class="c-job-card__summary" data-slot="summary"></p>
+        <ul class="c-job-card__meta" data-slot="meta"></ul>
+        <div class="c-job-card__foot">
+          <p class="c-job-card__deadline" data-slot="deadline"></p>
+          <button class="c-job-card__more" type="button" data-slot="more">
+            詳しく見る<span class="c-job-card__more-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+      </article>
+    </li>
+  </template>
+
+</body>
+</html>

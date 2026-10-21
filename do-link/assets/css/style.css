@@ -1,18 +1,18 @@
 @charset "UTF-8";
 /* ==========================================================================
-   DO MATCH — 副業・リファラル採用マッチング（社内コミュニティ）
+   Do.Link — ドゥ.ヨネザワ企業グループ 社員限定コミュニティサイト
    --------------------------------------------------------------------------
-   1ページ構成のため、CSSは本ファイル1つにまとめている。
+   下層ページ（リファラル採用）用スタイル。CSSは本ファイル1つにまとめている。
    設計：FLOCSS ベースのレイヤー順 + BEM
      1. Foundation  … 変数 / リセット / ベース
      2. Layout      … l-  （ヘッダー / コンテナ / フッター）
-     3. Component   … c-  （ボタン / フォーム部品 / カード / モーダル）
-     4. Project     … p-  （ヒーロー / 検索 / 利用の流れ / ルール / 掲載CTA / パスワード画面）
+     3. Component   … c-  （見出し / ボタン / フォーム部品 / カード / モーダル）
+     4. Project     … p-  （ページ見出し / 流れ / 求人検索 / ルール / パスワード画面）
      5. Utility     … u-
      6. Motion      … フェードイン / reduced-motion
    色・余白・角丸・影・モーションの生の値は :root に集約し、
    以降のレイヤーでは必ず変数経由で参照すること。
-   ブランドカラーは doyg-corporate-site の _variables.css と揃えている。
+   テイストは Do.Link TOP（空色のヒーロー / 白い角丸カード / 黄色のCTA）に合わせている。
    ========================================================================== */
 
 
@@ -20,83 +20,78 @@
    1. Foundation / Variables
    ========================================================================== */
 :root {
-  /* ---------- Brand ---------- */
-  --color-navy: #0b2545;
-  --color-navy-deep: #061727;
-  --color-blue: #1b6ca8;
-  --color-blue-pale: #edf4fa;
-  --color-green: #2e6e4f;
-  --color-green-pale: #eef5f1;
-
-  /* ---------- 案件タイプ色（副業=Blue / リファラル=Green） ---------- */
-  --color-side: var(--color-blue);
-  --color-side-pale: var(--color-blue-pale);
-  --color-referral: var(--color-green);
-  --color-referral-pale: var(--color-green-pale);
+  /* ---------- Brand（Do.Link TOP から抽出） ---------- */
+  --color-sky: #74cde2;               /* ヒーロー・フッターの空色 */
+  --color-sky-deep: #3a9ec4;          /* 空色面の上の強調・NUMBERカード */
+  --color-sky-soft: #c9ecf6;          /* 空色ボタン・パネル境界 */
+  --color-sky-pale: #e8f6fb;          /* 薄い背景（WORKS パネル相当） */
+  --color-blue: #137cb5;              /* 見出しアクセント・リンク（白地で4.5:1以上） */
+  --color-yellow: #ffdf6e;            /* メインCTA */
+  --color-yellow-deep: #ffd23f;       /* メインCTAのホバー */
+  --color-coral: #f2826f;             /* CTA内の丸アイコン・ニュースの点 */
 
   /* ---------- Base / Text / Line ---------- */
   --color-white: #ffffff;
   --color-bg: #ffffff;
-  --color-bg-subtle: #f5f7f9;
-  --color-text: #14181c;
-  --color-text-strong: #0b2545;
-  --color-text-muted: #5b6570;
-  --color-text-inverse: #ffffff;
-  --color-text-inverse-muted: #b8c4d0;
-  --color-rule: #dce1e6;
-  --color-rule-soft: #e9edf1;
+  --color-text: #33393f;
+  --color-text-strong: #23292e;
+  --color-text-muted: #66717b;
+  --color-text-en-light: #b4c1ca;     /* 英字見出しの淡い部分（装飾） */
+  --color-rule: #dde4e9;
+  --color-rule-dot: #a9d8ea;          /* 点線区切り */
 
   /* ---------- State ---------- */
-  --color-focus: #1b6ca8;
-  --color-error: #b3261e;
-  --color-error-pale: #fcefee;
+  --color-focus: #137cb5;
+  --color-error: #c0392b;
+  --color-error-pale: #fdf0ee;
   --color-warning: #8a5a00;
-  --color-warning-pale: #fff4dc;
+  --color-warning-pale: #fff4d6;
 
   /* ---------- Typography ---------- */
-  --font-jp: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
-  --font-en: "Inter", "Helvetica Neue", Arial, var(--font-jp);
+  /* 和文はMacでは丸ゴシック、Windowsでは游ゴシック等にフォールバックする */
+  --font-jp: "Hiragino Maru Gothic ProN", "BIZ UDPGothic", "Hiragino Sans",
+    "Yu Gothic UI", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  /* 英字見出しは幾何学的なサンセリフ（Windows: Century Gothic / Mac: Avenir Next） */
+  --font-en: "Quicksand", "Century Gothic", "Avenir Next", "Futura", "Segoe UI", sans-serif;
 
-  --fs-h1: clamp(2rem, 1.2rem + 3.2vw, 3.75rem);
-  --fs-h2: clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem);
-  --fs-h3: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
-  --fs-lead: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --fs-hero: clamp(1.75rem, 1.2rem + 2.6vw, 3.25rem);
+  --fs-heading-en: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+  --fs-h3: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --fs-lead: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
   --fs-body: 1rem;
   --fs-small: 0.875rem;
   --fs-caption: 0.75rem;
 
-  --lh-heading: 1.4;
+  --lh-heading: 1.45;
   --lh-body: 1.85;
   --ls-body: 0.04em;
-  --ls-label: 0.16em;
-  --measure: 34em;              /* 本文1行あたり30〜40字に抑える */
+  --measure: 34em;
 
   /* ---------- Space（clamp で自然に可変） ---------- */
-  --space-3xs: 0.25rem;
   --space-2xs: 0.5rem;
   --space-xs: 0.75rem;
   --space-sm: 1rem;
   --space-md: clamp(1.25rem, 1rem + 1vw, 1.75rem);
   --space-lg: clamp(1.75rem, 1.3rem + 2vw, 3rem);
   --space-xl: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
-  --space-section: clamp(4rem, 2.5rem + 7vw, 8.5rem);
+  --space-section: clamp(4rem, 2.8rem + 5vw, 7rem);
   --gutter: clamp(1rem, 0.4rem + 3vw, 3rem);
 
   /* ---------- Layout ---------- */
-  --container-width: 1200px;
-  --container-width-narrow: 760px;
-  --header-height: clamp(3.5rem, 3rem + 1.5vw, 4.5rem);
+  --container-width: 1120px;
+  --container-width-narrow: 800px;
+  --header-height: clamp(3.75rem, 3.3rem + 1.5vw, 4.75rem);
   --aside-width: 320px;
 
   /* ---------- Shape / Shadow ---------- */
-  --radius-sm: 8px;
+  --radius-sm: 10px;
   --radius: 16px;
-  --radius-lg: 24px;
+  --radius-lg: 28px;
   --radius-full: 999px;
-  --shadow-sm: 0 1px 2px rgba(11, 37, 69, 0.06);
-  --shadow: 0 2px 6px rgba(11, 37, 69, 0.04), 0 12px 32px rgba(11, 37, 69, 0.06);
-  --shadow-hover: 0 4px 10px rgba(11, 37, 69, 0.06), 0 20px 48px rgba(11, 37, 69, 0.12);
+  --shadow-sm: 0 2px 6px rgba(35, 90, 120, 0.08);
+  --shadow: 0 6px 20px rgba(35, 90, 120, 0.12);
+  --shadow-hover: 0 12px 32px rgba(35, 90, 120, 0.18);
+  --shadow-pill: 0 4px 0 rgba(58, 158, 196, 0.35);   /* ヒーロー見出しの白ピルの影 */
 
   /* ---------- Motion ---------- */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -104,11 +99,11 @@
   --dur-base: 300ms;
   --dur-slow: 800ms;
   --reveal-y: 1.5rem;
-  --stagger: 70ms;
+  --stagger: 80ms;
 
   /* ---------- Z-index ---------- */
-  --z-header: 40;
   --z-sp-cta: 30;
+  --z-header: 40;
   --z-skip-link: 60;
 }
 
@@ -190,8 +185,9 @@ body {
   line-break: strict;
 }
 
-/* モーダル表示中は背面をスクロールさせない */
-body:has(.c-modal[open]) {
+/* モーダル・ドロワー表示中は背面をスクロールさせない */
+body:has(.c-modal[open]),
+body:has(.c-drawer:not([hidden])) {
   overflow: hidden;
 }
 
@@ -222,22 +218,22 @@ a {
 
 
 /* ==========================================================================
-   2. Layout / Header
+   2. Layout / Header（Do.Link 共通）
    ========================================================================== */
 .l-header {
   position: sticky;
   top: 0;
   z-index: var(--z-header);
-  background-color: rgba(255, 255, 255, 0.86);
-  border-bottom: 1px solid var(--color-rule-soft);
-  -webkit-backdrop-filter: saturate(180%) blur(12px);
-  backdrop-filter: saturate(180%) blur(12px);
+  background-color: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1px 0 rgba(35, 90, 120, 0.06);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .l-header__inner {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-sm);
   max-width: calc(var(--container-width) + var(--gutter) * 2);
   height: var(--header-height);
   margin-inline: auto;
@@ -246,117 +242,203 @@ a {
 
 .l-header__logo {
   display: flex;
-  flex-direction: column;
-  line-height: 1.2;
+  align-items: flex-end;
+  gap: var(--space-2xs);
   margin-right: auto;
 }
 
+/* ロゴ画像支給までのテキストロゴ（2段組の太字） */
 .l-header__logo-mark {
   font-family: var(--font-en);
-  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
   color: var(--color-text-strong);
 }
 
 .l-header__logo-sub {
-  display: none;                  /* SPではCTAと競合するため非表示 */
-  font-size: 0.625rem;
-  color: var(--color-text-muted);
-  letter-spacing: 0.06em;
-}
-
-@media (min-width: 480px) {
-  .l-header__logo-sub {
-    display: block;
-  }
-}
-
-/* SPではページ内ナビを省略（CTAのみ残す） */
-.l-header__nav {
   display: none;
-}
-
-.l-header__nav-list {
-  display: flex;
-  gap: var(--space-md);
-}
-
-.l-header__nav-link {
-  position: relative;
-  display: inline-block;
-  padding-block: var(--space-2xs);
-  font-size: var(--fs-small);
+  padding-bottom: 0.1rem;
+  font-size: 0.625rem;
+  line-height: 1.3;
   color: var(--color-text-muted);
-  transition: color var(--dur-fast) var(--ease);
 }
 
-.l-header__nav-link::after {
+.l-header__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.l-header__avatar {
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--color-rule);
+  border-radius: 50%;
+}
+
+.l-header__user-name {
+  display: none;
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+/* ハンバーガー */
+.l-header__menu {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.l-header__menu-bar,
+.l-header__menu-bar::before,
+.l-header__menu-bar::after {
+  display: block;
+  width: 1.375rem;
+  height: 2px;
+  background-color: var(--color-text-strong);
+  border-radius: 2px;
+  transition: transform var(--dur-base) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.l-header__menu-bar {
+  position: relative;
+}
+
+.l-header__menu-bar::before,
+.l-header__menu-bar::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: 0.25rem;
-  width: 100%;
-  height: 1px;
-  background-color: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--dur-base) var(--ease);
+}
+
+.l-header__menu-bar::before {
+  transform: translateY(-7px);
+}
+
+.l-header__menu-bar::after {
+  transform: translateY(7px);
+}
+
+/* 開いている時は × に変形 */
+.l-header__menu[aria-expanded="true"] .l-header__menu-bar {
+  background-color: transparent;
+}
+
+.l-header__menu[aria-expanded="true"] .l-header__menu-bar::before {
+  transform: rotate(45deg);
+}
+
+.l-header__menu[aria-expanded="true"] .l-header__menu-bar::after {
+  transform: rotate(-45deg);
 }
 
 @media (hover: hover) {
-  .l-header__nav-link:hover {
-    color: var(--color-text-strong);
-  }
-
-  .l-header__nav-link:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
+  .l-header__menu:hover {
+    background-color: var(--color-sky-pale);
   }
 }
 
-@media (min-width: 768px) {
-  .l-header__nav {
+@media (min-width: 600px) {
+  .l-header__logo-sub,
+  .l-header__user-name {
     display: block;
   }
 }
 
 
 /* ==========================================================================
-   2. Layout / Footer
+   2. Layout / Footer（Do.Link 共通）
    ========================================================================== */
 .l-footer {
-  padding-block: var(--space-xl);
-  /* SP固定CTAに最終行が隠れないよう下余白を確保 */
-  padding-bottom: calc(var(--space-xl) + 5rem);
-  color: var(--color-text-inverse-muted);
-  background-color: var(--color-navy-deep);
+  position: relative;
+  padding-top: var(--space-xl);
+  /* 白 → 空色 のグラデーションの上に、角丸の空色帯が重なる */
+  background: linear-gradient(180deg, var(--color-white) 0%, var(--color-sky-pale) 40%, var(--color-sky-pale) 100%);
 }
 
-.l-footer__inner {
+.l-footer__card {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: var(--space-2xs);
+  gap: var(--space-md);
+  align-items: center;
+  padding: var(--space-lg) var(--space-md);
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
 }
 
-.l-footer__name {
-  font-size: var(--fs-small);
-  color: var(--color-text-inverse);
+.l-footer__visual {
+  max-width: 320px;
+  margin-inline: auto;
 }
 
-.l-footer__note,
-.l-footer__copy {
+.l-footer__links {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.l-footer__bottom {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-sm);
+  margin-top: calc(var(--space-xl) * -1);
+  /* SP固定CTAに最終行が隠れないよう下余白を確保 */
+  padding: calc(var(--space-xl) + var(--space-lg)) var(--gutter) calc(var(--space-lg) + 5rem);
+  color: var(--color-white);
+  background-color: var(--color-sky);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.l-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem var(--space-md);
+}
+
+.l-footer__nav-link {
+  display: inline-block;
+  padding-block: 0.5rem;
   font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--color-text-strong);
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+@media (hover: hover) {
+  .l-footer__nav-link:hover {
+    opacity: 0.6;
+  }
 }
 
 .l-footer__copy {
-  margin-top: var(--space-sm);
   font-family: var(--font-en);
-  letter-spacing: 0.08em;
+  font-size: 0.6875rem;
+  color: var(--color-text-strong);
+  letter-spacing: 0.06em;
+}
+
+@media (min-width: 768px) {
+  .l-footer__card {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    padding: var(--space-lg) var(--space-xl);
+  }
 }
 
 @media (min-width: 1024px) {
-  .l-footer {
-    padding-bottom: var(--space-xl);
+  .l-footer__bottom {
+    padding-bottom: var(--space-lg);
   }
 }
 
@@ -370,8 +452,8 @@ a {
   left: var(--space-2xs);
   z-index: var(--z-skip-link);
   padding: var(--space-2xs) var(--space-sm);
-  color: var(--color-text-inverse);
-  background-color: var(--color-navy);
+  color: var(--color-white);
+  background-color: var(--color-blue);
   border-radius: var(--radius-sm);
   transform: translateY(-200%);
   transition: transform var(--dur-fast) var(--ease);
@@ -383,139 +465,253 @@ a {
 
 
 /* ==========================================================================
-   3. Component / Eyebrow（英字ラベル）
+   3. Component / Drawer（ハンバーガーメニュー）
    ========================================================================== */
-.c-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2xs);
+.c-drawer {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  max-height: calc(100dvh - var(--header-height));
+  padding: var(--space-md) var(--gutter) var(--space-lg);
+  overflow-y: auto;
+  background-color: var(--color-white);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--shadow-hover);
+  animation: drawer-in var(--dur-base) var(--ease);
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+}
+
+.c-drawer__list {
+  display: grid;
+  max-width: var(--container-width);
+  margin-inline: auto;
+}
+
+.c-drawer__link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  border-bottom: 2px dotted var(--color-rule-dot);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.c-drawer__en {
+  min-width: 7.5rem;
   font-family: var(--font-en);
   font-size: var(--fs-caption);
-  font-weight: 600;
-  letter-spacing: var(--ls-label);
-  text-transform: uppercase;
+  letter-spacing: 0.12em;
   color: var(--color-blue);
 }
 
-.c-eyebrow::before {
-  content: "";
-  width: 1.5rem;
-  height: 1px;
-  background-color: currentColor;
+.c-drawer__link[aria-current="page"] {
+  color: var(--color-blue);
 }
 
-.c-eyebrow--inverse {
-  color: var(--color-text-inverse-muted);
+@media (hover: hover) {
+  .c-drawer__link:hover {
+    color: var(--color-blue);
+  }
+}
+
+@media (min-width: 768px) {
+  .c-drawer__list {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--space-xl);
+  }
 }
 
 
 /* ==========================================================================
-   3. Component / Section head
+   3. Component / Breadcrumb
    ========================================================================== */
-.c-section-head {
-  display: grid;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-lg);
+.c-breadcrumb__list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  padding: 0.375rem 1rem;
+  font-size: var(--fs-caption);
+  background-color: var(--color-white);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
 }
 
-.c-section-head__title {
-  font-size: var(--fs-h2);
-  line-height: var(--lh-heading);
-  letter-spacing: -0.01em;
+.c-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+/* 区切りの「>」 */
+.c-breadcrumb__item + .c-breadcrumb__item::before {
+  content: "";
+  width: 0.375rem;
+  height: 0.375rem;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.c-breadcrumb__link {
+  color: var(--color-blue);
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .c-breadcrumb__link:hover {
+    text-decoration: underline;
+  }
+}
+
+
+/* ==========================================================================
+   3. Component / Heading（TOPの COMMUNITY / TOPICS と同じ英字見出し）
+   --------------------------------------------------------------------------
+   英字は「濃い部分 / 青の1文字 / 淡い部分」の3色で構成する。
+   ========================================================================== */
+.c-heading {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.c-heading__en {
+  font-family: var(--font-en);
+  font-size: var(--fs-heading-en);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
   color: var(--color-text-strong);
 }
 
-.c-section-head__lead {
-  max-width: var(--measure);
-  color: var(--color-text-muted);
+.c-heading__en-accent {
+  color: var(--color-blue);
+}
+
+.c-heading__en-light {
+  color: var(--color-text-en-light);
+}
+
+.c-heading__ja {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-blue);
 }
 
 
 /* ==========================================================================
    3. Component / Button
    --------------------------------------------------------------------------
-   色は --btn-bg / --btn-fg のローカル変数で切り替える。
-   Modifier はこの2つを上書きするだけにとどめ、構造は共通にする。
+   TOPのボタンは「角丸の面 + 右端の丸アイコン」で統一されている。
+   色は --btn-* のローカル変数で切り替え、構造は共通にする。
+     --primary … 黄色の面 + コーラルの丸（「リファラル採用はこちら」相当）
+     --more    … 白の面 + 青の丸（「MORE」相当）
+     --sky     … 空色の面 + 青の丸（フッター「グループホームページ」相当）
    ========================================================================== */
 .c-button {
-  --btn-bg: var(--color-navy);
-  --btn-fg: var(--color-text-inverse);
-  --btn-border: var(--btn-bg);
+  --btn-bg: var(--color-white);
+  --btn-bg-hover: var(--color-sky-pale);
+  --btn-fg: var(--color-text-strong);
+  --btn-icon: var(--color-blue);
 
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-xs);
+  justify-content: space-between;
+  gap: var(--space-md);
   min-height: 3.25rem;           /* タップ領域 44px 以上を確保 */
-  padding: 0.75rem 1.75rem;
+  padding: 0.5rem 0.625rem 0.5rem 1.5rem;
   font-size: var(--fs-small);
   font-weight: 700;
   line-height: 1.4;
   color: var(--btn-fg);
-  text-align: center;
+  text-align: left;
   background-color: var(--btn-bg);
-  border: 1px solid var(--btn-border);
+  border: 0;
   border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
   transition:
     transform var(--dur-fast) var(--ease),
     box-shadow var(--dur-base) var(--ease),
-    background-color var(--dur-base) var(--ease),
-    color var(--dur-base) var(--ease);
+    background-color var(--dur-base) var(--ease);
 }
 
-.c-button--small {
-  min-height: 2.75rem;
-  padding: 0.5rem 1.25rem;
-  font-size: var(--fs-caption);
-  white-space: nowrap;
+.c-button--primary {
+  --btn-bg: var(--color-yellow);
+  --btn-bg-hover: var(--color-yellow-deep);
+  --btn-icon: var(--color-coral);
+  min-height: 3.5rem;
+  border-radius: var(--radius);
+}
+
+.c-button--more {
+  --btn-bg: var(--color-white);
+  box-shadow: var(--shadow);
+}
+
+.c-button--sky {
+  --btn-bg: var(--color-sky-soft);
+  --btn-bg-hover: #b5e4f2;
+  min-height: 3.5rem;
+  border-radius: var(--radius);
+  box-shadow: none;
 }
 
 .c-button--block {
   width: 100%;
 }
 
-.c-button--side {
-  --btn-bg: var(--color-side);
+/* アイコンなしのボタン（reset など）は中央寄せ */
+.c-button:not(:has(.c-button__icon)) {
+  justify-content: center;
+  padding-inline: 1.5rem;
 }
 
-.c-button--referral {
-  --btn-bg: var(--color-referral);
-}
-
-.c-button--ghost {
-  --btn-bg: transparent;
-  --btn-fg: var(--color-text-strong);
-  --btn-border: var(--color-rule);
-}
-
-.c-button--inverse {
-  --btn-bg: var(--color-white);
-  --btn-fg: var(--color-navy);
-}
-
-/* 矢印アイコン（ホバーで右へ動く） */
-.c-button__arrow {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-top: 1.5px solid currentColor;
-  border-right: 1.5px solid currentColor;
-  transform: rotate(45deg);
+/* 右端の丸アイコン（中に「>」） */
+.c-button__icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--btn-icon);
+  border-radius: 50%;
   transition: transform var(--dur-base) var(--ease);
+}
+
+.c-button__icon::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-top: 2px solid var(--color-white);
+  border-right: 2px solid var(--color-white);
+  transform: translate(-65%, -50%) rotate(45deg);
 }
 
 @media (hover: hover) {
   .c-button:hover {
-    transform: translateY(-2px);
+    background-color: var(--btn-bg-hover);
     box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
   }
 
-  .c-button:hover .c-button__arrow {
-    transform: translateX(3px) rotate(45deg);
-  }
-
-  .c-button--ghost:hover {
-    --btn-bg: var(--color-bg-subtle);
-    box-shadow: none;
+  .c-button:hover .c-button__icon {
+    transform: translateX(3px);
   }
 }
 
@@ -525,80 +721,91 @@ a {
 
 
 /* ==========================================================================
-   3. Component / Type badge・dot（案件タイプの識別）
+   3. Component / Pill tag（TOPの「趣味・グルメ」等のタグ）
    ========================================================================== */
-.c-type-badge {
-  --badge-color: var(--color-navy);
-  --badge-bg: var(--color-bg-subtle);
-
+.c-pill-tag {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.25rem 0.75rem;
-  font-size: var(--fs-caption);
+  justify-content: center;
+  min-width: 4.5rem;
+  padding: 0.125rem 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  line-height: 1.5;
-  color: var(--badge-color);
-  background-color: var(--badge-bg);
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-text-muted);
   border-radius: var(--radius-full);
-}
-
-.c-type-badge::before {
-  content: "";
-  width: 0.375rem;
-  height: 0.375rem;
-  background-color: currentColor;
-  border-radius: 50%;
-}
-
-.c-type-badge--side {
-  --badge-color: var(--color-side);
-  --badge-bg: var(--color-side-pale);
-}
-
-.c-type-badge--referral {
-  --badge-color: var(--color-referral);
-  --badge-bg: var(--color-referral-pale);
-}
-
-.c-type-dot {
-  display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-}
-
-.c-type-dot--side {
-  background-color: var(--color-side);
-}
-
-.c-type-dot--referral {
-  background-color: var(--color-referral);
 }
 
 
 /* ==========================================================================
-   3. Component / Tags
+   3. Component / Number card（TOPの NUMBER.01〜03 カード）
    ========================================================================== */
-.c-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
+.c-number-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  background-color: var(--color-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
 }
 
-.c-tags__item {
-  padding: 0.125rem 0.625rem;
-  font-size: var(--fs-caption);
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-full);
+.c-number-card__head {
+  position: relative;
+  display: grid;
+  gap: 0.25rem;
+  padding: var(--space-md) var(--space-md) var(--space-md);
+  color: var(--color-white);
+  background-color: var(--color-sky-deep);
 }
 
-/* 選択中スキルと一致したタグを強調 */
-.c-tags__item.is-hit {
-  color: var(--color-side);
-  background-color: var(--color-side-pale);
-  border-color: transparent;
+/* 右下の黄色い三角（TOPの NUMBER カードのアクセント） */
+.c-number-card__head::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: linear-gradient(135deg, transparent 50%, var(--color-yellow) 50%);
+  transition: transform var(--dur-base) var(--ease);
+  transform-origin: right bottom;
+}
+
+.c-number-card__num {
+  font-family: var(--font-en);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.c-number-card__title {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+
+.c-number-card__text {
+  padding: var(--space-md);
+  font-size: var(--fs-small);
+  line-height: 1.8;
+}
+
+@media (hover: hover) {
+  .c-number-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .c-number-card:hover .c-number-card__head::after {
+    transform: scale(1.4);
+  }
 }
 
 
@@ -620,13 +827,13 @@ a {
 }
 
 .c-field::placeholder {
-  color: #8b949d;
+  color: #8b959e;
 }
 
 .c-field:focus-visible {
   outline: none;
   border-color: var(--color-focus);
-  box-shadow: 0 0 0 3px rgba(27, 108, 168, 0.18);   /* outline の代替となるフォーカス表示 */
+  box-shadow: 0 0 0 3px rgba(19, 124, 181, 0.2);   /* outline の代替となるフォーカス表示 */
 }
 
 .c-field[aria-invalid="true"] {
@@ -651,8 +858,8 @@ a {
   right: 1rem;
   width: 0.45rem;
   height: 0.45rem;
-  border-right: 1.5px solid var(--color-text-muted);
-  border-bottom: 1.5px solid var(--color-text-muted);
+  border-right: 2px solid var(--color-blue);
+  border-bottom: 2px solid var(--color-blue);
   transform: translateY(-70%) rotate(45deg);
   pointer-events: none;
 }
@@ -663,69 +870,14 @@ a {
   cursor: pointer;
 }
 
-.c-select--compact .c-select__field {
+.c-select--pill .c-select__field {
   min-height: 2.75rem;
-  font-size: var(--fs-small);
-  border-radius: var(--radius-full);
-  padding-left: 1rem;
-}
-
-
-/* ==========================================================================
-   3. Component / Segment（案件タイプの切り替え）
-   ========================================================================== */
-.c-segment {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.25rem;
-  padding: 0.25rem;
-  background-color: var(--color-bg-subtle);
-  border-radius: var(--radius-full);
-}
-
-.c-segment__item {
-  position: relative;
-}
-
-.c-segment__input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.c-segment__label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.75rem;
+  padding-left: 1.125rem;
   font-size: var(--fs-small);
   font-weight: 700;
-  color: var(--color-text-muted);
+  border-color: transparent;
   border-radius: var(--radius-full);
-  transition:
-    color var(--dur-fast) var(--ease),
-    background-color var(--dur-base) var(--ease),
-    box-shadow var(--dur-base) var(--ease);
-}
-
-.c-segment__input:checked + .c-segment__label {
-  color: var(--color-text-strong);
-  background-color: var(--color-white);
-  box-shadow: var(--shadow-sm), 0 4px 12px rgba(11, 37, 69, 0.08);
-}
-
-.c-segment__input[value="side"]:checked + .c-segment__label {
-  color: var(--color-side);
-}
-
-.c-segment__input[value="referral"]:checked + .c-segment__label {
-  color: var(--color-referral);
-}
-
-.c-segment__input:focus-visible + .c-segment__label {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
+  box-shadow: var(--shadow-sm);
 }
 
 
@@ -756,7 +908,7 @@ a {
   padding: 0.375rem 1rem;
   font-size: var(--fs-small);
   line-height: 1.4;
-  color: var(--color-text-muted);
+  color: var(--color-text);
   background-color: var(--color-white);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-full);
@@ -766,11 +918,11 @@ a {
     border-color var(--dur-fast) var(--ease);
 }
 
-/* チェック時は案件タイプ色で塗る（親ブロックの --chip-color を参照） */
 .c-chip__input:checked + .c-chip__label {
+  font-weight: 700;
   color: var(--color-white);
-  background-color: var(--chip-color, var(--color-navy));
-  border-color: var(--chip-color, var(--color-navy));
+  background-color: var(--color-blue);
+  border-color: var(--color-blue);
 }
 
 .c-chip__input:focus-visible + .c-chip__label {
@@ -778,19 +930,9 @@ a {
   outline-offset: 2px;
 }
 
-/* PCの狭いサイドパネル内では少し詰めて、縦に伸びすぎないようにする */
-@media (min-width: 1024px) {
-  .c-filter .c-chip__label {
-    min-height: 2.5rem;
-    padding-inline: 0.8125rem;
-    font-size: 0.8125rem;
-  }
-}
-
 @media (hover: hover) {
   .c-chip__input:not(:checked):hover + .c-chip__label {
-    color: var(--color-text-strong);
-    border-color: var(--color-text-muted);
+    border-color: var(--color-blue);
   }
 }
 
@@ -840,7 +982,7 @@ a {
 }
 
 .c-switch__input:checked + .c-switch__track {
-  background-color: var(--color-navy);
+  background-color: var(--color-blue);
 }
 
 .c-switch__input:checked + .c-switch__track::after {
@@ -877,7 +1019,7 @@ a {
   height: 1.25rem;
   background-color: var(--color-white);
   border: 1px solid var(--color-rule);
-  border-radius: 4px;
+  border-radius: 5px;
   transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
 
@@ -893,8 +1035,8 @@ a {
 }
 
 .c-check__input:checked + .c-check__label::before {
-  background-color: var(--color-navy);
-  border-color: var(--color-navy);
+  background-color: var(--color-blue);
+  border-color: var(--color-blue);
 }
 
 .c-check__input:checked + .c-check__label::after {
@@ -914,7 +1056,6 @@ a {
   gap: var(--space-md);
   padding: var(--space-md);
   background-color: var(--color-white);
-  border: 1px solid var(--color-rule-soft);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
 }
@@ -927,7 +1068,6 @@ a {
 .c-filter__legend {
   font-size: var(--fs-caption);
   font-weight: 700;
-  letter-spacing: 0.08em;
   color: var(--color-text-muted);
 }
 
@@ -942,28 +1082,13 @@ legend.c-filter__legend {
   gap: var(--space-sm);
 }
 
-/* 案件タイプ別のマッチング条件ブロック */
+/* マッチング条件ブロック（TOPの WORKS パネルと同じ淡い空色） */
 .c-filter__block {
-  --block-color: var(--color-navy);
-  --block-bg: var(--color-bg-subtle);
-
   display: grid;
   gap: var(--space-sm);
   padding: var(--space-sm);
-  background-color: var(--block-bg);
+  background-color: var(--color-sky-pale);
   border-radius: var(--radius);
-}
-
-.c-filter__block--side {
-  --block-color: var(--color-side);
-  --block-bg: var(--color-side-pale);
-  --chip-color: var(--color-side);
-}
-
-.c-filter__block--referral {
-  --block-color: var(--color-referral);
-  --block-bg: var(--color-referral-pale);
-  --chip-color: var(--color-referral);
 }
 
 .c-filter__block-title {
@@ -974,34 +1099,31 @@ legend.c-filter__legend {
   width: 100%;
   font-size: var(--fs-small);
   font-weight: 700;
-  color: var(--block-color);
+  color: var(--color-text-strong);
+}
+
+/* TOPの「● News」と同じコーラルの点 */
+.c-filter__block-title::before {
+  content: "";
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--color-coral);
+  border-radius: 50%;
 }
 
 .c-filter__footer {
   display: grid;
   gap: var(--space-2xs);
   padding-top: var(--space-sm);
-  border-top: 1px solid var(--color-rule-soft);
+  border-top: 2px dotted var(--color-rule-dot);
 }
 
 
 /* ==========================================================================
-   3. Component / Job card（案件カード）
+   3. Component / Job card（求人カード：TOPの TOPICS / GROUP カードのテイスト）
    ========================================================================== */
 .c-job-card {
-  --card-color: var(--color-navy);
-  --card-pale: var(--color-bg-subtle);
   display: flex;
-}
-
-.c-job-card--side {
-  --card-color: var(--color-side);
-  --card-pale: var(--color-side-pale);
-}
-
-.c-job-card--referral {
-  --card-color: var(--color-referral);
-  --card-pale: var(--color-referral-pale);
 }
 
 .c-job-card__inner {
@@ -1012,26 +1134,13 @@ legend.c-filter__legend {
   width: 100%;
   padding: var(--space-md);
   background-color: var(--color-white);
-  border: 1px solid var(--color-rule-soft);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
   transition:
     transform var(--dur-base) var(--ease),
     box-shadow var(--dur-base) var(--ease),
     border-color var(--dur-base) var(--ease);
-}
-
-/* 上端のタイプ色ライン（ホバーで伸びる） */
-.c-job-card__inner::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background-color: var(--card-color);
-  transform: scaleX(0.18);
-  transform-origin: left;
-  transition: transform var(--dur-slow) var(--ease);
 }
 
 .c-job-card__head {
@@ -1039,7 +1148,33 @@ legend.c-filter__legend {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-xs);
-  min-height: 3.5rem;
+}
+
+/* 左上の「丸アイコン + グループ名」（TOPのカードと同じ構成） */
+.c-job-card__group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+}
+
+.c-job-card__group-icon {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  background:
+    radial-gradient(circle at 50% 38%, var(--color-white) 0 22%, transparent 23%),
+    radial-gradient(ellipse at 50% 100%, var(--color-white) 0 38%, transparent 39%),
+    var(--color-sky);
+  border: 2px solid var(--color-sky-soft);
+  border-radius: 50%;
+}
+
+.c-job-card__group-name {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text-muted);
 }
 
 .c-job-card__dept {
@@ -1067,23 +1202,22 @@ legend.c-filter__legend {
 .c-job-card__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 1rem;
-  font-size: var(--fs-caption);
-  color: var(--color-text);
-}
-
-.c-job-card__meta-item {
-  display: inline-flex;
-  align-items: center;
   gap: 0.375rem;
 }
 
-.c-job-card__meta-item::before {
-  content: "";
-  width: 0.25rem;
-  height: 0.25rem;
-  background-color: var(--card-color);
-  border-radius: 50%;
+.c-job-card__meta-item {
+  padding: 0.125rem 0.625rem;
+  font-size: var(--fs-caption);
+  color: var(--color-blue);
+  background-color: var(--color-sky-pale);
+  border-radius: var(--radius-full);
+}
+
+/* 選択中の経験と一致した職種を強調 */
+.c-job-card__meta-item.is-hit {
+  font-weight: 700;
+  color: var(--color-white);
+  background-color: var(--color-blue);
 }
 
 .c-job-card__foot {
@@ -1093,7 +1227,7 @@ legend.c-filter__legend {
   gap: var(--space-xs);
   margin-top: auto;
   padding-top: var(--space-sm);
-  border-top: 1px solid var(--color-rule-soft);
+  border-top: 2px dotted var(--color-rule-dot);
 }
 
 .c-job-card__deadline {
@@ -1102,7 +1236,8 @@ legend.c-filter__legend {
 }
 
 .c-job-card__deadline.is-soon {
-  padding: 0.125rem 0.5rem;
+  padding: 0.125rem 0.625rem;
+  font-weight: 700;
   color: var(--color-warning);
   background-color: var(--color-warning-pale);
   border-radius: var(--radius-full);
@@ -1117,7 +1252,7 @@ legend.c-filter__legend {
   padding: 0;
   font-size: var(--fs-small);
   font-weight: 700;
-  color: var(--card-color);
+  color: var(--color-text-strong);
   background: none;
   border: 0;
 }
@@ -1138,41 +1273,37 @@ legend.c-filter__legend {
   outline-offset: 2px;
 }
 
-.c-job-card__more-arrow {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  background-color: var(--card-pale);
+.c-job-card__more-icon {
+  position: relative;
+  width: 1.75rem;
+  height: 1.75rem;
+  background-color: var(--color-blue);
   border-radius: 50%;
   transition: transform var(--dur-base) var(--ease), background-color var(--dur-base) var(--ease);
 }
 
-.c-job-card__more-arrow::before {
+.c-job-card__more-icon::before {
   content: "";
-  width: 0.4rem;
-  height: 0.4rem;
-  margin-left: -0.15rem;
-  border-top: 1.5px solid currentColor;
-  border-right: 1.5px solid currentColor;
-  transform: rotate(45deg);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.35rem;
+  height: 0.35rem;
+  border-top: 2px solid var(--color-white);
+  border-right: 2px solid var(--color-white);
+  transform: translate(-65%, -50%) rotate(45deg);
 }
 
 @media (hover: hover) {
   .c-job-card__inner:hover {
     transform: translateY(-4px);
-    border-color: transparent;
+    border-color: var(--color-sky-soft);
     box-shadow: var(--shadow-hover);
   }
 
-  .c-job-card__inner:hover::before {
-    transform: scaleX(1);
-  }
-
-  .c-job-card__inner:hover .c-job-card__more-arrow {
-    color: var(--color-white);
-    background-color: var(--card-color);
-    transform: translateX(2px);
+  .c-job-card__inner:hover .c-job-card__more-icon {
+    background-color: var(--color-coral);
+    transform: translateX(3px);
   }
 }
 
@@ -1196,12 +1327,12 @@ legend.c-filter__legend {
   display: flex;
   align-items: baseline;
   justify-content: center;
-  padding-top: 1.3rem;
   width: 3.5rem;
   height: 3.5rem;
+  padding-top: 1.3rem;
   font-family: var(--font-en);
-  color: var(--card-color, var(--color-navy));
-  background: conic-gradient(var(--card-color, var(--color-navy)) calc(var(--score) * 1%), var(--color-rule-soft) 0);
+  color: var(--color-blue);
+  background: conic-gradient(var(--color-sky) calc(var(--score) * 1%), var(--color-sky-pale) 0);
   border-radius: 50%;
 }
 
@@ -1209,7 +1340,7 @@ legend.c-filter__legend {
 .c-score__ring::before {
   content: "";
   position: absolute;
-  inset: 4px;
+  inset: 5px;
   background-color: var(--color-white);
   border-radius: 50%;
 }
@@ -1223,27 +1354,25 @@ legend.c-filter__legend {
 .c-score__value {
   font-size: 1rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
 }
 
 .c-score__percent {
   margin-left: 1px;
   font-size: 0.625rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .c-score__label {
   font-family: var(--font-en);
   font-size: 0.625rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--color-text-muted);
 }
 
 
 /* ==========================================================================
-   3. Component / Modal（案件詳細・応募）
+   3. Component / Modal（求人詳細・紹介フォーム）
    ========================================================================== */
 .c-modal {
   width: 100%;
@@ -1260,7 +1389,7 @@ legend.c-filter__legend {
 }
 
 .c-modal::backdrop {
-  background-color: rgba(6, 23, 39, 0.5);
+  background-color: rgba(30, 90, 120, 0.45);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
@@ -1280,7 +1409,7 @@ legend.c-filter__legend {
   position: relative;
   display: grid;
   gap: var(--space-md);
-  padding: var(--space-lg) var(--space-md) var(--space-lg);
+  padding: var(--space-lg) var(--space-md);
 }
 
 .c-modal__close {
@@ -1289,7 +1418,7 @@ legend.c-filter__legend {
   right: var(--space-sm);
   width: 2.75rem;
   height: 2.75rem;
-  background-color: var(--color-bg-subtle);
+  background-color: var(--color-sky-pale);
   border: 0;
   border-radius: 50%;
   transition: background-color var(--dur-fast) var(--ease), transform var(--dur-base) var(--ease);
@@ -1303,8 +1432,9 @@ legend.c-filter__legend {
   top: 50%;
   left: 50%;
   width: 1rem;
-  height: 1.5px;
-  background-color: var(--color-text-strong);
+  height: 2px;
+  background-color: var(--color-blue);
+  border-radius: 2px;
 }
 
 .c-modal__close::before {
@@ -1317,7 +1447,7 @@ legend.c-filter__legend {
 
 @media (hover: hover) {
   .c-modal__close:hover {
-    background-color: var(--color-rule);
+    background-color: var(--color-sky-soft);
     transform: rotate(90deg);
   }
 }
@@ -1335,7 +1465,7 @@ legend.c-filter__legend {
 }
 
 .c-modal__title {
-  font-size: var(--fs-h3);
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
   line-height: var(--lh-heading);
   color: var(--color-text-strong);
 }
@@ -1351,13 +1481,13 @@ legend.c-filter__legend {
   gap: var(--space-2xs) var(--space-md);
   padding: var(--space-sm) var(--space-md);
   font-size: var(--fs-small);
-  background-color: var(--color-bg-subtle);
+  background-color: var(--color-sky-pale);
   border-radius: var(--radius);
 }
 
 .c-modal__spec-term {
   font-weight: 700;
-  color: var(--color-text-muted);
+  color: var(--color-blue);
 }
 
 .c-modal__done {
@@ -1379,6 +1509,7 @@ legend.c-filter__legend {
 }
 
 .c-modal__done-text {
+  max-width: 26em;
   margin-bottom: var(--space-sm);
   font-size: var(--fs-small);
   color: var(--color-text-muted);
@@ -1397,18 +1528,29 @@ legend.c-filter__legend {
 
 
 /* ==========================================================================
-   3. Component / Form（応募・紹介フォーム）
+   3. Component / Form（紹介フォーム）
    ========================================================================== */
 .c-form {
   display: grid;
   gap: var(--space-md);
   padding-top: var(--space-md);
-  border-top: 1px solid var(--color-rule-soft);
+  border-top: 2px dotted var(--color-rule-dot);
 }
 
 .c-form__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
   font-size: var(--fs-body);
   color: var(--color-text-strong);
+}
+
+.c-form__title::before {
+  content: "";
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--color-coral);
+  border-radius: 50%;
 }
 
 .c-form__row {
@@ -1435,17 +1577,17 @@ legend.c-filter__legend {
   padding: 0 0.5rem;
   font-size: 0.6875rem;
   font-weight: 700;
-  border-radius: 4px;
+  border-radius: var(--radius-full);
 }
 
 .c-form__req {
-  color: var(--color-error);
-  background-color: var(--color-error-pale);
+  color: var(--color-white);
+  background-color: var(--color-coral);
 }
 
 .c-form__opt {
   color: var(--color-text-muted);
-  background-color: var(--color-bg-subtle);
+  background-color: var(--color-sky-pale);
 }
 
 .c-form__hint {
@@ -1471,144 +1613,208 @@ legend.c-filter__legend {
 
 
 /* ==========================================================================
-   4. Project / Hero
+   4. Project / Page Hero（下層ページ共通の見出しエリア）
+   --------------------------------------------------------------------------
+   TOPのヒーローと同じ空色面＋角丸の下端。下層なので高さは控えめにする。
    ========================================================================== */
-.p-hero {
+.p-page-hero {
   position: relative;
-  padding-block: var(--space-xl) var(--space-section);
+  padding-block: var(--space-md) var(--space-xl);
   overflow: hidden;
-  /* 地平線を思わせるごく淡いグラデーション */
-  background:
-    radial-gradient(80% 60% at 100% 0%, var(--color-blue-pale) 0%, transparent 70%),
-    radial-gradient(60% 50% at 0% 100%, var(--color-green-pale) 0%, transparent 70%),
-    var(--color-bg);
+  background-color: var(--color-sky);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
-.p-hero__inner {
+/* 背景の雲（TOPのイラストの雲を簡略化） */
+.p-page-hero::before,
+.p-page-hero::after {
+  content: "";
+  position: absolute;
+  height: 1.75rem;
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: var(--radius-full);
+  box-shadow: 1.5rem -0.75rem 0 0.25rem rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+}
+
+.p-page-hero::before {
+  top: 30%;
+  right: 8%;
+  width: 6rem;
+}
+
+.p-page-hero::after {
+  bottom: 18%;
+  left: 52%;
+  width: 4.5rem;
+}
+
+.p-page-hero__inner {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: var(--space-xl);
-  align-items: center;
+  gap: var(--space-lg);
 }
 
-.p-hero__body {
+.p-page-hero__body {
   display: grid;
   justify-items: start;
   gap: var(--space-md);
 }
 
-.p-hero__title {
-  font-size: var(--fs-h1);
-  line-height: 1.3;
-  letter-spacing: -0.02em;
+.p-page-hero__label {
+  font-family: var(--font-en);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  color: var(--color-white);
+}
+
+/* 「つながる、」「ひろがる。」と同じ白いピル型の見出し */
+.p-page-hero__title {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-xs);
+  font-size: var(--fs-hero);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
   color: var(--color-text-strong);
 }
 
-.p-hero__title-accent {
-  background: linear-gradient(90deg, var(--color-side), var(--color-referral));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.p-page-hero__pill {
+  display: inline-block;
+  padding: 0.3em 0.75em;
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pill);
 }
 
-.p-hero__lead {
+.p-page-hero__pill--shift {
+  margin-left: 1.25em;
+}
+
+.p-page-hero__accent {
+  color: var(--color-blue);
+}
+
+.p-page-hero__lead {
   max-width: var(--measure);
+  padding: var(--space-sm) var(--space-md);
   font-size: var(--fs-lead);
-  color: var(--color-text-muted);
+  font-weight: 700;
+  color: var(--color-text-strong);
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: var(--radius);
 }
 
-.p-hero__actions {
+.p-page-hero__actions {
   display: grid;
   gap: var(--space-xs);
   width: 100%;
 }
 
-.p-hero__stats {
-  display: flex;
-  gap: var(--space-lg);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-rule);
-}
-
-.p-hero__stat {
-  display: grid;
-  gap: 0.125rem;
-}
-
-.p-hero__stat-label {
-  font-size: var(--fs-caption);
-  color: var(--color-text-muted);
-}
-
-.p-hero__stat-value {
-  font-family: var(--font-en);
-  font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--color-text-strong);
-}
-
-.p-hero__stat-value small {
-  margin-left: 0.25rem;
-  font-family: var(--font-jp);
-  font-size: var(--fs-small);
-  font-weight: 400;
-}
-
-.p-hero__visual {
-  /* SPでは縦長になりすぎないよう高さを抑える */
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-}
-
-.p-hero__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.p-page-hero__visual {
+  display: none;
 }
 
 @media (min-width: 600px) {
-  .p-hero__actions {
+  .p-page-hero__actions {
     display: flex;
     flex-wrap: wrap;
     width: auto;
   }
+
+  .p-page-hero__actions .c-button {
+    min-width: 14rem;
+  }
 }
 
 @media (min-width: 1024px) {
-  .p-hero__inner {
-    grid-template-columns: 1.15fr 1fr;
+  .p-page-hero {
+    padding-block: var(--space-md) var(--space-xl);
   }
 
-  .p-hero__visual {
-    aspect-ratio: 8 / 9;
+  .p-page-hero__inner {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    column-gap: var(--space-xl);
+  }
+
+  .c-breadcrumb {
+    grid-column: 1 / -1;
+  }
+
+  .p-page-hero__visual {
+    display: block;
   }
 }
 
 
 /* ==========================================================================
-   4. Project / Search（検索・マッチング）
+   4. Project / Flow（紹介の流れ）
    ========================================================================== */
-.p-search {
-  padding-block: var(--space-section);
-  background-color: var(--color-bg-subtle);
+.p-flow {
+  padding-block: var(--space-section) 0;
 }
 
-.p-search__layout {
+.p-flow__list {
+  display: grid;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .p-flow__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* ==========================================================================
+   4. Project / Jobs（求人検索・マッチング）
+   ========================================================================== */
+.p-jobs {
+  position: relative;
+  isolation: isolate;             /* 背景装飾（z-index:-1）をセクション内に閉じ込める */
+  padding-block: var(--space-section);
+  /* hidden だとスクロールコンテナになり、条件パネルの sticky が効かなくなるため clip を使う */
+  overflow: clip;
+}
+
+/* 背景の大きな淡い円（TOPの TOPICS / GROUP の背景と同じ装飾） */
+.p-jobs::before {
+  content: "";
+  position: absolute;
+  top: 6rem;
+  right: -20vw;
+  z-index: -1;
+  width: max(36rem, 70vw);
+  aspect-ratio: 1;
+  background: radial-gradient(circle, var(--color-sky-pale) 0%, var(--color-sky-pale) 55%, transparent 56%);
+  pointer-events: none;
+}
+
+.p-jobs__lead {
+  max-width: var(--measure);
+  margin: calc(var(--space-md) * -1) auto var(--space-lg);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.p-jobs__layout {
   display: grid;
   gap: var(--space-lg);
   align-items: start;
 }
 
-.p-search__aside {
+.p-jobs__aside {
   display: grid;
   gap: var(--space-sm);
 }
 
 /* SP：条件パネルの開閉ボタン */
-.p-search__toggle {
+.p-jobs__toggle {
   display: flex;
   align-items: center;
   gap: var(--space-2xs);
@@ -1619,12 +1825,19 @@ legend.c-filter__legend {
   color: var(--color-text-strong);
   text-align: left;
   background-color: var(--color-white);
-  border: 1px solid var(--color-rule-soft);
+  border: 0;
   border-radius: var(--radius-full);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow);
 }
 
-.p-search__toggle-count {
+.p-jobs__toggle-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--color-coral);
+  border-radius: 50%;
+}
+
+.p-jobs__toggle-count {
   display: grid;
   place-items: center;
   min-width: 1.5rem;
@@ -1633,48 +1846,52 @@ legend.c-filter__legend {
   font-family: var(--font-en);
   font-size: var(--fs-caption);
   color: var(--color-white);
-  background-color: var(--color-navy);
+  background-color: var(--color-blue);
   border-radius: var(--radius-full);
 }
 
-.p-search__toggle-icon {
+.p-jobs__toggle-icon {
   position: relative;
-  width: 1rem;
-  height: 1rem;
+  width: 2rem;
+  height: 2rem;
   margin-left: auto;
+  background-color: var(--color-blue);
+  border-radius: 50%;
 }
 
 /* ＋ / − アイコン */
-.p-search__toggle-icon::before,
-.p-search__toggle-icon::after {
+.p-jobs__toggle-icon::before,
+.p-jobs__toggle-icon::after {
   content: "";
   position: absolute;
   top: 50%;
-  left: 0;
-  width: 100%;
-  height: 1.5px;
-  background-color: currentColor;
+  left: 50%;
+  width: 0.75rem;
+  height: 2px;
+  margin: -1px 0 0 -0.375rem;
+  background-color: var(--color-white);
+  border-radius: 2px;
   transition: transform var(--dur-base) var(--ease);
 }
 
-.p-search__toggle-icon::after {
+.p-jobs__toggle-icon::after {
   transform: rotate(90deg);
 }
 
-.p-search__toggle[aria-expanded="true"] .p-search__toggle-icon::after {
+.p-jobs__toggle[aria-expanded="true"] .p-jobs__toggle-icon::after {
   transform: rotate(0);
 }
 
 /* JS有効時のみ、SPで条件パネルを折りたたむ（JS無効時は常に表示） */
-.js-enabled .p-search__aside .c-filter {
+.js-enabled .p-jobs__aside .c-filter {
   display: none;
 }
 
-.js-enabled .p-search__aside .c-filter.is-open {
+.js-enabled .p-jobs__aside .c-filter.is-open {
   display: grid;
 }
 
-.p-search__bar {
+.p-jobs__bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1682,42 +1899,43 @@ legend.c-filter__legend {
   margin-bottom: var(--space-md);
 }
 
-.p-search__count {
+.p-jobs__count {
   font-size: var(--fs-small);
+  font-weight: 700;
   color: var(--color-text-muted);
 }
 
-.p-search__count-num {
+.p-jobs__count-num {
   margin-right: 0.25rem;
   font-family: var(--font-en);
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: var(--color-text-strong);
+  color: var(--color-blue);
 }
 
-.p-search__list {
+.p-jobs__list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
   gap: var(--space-md);
 }
 
-.p-search__empty {
+.p-jobs__empty {
   display: grid;
   justify-items: center;
   gap: var(--space-2xs);
   padding: var(--space-xl) var(--space-md);
   text-align: center;
   background-color: var(--color-white);
-  border: 1px dashed var(--color-rule);
+  border: 2px dotted var(--color-rule-dot);
   border-radius: var(--radius-lg);
 }
 
-.p-search__empty-title {
+.p-jobs__empty-title {
   font-weight: 700;
   color: var(--color-text-strong);
 }
 
-.p-search__empty-text {
+.p-jobs__empty-text {
   margin-bottom: var(--space-sm);
   font-size: var(--fs-small);
   color: var(--color-text-muted);
@@ -1725,114 +1943,40 @@ legend.c-filter__legend {
 
 /* PC：左に条件パネルを固定、右に結果 */
 @media (min-width: 1024px) {
-  .p-search__layout {
+  .p-jobs__layout {
     grid-template-columns: var(--aside-width) minmax(0, 1fr);
-    gap: var(--space-xl);
+    gap: var(--space-lg);
   }
 
-  .p-search__aside {
+  .p-jobs__aside {
     position: sticky;
     top: calc(var(--header-height) + var(--space-sm));
     max-height: calc(100dvh - var(--header-height) - var(--space-md));
+    padding: 0.5rem;
+    margin: -0.5rem;
     overflow-y: auto;
-    border-radius: var(--radius-lg);
     scrollbar-width: thin;
   }
 
-  .p-search__toggle,
+  .p-jobs__toggle,
   .c-filter__apply {
     display: none;
   }
 
-  .js-enabled .p-search__aside .c-filter {
+  .js-enabled .p-jobs__aside .c-filter {
     display: grid;
   }
-}
 
-
-/* ==========================================================================
-   4. Project / Flow（利用の流れ）
-   ========================================================================== */
-.p-flow {
-  padding-block: var(--space-section);
-}
-
-.p-flow__grid {
-  display: grid;
-  gap: var(--space-md);
-}
-
-.p-flow__card {
-  --flow-color: var(--color-navy);
-  display: grid;
-  gap: var(--space-md);
-  align-content: start;
-  padding: var(--space-lg) var(--space-md);
-  border: 1px solid var(--color-rule-soft);
-  border-radius: var(--radius-lg);
-  transition: box-shadow var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
-}
-
-.p-flow__card--side {
-  --flow-color: var(--color-side);
-}
-
-.p-flow__card--referral {
-  --flow-color: var(--color-referral);
-}
-
-.p-flow__title {
-  display: grid;
-  justify-items: start;
-  gap: var(--space-xs);
-  font-size: var(--fs-h3);
-  line-height: var(--lh-heading);
-  color: var(--color-text-strong);
-}
-
-.p-flow__steps {
-  display: grid;
-  gap: var(--space-sm);
-}
-
-.p-flow__step {
-  display: grid;
-  grid-template-columns: 2.5rem 1fr;
-  gap: var(--space-xs);
-  align-items: baseline;
-}
-
-.p-flow__num {
-  font-family: var(--font-en);
-  font-size: var(--fs-small);
-  font-weight: 700;
-  color: var(--flow-color);
-}
-
-.p-flow__text {
-  font-size: var(--fs-small);
-}
-
-@media (hover: hover) {
-  .p-flow__card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-  }
-}
-
-@media (min-width: 768px) {
-  .p-flow__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .p-flow__card {
-    padding: var(--space-xl) var(--space-lg);
+  .c-filter .c-chip__label {
+    min-height: 2.5rem;
+    padding-inline: 0.875rem;
+    font-size: 0.8125rem;
   }
 }
 
 
 /* ==========================================================================
-   4. Project / Rules（利用ルール）
+   4. Project / Rules（紹介のルール：TOPの COMMUNITY 一覧の点線区切り）
    ========================================================================== */
 .p-rules {
   padding-bottom: var(--space-section);
@@ -1840,66 +1984,25 @@ legend.c-filter__legend {
 
 .p-rules__list {
   display: grid;
-  border-top: 1px solid var(--color-rule);
-  counter-reset: rule;
 }
 
 .p-rules__item {
   display: grid;
-  grid-template-columns: 2.5rem 1fr;
-  gap: var(--space-xs);
-  padding-block: var(--space-md);
-  font-size: var(--fs-small);
-  border-bottom: 1px solid var(--color-rule);
-  counter-increment: rule;
-}
-
-.p-rules__item::before {
-  content: counter(rule, decimal-leading-zero);
-  font-family: var(--font-en);
-  font-weight: 700;
-  color: var(--color-text-muted);
-}
-
-
-/* ==========================================================================
-   4. Project / Post CTA（案件掲載の依頼）
-   ========================================================================== */
-.p-post {
-  padding-bottom: var(--space-section);
-}
-
-.p-post__inner {
-  display: grid;
-  gap: var(--space-lg);
+  gap: var(--space-2xs);
   justify-items: start;
-  padding: var(--space-xl) var(--space-lg);
-  color: var(--color-text-inverse);
-  background:
-    radial-gradient(70% 90% at 100% 0%, rgba(27, 108, 168, 0.55) 0%, transparent 70%),
-    var(--color-navy);
-  border-radius: var(--radius-lg);
+  padding-block: var(--space-md);
+  border-bottom: 2px dotted var(--color-rule-dot);
 }
 
-.p-post__body {
-  display: grid;
-  gap: var(--space-sm);
+.p-rules__text {
+  font-size: var(--fs-small);
 }
 
-.p-post__title {
-  font-size: var(--fs-h2);
-  line-height: var(--lh-heading);
-}
-
-.p-post__text {
-  color: var(--color-text-inverse-muted);
-}
-
-@media (min-width: 1024px) {
-  .p-post__inner {
-    grid-template-columns: 1fr auto;
-    align-items: end;
-    padding: var(--space-xl);
+@media (min-width: 768px) {
+  .p-rules__item {
+    grid-template-columns: 6rem 1fr;
+    align-items: baseline;
+    gap: var(--space-md);
   }
 }
 
@@ -1915,19 +2018,15 @@ legend.c-filter__legend {
   z-index: var(--z-sp-cta);
   padding: var(--space-xs) var(--gutter) calc(var(--space-xs) + env(safe-area-inset-bottom));
   background-color: rgba(255, 255, 255, 0.92);
-  border-top: 1px solid var(--color-rule-soft);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 -4px 16px rgba(35, 90, 120, 0.08);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   transform: translateY(110%);
   transition: transform var(--dur-base) var(--ease);
 }
 
 .p-sp-cta.is-visible {
   transform: translateY(0);
-}
-
-.p-sp-cta__button {
-  box-shadow: var(--shadow);
 }
 
 @media (min-width: 1024px) {
@@ -1957,10 +2056,7 @@ html.is-unlocked .p-gate {
   min-height: 100vh;
   min-height: 100dvh;
   padding: var(--space-lg) var(--gutter);
-  background:
-    radial-gradient(70% 60% at 100% 0%, var(--color-blue-pale) 0%, transparent 70%),
-    radial-gradient(60% 50% at 0% 100%, var(--color-green-pale) 0%, transparent 70%),
-    var(--color-bg-subtle);
+  background-color: var(--color-sky);
 }
 
 .p-gate__card {
@@ -1970,9 +2066,8 @@ html.is-unlocked .p-gate {
   max-width: 420px;
   padding: var(--space-lg) var(--space-md);
   background-color: var(--color-white);
-  border: 1px solid var(--color-rule-soft);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-hover);
 }
 
 .p-gate__card.is-shake {
@@ -1986,14 +2081,13 @@ html.is-unlocked .p-gate {
 
 .p-gate__logo {
   font-family: var(--font-en);
-  font-size: var(--fs-small);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--color-blue);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-text-strong);
 }
 
 .p-gate__title {
-  margin-top: calc(var(--space-sm) * -0.5);
   font-size: var(--fs-h3);
   font-weight: 700;
   line-height: var(--lh-heading);
@@ -2039,15 +2133,19 @@ html.is-unlocked .p-gate {
 
 @media (hover: hover) {
   .p-gate__toggle:hover {
-    background-color: var(--color-blue-pale);
+    background-color: var(--color-sky-pale);
   }
 }
 
 .p-gate__noscript {
   margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   font-size: var(--fs-small);
+  font-weight: 700;
   color: var(--color-error);
   text-align: center;
+  background-color: var(--color-white);
+  border-radius: var(--radius);
 }
 
 @media (min-width: 768px) {
@@ -2092,8 +2190,6 @@ html.is-unlocked .p-gate {
   opacity: 1;
   transform: none;
 }
-
-/* カード自身の transform（ホバー）と干渉しないよう、ホバーは内側要素で行っている */
 
 /* 条件変更後の再描画：短く軽い入れ替え演出 */
 .c-job-card.is-fresh {

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
+  <!-- 仮画像：TOPフッターの「まいにちに"プラス"をつむぐ」イラストに差し替える -->
+  <text x="20" y="40" font-family="Hiragino Maru Gothic ProN, Meiryo, sans-serif" font-size="20" font-weight="700" fill="#137cb5">まいにちに“プラス”をつむごう。</text>
+  <path d="M200 120 L320 185 L200 250 L80 185 Z" fill="#c9ecf6"/>
+  <path d="M150 190 L210 222 L210 120 L150 88 Z" fill="#f7fbfd" stroke="#dbeef5"/>
+  <path d="M210 222 L260 195 L260 93 L210 120 Z" fill="#dbeef5"/>
+  <path d="M150 88 L200 61 L260 93 L210 120 Z" fill="#ffffff" stroke="#dbeef5"/>
+  <g fill="#3a9ec4">
+    <rect x="160" y="110" width="40" height="10" rx="2"/>
+    <rect x="160" y="135" width="40" height="10" rx="2"/>
+    <rect x="160" y="160" width="40" height="10" rx="2"/>
+  </g>
+  <g fill="#3fae6a">
+    <ellipse cx="282" cy="190" rx="9" ry="16"/>
+    <ellipse cx="300" cy="196" rx="9" ry="16"/>
+  </g>
+</svg>
