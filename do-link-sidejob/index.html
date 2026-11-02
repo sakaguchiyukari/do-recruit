@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- JS有効判定：フェードインの初期状態(opacity:0)は .js-enabled 配下でのみ適用する。
+       あわせて、同じタブで認証済みならパスワード画面を一瞬でも出さないよう is-unlocked を先に付ける。
+       （正しい認証かどうかは main.js で再確認し、不一致ならロック画面に戻す） -->
+  <script>document.documentElement.classList.add('js-enabled');try{if(sessionStorage.getItem('dolink:auth'))document.documentElement.classList.add('is-unlocked');}catch(e){}</script>
+
+  <title>社内副業｜Do.Link ドゥ.ヨネザワ企業グループ 社員限定コミュニティサイト</title>
+  <meta name="description" content="Do.Link の社内副業ページ。グループ内の部署が募集している副業案件を、活かしたいスキルや使える時間からさがして、そのまま応募できます。">
+
+  <!-- 社員限定サイトのため検索エンジンにインデックスさせない -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- OGP（社内チャット等でURLを共有した際のプレビュー用） -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Do.Link ドゥ.ヨネザワ企業グループ 社員限定コミュニティサイト">
+  <meta property="og:title" content="社内副業｜Do.Link">
+  <meta property="og:description" content="いつもの仕事の、となりへ。グループ内の副業案件をさがして、あなたのスキルを別の現場で活かそう。">
+  <!-- TODO: 1200×630 の PNG を用意して配置する（SVGはOGPで表示されない） -->
+  <meta property="og:image" content="https://example.com/do-link/assets/img/ogp/ogp-sidejob.png">
+  <!-- TODO: 公開URL確定後に差し替える -->
+  <meta property="og:url" content="https://example.com/do-link/sidejob/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#74cde2">
+
+  <!-- Icon（apple-touch-icon は 180×180 PNG を別途用意する） -->
+  <link rel="icon" href="assets/icon/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer src="assets/js/main.js"></script>
+</head>
+
+<body>
+
+  <!-- ======================================================================
+       Password Gate（閲覧前のパスワード入力）
+       ----------------------------------------------------------------------
+       ※ ブラウザ内だけで判定する簡易ロック。ソースを読めば中身は見られるため、
+         機密情報の保護には使えない。Do.Link 本体にログイン機能がある場合は不要。
+       ====================================================================== -->
+  <div class="p-gate js-gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <form class="p-gate__card js-gate-form" action="#" method="post">
+      <p class="p-gate__logo">Do.Link</p>
+      <!-- h1 は本文側に1つだけ置くため、ここは p で見出しを表現する -->
+      <p class="p-gate__title" id="gate-title">社員限定ページです</p>
+      <p class="p-gate__text">閲覧するには、共有されたパスワードを入力してください。</p>
+
+      <div class="c-form__item">
+        <label class="c-form__label" for="gate-password">パスワード</label>
+        <div class="p-gate__field">
+          <input
+            class="c-field p-gate__input js-gate-input"
+            id="gate-password"
+            type="password"
+            name="password"
+            placeholder="パスワードを入力"
+            autocomplete="current-password"
+            required
+            minlength="4"
+            maxlength="64"
+            aria-describedby="gate-error"
+          >
+          <button class="p-gate__toggle js-gate-toggle" type="button" aria-controls="gate-password" aria-pressed="false">表示</button>
+        </div>
+        <p class="c-form__error js-gate-error" id="gate-error" aria-live="assertive"></p>
+      </div>
+
+      <button class="c-button c-button--primary c-button--block" type="submit">
+        ページを開く
+        <span class="c-button__icon" aria-hidden="true"></span>
+      </button>
+      <p class="p-gate__note">パスワードが分からない場合は、人事部門にお問い合わせください。</p>
+    </form>
+
+    <!-- JS無効時はパスワード判定ができないため案内のみ表示 -->
+    <noscript>
+      <p class="p-gate__noscript">このページを表示するには JavaScript を有効にしてください。</p>
+    </noscript>
+  </div>
+
+  <main id="main">
+
+    <!-- ページ見出し（h1）：見た目上の見出しエリアは置かず、読み上げ・SEO用にのみ置く。
+         ヘッダー・フッター・パンくずは Do.Link 側の共通テンプレートに任せる -->
+    <h1 class="u-visually-hidden">社内副業</h1>
+
+    <!-- ====================================================================
+         Flow（応募の流れ：白いステップカード3枚＋応募前の確認事項）
+         ==================================================================== -->
+    <section class="p-flow" id="flow" aria-labelledby="flow-title">
+      <div class="l-container">
+        <h2 class="c-heading js-reveal" id="flow-title">
+          <span class="c-heading__en" aria-hidden="true">FL<span class="c-heading__en-accent">O</span><span class="c-heading__en-light">W</span></span>
+          <span class="c-heading__ja">応募の流れ</span>
+        </h2>
+
+        <ol class="p-flow__list">
+          <li class="c-number-card js-reveal">
+            <div class="c-number-card__head">
+              <span class="c-number-card__num">STEP.01</span>
+              <span class="c-number-card__title">案件をさがす</span>
+            </div>
+            <p class="c-number-card__text">活かしたいスキルや使える時間を選んで、合いそうな案件を見つけます。</p>
+          </li>
+          <li class="c-number-card js-reveal">
+            <div class="c-number-card__head">
+              <span class="c-number-card__num">STEP.02</span>
+              <span class="c-number-card__title">所属長に相談する</span>
+            </div>
+            <p class="c-number-card__text">本業との両立ができるか、稼働時間や時間帯を所属長とすり合わせます。</p>
+          </li>
+          <li class="c-number-card js-reveal">
+            <div class="c-number-card__head">
+              <span class="c-number-card__num">STEP.03</span>
+              <span class="c-number-card__title">フォームで応募</span>
+            </div>
+            <p class="c-number-card__text">案件詳細の応募フォームから送信。募集部署から面談の連絡が届きます。</p>
+          </li>
+        </ol>
+
+        <!-- 応募前の確認事項
+             TODO: 社内の副業規程が確定したら、文言を規程に合わせて差し替える（以下はサンプル） -->
+        <div class="p-flow__note js-reveal">
+          <p class="p-flow__note-title">応募の前に</p>
+          <ul class="p-flow__note-list">
+            <li class="p-flow__note-item">本業に支障のない範囲での参加が前提です。</li>
+            <li class="p-flow__note-item">稼働時間・報酬の扱いは、グループの社内規程に準じます。</li>
+            <li class="p-flow__note-item">掛け持ちは同時に2件までを目安にしてください。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         Jobs（副業案件の検索・マッチング）
+         ==================================================================== -->
+    <section class="p-jobs" id="jobs" aria-labelledby="jobs-title">
+      <div class="l-container">
+        <h2 class="c-heading js-reveal" id="jobs-title">
+          <span class="c-heading__en" aria-hidden="true">PR<span class="c-heading__en-accent">O</span><span class="c-heading__en-light">JECTS</span></span>
+          <span class="c-heading__ja">募集中の副業案件</span>
+        </h2>
+        <p class="p-jobs__lead js-reveal">
+          活かしたいスキルや使える時間を選ぶと、案件ごとの「マッチ度」が表示されます。
+        </p>
+
+        <div class="p-jobs__layout">
+
+          <!-- ---------- 検索フォーム ---------- -->
+          <div class="p-jobs__aside">
+
+            <!-- SPのみ表示：条件パネルの開閉ボタン -->
+            <button
+              class="p-jobs__toggle js-filter-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="filter-panel"
+            >
+              <span class="p-jobs__toggle-dot" aria-hidden="true"></span>
+              <span>条件でしぼりこむ</span>
+              <span class="p-jobs__toggle-count js-active-count" hidden></span>
+              <span class="p-jobs__toggle-icon" aria-hidden="true"></span>
+            </button>
+
+            <form class="c-filter js-filter-form" id="filter-panel" role="search" aria-label="副業案件の検索とマッチング条件" novalidate>
+
+              <!-- キーワード -->
+              <div class="c-filter__group">
+                <label class="c-filter__legend" for="filter-keyword">キーワード</label>
+                <input
+                  class="c-field"
+                  id="filter-keyword"
+                  type="search"
+                  name="keyword"
+                  placeholder="例：バナー、SNS、イベント"
+                  maxlength="50"
+                  autocomplete="off"
+                  enterkeyhint="search"
+                >
+              </div>
+
+              <!-- 募集している事業領域（TOPの WORKS と同じ4事業＋本部） -->
+              <div class="c-filter__group">
+                <label class="c-filter__legend" for="filter-category">募集している事業</label>
+                <div class="c-select">
+                  <select class="c-field c-select__field" id="filter-category" name="category">
+                    <option value="">すべての事業</option>
+                    <option value="ict">インフォメーション&amp;コミュニケーション事業</option>
+                    <option value="car">カーライフ事業</option>
+                    <option value="golf">ゴルフ事業</option>
+                    <option value="wellness">ライフ&amp;ウェルネス事業</option>
+                    <option value="corporate">グループ本部・管理部門</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- マッチング条件 -->
+              <fieldset class="c-filter__block">
+                <legend class="c-filter__block-title">マッチング条件</legend>
+
+                <fieldset class="c-filter__group">
+                  <legend class="c-filter__legend">活かしたいスキル（複数選択可）</legend>
+                  <div class="c-chips">
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="skills" value="design"><span class="c-chip__label">デザイン・制作</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="skills" value="marketing"><span class="c-chip__label">企画・マーケ</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="skills" value="writing"><span class="c-chip__label">文章・広報</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="skills" value="it"><span class="c-chip__label">IT・データ</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="skills" value="event"><span class="c-chip__label">接客・イベント</span></label>
+                    <label class="c-chip"><input class="c-chip__input" type="checkbox" name="skills" value="office"><span class="c-chip__label">事務・バックオフィス</span></label>
+                  </div>
+                </fieldset>
+
+                <div class="c-filter__row">
+                  <div class="c-filter__group">
+                    <label class="c-filter__legend" for="filter-hours">使える時間（週）</label>
+                    <div class="c-select">
+                      <select class="c-field c-select__field" id="filter-hours" name="hours">
+                        <option value="">指定しない</option>
+                        <option value="2">2時間まで</option>
+                        <option value="5">5時間まで</option>
+                        <option value="10">10時間まで</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="c-filter__group">
+                    <label class="c-filter__legend" for="filter-style">働き方</label>
+                    <div class="c-select">
+                      <select class="c-field c-select__field" id="filter-style" name="style">
+                        <option value="">指定しない</option>
+                        <option value="remote">リモートで</option>
+                        <option value="onsite">現地に行ける</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <label class="c-switch">
+                  <input class="c-switch__input" type="checkbox" name="matchedOnly" value="1">
+                  <span class="c-switch__track" aria-hidden="true"></span>
+                  <span class="c-switch__label">マッチ度50%以上だけ表示</span>
+                </label>
+              </fieldset>
+
+              <div class="c-filter__footer">
+                <button class="c-button c-button--more c-button--block" type="reset">条件をリセット</button>
+                <!-- SPのみ表示：パネルを閉じて結果へ移動する -->
+                <button class="c-button c-button--primary c-button--block c-filter__apply js-filter-apply" type="button">
+                  <span><span class="js-result-count-apply">0</span>件の案件を見る</span>
+                  <span class="c-button__icon" aria-hidden="true"></span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ---------- 検索結果 ---------- -->
+          <div class="p-jobs__main" id="results">
+            <div class="p-jobs__bar">
+              <p class="p-jobs__count" aria-live="polite">
+                <span class="p-jobs__count-num js-result-count">0</span>件の案件
+              </p>
+              <div class="c-select c-select--pill">
+                <label class="u-visually-hidden" for="sort">並び順</label>
+                <select class="c-field c-select__field js-sort" id="sort" name="sort" form="filter-panel">
+                  <option value="match">マッチ度が高い順</option>
+                  <option value="new">新着順</option>
+                  <option value="deadline">締切が近い順</option>
+                  <option value="light">稼働が軽い順</option>
+                </select>
+              </div>
+            </div>
+
+            <ul class="p-jobs__list js-result-list" aria-label="検索結果"></ul>
+
+            <!-- 0件時 -->
+            <div class="p-jobs__empty js-empty" hidden>
+              <p class="p-jobs__empty-title">条件に合う案件が見つかりませんでした</p>
+              <p class="p-jobs__empty-text">条件を少しゆるめるか、リセットしてもう一度お試しください。</p>
+              <button class="c-button c-button--more js-empty-reset" type="button">
+                条件をリセット
+                <span class="c-button__icon" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       SP固定CTA（応募の流れを過ぎたら表示）
+       ====================================================================== -->
+  <div class="p-sp-cta js-sp-cta" aria-hidden="true">
+    <button class="c-button c-button--primary c-button--block js-sp-cta-button" type="button" tabindex="-1">
+      条件で案件をさがす
+      <span class="c-button__icon" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <!-- ======================================================================
+       案件詳細・応募モーダル
+       ====================================================================== -->
+  <dialog class="c-modal js-modal" aria-labelledby="modal-title">
+    <div class="c-modal__inner">
+      <button class="c-modal__close js-modal-close" type="button" aria-label="閉じる"></button>
+
+      <!-- 詳細 -->
+      <div class="c-modal__head">
+        <span class="c-pill-tag js-modal-category"></span>
+        <p class="c-modal__dept js-modal-dept"></p>
+        <h2 class="c-modal__title js-modal-title" id="modal-title"></h2>
+      </div>
+      <p class="c-modal__desc js-modal-desc"></p>
+      <dl class="c-modal__spec js-modal-spec"></dl>
+
+      <!-- 応募フォーム -->
+      <!-- TODO: 送信先（社内ワークフロー / Googleフォーム / API 等）確定後に action と method を設定する -->
+      <form class="c-form js-apply-form" action="#" method="post">
+        <h3 class="c-form__title">この案件に応募する</h3>
+
+        <div class="c-form__row">
+          <div class="c-form__item">
+            <label class="c-form__label" for="app-name">氏名<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="app-name" type="text" name="name" placeholder="例：米澤 太郎" autocomplete="name" required maxlength="40" aria-describedby="app-name-error">
+            <p class="c-form__error" id="app-name-error"></p>
+          </div>
+          <div class="c-form__item">
+            <label class="c-form__label" for="app-employee">社員番号<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="app-employee" type="text" name="employeeId" placeholder="例：123456" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="off" required aria-describedby="app-employee-hint app-employee-error">
+            <p class="c-form__hint" id="app-employee-hint">半角数字6桁</p>
+            <p class="c-form__error" id="app-employee-error"></p>
+          </div>
+        </div>
+
+        <div class="c-form__row">
+          <div class="c-form__item">
+            <label class="c-form__label" for="app-dept">現在の所属（会社・部署）<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="app-dept" type="text" name="dept" placeholder="例：カーライフ事業 販売部門" autocomplete="organization" required maxlength="60" aria-describedby="app-dept-error">
+            <p class="c-form__error" id="app-dept-error"></p>
+          </div>
+          <div class="c-form__item">
+            <label class="c-form__label" for="app-email">社用メールアドレス<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="app-email" type="email" name="email" placeholder="例：taro@example.com" autocomplete="email" inputmode="email" required maxlength="100" aria-describedby="app-email-error">
+            <p class="c-form__error" id="app-email-error"></p>
+          </div>
+        </div>
+
+        <div class="c-form__row">
+          <div class="c-form__item">
+            <label class="c-form__label" for="app-slot">参加できる時間帯<span class="c-form__req">必須</span></label>
+            <div class="c-select">
+              <select class="c-field c-select__field" id="app-slot" name="timeSlot" required aria-describedby="app-slot-error">
+                <option value="">選択してください</option>
+                <option value="worktime">業務時間内（所属長と調整済み）</option>
+                <option value="weekday-evening">平日の終業後</option>
+                <option value="weekend">土日・祝日</option>
+                <option value="consult">面談で相談したい</option>
+              </select>
+            </div>
+            <p class="c-form__error" id="app-slot-error"></p>
+          </div>
+          <div class="c-form__item">
+            <label class="c-form__label" for="app-start">開始できる日<span class="c-form__opt">任意</span></label>
+            <!-- min は JS が今日の日付を設定する -->
+            <input class="c-field" id="app-start" type="date" name="startDate" aria-describedby="app-start-error">
+            <p class="c-form__error" id="app-start-error"></p>
+          </div>
+        </div>
+
+        <div class="c-form__item">
+          <label class="c-form__label" for="app-message">応募動機・活かせる経験<span class="c-form__req">必須</span></label>
+          <textarea class="c-field c-field--textarea" id="app-message" name="message" rows="4" placeholder="例：店舗のPOP制作を3年担当しています。Illustratorを使ったバナー制作で力になれると思い応募しました。" required minlength="20" maxlength="400" aria-describedby="app-message-hint app-message-error"></textarea>
+          <p class="c-form__hint" id="app-message-hint">20〜400文字</p>
+          <p class="c-form__error" id="app-message-error"></p>
+        </div>
+
+        <div class="c-form__item">
+          <label class="c-check">
+            <input class="c-check__input" type="checkbox" name="approval" value="1" required aria-describedby="app-approval-error">
+            <span class="c-check__label">所属長に、この案件へ応募することを伝えています</span>
+          </label>
+          <p class="c-form__error" id="app-approval-error"></p>
+        </div>
+
+        <button class="c-button c-button--primary c-button--block" type="submit">
+          この内容で応募する
+          <span class="c-button__icon" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <!-- 送信完了 -->
+      <div class="c-modal__done js-modal-done" hidden tabindex="-1">
+        <p class="c-modal__done-title">応募ありがとうございます！</p>
+        <p class="c-modal__done-text">募集部署の担当者から、社用メールで面談日程のご連絡をします。</p>
+        <button class="c-button c-button--more js-modal-close" type="button">
+          閉じる
+          <span class="c-button__icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ======================================================================
+       Template：案件カード（JSで複製して描画する）
+       ====================================================================== -->
+  <template id="job-card-template">
+    <li class="c-job-card">
+      <article class="c-job-card__inner">
+        <div class="c-job-card__head">
+          <div class="c-job-card__group">
+            <span class="c-job-card__group-icon" aria-hidden="true"></span>
+            <span class="c-job-card__group-name" data-slot="category"></span>
+          </div>
+          <!-- マッチ度（条件未入力時は hidden） -->
+          <div class="c-score" data-slot="score" hidden>
+            <span class="c-score__ring">
+              <span class="c-score__value" data-slot="score-value"></span><span class="c-score__percent">%</span>
+            </span>
+            <span class="c-score__label">MATCH</span>
+          </div>
+        </div>
+        <p class="c-job-card__dept" data-slot="dept"></p>
+        <h3 class="c-job-card__title" data-slot="title"></h3>
+        <p class="c-job-card__summary" data-slot="summary"></p>
+        <ul class="c-job-card__meta" data-slot="meta"></ul>
+        <div class="c-job-card__foot">
+          <p class="c-job-card__deadline" data-slot="deadline"></p>
+          <button class="c-job-card__more" type="button" data-slot="more">
+            詳しく見る<span class="c-job-card__more-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+      </article>
+    </li>
+  </template>
+
+</body>
+</html>
