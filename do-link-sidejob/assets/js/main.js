@@ -2,34 +2,38 @@
  * Do.Link — 社内副業ページ
  * -----------------------------------------------------------------------------
  * 構成（上から順に）
- *   1. 副業案件データ（サンプル）
+ *   1. デモ用データ（ローカル確認時のみ使用）
  *   2. 定数・ラベル定義
  *   3. ユーティリティ
- *   4. マッチング（スコア計算）
- *   5. 検索・描画
- *   6. 条件パネル（SP開閉）
- *   7. 詳細モーダル・応募フォーム
- *   8. フェードイン（IntersectionObserver）
- *   9. SP固定CTA
- *  10. パスワードゲート
- *  11. 初期化
+ *   4. データストア（読み書きの窓口）
+ *   5. マッチング（スコア計算）
+ *   6. 検索・描画
+ *   7. 条件パネル（SP開閉）
+ *   8. フォーム検証（共通）
+ *   9. 詳細モーダル・応募フォーム
+ *  10. 掲載管理（投稿・編集・削除）
+ *  11. フェードイン（IntersectionObserver）
+ *  12. SP固定CTA
+ *  13. パスワードゲート
+ *  14. 初期化
  *
- * リファラル採用ページ（main.js）と同じ構成にしてあり、8〜10 は共通の処理。
+ * リファラル採用ページ（main.js）と同じ構成にしてあり、11〜13 は共通の処理。
  * file:// で直接開いても動くよう、ESモジュールではなく defer の単一ファイル構成にしている。
  * グローバル変数を作らないよう、全体をブロックスコープで囲む。
  */
 {
   /* ===========================================================================
-     1. 副業案件データ（サンプル）
+     1. デモ用データ（ローカル確認時のみ使用）
      ---------------------------------------------------------------------------
-     ※ 部署名・内容・時間はすべて画面確認用のサンプル。
-     本番では API / スプレッドシート等から同じ形のデータを取得して差し替える。
+     claude.ai の外（ローカルの file:// や社内サーバー）で開いたときに、
+     デモモードの初期データとして使う。claude.ai 上ではデータベースの内容を表示し、
+     ここは使わない。部署名・内容・時間はすべて画面確認用のサンプル。
 
      id, title, dept, category, summary, description,
      skill, hours(週あたりの目安・時間), style(remote | onsite | hybrid),
      period, reward, postedAt(YYYY-MM-DD), deadline(YYYY-MM-DD | null=随時)
      ======================================================================== */
-  const JOBS = [
+  const DEMO_ITEMS = [
     {
       id: 'S-001',
       title: 'グループ採用サイトのバナー制作',
@@ -190,6 +194,9 @@
     style: { remote: 'リモート', onsite: '現地', hybrid: 'リモート＋現地' },
   };
 
+  /** ラベルを引く（共有データは信用しないため、未知の値は「未設定」にする） */
+  const labelOf = (group, key) => LABELS[group][key] || '未設定';
+
   /** 条件「働き方」に対して、一致とみなす案件の style */
   const STYLE_MATCH = {
     remote: ['remote', 'hybrid'],
@@ -208,6 +215,12 @@
   /** stagger の上限（大量表示時に最後のカードが遅れすぎないようにする） */
   const STAGGER_MAX = 6;
 
+  /** 1人が持てる案件数の上限（下書き含む） */
+  const MAX_ITEMS_PER_AUTHOR = 30;
+
+  /** データ取得を待つ上限（ミリ秒）。超えたら「接続できない」旨を表示する */
+  const LOAD_TIMEOUT = 10000;
+
   const DESKTOP_QUERY = window.matchMedia('(min-width: 1024px)');
   const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)');
   const scrollBehavior = () => (REDUCED_MOTION.matches ? 'auto' : 'smooth');
@@ -224,13 +237,15 @@
     return date;
   })();
 
+  const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
   /** 'YYYY-MM-DD' をローカル時刻の Date に変換する（UTC解釈によるズレを防ぐ） */
   const parseDate = (value) => {
     const [y, m, d] = value.split('-').map(Number);
     return new Date(y, m - 1, d);
   };
 
-  /** Date をローカル時刻の 'YYYY-MM-DD' にする（input[type="date"] の min 用） */
+  /** Date をローカル時刻の 'YYYY-MM-DD' にする */
   const toISODate = (date) => [
     date.getFullYear(),
     String(date.getMonth() + 1).padStart(2, '0'),
@@ -241,14 +256,17 @@
   const daysLeft = (job) =>
     job.deadline ? Math.round((parseDate(job.deadline) - today) / 86400000) : Infinity;
 
-  /** 募集中か（締切日当日までは募集中） */
-  const isOpen = (job) => daysLeft(job) >= 0;
+  /** 締切を過ぎたか（締切日当日までは募集中） */
+  const isExpired = (job) => daysLeft(job) < 0;
+
+  /** 一覧に出す案件か（公開中かつ締切前） */
+  const isPublic = (job) => job.status === 'published' && !isExpired(job);
 
   /** 表示用の日付 'YYYY.MM.DD' */
-  const formatDate = (value) => value.replaceAll('-', '.');
+  const formatDate = (value) => (value ? value.slice(0, 10).replaceAll('-', '.') : '');
 
   /** 表示用の稼働時間 */
-  const formatHours = (hours) => `週${hours}時間程度`;
+  const formatHours = (hours) => (hours ? `週${hours}時間程度` : '稼働時間未定');
 
   /** 検索用の正規化（全角英数→半角、大文字→小文字） */
   const normalize = (text) => text.normalize('NFKC').toLowerCase().trim();
@@ -261,9 +279,209 @@
     return element;
   };
 
+  /** 案件IDを発行する（時刻 + 乱数。同時に作られても衝突しにくい） */
+  const createId = () =>
+    `p-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+
+  /** 文字列だけを受け取り、長さを制限する（共有データは信用しない） */
+  const toText = (value, max) => (typeof value === 'string' ? value.slice(0, max) : '');
+
+  /**
+   * 保存されている1件を、画面で扱える形に整える。
+   * 他の人が書いたデータのため、型・値の範囲をすべて検査する。不正なら null。
+   */
+  const normalizeItem = (raw, authorId) => {
+    if (!raw || typeof raw !== 'object' || typeof raw.id !== 'string' || !raw.id) return null;
+    const hours = Number(raw.hours);
+    return {
+      id: toText(raw.id, 60),
+      authorId,
+      title: toText(raw.title, 40),
+      dept: toText(raw.dept, 40),
+      category: LABELS.category[raw.category] ? raw.category : '',
+      skill: LABELS.skill[raw.skill] ? raw.skill : '',
+      hours: Number.isInteger(hours) && hours >= 1 && hours <= 20 ? hours : null,
+      style: LABELS.style[raw.style] ? raw.style : '',
+      period: toText(raw.period, 30),
+      deadline: DATE_PATTERN.test(raw.deadline) ? raw.deadline : null,
+      summary: toText(raw.summary, 80),
+      description: toText(raw.description, 600),
+      reward: toText(raw.reward, 40),
+      status: raw.status === 'published' ? 'published' : 'draft',
+      postedAt: DATE_PATTERN.test(raw.postedAt) ? raw.postedAt : '',
+      updatedAt: toText(raw.updatedAt, 30),
+    };
+  };
+
+  /** 保存する形（authorId はドキュメントのパスで表すため含めない） */
+  const toStored = (item) => {
+    const { authorId, ...stored } = item;
+    return stored;
+  };
+
 
   /* ===========================================================================
-     4. マッチング（スコア計算）
+     4. データストア（読み書きの窓口）
+     ---------------------------------------------------------------------------
+     画面側は store の次のメンバーだけを使う。本番で API / スプレッドシートに
+     移す場合は、同じ形のオブジェクトを返す createXxxStore を足せばよい。
+       mode      'db' | 'local'
+       uid       閲覧者のID（掲載者の識別。null = 掲載不可）
+       isAdmin   全員の案件を修正・削除できるか（管理者）
+       canPost   掲載できるか
+       subscribe(next, fail)   案件一覧の変更を購読（next(items, isConfirmed)）
+       save(authorId, item)    1件を追加・更新
+       remove(authorId, id)    1件を削除
+       nameOf(ids)             掲載者IDから表示名の Map を作る
+
+     ■ claude.ai の Artifact 上（db）
+       posts/<掲載者ID> の1ドキュメントに、その人の案件を items 配列で持つ。
+       アクセスルール（公開時に宣言）：
+         posts         … 全員が読める / 書き換えは管理者（Editor・Owner）のみ
+         posts/{self}  … 自分のドキュメントは Contributor 以上が書ける
+       → 掲載者は自分の案件だけを編集でき、管理者は全件を修正・削除できる。
+
+     ■ それ以外（ローカルで開いた場合など）
+       デモモード。localStorage に保存し、このブラウザでだけ見える。
+     ======================================================================== */
+  const POSTS_COLLECTION = 'posts';
+
+  /** ストアのエラー（画面に出す文言を code で切り替える） */
+  const storeError = (code) => Object.assign(new Error(code), { code });
+
+  /** items 配列の中の1件を差し替え / 追加 / 削除した新しい配列を返す */
+  const upsertItem = (items, item) => {
+    const next = items.filter((stored) => stored && stored.id !== item.id);
+    if (next.length >= MAX_ITEMS_PER_AUTHOR) throw storeError('limit');
+    const index = items.findIndex((stored) => stored && stored.id === item.id);
+    if (index === -1) return [toStored(item), ...next];
+    next.splice(index, 0, toStored(item));
+    return next;
+  };
+  const withoutItem = (items, id) => items.filter((stored) => stored && stored.id !== id);
+
+  /** { authorId: items[] } を画面用の配列にする */
+  const flattenPosts = (postsByAuthor) => [...postsByAuthor.entries()]
+    .flatMap(([authorId, items]) => items.map((raw) => normalizeItem(raw, authorId)))
+    .filter(Boolean);
+
+  /** claude.ai の Artifact データベースを使うストア */
+  const createDbStore = (db, user, { uid, isAdmin, canPost }) => {
+    const collection = db.collection(POSTS_COLLECTION);
+    const postsByAuthor = new Map();
+
+    // 同じドキュメントへの書き込みは1つずつ順番に行う（並行書き込みで上書きし合わないように）
+    const queues = new Map();
+    const enqueue = (authorId, task) => {
+      const run = (queues.get(authorId) || Promise.resolve()).catch(() => {}).then(task);
+      queues.set(authorId, run);
+      return run;
+    };
+
+    const writeItems = (authorId, update) => enqueue(authorId, () => {
+      const items = update([...(postsByAuthor.get(authorId) || [])]);
+      return collection.doc(authorId).set({ items });
+    });
+
+    return {
+      mode: 'db',
+      uid,
+      isAdmin,
+      canPost,
+      subscribe: (next, fail) => collection.onSnapshot((snapshot) => {
+        postsByAuthor.clear();
+        snapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          postsByAuthor.set(doc.id, Array.isArray(data && data.items) ? data.items : []);
+        });
+        next(flattenPosts(postsByAuthor), !snapshot.metadata.fromCache);
+      }, fail),
+      save: (authorId, item) => writeItems(authorId, (items) => upsertItem(items, item)),
+      remove: (authorId, id) => writeItems(authorId, (items) => withoutItem(items, id)),
+      nameOf: async (ids) => {
+        const names = new Map();
+        if (!user || !ids.length) return names;
+        const profiles = await user.profiles(ids);
+        ids.forEach((id) => names.set(id, (profiles[id] && profiles[id].name) || ''));
+        return names;
+      },
+    };
+  };
+
+  /** ローカル確認用のストア（localStorage。使えない環境ではメモリのみ） */
+  const createLocalStore = () => {
+    const STORAGE_KEY = 'dolink:sidejob:posts';
+    const LOCAL_UID = 'local-user';
+    const listeners = new Set();
+    let memory = null;
+
+    const load = () => {
+      if (memory) return memory;
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if (saved && typeof saved === 'object') memory = saved;
+      } catch (error) { /* 読めなければサンプルから始める */ }
+      if (!memory) {
+        memory = {
+          sample: DEMO_ITEMS.map((item) => ({ ...item, status: 'published', updatedAt: item.postedAt })),
+        };
+      }
+      return memory;
+    };
+
+    const toMap = () => new Map(Object.entries(load())
+      .map(([authorId, items]) => [authorId, Array.isArray(items) ? items : []]));
+
+    const emit = () => {
+      const items = flattenPosts(toMap());
+      listeners.forEach((listener) => listener(items, true));
+    };
+
+    const write = async (authorId, update) => {
+      const data = load();
+      data[authorId] = update([...(Array.isArray(data[authorId]) ? data[authorId] : [])]);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (error) { /* メモリ上には残る */ }
+      emit();
+    };
+
+    return {
+      mode: 'local',
+      uid: LOCAL_UID,
+      isAdmin: true,
+      canPost: true,
+      subscribe: (next) => {
+        listeners.add(next);
+        setTimeout(() => next(flattenPosts(toMap()), true));
+        return () => listeners.delete(next);
+      },
+      save: (authorId, item) => write(authorId, (items) => upsertItem(items, item)),
+      remove: (authorId, id) => write(authorId, (items) => withoutItem(items, id)),
+      nameOf: async (ids) => new Map(ids.map((id) => [id, id === LOCAL_UID ? 'あなた（デモ）' : ''])),
+    };
+  };
+
+  /**
+   * 環境に合ったストアを用意する。
+   * claude.ai 上で db が使えない（サインアウト中など）場合は null。
+   */
+  const initStore = async () => {
+    const claude = window.claude;
+    if (!claude || typeof claude.use !== 'function') return createLocalStore();
+
+    const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if (!db) return null;
+
+    const [uid, isAdmin, canWrite] = user
+      ? await Promise.all([user.id(), user.canEdit(), user.can('data.write')])
+      : [null, false, null];
+
+    // can() が null のときは「不明」。掲載ボタンは出し、保存が拒否されたら案内する
+    return createDbStore(db, user, { uid, isAdmin, canPost: Boolean(uid) && canWrite !== false });
+  };
+
+
+  /* ===========================================================================
+     5. マッチング（スコア計算）
      ---------------------------------------------------------------------------
      入力された条件のみで満点を計算し、0〜100 に正規化する。
      条件が1つも入力されていない場合は null（マッチ度を表示しない）。
@@ -271,6 +489,10 @@
        hours  … 案件の稼働目安が「使える時間」以内か
        style  … 働き方が合うか（hybrid はどちらにも一致）
      ======================================================================== */
+  const isHoursHit = (job, criteria) =>
+    Boolean(criteria.hours) && job.hours !== null && job.hours <= criteria.hours;
+  const isStyleHit = (job, criteria) => (STYLE_MATCH[criteria.style] || []).includes(job.style);
+
   const calcScore = (job, criteria) => {
     let total = 0;
     let earned = 0;
@@ -282,12 +504,12 @@
 
     if (criteria.hours) {
       total += WEIGHT.hours;
-      if (job.hours <= criteria.hours) earned += WEIGHT.hours;
+      if (isHoursHit(job, criteria)) earned += WEIGHT.hours;
     }
 
     if (criteria.style) {
       total += WEIGHT.style;
-      if ((STYLE_MATCH[criteria.style] || []).includes(job.style)) earned += WEIGHT.style;
+      if (isStyleHit(job, criteria)) earned += WEIGHT.style;
     }
 
     return total ? Math.round((earned / total) * 100) : null;
@@ -295,15 +517,25 @@
 
 
   /* ===========================================================================
-     5. 検索・描画
+     6. 検索・描画
      ======================================================================== */
   const form = document.querySelector('.js-filter-form');
   const list = document.querySelector('.js-result-list');
   const template = document.getElementById('job-card-template');
   const sortSelect = document.querySelector('.js-sort');
   const emptyBox = document.querySelector('.js-empty');
+  const loadingBox = document.querySelector('.js-loading');
   const countTargets = document.querySelectorAll('.js-result-count, .js-result-count-apply');
   const activeCount = document.querySelector('.js-active-count');
+
+  /** ストアから届いた全件（下書き・締切済みを含む）と、一覧に出す公開分 */
+  let allItems = [];
+  let jobs = [];
+  let isLoaded = false;
+
+  /** 案件IDから1件を探す（掲載者IDも一致させる：他人が同じIDを書いても混ざらない） */
+  const findItem = (id, authorId) =>
+    allItems.find((item) => item.id === id && item.authorId === authorId);
 
   /** フォームの現在値を条件オブジェクトにする */
   const readCriteria = () => {
@@ -319,6 +551,9 @@
     };
   };
 
+  /** 条件なし（プレビュー用） */
+  const EMPTY_CRITERIA = { skills: [], hours: 0, style: '' };
+
   /** 初期値から変更されている条件の数（SPの開閉ボタンに表示） */
   const countActive = (criteria) =>
     [criteria.keyword, criteria.category, criteria.hours, criteria.style, criteria.matchedOnly]
@@ -331,23 +566,23 @@
     job.summary,
     job.description,
     job.period,
-    LABELS.category[job.category],
-    LABELS.skill[job.skill],
-    LABELS.style[job.style],
+    labelOf('category', job.category),
+    labelOf('skill', job.skill),
+    labelOf('style', job.style),
   ].join(' '));
 
   /** 絞り込み（ハード条件）＋スコア付与＋並び替え */
   const search = (criteria) => {
+    const newer = (a, b) => b.job.postedAt.localeCompare(a.job.postedAt);
     const sorters = {
-      match: (a, b) => (b.score ?? -1) - (a.score ?? -1) || b.job.postedAt.localeCompare(a.job.postedAt),
-      new: (a, b) => b.job.postedAt.localeCompare(a.job.postedAt),
+      match: (a, b) => (b.score ?? -1) - (a.score ?? -1) || newer(a, b),
+      new: newer,
       deadline: (a, b) => daysLeft(a.job) - daysLeft(b.job),
-      light: (a, b) => a.job.hours - b.job.hours || b.job.postedAt.localeCompare(a.job.postedAt),
+      light: (a, b) => (a.job.hours ?? Infinity) - (b.job.hours ?? Infinity) || newer(a, b),
     };
     const words = criteria.keyword ? criteria.keyword.split(/\s+/) : [];
 
-    return JOBS
-      .filter(isOpen)
+    return jobs
       .filter((job) => !criteria.category || job.category === criteria.category)
       .filter((job) => words.every((word) => searchableText(job).includes(word)))
       .map((job) => ({ job, score: calcScore(job, criteria) }))
@@ -362,26 +597,31 @@
       return;
     }
     const left = daysLeft(job);
-    element.textContent = left <= SOON_DAYS
+    element.textContent = left >= 0 && left <= SOON_DAYS
       ? `締切まであと${left}日`
       : `締切 ${formatDate(job.deadline)}`;
-    element.classList.toggle('is-soon', left <= SOON_DAYS);
+    element.classList.toggle('is-soon', left >= 0 && left <= SOON_DAYS);
   };
 
   /** 初回描画が済んだか（カードの表示演出の切り替えに使う） */
   let hasRendered = false;
 
-  /** 案件カードを1枚生成する */
-  const createCard = ({ job, score }, index, criteria) => {
+  /**
+   * 案件カードを1枚生成する。
+   * @param {{ preview?: boolean }} options preview: 投稿画面のプレビュー用（演出なし・操作なし）
+   */
+  const createCard = ({ job, score }, index, criteria, { preview = false } = {}) => {
     const card = template.content.firstElementChild.cloneNode(true);
     const slot = (name) => card.querySelector(`[data-slot="${name}"]`);
 
-    card.style.setProperty('--i', String(Math.min(index, STAGGER_MAX)));
-    // 初回はスクロール連動のフェードイン、条件変更後は短い入れ替え演出にする
-    // （条件を変えるたびに一覧が消えて見えるのを防ぐ）
-    card.classList.add(hasRendered ? 'is-fresh' : 'js-reveal');
+    if (!preview) {
+      card.style.setProperty('--i', String(Math.min(index, STAGGER_MAX)));
+      // 初回はスクロール連動のフェードイン、条件変更後は短い入れ替え演出にする
+      // （条件を変えるたびに一覧が消えて見えるのを防ぐ）
+      card.classList.add(hasRendered ? 'is-fresh' : 'js-reveal');
+    }
 
-    slot('category').textContent = LABELS.category[job.category];
+    slot('category').textContent = labelOf('category', job.category);
 
     if (score !== null) {
       const scoreBox = slot('score');
@@ -397,9 +637,9 @@
 
     // スキル / 稼働時間 / 働き方（条件と一致したタグは強調）
     const tags = [
-      [LABELS.skill[job.skill], criteria.skills.includes(job.skill)],
-      [formatHours(job.hours), Boolean(criteria.hours) && job.hours <= criteria.hours],
-      [LABELS.style[job.style], (STYLE_MATCH[criteria.style] || []).includes(job.style)],
+      [labelOf('skill', job.skill), criteria.skills.includes(job.skill)],
+      [formatHours(job.hours), isHoursHit(job, criteria)],
+      [labelOf('style', job.style), isStyleHit(job, criteria)],
     ];
     slot('meta').append(...tags.map(([label, isHit]) => {
       const tag = createElement('li', 'c-job-card__meta-item', label);
@@ -410,14 +650,22 @@
     renderDeadline(slot('deadline'), job);
 
     const more = slot('more');
-    more.dataset.jobId = job.id;
-    more.setAttribute('aria-label', `${job.title}の詳細を見る`);
+    if (preview) {
+      more.tabIndex = -1;
+    } else {
+      more.dataset.jobId = job.id;
+      more.dataset.authorId = job.authorId;
+      more.setAttribute('aria-label', `${job.title}の詳細を見る`);
+    }
 
     return card;
   };
 
   /** 検索して結果を描画する */
   const render = () => {
+    loadingBox.hidden = isLoaded;
+    if (!isLoaded) return;
+
     const criteria = readCriteria();
     const results = search(criteria);
 
@@ -438,9 +686,15 @@
     hasRendered = true;
   };
 
+  /** 読み込みに失敗・時間切れのときの表示 */
+  const renderLoadError = (message) => {
+    loadingBox.hidden = false;
+    loadingBox.textContent = message;
+  };
+
 
   /* ===========================================================================
-     6. 条件パネル（SP開閉）
+     7. 条件パネル（SP開閉）
      ======================================================================== */
   const toggleButton = document.querySelector('.js-filter-toggle');
   const applyButton = document.querySelector('.js-filter-apply');
@@ -489,24 +743,11 @@
 
 
   /* ===========================================================================
-     7. 詳細モーダル・応募フォーム
+     8. フォーム検証（応募フォーム・投稿フォーム共通）
+     ---------------------------------------------------------------------------
+     HTML の required / pattern / min / maxlength 等をそのまま使い、
+     ValidityState から日本語のメッセージを作って aria-describedby の *-error に出す。
      ======================================================================== */
-  const modal = document.querySelector('.js-modal');
-  const applyForm = modal.querySelector('.js-apply-form');
-  const doneBox = modal.querySelector('.js-modal-done');
-  const startDateInput = applyForm.querySelector('input[name="startDate"]');
-  let lastFocused = null;
-
-  /** 詳細の項目（dt / dd） */
-  const specItems = (job) => [
-    ['スキル', LABELS.skill[job.skill]],
-    ['稼働目安', formatHours(job.hours)],
-    ['働き方', LABELS.style[job.style]],
-    ['期間', job.period],
-    ['報酬', job.reward],
-    ['掲載日', formatDate(job.postedAt)],
-    ['締切', job.deadline ? formatDate(job.deadline) : '随時'],
-  ];
 
   /** 入力欄に対応するエラー表示要素（aria-describedby の中の *-error） */
   const errorElementOf = (field) => {
@@ -520,11 +761,16 @@
     const { validity } = field;
     if (validity.valueMissing) {
       if (field.type === 'checkbox') return 'チェックを入れてください';
-      if (field.tagName === 'SELECT') return '選択してください';
+      if (field.type === 'radio' || field.tagName === 'SELECT') return '選択してください';
       return '入力してください';
     }
-    if (validity.badInput && field.type === 'date') return '日付の形式で入力してください';
+    if (validity.badInput) {
+      if (field.type === 'date') return '日付の形式で入力してください';
+      if (field.type === 'number') return '数字で入力してください';
+    }
     if (validity.rangeUnderflow && field.type === 'date') return '今日以降の日付を選択してください';
+    if (validity.rangeUnderflow || validity.rangeOverflow) return `${field.min}〜${field.max}の範囲で入力してください`;
+    if (validity.stepMismatch) return '整数で入力してください';
     if (validity.typeMismatch && field.type === 'email') return 'メールアドレスの形式で入力してください';
     if (validity.patternMismatch) {
       if (field.name === 'employeeId') return '半角数字6桁で入力してください';
@@ -545,30 +791,107 @@
     return !message;
   };
 
-  const clearErrors = () => {
-    applyForm.querySelectorAll('[aria-invalid]').forEach((field) => field.removeAttribute('aria-invalid'));
-    applyForm.querySelectorAll('.c-form__error').forEach((element) => {
+  /** 複数項目を検証し、最初のエラー項目にフォーカスする。全て正しければ true */
+  const validateFields = (fields) => {
+    const results = [...fields].map(validateField);
+    const firstInvalid = [...fields].find((field) => field.getAttribute('aria-invalid') === 'true');
+    if (firstInvalid) firstInvalid.focus();
+    return !results.includes(false);
+  };
+
+  const clearErrors = (targetForm) => {
+    targetForm.querySelectorAll('[aria-invalid]').forEach((field) => field.removeAttribute('aria-invalid'));
+    targetForm.querySelectorAll('.c-form__error, .c-form__alert').forEach((element) => {
       element.textContent = '';
     });
   };
 
-  const openModal = (job) => {
-    lastFocused = document.activeElement;
+  /** フォームの入力欄（ボタンを除く） */
+  const fieldsOf = (targetForm) => targetForm.querySelectorAll('input, select, textarea');
 
-    modal.querySelector('.js-modal-category').textContent = LABELS.category[job.category];
-    modal.querySelector('.js-modal-dept').textContent = job.dept;
-    modal.querySelector('.js-modal-title').textContent = job.title;
-    modal.querySelector('.js-modal-desc').textContent = job.description;
-    modal.querySelector('.js-modal-spec').replaceChildren(...specItems(job).flatMap(([term, value]) => [
+  /** 一度エラーになった項目は、入力のたびに再検証して早くエラーを消す */
+  const bindLiveValidation = (targetForm) => {
+    // JS有効時は独自のエラー表示を使う（JS無効時はブラウザ標準の検証が働く）
+    targetForm.noValidate = true;
+    fieldsOf(targetForm).forEach((field) => {
+      field.addEventListener('blur', () => {
+        if ((field.value && field.type !== 'radio') || field.hasAttribute('aria-invalid')) validateField(field);
+      });
+      field.addEventListener('input', () => {
+        if (!field.hasAttribute('aria-invalid')) return;
+        // ラジオは同じグループ全体のエラーを消す
+        if (field.type === 'radio') {
+          targetForm.querySelectorAll(`input[name="${field.name}"]`).forEach(validateField);
+          return;
+        }
+        validateField(field);
+      });
+    });
+  };
+
+
+  /* ===========================================================================
+     9. 詳細モーダル・応募フォーム
+     ======================================================================== */
+  const modal = document.querySelector('.js-modal');
+  const applyForm = modal.querySelector('.js-apply-form');
+  const doneBox = modal.querySelector('.js-modal-done');
+  const ownerBox = modal.querySelector('.js-modal-owner');
+  const startDateInput = applyForm.querySelector('input[name="startDate"]');
+  let lastFocused = null;
+  let currentItem = null;
+
+  /** データストア（初期化後に設定） */
+  let store = null;
+
+  /** この閲覧者が編集できる案件か */
+  const canEditItem = (item) =>
+    Boolean(store && store.canPost && (store.isAdmin || item.authorId === store.uid));
+
+  /** 詳細の項目（dt / dd） */
+  const specItems = (job) => [
+    ['スキル', labelOf('skill', job.skill)],
+    ['稼働目安', formatHours(job.hours)],
+    ['働き方', labelOf('style', job.style)],
+    ['期間', job.period],
+    ['報酬', job.reward],
+    ['掲載日', formatDate(job.postedAt)],
+    ['締切', job.deadline ? formatDate(job.deadline) : '随時'],
+  ];
+
+  const renderSpec = (job, posterName) => {
+    const items = specItems(job);
+    if (posterName) items.push(['掲載者', posterName]);
+    modal.querySelector('.js-modal-spec').replaceChildren(...items.flatMap(([term, value]) => [
       createElement('dt', 'c-modal__spec-term', term),
       createElement('dd', 'c-modal__spec-desc', value),
     ]));
+  };
+
+  const openModal = (job) => {
+    lastFocused = document.activeElement;
+    currentItem = job;
+
+    modal.querySelector('.js-modal-category').textContent = labelOf('category', job.category);
+    modal.querySelector('.js-modal-dept').textContent = job.dept;
+    modal.querySelector('.js-modal-title').textContent = job.title;
+    modal.querySelector('.js-modal-desc').textContent = job.description;
+    renderSpec(job, '');
+    ownerBox.hidden = !canEditItem(job);
+
+    // 掲載者名は後から解決して差し込む（名前は保存せず、表示のたびに引く）
+    if (store) {
+      store.nameOf([job.authorId]).then((names) => {
+        const name = names.get(job.authorId);
+        if (name && currentItem === job && modal.open) renderSpec(job, name);
+      }).catch(() => { /* 名前が出せなくても表示は続行 */ });
+    }
 
     // フォームを初期化して表示
     applyForm.hidden = false;
     applyForm.dataset.jobId = job.id;
     applyForm.reset();
-    clearErrors();
+    clearErrors(applyForm);
     doneBox.hidden = true;
 
     modal.showModal();
@@ -576,14 +899,14 @@
   };
 
   const initModal = () => {
-    // 開始日は今日以降のみ選べるようにする（日付をまたいで開きっぱなしでも大きな問題はないため初期化時に1回）
+    // 開始日は今日以降のみ選べるようにする
     if (startDateInput) startDateInput.min = toISODate(today);
 
     // カードの「詳しく見る」（動的に生成されるためイベント委譲）
     list.addEventListener('click', (event) => {
       const button = event.target.closest('[data-job-id]');
       if (!button) return;
-      const job = JOBS.find((item) => item.id === button.dataset.jobId);
+      const job = findItem(button.dataset.jobId, button.dataset.authorId);
       if (job) openModal(job);
     });
 
@@ -598,31 +921,21 @@
 
     // 閉じたら元のボタンへフォーカスを戻す
     modal.addEventListener('close', () => {
-      if (lastFocused instanceof HTMLElement) lastFocused.focus();
+      if (lastFocused instanceof HTMLElement && lastFocused.isConnected) lastFocused.focus();
     });
 
-    // JS有効時は独自のエラー表示を使う（JS無効時はブラウザ標準の検証が働く）
-    applyForm.noValidate = true;
-    const fields = applyForm.querySelectorAll('input, select, textarea');
-
-    // 一度エラーになった項目は、入力のたびに再検証して早くエラーを消す
-    fields.forEach((field) => {
-      field.addEventListener('blur', () => {
-        if (field.value || field.hasAttribute('aria-invalid')) validateField(field);
-      });
-      field.addEventListener('input', () => {
-        if (field.hasAttribute('aria-invalid')) validateField(field);
-      });
+    // 掲載者本人・管理者：詳細からそのまま編集へ
+    modal.querySelector('.js-modal-edit').addEventListener('click', () => {
+      const item = currentItem;
+      modal.close();
+      if (item) openEditor(item);
     });
+
+    bindLiveValidation(applyForm);
 
     applyForm.addEventListener('submit', (event) => {
       event.preventDefault();
-
-      const results = [...fields].map(validateField);
-      if (results.includes(false)) {
-        applyForm.querySelector('[aria-invalid="true"]').focus();
-        return;
-      }
+      if (!validateFields(fieldsOf(applyForm))) return;
 
       // TODO: 送信先確定後、ここで fetch 等により送信する
       //   const body = new FormData(applyForm);
@@ -636,7 +949,316 @@
 
 
   /* ===========================================================================
-     8. フェードイン（IntersectionObserver）
+     10. 掲載管理（投稿・編集・削除）
+     ---------------------------------------------------------------------------
+     ・「新しく案件を掲載する」「編集する」で投稿モーダルを開く
+     ・入力に合わせてカードのプレビューを更新する
+     ・「公開する」は全項目を検証、「下書き保存」はタイトルのみ必須
+     ・削除は誤操作防止のため2回押しで実行する
+     ======================================================================== */
+  const editor = document.querySelector('.js-editor');
+  const editorForm = editor.querySelector('.js-editor-form');
+  const editorTitle = editor.querySelector('.js-editor-title');
+  const editorAlert = editor.querySelector('.js-editor-alert');
+  const editorPreview = editor.querySelector('.js-editor-preview');
+  const publishLabel = editor.querySelector('.js-editor-publish-label');
+  const submitButtons = editor.querySelectorAll('button[type="submit"]');
+
+  const postNewButton = document.querySelector('.js-post-new');
+  const postNote = document.querySelector('.js-post-note');
+  const postDemo = document.querySelector('.js-post-demo');
+  const postStatus = document.querySelector('.js-post-status');
+  const postMine = document.querySelector('.js-post-mine');
+  const postMineTitle = document.querySelector('.js-post-mine-title');
+  const postList = document.querySelector('.js-post-list');
+  const postEmpty = document.querySelector('.js-post-empty');
+
+  /** 編集中の案件（新規は null） */
+  let editing = null;
+  let editorOpener = null;
+  let statusTimer = 0;
+
+  /** 保存・削除の結果をしばらく表示する */
+  const showPostStatus = (message) => {
+    clearTimeout(statusTimer);
+    postStatus.textContent = message;
+    statusTimer = setTimeout(() => {
+      postStatus.textContent = '';
+    }, 5000);
+  };
+
+  /** ストアのエラーを、投稿者向けの文言にする */
+  const storeErrorMessage = (error) => {
+    const code = error && error.code;
+    if (code === 'limit') return `掲載できる案件は1人${MAX_ITEMS_PER_AUTHOR}件までです。不要な案件を削除してから保存してください。`;
+    if (code === 'quota_exceeded') return '保存できる容量の上限に達しました。不要な案件を削除してください。';
+    if (code === 'invalid_argument') return 'この案件を保存する権限がありません。掲載にはページの「Contributor」以上の権限が必要です。';
+    if (code === 'revoked' || code === 'not_granted') return 'ページへのアクセス権が変わったため保存できません。ページを開き直してください。';
+    return '保存できませんでした。時間をおいてもう一度お試しください。';
+  };
+
+  /** フォームの値から案件オブジェクトを作る */
+  const readEditor = (status) => {
+    const data = new FormData(editorForm);
+    const value = (name) => String(data.get(name) || '').trim();
+    const hours = Number(value('hours'));
+    const now = new Date();
+    return {
+      id: editing ? editing.id : createId(),
+      authorId: editing ? editing.authorId : store.uid,
+      title: value('title'),
+      dept: value('dept'),
+      category: value('category'),
+      skill: value('skill'),
+      hours: Number.isInteger(hours) && hours > 0 ? hours : null,
+      style: value('style'),
+      period: value('period'),
+      deadline: value('deadline') || null,
+      summary: value('summary'),
+      description: value('description'),
+      reward: value('reward'),
+      status,
+      // 掲載日は「初めて公開した日」。下書きのままなら空のまま
+      postedAt: (editing && editing.postedAt) || (status === 'published' ? toISODate(now) : ''),
+      updatedAt: now.toISOString(),
+    };
+  };
+
+  /** 文字数カウンターを更新する */
+  const updateCounters = () => {
+    editor.querySelectorAll('[data-count-for]').forEach((counter) => {
+      const field = document.getElementById(counter.dataset.countFor);
+      if (!field) return;
+      counter.textContent = `${field.value.length} / ${field.maxLength}`;
+      counter.classList.toggle('is-over', field.value.length > field.maxLength);
+    });
+  };
+
+  /** 入力中の内容でカードのプレビューを描く（未入力の項目は仮の文言で埋める） */
+  const updatePreview = () => {
+    const job = readEditor(editing ? editing.status : 'draft');
+    job.title = job.title || '案件タイトル';
+    job.dept = job.dept || '募集部署';
+    job.summary = job.summary || 'ひとこと紹介がここに表示されます。';
+    const card = createCard({ job, score: null }, 0, EMPTY_CRITERIA, { preview: true });
+    editorPreview.replaceChildren(card);
+  };
+
+  /** 投稿フォームに値を流し込む */
+  const fillEditor = (item) => {
+    editorForm.reset();
+    clearErrors(editorForm);
+    const set = (name, value) => {
+      const field = editorForm.elements.namedItem(name);
+      if (field) field.value = value ?? '';
+    };
+    if (item) {
+      ['title', 'dept', 'category', 'skill', 'period', 'deadline', 'summary', 'description', 'reward']
+        .forEach((name) => set(name, item[name]));
+      set('hours', item.hours ?? '');
+      editorForm.querySelectorAll('input[name="style"]').forEach((radio) => {
+        radio.checked = radio.value === item.style;
+      });
+    } else {
+      set('reward', '社内規程に準ずる');
+    }
+  };
+
+  /** 投稿モーダルを開く（item なしで新規） */
+  const openEditor = (item = null) => {
+    if (!store || !store.canPost) return;
+    editorOpener = document.activeElement;
+    editing = item;
+
+    editorTitle.textContent = item ? '案件を編集する' : '案件を掲載する';
+    publishLabel.textContent = item && item.status === 'published' ? '更新して公開する' : '公開する';
+
+    fillEditor(item);
+    // 締切は今日以降。ただし既存案件の締切が過去の場合は、そのまま保存できるよう下限を合わせる
+    const deadlineInput = editorForm.elements.namedItem('deadline');
+    const minDate = toISODate(today);
+    deadlineInput.min = item && item.deadline && item.deadline < minDate ? item.deadline : minDate;
+
+    updateCounters();
+    updatePreview();
+    editor.showModal();
+    editor.scrollTop = 0;
+    editorForm.elements.namedItem('title').focus();
+  };
+
+  const setSaving = (isSaving) => {
+    submitButtons.forEach((button) => {
+      button.disabled = isSaving;
+    });
+    editorForm.setAttribute('aria-busy', String(isSaving));
+  };
+
+  /** 掲載管理の一覧（自分の案件。管理者は全件）を描く */
+  let manageToken = 0;
+  const renderManage = async () => {
+    if (!store || !store.canPost || !isLoaded) {
+      postMine.hidden = true;
+      return;
+    }
+
+    const items = (store.isAdmin ? allItems : allItems.filter((item) => item.authorId === store.uid))
+      .slice()
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+
+    postMine.hidden = false;
+    postMineTitle.textContent = store.isAdmin && store.mode === 'db'
+      ? 'すべての掲載案件（管理者として表示）'
+      : 'あなたが掲載した案件';
+    postEmpty.hidden = items.length > 0;
+
+    // 管理者向けには掲載者名を出す（名前は保存せず、表示のたびに引く）
+    const token = ++manageToken;
+    let names = new Map();
+    if (store.isAdmin && items.length) {
+      try {
+        names = await store.nameOf([...new Set(items.map((item) => item.authorId))]);
+      } catch (error) { /* 名前なしで表示 */ }
+      if (token !== manageToken) return;   // 待っている間に新しいデータが来た
+    }
+
+    postList.replaceChildren(...items.map((item) => {
+      const row = createElement('li', 'c-post-row');
+      const body = createElement('div', 'c-post-row__body');
+      const meta = createElement('div', 'c-post-row__meta');
+
+      const [statusClass, statusText] = item.status !== 'published'
+        ? ['', '下書き']
+        : isExpired(item) ? ['c-status--closed', '締切済み'] : ['c-status--published', '公開中'];
+      meta.append(
+        createElement('span', `c-status ${statusClass}`.trim(), statusText),
+        createElement('span', 'c-post-row__date', `更新 ${formatDate(item.updatedAt)}`),
+      );
+      body.append(meta, createElement('p', 'c-post-row__title', item.title || '（タイトル未入力）'));
+
+      const name = names.get(item.authorId);
+      if (store.isAdmin && name) body.append(createElement('p', 'c-post-row__author', `掲載者：${name}`));
+
+      const actions = createElement('div', 'c-post-row__actions');
+      const edit = createElement('button', 'c-button c-button--more c-button--small', '編集する');
+      edit.type = 'button';
+      edit.dataset.action = 'edit';
+      edit.setAttribute('aria-label', `${item.title || 'タイトル未入力の案件'}を編集する`);
+      const editIcon = createElement('span', 'c-button__icon');
+      editIcon.setAttribute('aria-hidden', 'true');
+      edit.append(editIcon);
+
+      const remove = createElement('button', 'c-post-row__delete', '削除');
+      remove.type = 'button';
+      remove.dataset.action = 'delete';
+      remove.setAttribute('aria-label', `${item.title || 'タイトル未入力の案件'}を削除する`);
+
+      [edit, remove].forEach((button) => {
+        button.dataset.id = item.id;
+        button.dataset.authorId = item.authorId;
+      });
+      actions.append(remove, edit);
+      row.append(body, actions);
+      return row;
+    }));
+  };
+
+  /** 掲載ボタン・案内文を閲覧者の権限に合わせる */
+  const renderPostAccess = (message) => {
+    const canPost = Boolean(store && store.canPost);
+    postNewButton.hidden = !canPost;
+    postDemo.hidden = !(store && store.mode === 'local');
+    postNote.hidden = canPost;
+    if (!canPost) {
+      postNote.textContent = message
+        || (store && !store.uid
+          ? '掲載するには claude.ai にサインインしてください。'
+          : '掲載するには、このページの「Contributor」以上の権限が必要です。人事部門にお問い合わせください。');
+    }
+  };
+
+  /** 削除ボタン：1回目で確認表示、4秒以内の2回目で削除 */
+  const handleDelete = async (button, item) => {
+    if (!button.classList.contains('is-confirm')) {
+      button.classList.add('is-confirm');
+      button.textContent = 'もう一度押すと削除';
+      setTimeout(() => {
+        if (!button.isConnected) return;
+        button.classList.remove('is-confirm');
+        button.textContent = '削除';
+      }, 4000);
+      return;
+    }
+    button.disabled = true;
+    try {
+      await store.remove(item.authorId, item.id);
+      showPostStatus(`「${item.title || 'タイトル未入力の案件'}」を削除しました`);
+    } catch (error) {
+      button.disabled = false;
+      showPostStatus(storeErrorMessage(error));
+    }
+  };
+
+  const initEditor = () => {
+    bindLiveValidation(editorForm);
+
+    postNewButton.addEventListener('click', () => openEditor());
+
+    // 掲載管理の一覧（イベント委譲）
+    postList.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-action]');
+      if (!button) return;
+      const item = findItem(button.dataset.id, button.dataset.authorId);
+      if (!item) return;
+      if (button.dataset.action === 'edit') openEditor(item);
+      else handleDelete(button, item);
+    });
+
+    // 入力のたびにプレビューと文字数を更新
+    editorForm.addEventListener('input', () => {
+      updateCounters();
+      updatePreview();
+    });
+
+    // 入力途中で消えないよう、背景クリックでは閉じない（×・キャンセル・Escで閉じる）
+    const closeEditor = () => editor.close();
+    editor.querySelector('.js-editor-close').addEventListener('click', closeEditor);
+    editor.querySelector('.js-editor-cancel').addEventListener('click', closeEditor);
+    editor.addEventListener('close', () => {
+      editing = null;
+      if (editorOpener instanceof HTMLElement && editorOpener.isConnected) editorOpener.focus();
+    });
+
+    editorForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearErrors(editorForm);
+
+      const status = event.submitter && event.submitter.value === 'draft' ? 'draft' : 'published';
+      // 下書きはタイトルだけ必須。公開は全項目を検証する
+      const targets = status === 'draft'
+        ? [editorForm.elements.namedItem('title')]
+        : [...fieldsOf(editorForm)];
+      if (!validateFields(targets)) return;
+
+      const item = readEditor(status);
+      setSaving(true);
+      try {
+        await store.save(item.authorId, item);
+        editor.close();
+        showPostStatus(status === 'draft'
+          ? `「${item.title}」を下書き保存しました`
+          : `「${item.title}」を公開しました。一覧に反映されています`);
+      } catch (error) {
+        editorAlert.textContent = storeErrorMessage(error);
+        editorAlert.scrollIntoView({ behavior: scrollBehavior(), block: 'nearest' });
+      } finally {
+        setSaving(false);
+      }
+    });
+  };
+
+
+  /* ===========================================================================
+     11. フェードイン（IntersectionObserver）
      ---------------------------------------------------------------------------
      発火は1回のみ。非対応環境・モーション削減時は即座に表示する。
      ======================================================================== */
@@ -675,21 +1297,22 @@
 
 
   /* ===========================================================================
-     9. SP固定CTA
+     12. SP固定CTA
      ---------------------------------------------------------------------------
-     応募の流れを過ぎ、かつ条件パネルが画面外のときだけ表示する。
+     応募の流れを過ぎ、かつ条件パネル・掲載管理が画面外のときだけ表示する。
      ======================================================================== */
   const initSpCta = () => {
     const cta = document.querySelector('.js-sp-cta');
     const button = document.querySelector('.js-sp-cta-button');
     const flow = document.querySelector('.p-flow');
     const aside = document.querySelector('.p-jobs__aside');
-    if (!cta || !button || !flow || !aside || !('IntersectionObserver' in window)) return;
+    const post = document.querySelector('.p-post');
+    if (!cta || !button || !flow || !aside || !post || !('IntersectionObserver' in window)) return;
 
-    const visible = new Map([[flow, true], [aside, false]]);
+    const visible = new Map([[flow, true], [aside, false], [post, false]]);
 
     const update = () => {
-      const show = !visible.get(flow) && !visible.get(aside);
+      const show = [...visible.values()].every((isVisible) => !isVisible);
       cta.classList.toggle('is-visible', show);
       cta.setAttribute('aria-hidden', String(!show));
       button.tabIndex = show ? 0 : -1;
@@ -699,8 +1322,7 @@
       entries.forEach((entry) => visible.set(entry.target, entry.isIntersecting));
       update();
     });
-    observer.observe(flow);
-    observer.observe(aside);
+    visible.forEach((_, target) => observer.observe(target));
 
     button.addEventListener('click', () => {
       setPanelOpen(true);
@@ -711,7 +1333,7 @@
 
 
   /* ===========================================================================
-     10. パスワードゲート
+     13. パスワードゲート
      ---------------------------------------------------------------------------
      入力されたパスワードを SHA-256 でハッシュ化し、PASSWORD_HASH と比較する。
      ソースにパスワードそのものは書かないが、ブラウザ内だけの判定なので
@@ -880,18 +1502,65 @@
 
 
   /* ===========================================================================
-     11. 初期化
+     14. 初期化
      ---------------------------------------------------------------------------
      1つの機能の失敗でページ全体が止まらないよう、個別に例外を捕捉する。
+     画面は先に組み立て、データストアの準備ができたら案件を流し込む。
      ======================================================================== */
+
+  /** データストアを用意し、案件の購読を始める */
+  const connectStore = async () => {
+    try {
+      store = await initStore();
+    } catch (error) {
+      console.error('[Do.Link sidejob] データストアの初期化に失敗しました', error);
+      store = null;
+    }
+
+    if (!store) {
+      renderLoadError('案件データを読み込めませんでした。サインイン状態を確認して、ページを開き直してください。');
+      renderPostAccess('掲載機能を利用できません。サインイン状態を確認してください。');
+      return;
+    }
+
+    renderPostAccess();
+
+    // 一定時間データが届かなければ案内する（届いた時点で消す）
+    let isConfirmed = false;
+    const timer = setTimeout(() => {
+      if (isConfirmed) return;
+      if (isLoaded) showPostStatus('最新の状態を確認できていません。表示が古い可能性があります。');
+      else renderLoadError('案件データに接続できません。通信環境を確認して、しばらくお待ちください。');
+    }, LOAD_TIMEOUT);
+
+    store.subscribe((items, confirmed) => {
+      if (confirmed && !isConfirmed) {
+        isConfirmed = true;
+        clearTimeout(timer);
+      }
+      allItems = items;
+      jobs = items.filter(isPublic);
+      isLoaded = true;
+      loadingBox.textContent = '';
+      render();
+      renderManage();
+    }, (error) => {
+      clearTimeout(timer);
+      console.error('[Do.Link sidejob] 案件データの購読が停止しました', error);
+      if (!isLoaded) renderLoadError('案件データを読み込めませんでした。ページを開き直してください。');
+      else showPostStatus('案件データの更新が止まりました。最新の状態を見るにはページを開き直してください。');
+    });
+  };
+
   const boot = () => {
-    if (!form || !list || !template || !modal) return;
+    if (!form || !list || !template || !modal || !editor) return;
 
     [
       ['reveal', initReveal],
       ['filter', initFilter],
       ['render', render],
       ['modal', initModal],
+      ['editor', initEditor],
       ['sp-cta', initSpCta],
     ].forEach(([name, init]) => {
       try {
@@ -900,6 +1569,8 @@
         console.error(`[Do.Link sidejob] "${name}" の初期化に失敗しました`, error);
       }
     });
+
+    connectStore();
   };
 
   // パスワード認証が済んでからページ本体を初期化する

@@ -274,6 +274,9 @@
               </div>
             </div>
 
+            <!-- 読み込み中（データ取得後に hidden） -->
+            <p class="p-jobs__loading js-loading" role="status">案件を読み込んでいます…</p>
+
             <ul class="p-jobs__list js-result-list" aria-label="検索結果"></ul>
 
             <!-- 0件時 -->
@@ -287,6 +290,40 @@
             </div>
           </div>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         Post（掲載管理：募集部署向けの投稿・修正）
+         ==================================================================== -->
+    <section class="p-post" id="post" aria-labelledby="post-title">
+      <div class="l-container l-container--narrow">
+        <h2 class="c-heading js-reveal" id="post-title">
+          <span class="c-heading__en" aria-hidden="true">P<span class="c-heading__en-accent">O</span><span class="c-heading__en-light">ST</span></span>
+          <span class="c-heading__ja">案件を掲載する</span>
+        </h2>
+
+        <div class="p-post__intro js-reveal">
+          <p class="p-post__lead">
+            募集部署の方は、ここから副業案件を掲載・修正できます。<br>
+            入力しながらカードの見え方を確認でき、下書き保存もできます。
+          </p>
+          <!-- 掲載できない閲覧者には JS がボタンを隠し、理由を p-post__note に出す -->
+          <button class="c-button c-button--primary js-post-new" type="button" hidden>
+            新しく案件を掲載する
+            <span class="c-button__icon" aria-hidden="true"></span>
+          </button>
+          <p class="p-post__note js-post-note">掲載機能を準備しています…</p>
+          <p class="p-post__demo js-post-demo" hidden>デモモード：入力した案件はこのブラウザにだけ保存されます</p>
+          <p class="p-post__status js-post-status" role="status" aria-live="polite"></p>
+        </div>
+
+        <!-- 自分が掲載した案件（管理者は全件） -->
+        <div class="p-post__mine js-post-mine" hidden>
+          <h3 class="p-post__mine-title js-post-mine-title">あなたが掲載した案件</h3>
+          <ul class="p-post__list js-post-list"></ul>
+          <p class="p-post__empty js-post-empty" hidden>まだ掲載した案件はありません。</p>
         </div>
       </div>
     </section>
@@ -318,6 +355,14 @@
       </div>
       <p class="c-modal__desc js-modal-desc"></p>
       <dl class="c-modal__spec js-modal-spec"></dl>
+
+      <!-- 掲載者本人・管理者のみ表示 -->
+      <div class="c-modal__actions js-modal-owner" hidden>
+        <button class="c-button c-button--more c-button--small js-modal-edit" type="button">
+          この案件を編集する
+          <span class="c-button__icon" aria-hidden="true"></span>
+        </button>
+      </div>
 
       <!-- 応募フォーム -->
       <!-- TODO: 送信先（社内ワークフロー / Googleフォーム / API 等）確定後に action と method を設定する -->
@@ -402,6 +447,151 @@
           閉じる
           <span class="c-button__icon" aria-hidden="true"></span>
         </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ======================================================================
+       案件の投稿・編集モーダル（募集部署向け）
+       ----------------------------------------------------------------------
+       「公開する」は全項目を検証、「下書き保存」はタイトルのみ必須。
+       ====================================================================== -->
+  <dialog class="c-modal c-modal--wide js-editor" aria-labelledby="editor-title">
+    <div class="c-modal__inner">
+      <button class="c-modal__close js-editor-close" type="button" aria-label="閉じる"></button>
+
+      <div class="c-modal__head">
+        <span class="c-pill-tag">募集部署向け</span>
+        <h2 class="c-modal__title js-editor-title" id="editor-title">案件を掲載する</h2>
+      </div>
+
+      <div class="c-modal__editor">
+        <form class="c-form c-form--plain js-editor-form" action="#" method="post">
+
+          <div class="c-form__item">
+            <label class="c-form__label" for="ed-title">案件タイトル<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="ed-title" type="text" name="title" placeholder="例：採用サイトのバナー制作" required maxlength="40" data-counter aria-describedby="ed-title-error">
+            <div class="c-form__meta">
+              <p class="c-form__error" id="ed-title-error"></p>
+              <p class="c-form__count" data-count-for="ed-title" aria-hidden="true"></p>
+            </div>
+          </div>
+
+          <div class="c-form__row">
+            <div class="c-form__item">
+              <label class="c-form__label" for="ed-dept">募集部署<span class="c-form__req">必須</span></label>
+              <input class="c-field" id="ed-dept" type="text" name="dept" placeholder="例：グループ本部｜人事部門" autocomplete="organization" required maxlength="40" aria-describedby="ed-dept-error">
+              <p class="c-form__error" id="ed-dept-error"></p>
+            </div>
+            <div class="c-form__item">
+              <label class="c-form__label" for="ed-category">事業<span class="c-form__req">必須</span></label>
+              <div class="c-select">
+                <select class="c-field c-select__field" id="ed-category" name="category" required aria-describedby="ed-category-error">
+                  <option value="">選択してください</option>
+                  <option value="ict">インフォメーション&amp;コミュニケーション事業</option>
+                  <option value="car">カーライフ事業</option>
+                  <option value="golf">ゴルフ事業</option>
+                  <option value="wellness">ライフ&amp;ウェルネス事業</option>
+                  <option value="corporate">グループ本部・管理部門</option>
+                </select>
+              </div>
+              <p class="c-form__error" id="ed-category-error"></p>
+            </div>
+          </div>
+
+          <div class="c-form__row">
+            <div class="c-form__item">
+              <label class="c-form__label" for="ed-skill">求めるスキル<span class="c-form__req">必須</span></label>
+              <div class="c-select">
+                <select class="c-field c-select__field" id="ed-skill" name="skill" required aria-describedby="ed-skill-error">
+                  <option value="">選択してください</option>
+                  <option value="design">デザイン・制作</option>
+                  <option value="marketing">企画・マーケ</option>
+                  <option value="writing">文章・広報</option>
+                  <option value="it">IT・データ</option>
+                  <option value="event">接客・イベント</option>
+                  <option value="office">事務・バックオフィス</option>
+                </select>
+              </div>
+              <p class="c-form__error" id="ed-skill-error"></p>
+            </div>
+            <div class="c-form__item">
+              <label class="c-form__label" for="ed-hours">稼働の目安（週あたり・時間）<span class="c-form__req">必須</span></label>
+              <input class="c-field" id="ed-hours" type="number" name="hours" placeholder="例：3" inputmode="numeric" min="1" max="20" step="1" required aria-describedby="ed-hours-hint ed-hours-error">
+              <p class="c-form__hint" id="ed-hours-hint">1〜20の整数</p>
+              <p class="c-form__error" id="ed-hours-error"></p>
+            </div>
+          </div>
+
+          <fieldset class="c-form__item">
+            <legend class="c-form__label">働き方<span class="c-form__req">必須</span></legend>
+            <div class="c-chips">
+              <label class="c-chip"><input class="c-chip__input" type="radio" name="style" value="remote" required aria-describedby="ed-style-error"><span class="c-chip__label">リモート</span></label>
+              <label class="c-chip"><input class="c-chip__input" type="radio" name="style" value="onsite" aria-describedby="ed-style-error"><span class="c-chip__label">現地</span></label>
+              <label class="c-chip"><input class="c-chip__input" type="radio" name="style" value="hybrid" aria-describedby="ed-style-error"><span class="c-chip__label">リモート＋現地</span></label>
+            </div>
+            <p class="c-form__error" id="ed-style-error"></p>
+          </fieldset>
+
+          <div class="c-form__row">
+            <div class="c-form__item">
+              <label class="c-form__label" for="ed-period">期間<span class="c-form__req">必須</span></label>
+              <input class="c-field" id="ed-period" type="text" name="period" placeholder="例：3か月（延長あり）" required maxlength="30" aria-describedby="ed-period-error">
+              <p class="c-form__error" id="ed-period-error"></p>
+            </div>
+            <div class="c-form__item">
+              <label class="c-form__label" for="ed-deadline">応募締切<span class="c-form__opt">任意</span></label>
+              <!-- min は JS が今日の日付を設定する -->
+              <input class="c-field" id="ed-deadline" type="date" name="deadline" aria-describedby="ed-deadline-hint ed-deadline-error">
+              <p class="c-form__hint" id="ed-deadline-hint">空欄の場合は「随時募集」になります</p>
+              <p class="c-form__error" id="ed-deadline-error"></p>
+            </div>
+          </div>
+
+          <div class="c-form__item">
+            <label class="c-form__label" for="ed-summary">ひとこと紹介<span class="c-form__req">必須</span></label>
+            <textarea class="c-field c-field--textarea" id="ed-summary" name="summary" rows="2" placeholder="例：求人媒体やSNSに掲載する採用バナーを、月に数点ずつ制作していただきます。" required minlength="20" maxlength="80" data-counter aria-describedby="ed-summary-hint ed-summary-error"></textarea>
+            <div class="c-form__meta">
+              <p class="c-form__hint" id="ed-summary-hint">20〜80文字。一覧のカードに表示されます</p>
+              <p class="c-form__count" data-count-for="ed-summary" aria-hidden="true"></p>
+            </div>
+            <p class="c-form__error" id="ed-summary-error"></p>
+          </div>
+
+          <div class="c-form__item">
+            <label class="c-form__label" for="ed-description">仕事内容・求める人<span class="c-form__req">必須</span></label>
+            <textarea class="c-field c-field--textarea" id="ed-description" name="description" rows="5" placeholder="例：採用広報用のバナー制作をお願いします。構成案は人事部門で用意します。Illustrator などの使用経験がある方を想定しています。" required minlength="20" maxlength="600" data-counter aria-describedby="ed-description-hint ed-description-error"></textarea>
+            <div class="c-form__meta">
+              <p class="c-form__hint" id="ed-description-hint">20〜600文字。詳細画面に表示されます（改行可）</p>
+              <p class="c-form__count" data-count-for="ed-description" aria-hidden="true"></p>
+            </div>
+            <p class="c-form__error" id="ed-description-error"></p>
+          </div>
+
+          <div class="c-form__item">
+            <label class="c-form__label" for="ed-reward">報酬<span class="c-form__req">必須</span></label>
+            <input class="c-field" id="ed-reward" type="text" name="reward" placeholder="例：社内規程に準ずる" required maxlength="40" aria-describedby="ed-reward-error">
+            <p class="c-form__error" id="ed-reward-error"></p>
+          </div>
+
+          <p class="c-form__alert js-editor-alert" role="alert"></p>
+
+          <div class="c-form__actions">
+            <button class="c-button c-button--ghost js-editor-cancel" type="button">キャンセル</button>
+            <button class="c-button c-button--ghost js-editor-draft" type="submit" value="draft">下書き保存</button>
+            <button class="c-button c-button--primary js-editor-publish" type="submit" value="published">
+              <span class="js-editor-publish-label">公開する</span>
+              <span class="c-button__icon" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+
+        <!-- カードのプレビュー（操作不可） -->
+        <div class="c-preview" aria-label="一覧での見え方">
+          <p class="c-preview__label" aria-hidden="true">PREVIEW</p>
+          <ul class="p-jobs__list js-editor-preview" inert></ul>
+          <p class="c-preview__note">一覧ではこのように表示されます。</p>
+        </div>
       </div>
     </div>
   </dialog>

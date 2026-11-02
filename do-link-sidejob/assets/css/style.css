@@ -8,7 +8,7 @@
      1. Foundation  … 変数 / リセット / ベース
      2. Layout      … l-  （コンテナ）
      3. Component   … c-  （見出し / ボタン / フォーム部品 / カード / モーダル）
-     4. Project     … p-  （流れ / 案件検索 / パスワード画面）
+     4. Project     … p-  （流れ / 案件検索 / 掲載管理 / パスワード画面）
      5. Utility     … u-
      6. Motion      … フェードイン / reduced-motion
    色・余白・角丸・影・モーションの生の値は :root に集約し、
@@ -48,6 +48,8 @@
   --color-error-pale: #fdf0ee;
   --color-warning: #8a5a00;
   --color-warning-pale: #fff4d6;
+  --color-success: #1e7a4c;
+  --color-success-pale: #e6f5ec;
 
   /* ---------- Typography ---------- */
   /* 和文はMacでは丸ゴシック、Windowsでは游ゴシック等にフォールバックする */
@@ -309,6 +311,27 @@ a {
 
 .c-button--block {
   width: 100%;
+}
+
+/* 一覧の行内などで使う小さいボタン */
+.c-button--small {
+  min-height: 2.75rem;            /* タップ領域 44px を下回らない */
+  padding: 0.25rem 0.375rem 0.25rem 1.125rem;
+  gap: var(--space-xs);
+  font-size: var(--fs-caption);
+}
+
+.c-button--small .c-button__icon {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+/* 枠線だけの控えめなボタン（下書き保存・キャンセル等） */
+.c-button--ghost {
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--color-sky-pale);
+  border: 1px solid var(--color-rule);
+  box-shadow: none;
 }
 
 /* アイコンなしのボタン（reset など）は中央寄せ */
@@ -1133,6 +1156,29 @@ legend.c-filter__legend {
   color: var(--color-text-muted);
 }
 
+/* 詳細モーダル下部の操作（掲載者本人のみ「編集する」を表示） */
+.c-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 投稿・編集用：PCではフォームとプレビューを横に並べる */
+.c-modal--wide {
+  max-width: 1040px;
+}
+
+.c-modal__editor {
+  display: grid;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .c-modal__editor {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
 @media (min-width: 768px) {
   .c-modal {
     margin: auto;
@@ -1190,6 +1236,11 @@ legend.c-filter__legend {
   font-weight: 700;
 }
 
+/* fieldset 内の legend は grid の gap が効かないため下余白で調整 */
+legend.c-form__label {
+  margin-bottom: 0.375rem;
+}
+
 .c-form__req,
 .c-form__opt {
   padding: 0 0.5rem;
@@ -1223,9 +1274,226 @@ legend.c-filter__legend {
   display: none;
 }
 
+/* 区切り線のないフォーム（モーダル内で単独で使う場合） */
+.c-form--plain {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* ヒントと文字数カウンターを左右に並べる */
+.c-form__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.c-form__count {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-family: var(--font-en);
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+.c-form__count.is-over {
+  font-weight: 700;
+  color: var(--color-error);
+}
+
+/* フォーム全体のエラー（保存失敗など） */
+.c-form__alert {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--color-error);
+  background-color: var(--color-error-pale);
+  border-radius: var(--radius-sm);
+}
+
+.c-form__alert:empty {
+  display: none;
+}
+
+/* 送信ボタンの並び：SPは縦積み（主ボタンが上）、PCは横並び */
+.c-form__actions {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+@media (min-width: 600px) {
+  .c-form__actions {
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+  }
+
+  .c-form__actions .c-button--primary {
+    order: 3;
+  }
+}
+
 @media (min-width: 768px) {
   .c-form__row {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* ==========================================================================
+   3. Component / Status（掲載状態のラベル）
+   ========================================================================== */
+.c-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+}
+
+.c-status::before {
+  content: "";
+  width: 0.4375rem;
+  height: 0.4375rem;
+  background-color: currentColor;
+  border-radius: 50%;
+}
+
+.c-status--published {
+  color: var(--color-success);
+  background-color: var(--color-success-pale);
+  border-color: transparent;
+}
+
+.c-status--closed {
+  color: var(--color-warning);
+  background-color: var(--color-warning-pale);
+  border-color: transparent;
+}
+
+
+/* ==========================================================================
+   3. Component / Post row（掲載管理の1行）
+   ========================================================================== */
+.c-post-row {
+  display: grid;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
+}
+
+@media (hover: hover) {
+  .c-post-row:hover {
+    border-color: var(--color-sky-soft);
+    box-shadow: var(--shadow);
+  }
+}
+
+.c-post-row__body {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.c-post-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.c-post-row__date,
+.c-post-row__author {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+.c-post-row__title {
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  color: var(--color-text-strong);
+}
+
+.c-post-row__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+}
+
+/* 削除：誤操作を防ぐため目立たせず、2回押しで実行（JS） */
+.c-post-row__delete {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-full);
+  transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.c-post-row__delete.is-confirm {
+  color: var(--color-white);
+  background-color: var(--color-error);
+}
+
+@media (hover: hover) {
+  .c-post-row__delete:not(.is-confirm):hover {
+    color: var(--color-error);
+    background-color: var(--color-error-pale);
+  }
+}
+
+@media (min-width: 600px) {
+  .c-post-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+}
+
+
+/* ==========================================================================
+   3. Component / Preview（投稿画面のカードプレビュー）
+   ========================================================================== */
+.c-preview {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.c-preview__label {
+  font-family: var(--font-en);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+}
+
+.c-preview__note {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+/* プレビュー内のカードは操作させない（inert）ため、ホバー演出も止める */
+.c-preview .c-job-card__inner {
+  transform: none;
+  box-shadow: var(--shadow);
+}
+
+@media (min-width: 960px) {
+  .c-preview {
+    position: sticky;
+    top: 0;
   }
 }
 
@@ -1308,12 +1576,6 @@ legend.c-filter__legend {
   padding-block: var(--space-section);
 }
 
-/* SP：ページ末尾が固定CTAに隠れないよう下余白を足す */
-@media (max-width: 1023px) {
-  .p-jobs {
-    padding-bottom: calc(var(--space-section) + 5rem);
-  }
-}
 
 .p-jobs__lead {
   max-width: var(--measure);
@@ -1440,6 +1702,13 @@ legend.c-filter__legend {
   gap: var(--space-md);
 }
 
+.p-jobs__loading {
+  padding: var(--space-xl) var(--space-md);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
 .p-jobs__empty {
   display: grid;
   justify-items: center;
@@ -1492,6 +1761,108 @@ legend.c-filter__legend {
     min-height: 2.5rem;
     padding-inline: 0.875rem;
     font-size: 0.8125rem;
+  }
+}
+
+
+/* ==========================================================================
+   4. Project / Post（掲載管理：募集部署向け）
+   --------------------------------------------------------------------------
+   閲覧者向けの一覧と区別するため、淡い空色の面に置く。
+   ========================================================================== */
+.p-post {
+  padding-block: var(--space-section);
+  background-color: var(--color-sky-pale);
+}
+
+/* SP：ページ末尾が固定CTAに隠れないよう下余白を足す */
+@media (max-width: 1023px) {
+  .p-post {
+    padding-bottom: calc(var(--space-section) + 5rem);
+  }
+}
+
+.p-post__intro {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.p-post__lead {
+  max-width: var(--measure);
+  font-size: var(--fs-small);
+}
+
+.p-post__note {
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+/* 保存・削除の結果（数秒で消える） */
+.p-post__status {
+  padding: 0.25rem 0.875rem;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--color-success);
+  background-color: var(--color-success-pale);
+  border-radius: var(--radius-full);
+}
+
+.p-post__status:empty {
+  display: none;
+}
+
+.p-post__mine {
+  display: grid;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.p-post__mine-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-size: var(--fs-body);
+  color: var(--color-text-strong);
+}
+
+.p-post__mine-title::before {
+  content: "";
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--color-coral);
+  border-radius: 50%;
+}
+
+.p-post__list {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.p-post__empty {
+  padding: var(--space-md);
+  font-size: var(--fs-small);
+  color: var(--color-text-muted);
+  text-align: center;
+  border: 2px dotted var(--color-rule-dot);
+  border-radius: var(--radius);
+}
+
+/* ローカル確認用のデモモード表示 */
+.p-post__demo {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  color: var(--color-warning);
+}
+
+@media (min-width: 768px) {
+  .p-post__intro {
+    padding: var(--space-xl) var(--space-lg);
   }
 }
 
