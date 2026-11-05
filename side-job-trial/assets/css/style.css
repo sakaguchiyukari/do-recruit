@@ -1,0 +1,775 @@
+@charset "UTF-8";
+/* ==========================================================================
+   グループ内副業トライアル募集ページ
+   --------------------------------------------------------------------------
+   構成
+   1. Variables（:root）
+   2. Base / Reset
+   3. Layout（l-）
+   4. Component（c-）… 再利用パーツ
+   5. Project（sj-）… このページ固有パーツ
+   6. Utility（u-）
+   7. Motion（フェードイン）
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Variables
+   ========================================================================== */
+:root {
+  /* Color：コーポレートサイトのトーンに合わせたネイビー × ブルー */
+  --color-navy: #0b2545;
+  --color-blue: #1b6ca8;
+  --color-blue-bright: #4a90d9;         /* 元記事の hsl(210,75%,60%) 相当 */
+  --color-blue-pale: #edf4fa;
+  --color-accent: #e8743b;              /* CTA専用色：画面内で一番目立たせる */
+  --color-accent-dark: #cf5f28;
+
+  --color-white: #ffffff;
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f7fa;
+
+  --color-text: #1a1f24;
+  --color-text-strong: #0b2545;
+  --color-text-muted: #5b6570;
+  --color-rule: #dfe5eb;
+
+  /* Font */
+  --font-base: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  --font-en: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+
+  /* Size（clamp で SP → PC を自然に可変） */
+  --fz-xs: 0.75rem;
+  --fz-sm: 0.875rem;
+  --fz-base: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+  --fz-lg: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --fz-xl: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+  --fz-hero: clamp(1.875rem, 1.4rem + 2.2vw, 3rem);
+
+  /* Space */
+  --space-2xs: 0.5rem;
+  --space-xs: clamp(0.75rem, 0.7rem + 0.25vw, 1rem);
+  --space-sm: clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
+  --space-md: clamp(1.5rem, 1.2rem + 1.2vw, 2.5rem);
+  --space-lg: clamp(2.5rem, 2rem + 2vw, 4rem);
+  --space-section: clamp(3.5rem, 2.6rem + 4vw, 6.5rem);
+  --gutter: clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
+
+  /* Width */
+  --container: 1080px;
+  --container-narrow: 820px;
+
+  /* Shape / Shadow */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 999px;
+  --shadow-sm: 0 1px 2px rgba(11, 37, 69, 0.06), 0 2px 8px rgba(11, 37, 69, 0.04);
+  --shadow-md: 0 4px 12px rgba(11, 37, 69, 0.06), 0 16px 32px rgba(11, 37, 69, 0.08);
+  --shadow-cta: 0 8px 20px rgba(232, 116, 59, 0.32);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 0.35s;
+}
+
+/* ==========================================================================
+   2. Base / Reset
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+h1, h2, h3, p, ul, ol, dl, dd, figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+body {
+  font-family: var(--font-base);
+  font-size: var(--fz-base);
+  line-height: 1.8;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ページ内リンクのスムーススクロール */
+html {
+  scroll-behavior: smooth;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-blue-bright);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   3. Layout
+   ========================================================================== */
+.l-container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.l-container--narrow {
+  max-width: calc(var(--container-narrow) + var(--gutter) * 2);
+}
+
+/* ==========================================================================
+   4. Component
+   ========================================================================== */
+
+/* ---------- Button ---------- */
+.c-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  min-height: 52px;
+  padding: 0.85em 1.75em;
+  border: 0;
+  border-radius: var(--radius-full);
+  font-size: var(--fz-base);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease),
+    background-color var(--duration) var(--ease);
+}
+
+.c-button__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75em;
+  height: 1.75em;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  font-size: 0.85em;
+  transition: transform var(--duration) var(--ease);
+}
+
+.c-button:hover {
+  transform: translateY(-2px);
+}
+
+.c-button:hover .c-button__icon {
+  transform: translateX(3px);
+}
+
+.c-button--primary {
+  color: var(--color-white);
+  background-color: var(--color-navy);
+  box-shadow: var(--shadow-sm);
+}
+
+.c-button--primary:hover {
+  background-color: var(--color-blue);
+  box-shadow: var(--shadow-md);
+}
+
+/* 下向き矢印はホバーで下に動かす */
+.c-button--primary:hover .c-button__icon {
+  transform: translateY(3px);
+}
+
+.c-button--accent {
+  color: var(--color-white);
+  background-color: var(--color-accent);
+  box-shadow: var(--shadow-cta);
+}
+
+.c-button--accent:hover {
+  background-color: var(--color-accent-dark);
+  box-shadow: 0 12px 28px rgba(232, 116, 59, 0.4);
+}
+
+.c-button--lg {
+  min-height: 60px;
+  padding-inline: 2.5em;
+  font-size: var(--fz-lg);
+}
+
+/* ---------- Card ---------- */
+.c-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Section Head ---------- */
+.c-section-head {
+  margin-bottom: var(--space-md);
+}
+
+.c-section-head__en {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  margin-bottom: 0.4em;
+  font-family: var(--font-en);
+  font-size: var(--fz-xs);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--color-blue-bright);
+}
+
+/* 英字ラベル前の短いライン */
+.c-section-head__en::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+}
+
+.c-section-head__title {
+  font-size: var(--fz-xl);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: var(--color-text-strong);
+}
+
+/* ---------- Tag ---------- */
+.c-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.c-tag {
+  padding: 0.2em 0.9em;
+  border-radius: var(--radius-full);
+  background-color: var(--color-blue-pale);
+  font-size: var(--fz-sm);
+  font-weight: 500;
+  color: var(--color-blue);
+}
+
+/* ==========================================================================
+   5. Project
+   ========================================================================== */
+
+/* ---------- Section 共通 ---------- */
+.sj-section {
+  padding-block: var(--space-section);
+}
+
+.sj-section--subtle {
+  background-color: var(--color-bg-subtle);
+}
+
+/* ---------- Hero ---------- */
+.sj-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(3rem, 2rem + 5vw, 6rem);
+  background:
+    radial-gradient(circle at 85% 20%, rgba(74, 144, 217, 0.16), transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(232, 116, 59, 0.08), transparent 40%),
+    var(--color-bg);
+}
+
+.sj-hero__inner {
+  display: grid;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.sj-hero__eyebrow {
+  display: inline-block;
+  margin-bottom: var(--space-xs);
+  padding: 0.35em 1em;
+  border-radius: var(--radius-full);
+  background-color: var(--color-blue-pale);
+  font-family: var(--font-en);
+  font-size: var(--fz-xs);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--color-blue);
+}
+
+.sj-hero__title {
+  font-size: var(--fz-hero);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.03em;
+  color: var(--color-text-strong);
+}
+
+/* 強調部分にマーカー風の下線 */
+.sj-hero__title-accent {
+  background: linear-gradient(transparent 68%, rgba(74, 144, 217, 0.25) 68%);
+}
+
+.sj-hero__lead {
+  margin-top: var(--space-sm);
+  font-size: var(--fz-lg);
+  color: var(--color-text-muted);
+}
+
+.sj-hero__cta {
+  margin-top: var(--space-md);
+}
+
+.sj-hero__visual {
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+/* ---------- Intro ---------- */
+.sj-intro__text {
+  margin-bottom: var(--space-md);
+}
+
+/* メリットカード：SP 1列 → タブレット以上 3列 */
+.sj-merit {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.sj-merit__item {
+  position: relative;
+  padding: var(--space-sm);
+  transition:
+    transform var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease),
+    border-color var(--duration) var(--ease);
+}
+
+.sj-merit__item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(74, 144, 217, 0.5);
+  box-shadow: var(--shadow-md);
+}
+
+.sj-merit__num {
+  display: block;
+  margin-bottom: 0.25em;
+  font-family: var(--font-en);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-blue-bright);
+}
+
+.sj-merit__title {
+  margin-bottom: 0.35em;
+  font-size: var(--fz-lg);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-text-strong);
+}
+
+.sj-merit__text {
+  font-size: var(--fz-sm);
+  color: var(--color-text-muted);
+}
+
+/* こんな方におすすめ（吹き出し） */
+.sj-voice {
+  margin-top: var(--space-lg);
+  text-align: center;
+}
+
+.sj-voice__label {
+  margin-bottom: var(--space-xs);
+  font-size: var(--fz-sm);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.sj-voice__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.sj-voice__bubble {
+  position: relative;
+  padding: 0.9em 1.5em;
+  border-radius: var(--radius-md);
+  background-color: var(--color-blue-pale);
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--color-navy);
+}
+
+.sj-voice__bubble::before {
+  content: "「";
+}
+
+.sj-voice__bubble::after {
+  content: "」";
+}
+
+/* ---------- Details：要点ハイライト ---------- */
+.sj-highlight {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.sj-highlight__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  background-color: var(--color-navy);
+  color: var(--color-white);
+}
+
+.sj-highlight__label {
+  font-size: var(--fz-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+.sj-highlight__value {
+  font-family: var(--font-en);
+  font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sj-highlight__value small {
+  margin-left: 0.15em;
+  font-family: var(--font-base);
+  font-size: 0.45em;
+}
+
+.sj-highlight__value--text {
+  font-family: var(--font-base);
+  font-size: var(--fz-lg);
+  line-height: 1.5;
+}
+
+.sj-highlight__note {
+  margin-top: auto;
+  font-size: var(--fz-xs);
+  opacity: 0.7;
+}
+
+/* ---------- Details：募集要項（定義リスト） ---------- */
+.sj-spec {
+  overflow: hidden;
+}
+
+.sj-spec__row {
+  display: grid;
+  gap: 0.25em;
+  padding: var(--space-sm);
+  transition: background-color var(--duration) var(--ease);
+}
+
+.sj-spec__row + .sj-spec__row {
+  border-top: 1px solid var(--color-rule);
+}
+
+.sj-spec__row:hover {
+  background-color: #fafcfe;
+}
+
+.sj-spec__term {
+  font-size: var(--fz-sm);
+  font-weight: 700;
+  color: var(--color-blue);
+}
+
+.sj-spec__desc {
+  line-height: 1.75;
+}
+
+.sj-spec__sub {
+  display: block;
+  margin-top: 0.5em;
+  font-size: var(--fz-xs);
+  color: var(--color-text-muted);
+}
+
+.sj-spec__strong {
+  font-size: var(--fz-lg);
+  color: var(--color-text-strong);
+}
+
+/* ---------- Details：補足 ---------- */
+.sj-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6em;
+  margin-top: var(--space-sm);
+  font-size: var(--fz-sm);
+  color: var(--color-text-muted);
+}
+
+.sj-note__icon {
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 1.4em;
+  height: 1.4em;
+  margin-top: 0.2em;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-family: Georgia, serif;
+  font-size: 0.85em;
+  font-style: italic;
+  line-height: 1;
+}
+
+/* ---------- Entry ---------- */
+.sj-entry__card {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-navy) 0%, #15457a 100%);
+  color: var(--color-white);
+  text-align: center;
+}
+
+/* 背景の円形装飾 */
+.sj-entry__card::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 144, 217, 0.35), transparent 70%);
+  pointer-events: none;
+}
+
+.sj-entry__en {
+  font-family: var(--font-en);
+  font-size: var(--fz-xs);
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: #9cc3ec;
+}
+
+.sj-entry__title {
+  margin-top: 0.25em;
+  font-size: var(--fz-xl);
+  line-height: 1.4;
+}
+
+.sj-step {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-xs);
+  margin-block: var(--space-md);
+}
+
+.sj-step__item {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  padding: 0.9em 1.5em;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.sj-step__num {
+  font-family: var(--font-en);
+  font-size: var(--fz-xs);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #9cc3ec;
+}
+
+.sj-step__text {
+  font-weight: 700;
+}
+
+.sj-entry__button {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+}
+
+.sj-entry__caption {
+  margin-top: 0.75em;
+  font-size: var(--fz-xs);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ---------- SP固定CTA ---------- */
+.sj-sp-cta {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 100;
+  padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 -4px 16px rgba(11, 37, 69, 0.08);
+  transform: translateY(110%);
+  transition: transform var(--duration) var(--ease);
+}
+
+/* JSで付与：ヒーロー通過後に表示、Entry表示中は隠す */
+.sj-sp-cta.is-visible {
+  transform: translateY(0);
+}
+
+.sj-sp-cta__button {
+  width: 100%;
+}
+
+/* ==========================================================================
+   6. Utility
+   ========================================================================== */
+.u-pc-only {
+  display: none;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* Tablet 〜 */
+@media (min-width: 640px) {
+  .u-sp-only {
+    display: none;
+  }
+
+  .sj-merit {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sj-spec__row {
+    grid-template-columns: 9.5em 1fr;
+    gap: var(--space-sm);
+    align-items: baseline;
+  }
+
+  .sj-step__item + .sj-step__item {
+    position: relative;
+  }
+
+  /* STEP間の矢印 */
+  .sj-step__item + .sj-step__item::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: calc(var(--space-xs) * -0.5 - 4px);
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid #9cc3ec;
+    border-right: 2px solid #9cc3ec;
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  /* タブレット以上は固定CTAを出さない */
+  .sj-sp-cta {
+    display: none;
+  }
+}
+
+/* PC 〜 */
+@media (min-width: 960px) {
+  .u-pc-only {
+    display: inline;
+  }
+
+  .sj-hero__inner {
+    grid-template-columns: 1.15fr 1fr;
+  }
+
+  .sj-hero__visual {
+    max-width: none;
+  }
+}
+
+/* SP：ヒーロー画像は小さめにして縦長化を防ぐ */
+@media (max-width: 639px) {
+  .sj-hero__visual {
+    max-width: 240px;
+    order: -1;
+  }
+
+  .sj-highlight {
+    gap: 0.6rem;
+  }
+
+  .sj-merit__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.9rem;
+  }
+
+  .sj-merit__num {
+    grid-row: span 2;
+    margin-top: 0.1em;
+  }
+
+  /* 固定CTAに隠れないよう下部に余白 */
+  body {
+    padding-bottom: 88px;
+  }
+}
+
+/* ==========================================================================
+   7. Motion：IntersectionObserver によるフェードイン
+   ========================================================================== */
+/* JS有効時のみ初期非表示（JS無効でも内容は読める） */
+.is-js .js-fade {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 0.8s var(--ease);
+}
+
+.is-js .js-fade.is-inview {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .is-js .js-fade {
+    opacity: 1;
+    transform: none;
+  }
+}
