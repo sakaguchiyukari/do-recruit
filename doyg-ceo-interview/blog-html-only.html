@@ -1,0 +1,101 @@
+<!-- 教えて！CEO 第一弾（HTMLのみ版） -->
+<style>
+.ceo{--m:#0a5cab;--a:#ff8a3d;--s:#f2f7fc;max-width:720px;margin:auto;padding:clamp(16px,4vw,32px);color:#24303c;line-height:1.9}
+.ceo *{box-sizing:border-box;margin:0}
+.ceo p+p{margin-top:1em}
+.ceo__hero{padding:clamp(24px,6vw,48px);border-radius:28px;background:linear-gradient(135deg,var(--m),#4a9be8);color:#fff}
+.ceo__tag{display:inline-block;padding:2px 14px;border-radius:99px;background:var(--a);font-size:.8em;font-weight:700}
+.ceo__ttl{margin:14px 0 20px;font-size:clamp(1.5em,5vw,2.1em);line-height:1.4}
+.ceo__ch{margin:clamp(40px,8vw,64px) 0 16px;color:var(--m);font-size:1.3em}
+.ceo__ch span{display:block;color:var(--a);font-size:.55em;letter-spacing:.2em}
+.ceo__qa{margin-top:16px;padding:clamp(20px,4vw,28px);border-radius:20px;background:#fff;box-shadow:0 4px 20px #0a5cab17;transition:.3s}
+.ceo__qa:hover,.ceo__kw li:hover{transform:translateY(-4px);box-shadow:0 14px 32px #0a5cab29}
+.ceo__q{font-size:1.05em;line-height:1.6}
+.ceo__q b{margin-right:8px;color:var(--a)}
+.ceo__a{position:relative;padding-left:54px;min-height:42px;margin-top:14px}
+.ceo__a::before{content:"CEO";position:absolute;left:0;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--m);color:#fff;font-size:.65em;font-weight:700}
+.ceo__memo{margin-top:14px;padding:10px 16px;border-radius:12px;background:var(--s);font-size:.9em}
+.ceo__memo::before{content:"✍ 広報室メモ　";color:var(--m);font-weight:700}
+.ceo mark{background:linear-gradient(transparent 60%,#ffd5b5 0)}
+.ceo__qa--last{background:var(--s);outline:2px solid var(--m)}
+.ceo__kw{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;padding:0;list-style:none}
+.ceo__kw li{padding:22px;border-radius:20px;background:var(--s);transition:.3s}
+.ceo__kw b{display:block;color:var(--m);font-size:1.15em}
+.ceo__end{margin-top:clamp(40px,8vw,64px);padding:clamp(24px,5vw,40px);border-radius:24px;border:2px dashed #0a5cab55}
+/* フェードイン */
+@keyframes ceoFade{from{opacity:0;transform:translateY(20px)}}
+.ceo__qa,.ceo__kw li{animation:ceoFade .8s both}
+@supports (animation-timeline:view()){.ceo__qa,.ceo__kw li{animation-timeline:view();animation-range:entry 0 entry 60%}}
+@media (prefers-reduced-motion:reduce){.ceo *{animation:none!important;transition:none!important}}
+</style>
+<div class="ceo">
+<!-- Hero -->
+<header class="ceo__hero">
+<span class="ceo__tag">教えて！CEO 第1弾</span>
+<h1 class="ceo__ttl">仕事・新人時代・<br>若手へのメッセージ</h1>
+<p>「CEOって普段何を考えているの？」10の質問で素顔に迫ります。</p>
+</header>
+<!-- Chapter 01 -->
+<h2 class="ceo__ch"><span>CHAPTER 01</span>オフの素顔</h2>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q01</b>休日は何をして過ごしていますか？</h3>
+<p class="ceo__a">愛犬の散歩や友人とのキャンプなど、自然の中で過ごすことが多いです。リラックスすると、ふとアイデアが浮かびます。</p>
+</div>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q02</b>昔なりたかった職業は？</h3>
+<p class="ceo__a">スポーツ少年で、サッカー選手や野球選手に憧れていました。やがて人に喜んでもらえる仕事がしたいと広告や経営に興味を持ちました。</p>
+</div>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q03</b>無人島に一つだけ持っていくなら？</h3>
+<p class="ceo__a">丈夫なナイフです。工夫次第で何にでも使えます。まずは身の回りのもので工夫します。</p>
+<p class="ceo__memo">「あるもの」から考える姿勢は、仕事にも通じそうです。</p>
+</div>
+<!-- Chapter 02 -->
+<h2 class="ceo__ch"><span>CHAPTER 02</span>仕事の流儀</h2>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q04</b>仕事で一番大切にしていることは？</h3>
+<p class="ceo__a">一番の土台は<mark>「誠実さ」</mark>です。信頼がなければ、どんな戦略も前に進みません。約束を守り、声に耳を傾け、判断を先延ばしにしないことを大切にしています。</p>
+</div>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q05</b>仕事のモチベーションは？</h3>
+<p class="ceo__a">仕事が誰かの役に立ち、成果を仲間と喜べることです。皆さんが力を発揮できる会社にしていくことが、私の原動力です。</p>
+<p class="ceo__memo">主語が「仲間」「皆さん」なのがポイント。</p>
+</div>
+<!-- Chapter 03 -->
+<h2 class="ceo__ch"><span>CHAPTER 03</span>新人時代</h2>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q06</b>若手の頃は、どんな社員でしたか？</h3>
+<p class="ceo__a">好奇心旺盛で負けず嫌い。何にでも手を挙げていましたね。失敗も多かったけれど、飛び込んだからこそ学べました。</p>
+</div>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q07</b>今につながっている新人時代の経験は？</h3>
+<p class="ceo__a">20代の広告代理店時代、スポーツ大会の立ち上げを任せていただいた経験です。現場で感じたことは、今も経営判断の土台になっています。</p>
+</div>
+<!-- Chapter 04 -->
+<h2 class="ceo__ch"><span>CHAPTER 04</span>若手へ</h2>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q08</b>若手社員にまず期待していることは？</h3>
+<p class="ceo__a">失敗を恐れず挑戦し、分からないことを放置しないことです。質問する、やってみる、早めに相談する。その積み重ねが成長です。</p>
+</div>
+<div class="ceo__qa">
+<h3 class="ceo__q"><b>Q09</b>まず身につけておくべき力は？</h3>
+<p class="ceo__a">相手の話をよく聞き、自分で考えて動く力です。<mark>「何をするか」だけでなく「何のためにするのか」</mark>が分かると、仕事が変わります。</p>
+</div>
+<div class="ceo__qa ceo__qa--last">
+<h3 class="ceo__q"><b>Q10</b>若手社員へのメッセージを！</h3>
+<p class="ceo__a">皆さんの新鮮な視点が、これからのグループをつくります。「自分にはまだ早い」と可能性を狭めず、やってみたいことはぜひ声に出してください。私たちも全力で応援します。</p>
+</div>
+<!-- Keywords -->
+<h2 class="ceo__ch"><span>SUMMARY</span>今回の3つのキーワード</h2>
+<ul class="ceo__kw">
+<li><b>01 誠実さ</b>信頼こそ、すべての仕事の土台。</li>
+<li><b>02 まずはやってみる</b>挑戦した分だけ、学びが増える。</li>
+<li><b>03 何のために</b>目的を考えると、仕事が変わる。</li>
+</ul>
+<!-- 編集後記 -->
+<footer class="ceo__end">
+<h2 class="ceo__ch" style="margin:0">編集後記</h2>
+<p>CEOの言葉は、いつも「仲間」や「現場」に向いていました。「まだ早い」と感じたときこそ、今回の言葉を思い出してみてください。</p>
+<p>次回もお楽しみに！CEOへの質問も広報室で募集中です。</p>
+</footer>
+</div>
