@@ -1,0 +1,75 @@
+<!-- =====================================================
+     STEP1 環境テスト（リファラル採用マッチングシステム）
+     貼り付け場所：ブログ記事のHTML入力欄（テスト用の下書き記事）
+     役割：このブログで「CSS」「JavaScript」「onclick」が使えるかを確認する
+     ・結果は画面上に OK / NG で表示されます
+     ・外部参照なし、ID・クラスはすべて yzw- で始まる名前
+     ===================================================== -->
+<div id="yonezawa-test" style="border:2px solid #1F3A5F;border-radius:12px;padding:16px;margin:16px 0;background:#FFFFFF;color:#1F3A5F;font-size:15px;line-height:1.8;">
+
+  <strong>マッチングシステム 環境テスト</strong>
+  <br>
+
+  <!-- テスト1：<style> タグのCSSが効くか -->
+  1. CSS（styleタグ）：
+  <span class="yzw-css-ng" style="color:#C62828;font-weight:bold;">NG</span>
+  <span class="yzw-css-ok" style="display:none;">OK</span>
+  <br>
+
+  <!-- テスト2：<script> タグが実行されるか -->
+  2. JavaScript（scriptタグ）：
+  <span id="yzw-js-status" style="color:#C62828;font-weight:bold;">NG</span>
+  <br>
+
+  <!-- テスト3：onclick 属性が使えるか（押して確認） -->
+  3. onclick属性：
+  <button type="button" id="yzw-onclick-btn" onclick="this.innerHTML='OK';this.style.color='#2E7D32';" style="padding:4px 12px;border:1px solid #1F3A5F;border-radius:6px;background:#FFFFFF;color:#1F3A5F;cursor:pointer;">押してください</button>
+  <br>
+
+  <!-- テスト4：script から登録したクリックイベントが動くか（押して確認） -->
+  4. イベント登録：
+  <button type="button" id="yzw-listener-btn" style="padding:4px 12px;border:1px solid #1F3A5F;border-radius:6px;background:#FFFFFF;color:#1F3A5F;cursor:pointer;">押してください</button>
+  <br>
+
+  <!-- テスト5：ブラウザ保存（localStorage）が使えるか -->
+  5. ブラウザ保存：
+  <span id="yzw-storage-status" style="color:#C62828;font-weight:bold;">NG</span>
+
+</div>
+
+<style>
+  /* テスト1用：このCSSが効けば NG が消えて OK が表示される */
+  div#yonezawa-test span.yzw-css-ng { display: none !important; }
+  div#yonezawa-test span.yzw-css-ok { display: inline !important; color: #2E7D32 !important; font-weight: bold !important; }
+</style>
+
+<script>
+  /* テスト2・4・5用：グローバル変数を作らないよう即時関数で実行 */
+  (function () {
+    const jsStatus = document.getElementById('yzw-js-status');
+    if (jsStatus) {
+      jsStatus.textContent = 'OK';
+      jsStatus.style.color = '#2E7D32';
+    }
+
+    const listenerBtn = document.getElementById('yzw-listener-btn');
+    if (listenerBtn) {
+      listenerBtn.addEventListener('click', function () {
+        listenerBtn.textContent = 'OK';
+        listenerBtn.style.color = '#2E7D32';
+      });
+    }
+
+    const storageStatus = document.getElementById('yzw-storage-status');
+    try {
+      window.localStorage.setItem('yzw-test', '1');
+      window.localStorage.removeItem('yzw-test');
+      if (storageStatus) {
+        storageStatus.textContent = 'OK';
+        storageStatus.style.color = '#2E7D32';
+      }
+    } catch (e) {
+      if (storageStatus) { storageStatus.textContent = 'NG（保存不可）'; }
+    }
+  })();
+</script>
