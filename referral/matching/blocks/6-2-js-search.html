@@ -1,0 +1,105 @@
+<!-- [6-2/8] JavaScript検索機能：絞り込み・起動
+     貼り付け場所：前のブロックの下
+     役割：選択肢の自動作成・絞り込み・並び替え・表示。必要なブロックがそろった時点で起動する
+     ※ブロックが足りないときは、件数の欄に足りないブロック名を表示する -->
+<script>
+(function () {
+  'use strict';
+  const Y = window.YZW = window.YZW || {};
+  function byId(id) { return document.getElementById(id); }
+
+  // 絞り込み → 並び替え → 表示
+  Y.render = function () {
+    const d = Y.data;
+    const p = Y.getPrefs();
+    const cos = {};
+    (d.companies || []).forEach(function (c) { cos[c.id] = c; });
+
+    const items = (d.jobs || []).map(function (job) {
+      const co = cos[job.companyId];
+      return { job: job, company: co, match: Y.calcMatch(job, co, p) };
+    }).filter(function (it) {
+      const j = it.job;
+      const c = it.company || {};
+      if (!p.showClosed && j.status === 'closed') { return false; }
+      if (p.jobType && j.jobType !== p.jobType) { return false; }
+      if (p.industry && c.industry !== p.industry) { return false; }
+      if (p.keyword) {
+        const text = [j.title, j.jobType, j.description, (j.tags || []).join(' '), c.name, c.industry].join(' ').toLowerCase();
+        if (text.indexOf(p.keyword) === -1) { return false; }
+      }
+      return true;
+    });
+
+    // 募集終了は後ろ。マッチ度順または新着順
+    items.sort(function (a, b) {
+      const ca = a.job.status === 'closed' ? 1 : 0;
+      const cb = b.job.status === 'closed' ? 1 : 0;
+      if (ca !== cb) { return ca - cb; }
+      if (p.sort === 'match') {
+        const sa = a.match.score === null ? -1 : a.match.score;
+        const sb = b.match.score === null ? -1 : b.match.score;
+        if (sa !== sb) { return sb - sa; }
+      }
+      return String(b.job.posted || '').localeCompare(String(a.job.posted || ''));
+    });
+
+    byId('yzw-list').innerHTML = items.map(function (it) { return Y.cardHtml(it, p); }).join('');
+    byId('yzw-empty').style.display = items.length ? 'none' : 'block';
+    byId('yzw-count').innerHTML = '<strong>' + items.length + '</strong> 件の求人' +
+      (d.updated ? '<span style="font-weight:400;font-size:12px;margin-left:8px;">（' + Y.util.esc(d.updated) + ' 更新）</span>' : '');
+  };
+
+  // 起動（すべてのブロックがそろったら1回だけ）
+  Y.tryInit = function () {
+    if (Y.started || !Y.data || !Y.calcMatch || !Y.cardHtml || !Y.getPrefs || !byId('yzw-form') || !byId('yzw-list')) { return; }
+    Y.started = true;
+    const u = Y.util;
+    const jobs = Y.data.jobs || [];
+    const cos = Y.data.companies || [];
+
+    Y.fillSelect('yzw-f-jobtype', u.uniq(jobs.map(function (j) { return j.jobType; })));
+    Y.fillSelect('yzw-f-industry', u.uniq(cos.map(function (c) { return c.industry; })));
+    Y.fillSelect('yzw-f-area', u.uniq(jobs.map(function (j) { return j.area; })));
+    Y.fillSelect('yzw-f-employment', u.uniq(jobs.map(function (j) { return j.employment; })));
+
+    const all = [];
+    jobs.forEach(function (j) { (j.tags || []).forEach(function (t) { all.push(t); }); });
+    const box = byId('yzw-f-tags');
+    if (box) {
+      box.innerHTML = u.uniq(all).map(function (t, i) {
+        return '<label class="yzw-chip" for="yzw-tag-' + i + '"><input type="checkbox" id="yzw-tag-' + i +
+          '" name="tags" value="' + u.esc(t) + '"><span>' + u.esc(t) + '</span></label>';
+      }).join('');
+    }
+
+    const form = byId('yzw-form');
+    form.addEventListener('change', Y.render);
+    form.addEventListener('input', Y.render);
+    form.addEventListener('submit', function (e) { e.preventDefault(); Y.render(); });
+    form.addEventListener('reset', function () { setTimeout(Y.render, 0); });
+    if (byId('yzw-sort')) { byId('yzw-sort').addEventListener('change', Y.render); }
+    Y.render();
+  };
+
+  // 読み込み後も起動していなければ、足りないブロックを表示
+  function checkMissing() {
+    if (Y.started) { return; }
+    const miss = [];
+    if (!byId('yzw-form')) { miss.push('[2/8] 検索フォーム'); }
+    if (!byId('yzw-list')) { miss.push('[3/8] 検索結果'); }
+    if (!Y.cardHtml) { miss.push('[6-1/8] カード表示'); }
+    if (!Y.calcMatch) { miss.push('[7/8] マッチング計算'); }
+    if (!Y.data) { miss.push('[8/8] 求人データ'); }
+    const el = byId('yzw-count');
+    if (el && miss.length) { el.textContent = '読み込みに失敗しました。見つからないブロック：' + miss.join('、'); }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', Y.tryInit);
+  } else {
+    Y.tryInit();
+  }
+  window.addEventListener('load', function () { Y.tryInit(); checkMissing(); });
+})();
+</script>

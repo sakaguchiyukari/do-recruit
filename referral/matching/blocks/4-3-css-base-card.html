@@ -1,0 +1,26 @@
+<!-- [4-3/8] CSS基本デザイン：求人カード
+     貼り付け場所：前のブロックの下（記事内ならどこでも可）
+     役割：件数・並び順・求人カード・募集状況バッジ・タグの見た目
+     ※ div.yzw-app の中だけに効き、!important でブログ側CSSの干渉を防ぐ -->
+<style>
+div#yzw-match-results .yzw-result-head{display:flex !important;flex-wrap:wrap !important;align-items:center !important;justify-content:space-between !important;gap:12px !important;margin-bottom:16px !important;}
+div#yzw-match-results .yzw-count{font-size:15px !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-count strong{color:#D6246A !important;font-size:22px !important;}
+div#yzw-match-results .yzw-sort{display:inline-flex !important;align-items:center !important;gap:8px !important;margin:0 !important;font-size:13px !important;}
+div#yzw-match-results .yzw-list{display:grid !important;grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr)) !important;gap:20px !important;padding:0 6px 6px 0 !important;}
+div#yzw-match-results .yzw-empty{padding:24px !important;border:2px dashed #1F3A5F !important;border-radius:16px !important;text-align:center !important;}
+div#yzw-match-results .yzw-card{display:flex !important;flex-direction:column !important;gap:10px !important;margin:0 !important;padding:20px !important;border:2px solid #1F3A5F !important;border-radius:20px !important;background:#FFFFFF !important;box-shadow:5px 5px 0 #1F3A5F !important;transition:transform 0.2s ease, box-shadow 0.2s ease !important;}
+div#yzw-match-results .yzw-card:hover{transform:translate(-2px, -2px) !important;box-shadow:7px 7px 0 #1F3A5F !important;}
+div#yzw-match-results .yzw-card--closed{opacity:0.6 !important;background:#F4F7FB !important;}
+div#yzw-match-results .yzw-card-top{display:flex !important;flex-wrap:wrap !important;align-items:center !important;gap:8px !important;}
+div#yzw-match-results .yzw-company{font-size:13px !important;color:#5B6B7B !important;}
+div#yzw-match-results .yzw-job-title{font-size:18px !important;font-weight:700 !important;line-height:1.4 !important;}
+div#yzw-match-results .yzw-badge{display:inline-block !important;padding:2px 10px !important;border:2px solid #1F3A5F !important;border-radius:999px !important;font-size:12px !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-badge--open{background:#B8F0D4 !important;}
+div#yzw-match-results .yzw-badge--few{background:#FFE45C !important;}
+div#yzw-match-results .yzw-badge--closed{background:#E3E8EE !important;}
+div#yzw-match-results .yzw-meta{display:flex !important;flex-wrap:wrap !important;gap:4px 14px !important;font-size:13px !important;}
+div#yzw-match-results .yzw-tags{display:flex !important;flex-wrap:wrap !important;gap:6px !important;}
+div#yzw-match-results .yzw-tag{display:inline-block !important;padding:2px 10px !important;border-radius:999px !important;background:#F4F7FB !important;font-size:12px !important;}
+div#yzw-match-results .yzw-tag--hit{background:#FFE45C !important;font-weight:700 !important;}
+</style>

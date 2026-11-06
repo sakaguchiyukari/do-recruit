@@ -1,0 +1,15 @@
+<!-- [4-1/8] CSS基本デザイン：共通・ヘッダー
+     貼り付け場所：前のブロックの下（記事内ならどこでも可）
+     役割：文字色・余白のリセットと、タイトル部分の見た目
+     ※ div.yzw-app の中だけに効き、!important でブログ側CSSの干渉を防ぐ -->
+<style>
+div.yzw-app,div.yzw-app *{box-sizing:border-box !important;}
+div.yzw-app{width:100% !important;max-width:1000px !important;margin:0 auto 32px !important;padding:0 !important;color:#1F3A5F !important;font-size:15px !important;line-height:1.7 !important;letter-spacing:normal !important;text-align:left !important;}
+div.yzw-app p,div.yzw-app h2,div.yzw-app h3{margin:0 !important;padding:0 !important;border:0 !important;background:none !important;color:inherit !important;}
+div.yzw-app h2::before,div.yzw-app h2::after,div.yzw-app h3::before,div.yzw-app h3::after{content:none !important;display:none !important;}
+div#yzw-match-head{text-align:center !important;padding-top:8px !important;}
+div#yzw-match-head .yzw-eyebrow{display:inline-block !important;margin-bottom:10px !important;padding:4px 16px !important;border-radius:999px !important;background:#1F3A5F !important;color:#FFE45C !important;font-size:12px !important;font-weight:700 !important;letter-spacing:0.15em !important;}
+div#yzw-match-head .yzw-title{margin-bottom:8px !important;font-size:26px !important;font-weight:700 !important;line-height:1.4 !important;text-align:center !important;}
+div#yzw-match-head .yzw-lead{color:#5B6B7B !important;font-size:14px !important;text-align:center !important;}
+div.yzw-app .yzw-alert{margin-top:12px !important;padding:12px 16px !important;border:2px dashed #D6246A !important;border-radius:12px !important;background:#FFF4F8 !important;}
+</style>

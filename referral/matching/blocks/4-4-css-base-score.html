@@ -1,0 +1,20 @@
+<!-- [4-4/8] CSS基本デザイン：マッチ度・応募ボタン
+     貼り付け場所：前のブロックの下（記事内ならどこでも可）
+     役割：マッチ度のバー・くわしく見る・応募ボタンの見た目
+     ※ div.yzw-app の中だけに効き、!important でブログ側CSSの干渉を防ぐ -->
+<style>
+div#yzw-match-results .yzw-score{padding:12px 14px !important;border-radius:14px !important;background:#FFF4F8 !important;}
+div#yzw-match-results .yzw-score-head{display:flex !important;align-items:baseline !important;justify-content:space-between !important;font-size:13px !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-score-num{color:#D6246A !important;font-size:24px !important;font-weight:700 !important;line-height:1.2 !important;}
+div#yzw-match-results .yzw-bar{display:block !important;height:10px !important;margin:6px 0 !important;border:2px solid #1F3A5F !important;border-radius:999px !important;background:#FFFFFF !important;overflow:hidden !important;}
+div#yzw-match-results .yzw-bar-fill{display:block !important;height:100% !important;background:linear-gradient(90deg, #FFB3CB, #D6246A) !important;}
+div#yzw-match-results .yzw-reasons{font-size:12px !important;color:#5B6B7B !important;}
+div#yzw-match-results .yzw-score--none{background:#F4F7FB !important;font-size:12px !important;color:#5B6B7B !important;}
+div#yzw-match-results .yzw-detail summary{cursor:pointer !important;font-size:13px !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-detail dl{margin:8px 0 0 !important;padding:0 !important;font-size:13px !important;}
+div#yzw-match-results .yzw-detail dt{margin:6px 0 0 !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-detail dd{margin:0 !important;padding:0 !important;}
+div#yzw-match-results .yzw-apply{display:block !important;margin-top:auto !important;padding:12px 16px !important;border:2px solid #1F3A5F !important;border-radius:999px !important;background:#1F3A5F !important;color:#FFFFFF !important;font-size:14px !important;font-weight:700 !important;text-align:center !important;text-decoration:none !important;transition:background 0.2s ease, color 0.2s ease !important;}
+div#yzw-match-results a.yzw-apply:hover{background:#FFE45C !important;color:#1F3A5F !important;}
+div#yzw-match-results .yzw-apply--disabled{background:#E3E8EE !important;border-color:#E3E8EE !important;color:#5B6B7B !important;}
+</style>

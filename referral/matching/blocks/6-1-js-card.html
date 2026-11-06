@@ -1,0 +1,109 @@
+<!-- [6-1/8] JavaScript検索機能：カード表示
+     貼り付け場所：前のブロックの下
+     役割：共通の道具（文字の安全化など）・入力値の読み取り・求人カード1枚分のHTMLを作る処理
+     ※名前はすべて window.YZW の中にまとめ、ブログ側との衝突を防ぐ -->
+<script>
+(function () {
+  'use strict';
+  const Y = window.YZW = window.YZW || {};
+
+  // 共通の道具
+  Y.util = {
+    byId: function (id) { return document.getElementById(id); },
+    // データ内の < > などをHTMLとして解釈させない
+    esc: function (v) {
+      return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    },
+    // 重複と空欄を除く
+    uniq: function (list) {
+      const out = [];
+      list.forEach(function (v) { if (v && out.indexOf(v) === -1) { out.push(v); } });
+      return out;
+    },
+    // https:// で始まるURLだけを許可
+    safeUrl: function (u) {
+      return /^https:\/\/[^\s"'<>]+$/.test(String(u || '')) ? u : '';
+    }
+  };
+
+  function byId(id) { return document.getElementById(id); }
+
+  // 選択肢（option）を追加
+  Y.fillSelect = function (id, values) {
+    const el = byId(id);
+    if (!el) { return; }
+    values.forEach(function (v) {
+      const o = document.createElement('option');
+      o.value = v;
+      o.textContent = v;
+      el.appendChild(o);
+    });
+  };
+
+  // フォームの入力値を読み取る
+  Y.getPrefs = function () {
+    const tags = [];
+    document.querySelectorAll('#yzw-f-tags input:checked').forEach(function (el) { tags.push(el.value); });
+    return {
+      jobType: byId('yzw-f-jobtype').value,
+      industry: byId('yzw-f-industry').value,
+      keyword: byId('yzw-f-keyword').value.trim().toLowerCase(),
+      area: byId('yzw-f-area').value,
+      employment: byId('yzw-f-employment').value,
+      tags: tags,
+      showClosed: byId('yzw-f-closed').checked,
+      sort: byId('yzw-sort') ? byId('yzw-sort').value : 'match'
+    };
+  };
+
+  const STATUS = {
+    open: { label: '募集中', cls: 'open' },
+    few: { label: '残りわずか', cls: 'few' },
+    closed: { label: '募集終了', cls: 'closed' }
+  };
+
+  // 求人カード1枚分のHTML
+  Y.cardHtml = function (item, prefs) {
+    const esc = Y.util.esc;
+    const job = item.job;
+    const co = item.company || {};
+    const st = STATUS[job.status] || STATUS.open;
+    const m = item.match;
+    const url = Y.util.safeUrl(job.formUrl);
+    const closed = job.status === 'closed';
+
+    const tags = (job.tags || []).map(function (t) {
+      const hit = prefs.tags.indexOf(t) !== -1;
+      return '<span class="yzw-tag' + (hit ? ' yzw-tag--hit' : '') + '">#' + esc(t) + '</span>';
+    }).join('');
+
+    const score = m.score === null
+      ? '<div class="yzw-score yzw-score--none">希望条件を選ぶと、マッチ度が表示されます。</div>'
+      : '<div class="yzw-score"><div class="yzw-score-head"><span>マッチ度</span><span class="yzw-score-num">' + m.score + '%</span></div>' +
+        '<span class="yzw-bar"><span class="yzw-bar-fill" style="width:' + m.score + '%;"></span></span>' +
+        '<p class="yzw-reasons">' + (m.reasons.length ? esc(m.reasons.join(' / ')) : '一致する希望条件はありません') + '</p></div>';
+
+    const apply = (url && !closed)
+      ? '<a class="yzw-apply" href="' + esc(url) + '" target="_blank" rel="noopener">この求人で応募する →</a>'
+      : '<span class="yzw-apply yzw-apply--disabled">' + (closed ? '募集は終了しました' : '応募フォーム準備中') + '</span>';
+
+    return '<article class="yzw-card' + (closed ? ' yzw-card--closed' : '') + '">' +
+      '<div class="yzw-card-top"><span class="yzw-badge yzw-badge--' + st.cls + '">' + st.label + '</span>' +
+      '<span class="yzw-company">' + esc(co.name) + '</span></div>' +
+      '<h3 class="yzw-job-title">' + esc(job.title) + '</h3>' +
+      '<div class="yzw-meta"><span>📍 ' + esc(job.area) + '</span><span>💼 ' + esc(job.jobType) + '</span><span>🏷 ' + esc(job.employment) + '</span></div>' +
+      (tags ? '<div class="yzw-tags">' + tags + '</div>' : '') +
+      score +
+      '<details class="yzw-detail"><summary>くわしく見る</summary><dl>' +
+      '<dt>業種</dt><dd>' + esc(co.industry) + '</dd>' +
+      '<dt>給与</dt><dd>' + esc(job.salary) + '</dd>' +
+      '<dt>勤務時間</dt><dd>' + esc(job.hours) + '</dd>' +
+      '<dt>仕事内容</dt><dd>' + esc(job.description) + '</dd>' +
+      '</dl></details>' + apply + '</article>';
+  };
+
+  if (Y.tryInit) { Y.tryInit(); }
+})();
+</script>

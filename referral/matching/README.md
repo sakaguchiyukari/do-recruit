@@ -12,16 +12,25 @@
 
 ## 貼り付け順（STEP2）
 
-1. `blocks/1-html-base.html` … タイトル
-2. `blocks/2-html-form.html` … 検索フォーム
-3. `blocks/3-html-results.html` … 検索結果の表示場所
-4. `blocks/4-css-base.html` … デザイン
-5. `blocks/5-css-sp.html` … スマートフォン対応
-6. `blocks/6-js-search.html` … 検索・表示
-7. `blocks/7-js-match.html` … マッチ度の計算
-8. `blocks/8-data.html` … 企業・求人データ（サンプル）
+ブログのHTML入力欄は1つあたり約5,000文字までと見られるため、各ブロックを5,000文字未満にしている。
 
-JavaScriptのブロック（6〜8）は順番が前後しても動く。ブロックが足りない場合は、件数欄に足りないブロック名が表示される。
+| 順 | ファイル | 内容 |
+|---|---|---|
+| 1 | `blocks/1-html-base.html` | タイトル |
+| 2 | `blocks/2-html-form.html` | 検索フォーム |
+| 3 | `blocks/3-html-results.html` | 検索結果の表示場所 |
+| 4 | `blocks/4-1-css-base-common.html` | CSS：共通・ヘッダー |
+| 5 | `blocks/4-2-css-base-form.html` | CSS：検索フォーム |
+| 6 | `blocks/4-3-css-base-card.html` | CSS：求人カード |
+| 7 | `blocks/4-4-css-base-score.html` | CSS：マッチ度・応募ボタン |
+| 8 | `blocks/5-css-sp.html` | CSS：スマートフォン対応 |
+| 9 | `blocks/6-1-js-card.html` | JS：共通の道具・カード表示 |
+| 10 | `blocks/6-2-js-search.html` | JS：絞り込み・起動 |
+| 11 | `blocks/7-js-match.html` | JS：マッチ度の計算 |
+| 12 | `blocks/8-data.html` | 企業・求人データ（サンプル） |
+
+JavaScriptのブロック（6-1〜8）は順番が前後しても動く。ブロックが足りない場合は、件数欄に足りないブロック名が表示される。
+`old/` は分割前の版（参考用、貼り付けには使わない）。
 
 ## 名前の衝突対策
 
