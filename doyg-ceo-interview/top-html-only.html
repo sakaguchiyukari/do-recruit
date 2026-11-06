@@ -1,0 +1,535 @@
+<!-- ==========================================================
+     教えて！CEO シリーズTOP：共通CSS
+     ※ ページの一番上に1回だけ貼り付けてください
+     ※ クラス名は「ceo-top」で始まるため、記事ページのCSS（.ceo）とは競合しません
+     ========================================================== -->
+<style>
+  /* ---------- 基本設定（色・イラスト） ---------- */
+  .ceo-top {
+    --ct-main: #0a5cab;      /* メインカラー（青） */
+    --ct-main-soft: #e8f1fb; /* 薄い青（背景） */
+    --ct-accent: #ff8a3d;    /* アクセント（オレンジ） */
+    --ct-accent-soft: #fff1e6;
+    --ct-text: #24303c;      /* 本文色 */
+    --ct-muted: #6b7785;     /* 補足テキスト */
+    --ct-line: #e3e9f0;      /* 罫線 */
+    --ct-radius: 24px;
+    --ct-gap: clamp(16px, 3vw, 24px);
+    /* CEOイラスト（記事ページと同じSVG） */
+    --ct-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='40' fill='%23dcebf9'/%3E%3Cpath d='M12 80c2-15 13-22 28-22s26 7 28 22z' fill='%230a5cab'/%3E%3Cpath d='M33 58l7 11 7-11z' fill='%23fff'/%3E%3Cpath d='M39 61h2l2 10h-6z' fill='%23ff8a3d'/%3E%3Crect x='35' y='46' width='10' height='10' fill='%23eec3a0'/%3E%3Ccircle cx='40' cy='35' r='15' fill='%23f6d2b4'/%3E%3Cpath d='M25 34c0-11 7-16 15-16s15 5 15 16c-3-6-9-8-15-8s-12 2-15 8z' fill='%23333'/%3E%3Ccircle cx='34' cy='37' r='1.6' fill='%23333'/%3E%3Ccircle cx='46' cy='37' r='1.6' fill='%23333'/%3E%3Cpath d='M35 43q5 4 10 0' stroke='%23333' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 36px) clamp(16px, 4vw, 32px); /* パーツ間の余白 */
+    color: var(--ct-text);
+    line-height: 1.8;
+  }
+  .ceo-top * {
+    box-sizing: border-box;
+    margin: 0;
+  }
+  .ceo-top a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* ---------- 共通：セクション見出し ---------- */
+  .ceo-top__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-bottom: clamp(20px, 4vw, 32px);
+  }
+  .ceo-top__label {
+    display: block;
+    color: var(--ct-accent);
+    font-size: .75em;
+    font-weight: 700;
+    letter-spacing: .2em;
+  }
+  .ceo-top__title {
+    color: var(--ct-main);
+    font-size: clamp(1.3em, 3vw, 1.6em);
+    line-height: 1.4;
+  }
+  .ceo-top__note {
+    color: var(--ct-muted);
+    font-size: .85em;
+  }
+
+  /* ==========================================================
+     Hero（シリーズ紹介）
+     ========================================================== */
+  .ceo-top-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: clamp(24px, 5vw, 48px);
+    padding: clamp(28px, 6vw, 56px);
+    border-radius: 32px;
+    background:
+      radial-gradient(circle at 90% 10%, #ffffff22 0 120px, transparent 121px),
+      radial-gradient(circle at 75% 110%, #ffffff1a 0 160px, transparent 161px),
+      linear-gradient(135deg, var(--ct-main), #3f8fdc);
+    color: #fff;
+    overflow: hidden;
+  }
+  .ceo-top-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 99px;
+    background: #ffffff26;
+    font-size: .8em;
+    font-weight: 700;
+    letter-spacing: .05em;
+  }
+  .ceo-top-hero__title {
+    margin: 16px 0 12px;
+    font-size: clamp(2em, 6vw, 3.2em);
+    line-height: 1.2;
+    letter-spacing: .02em;
+  }
+  .ceo-top-hero__title em {
+    color: #ffd2b0;
+    font-style: normal;
+  }
+  .ceo-top-hero__lead {
+    max-width: 30em;
+    font-size: clamp(.95em, 2vw, 1.05em);
+    opacity: .95;
+  }
+  .ceo-top-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 12px 24px;
+    border-radius: 99px;
+    background: #fff;
+    color: var(--ct-main) !important;
+    font-weight: 700;
+    box-shadow: 0 8px 24px #00000026;
+    transition: transform .3s, box-shadow .3s;
+  }
+  .ceo-top-hero__btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px #00000033;
+  }
+  .ceo-top-hero__btn::after {
+    content: "→";
+    transition: transform .3s;
+  }
+  .ceo-top-hero__btn:hover::after {
+    transform: translateX(4px);
+  }
+
+  /* 右側：CEOイラスト＋質問の吹き出し */
+  .ceo-top-hero__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 260px;
+  }
+  .ceo-top-hero__avatar {
+    width: clamp(140px, 22vw, 200px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ct-icon) center / cover;
+    box-shadow: 0 0 0 8px #ffffff33, 0 20px 40px #00000033;
+  }
+  .ceo-top-hero__bubble {
+    position: absolute;
+    max-width: 13em;
+    padding: 8px 14px;
+    border-radius: 16px;
+    background: #fff;
+    color: var(--ct-text);
+    font-size: .78em;
+    font-weight: 700;
+    line-height: 1.5;
+    box-shadow: 0 8px 20px #00000026;
+    animation: ctFloat 4s ease-in-out infinite;
+  }
+  .ceo-top-hero__bubble::before {
+    content: "Q.";
+    margin-right: 4px;
+    color: var(--ct-accent);
+  }
+  .ceo-top-hero__bubble--1 { top: 4%; left: 0; border-bottom-left-radius: 4px; }
+  .ceo-top-hero__bubble--2 { top: 42%; right: -4%; border-bottom-right-radius: 4px; animation-delay: -1.3s; }
+  .ceo-top-hero__bubble--3 { bottom: 2%; left: 6%; border-top-left-radius: 4px; animation-delay: -2.6s; }
+  @keyframes ctFloat {
+    50% { transform: translateY(-6px); }
+  }
+
+  /* ==========================================================
+     Articles（記事一覧カード）
+     ========================================================== */
+  .ceo-top-list__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: var(--ct-gap);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* カード本体 */
+  .ceo-top-card {
+    height: 100%;
+  }
+  .ceo-top-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--ct-line);
+    border-radius: var(--ct-radius);
+    background: #fff;
+    overflow: hidden;
+    transition: transform .3s, box-shadow .3s, border-color .3s;
+  }
+  .ceo-top-card__link:hover {
+    transform: translateY(-6px);
+    border-color: transparent;
+    box-shadow: 0 18px 40px #0a5cab24;
+  }
+
+  /* カード上部（番号エリア） */
+  .ceo-top-card__thumb {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 140px;
+    padding: 20px 22px;
+    background: var(--ct-main-soft);
+    overflow: hidden;
+  }
+  .ceo-top-card__num {
+    color: var(--ct-main);
+    font-size: 4.2em;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -.02em;
+    opacity: .9;
+  }
+  .ceo-top-card__num small {
+    margin-right: 4px;
+    font-size: .25em;
+    letter-spacing: .1em;
+    vertical-align: top;
+  }
+  .ceo-top-card__face {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--ct-icon) center / cover;
+    box-shadow: 0 0 0 4px #fff;
+    transition: transform .4s;
+  }
+  .ceo-top-card__link:hover .ceo-top-card__face {
+    transform: rotate(-8deg) scale(1.06);
+  }
+  /* カード色のバリエーション（--orange / --green を付け替え） */
+  .ceo-top-card--orange .ceo-top-card__thumb { background: var(--ct-accent-soft); }
+  .ceo-top-card--orange .ceo-top-card__num { color: #e2702a; }
+  .ceo-top-card--green .ceo-top-card__thumb { background: #e7f6ef; }
+  .ceo-top-card--green .ceo-top-card__num { color: #1f9a68; }
+
+  /* カード本文 */
+  .ceo-top-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 22px;
+  }
+  .ceo-top-card__date {
+    color: var(--ct-muted);
+    font-size: .8em;
+  }
+  .ceo-top-card__title {
+    margin: 6px 0 10px;
+    font-size: 1.1em;
+    line-height: 1.5;
+  }
+  .ceo-top-card__text {
+    color: var(--ct-muted);
+    font-size: .88em;
+  }
+  .ceo-top-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 0;
+    list-style: none;
+  }
+  .ceo-top-card__tags li {
+    padding: 2px 10px;
+    border-radius: 99px;
+    background: #f3f6f9;
+    color: var(--ct-muted);
+    font-size: .75em;
+  }
+  .ceo-top-card__more {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 18px;
+    color: var(--ct-main);
+    font-size: .88em;
+    font-weight: 700;
+  }
+  .ceo-top-card__more::after {
+    content: "→";
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ct-main-soft);
+    transition: transform .3s, background .3s, color .3s;
+  }
+  .ceo-top-card__link:hover .ceo-top-card__more::after {
+    transform: translateX(4px);
+    background: var(--ct-main);
+    color: #fff;
+  }
+
+  /* 公開準備中のカード（--soon） */
+  .ceo-top-card--soon .ceo-top-card__link {
+    border-style: dashed;
+    background: #fbfcfd;
+    pointer-events: none;
+  }
+  .ceo-top-card--soon .ceo-top-card__thumb { background: #f1f4f7; }
+  .ceo-top-card--soon .ceo-top-card__num { color: #b7c1cc; }
+  .ceo-top-card--soon .ceo-top-card__face { filter: grayscale(1); opacity: .5; }
+  .ceo-top-card--soon .ceo-top-card__more { color: var(--ct-muted); }
+  .ceo-top-card--soon .ceo-top-card__more::after { content: "…"; background: #eef1f4; }
+
+  /* ==========================================================
+     Question CTA（質問募集）
+     ========================================================== */
+  .ceo-top-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px 32px;
+    padding: clamp(28px, 5vw, 44px);
+    border-radius: 32px;
+    background: var(--ct-accent-soft);
+  }
+  .ceo-top-cta__body {
+    flex: 1 1 320px;
+  }
+  .ceo-top-cta__title {
+    margin: 4px 0 8px;
+    font-size: clamp(1.2em, 3vw, 1.45em);
+    line-height: 1.5;
+  }
+  .ceo-top-cta__text {
+    color: var(--ct-muted);
+    font-size: .92em;
+  }
+  .ceo-top-cta__btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 99px;
+    background: var(--ct-accent);
+    color: #fff !important;
+    font-weight: 700;
+    box-shadow: 0 8px 20px #ff8a3d55;
+    transition: transform .3s, box-shadow .3s;
+  }
+  .ceo-top-cta__btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px #ff8a3d77;
+  }
+  .ceo-top-cta__btn::before {
+    content: "✉";
+  }
+
+  /* ==========================================================
+     レスポンシブ
+     ========================================================== */
+  /* タブレット以下：ヒーローを縦並びに */
+  @media (max-width: 900px) {
+    .ceo-top-hero {
+      grid-template-columns: 1fr;
+    }
+    /* スマホ：吹き出しを上下に逃がして顔に重ならないようにする */
+    .ceo-top-hero__visual {
+      width: 100%;
+      max-width: 360px;
+      min-height: 280px;
+      margin: 0 auto;
+    }
+    .ceo-top-hero__avatar {
+      width: 130px;
+    }
+    .ceo-top-hero__bubble { max-width: 11em; font-size: .72em; }
+    .ceo-top-hero__bubble--1 { top: 0; left: 0; }
+    .ceo-top-hero__bubble--2 { top: auto; bottom: 0; right: 0; }
+    .ceo-top-hero__bubble--3 { display: none; }
+  }
+  /* スマホ：ボタンを横幅いっぱいにして押しやすく */
+  @media (max-width: 600px) {
+    .ceo-top-hero__btn,
+    .ceo-top-cta__btn {
+      justify-content: center;
+      width: 100%;
+    }
+  }
+
+  /* ==========================================================
+     フェードイン（対応ブラウザはスクロール連動）
+     ========================================================== */
+  @keyframes ctFade {
+    from { opacity: 0; transform: translateY(24px); }
+  }
+  .ceo-top-hero,
+  .ceo-top-card,
+  .ceo-top-cta {
+    animation: ctFade .8s both;
+  }
+  @supports (animation-timeline: view()) {
+    .ceo-top-card,
+    .ceo-top-cta {
+      animation-timeline: view();
+      animation-range: entry 0 entry 50%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ceo-top *,
+    .ceo-top-hero,
+    .ceo-top-card,
+    .ceo-top-cta {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+<!-- ==========================================================
+     Hero：シリーズ紹介
+     ========================================================== -->
+<div class="ceo-top">
+  <section class="ceo-top-hero" aria-labelledby="ceo-top-hero-title">
+
+    <!-- 左：タイトル・リード -->
+    <div class="ceo-top-hero__body">
+      <p class="ceo-top-hero__badge">社内限定｜グループ広報室</p>
+      <h1 class="ceo-top-hero__title" id="ceo-top-hero-title">教えて！<em>CEO</em></h1>
+      <p class="ceo-top-hero__lead">「CEOって、普段どんなことを考えているんだろう？」そんな素朴な疑問を、グループ広報室が直接ぶつけてみるシリーズです。会議や朝礼では見えにくい、CEOの素顔と本音をお届けします。</p>
+      <!-- リンク先：最新の記事URLに差し替え -->
+      <a class="ceo-top-hero__btn" href="#">最新の記事を読む</a>
+    </div>
+
+    <!-- 右：CEOイラスト＋実際の質問を吹き出しで表示 -->
+    <div class="ceo-top-hero__visual" aria-hidden="true">
+      <div class="ceo-top-hero__avatar"></div>
+      <p class="ceo-top-hero__bubble ceo-top-hero__bubble--1">休日は何をして過ごしていますか？</p>
+      <p class="ceo-top-hero__bubble ceo-top-hero__bubble--2">仕事のモチベーションは？</p>
+      <p class="ceo-top-hero__bubble ceo-top-hero__bubble--3">若手の頃はどんな社員？</p>
+    </div>
+
+  </section>
+</div>
+<!-- ==========================================================
+     Articles：記事一覧
+     ※ 記事を増やすときは <li class="ceo-top-card">〜</li> を1つコピーして追加
+     ※ 公開前は「ceo-top-card--soon」を付けるとグレーの準備中表示になります
+     ※ カード色は「ceo-top-card--orange」「ceo-top-card--green」で変更できます（無しは青）
+     ========================================================== -->
+<div class="ceo-top">
+  <section class="ceo-top-list" aria-labelledby="ceo-top-list-title">
+
+    <div class="ceo-top__head">
+      <h2 class="ceo-top__title" id="ceo-top-list-title">
+        <span class="ceo-top__label">ARCHIVE</span>記事一覧
+      </h2>
+      <p class="ceo-top__note">毎回10の質問でお届けします</p>
+    </div>
+
+    <ul class="ceo-top-list__grid">
+
+      <!-- 第1弾 -->
+      <li class="ceo-top-card">
+        <!-- リンク先：第1弾の記事URLに差し替え -->
+        <a class="ceo-top-card__link" href="#">
+          <div class="ceo-top-card__thumb">
+            <p class="ceo-top-card__num"><small>VOL.</small>01</p>
+            <span class="ceo-top-card__face" aria-hidden="true"></span>
+          </div>
+          <div class="ceo-top-card__body">
+            <p class="ceo-top-card__date"><time datetime="2026-06-09">2026.06.09</time> 公開</p>
+            <h3 class="ceo-top-card__title">仕事・新人時代・若手へのメッセージ</h3>
+            <p class="ceo-top-card__text">休日の過ごし方から仕事で大切にしていること、新人時代の経験、若手社員へのメッセージまで、10の質問でCEOの素顔に迫ります。</p>
+            <ul class="ceo-top-card__tags">
+              <li>#オフの素顔</li>
+              <li>#仕事の流儀</li>
+              <li>#新人時代</li>
+              <li>#若手へ</li>
+            </ul>
+            <p class="ceo-top-card__more">記事を読む</p>
+          </div>
+        </a>
+      </li>
+
+      <!-- 第2弾（公開時：--soon を外し、日付・タイトル・説明・タグ・リンクを入力） -->
+      <li class="ceo-top-card ceo-top-card--orange ceo-top-card--soon">
+        <a class="ceo-top-card__link" href="#" aria-disabled="true" tabindex="-1">
+          <div class="ceo-top-card__thumb">
+            <p class="ceo-top-card__num"><small>VOL.</small>02</p>
+            <span class="ceo-top-card__face" aria-hidden="true"></span>
+          </div>
+          <div class="ceo-top-card__body">
+            <p class="ceo-top-card__date">近日公開</p>
+            <h3 class="ceo-top-card__title">テーマは公開までお楽しみに</h3>
+            <p class="ceo-top-card__text">ただいま広報室で準備中です。</p>
+            <p class="ceo-top-card__more">準備中</p>
+          </div>
+        </a>
+      </li>
+
+      <!-- 第3弾（公開時：--soon を外し、日付・タイトル・説明・タグ・リンクを入力） -->
+      <li class="ceo-top-card ceo-top-card--green ceo-top-card--soon">
+        <a class="ceo-top-card__link" href="#" aria-disabled="true" tabindex="-1">
+          <div class="ceo-top-card__thumb">
+            <p class="ceo-top-card__num"><small>VOL.</small>03</p>
+            <span class="ceo-top-card__face" aria-hidden="true"></span>
+          </div>
+          <div class="ceo-top-card__body">
+            <p class="ceo-top-card__date">近日公開</p>
+            <h3 class="ceo-top-card__title">テーマは公開までお楽しみに</h3>
+            <p class="ceo-top-card__text">ただいま広報室で準備中です。</p>
+            <p class="ceo-top-card__more">準備中</p>
+          </div>
+        </a>
+      </li>
+
+    </ul>
+  </section>
+</div>
+<!-- ==========================================================
+     Question CTA：CEOへの質問募集
+     ========================================================== -->
+<div class="ceo-top">
+  <section class="ceo-top-cta" aria-labelledby="ceo-top-cta-title">
+    <div class="ceo-top-cta__body">
+      <span class="ceo-top__label">QUESTION</span>
+      <h2 class="ceo-top-cta__title" id="ceo-top-cta-title">CEOに聞いてみたいこと、募集中です</h2>
+      <p class="ceo-top-cta__text">仕事のことでも、ちょっとした素朴な疑問でもOK。いただいた質問は、今後の「教えて！CEO」で取り上げるかもしれません。</p>
+    </div>
+    <!-- リンク先：質問フォームのURLに差し替え -->
+    <a class="ceo-top-cta__btn" href="#">質問を送る</a>
+  </section>
+</div>

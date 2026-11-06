@@ -1,0 +1,76 @@
+<!-- ==========================================================
+     Articles：記事一覧
+     ※ 記事を増やすときは <li class="ceo-top-card">〜</li> を1つコピーして追加
+     ※ 公開前は「ceo-top-card--soon」を付けるとグレーの準備中表示になります
+     ※ カード色は「ceo-top-card--orange」「ceo-top-card--green」で変更できます（無しは青）
+     ========================================================== -->
+<div class="ceo-top">
+  <section class="ceo-top-list" aria-labelledby="ceo-top-list-title">
+
+    <div class="ceo-top__head">
+      <h2 class="ceo-top__title" id="ceo-top-list-title">
+        <span class="ceo-top__label">ARCHIVE</span>記事一覧
+      </h2>
+      <p class="ceo-top__note">毎回10の質問でお届けします</p>
+    </div>
+
+    <ul class="ceo-top-list__grid">
+
+      <!-- 第1弾 -->
+      <li class="ceo-top-card">
+        <!-- リンク先：第1弾の記事URLに差し替え -->
+        <a class="ceo-top-card__link" href="#">
+          <div class="ceo-top-card__thumb">
+            <p class="ceo-top-card__num"><small>VOL.</small>01</p>
+            <span class="ceo-top-card__face" aria-hidden="true"></span>
+          </div>
+          <div class="ceo-top-card__body">
+            <p class="ceo-top-card__date"><time datetime="2026-06-09">2026.06.09</time> 公開</p>
+            <h3 class="ceo-top-card__title">仕事・新人時代・若手へのメッセージ</h3>
+            <p class="ceo-top-card__text">休日の過ごし方から仕事で大切にしていること、新人時代の経験、若手社員へのメッセージまで、10の質問でCEOの素顔に迫ります。</p>
+            <ul class="ceo-top-card__tags">
+              <li>#オフの素顔</li>
+              <li>#仕事の流儀</li>
+              <li>#新人時代</li>
+              <li>#若手へ</li>
+            </ul>
+            <p class="ceo-top-card__more">記事を読む</p>
+          </div>
+        </a>
+      </li>
+
+      <!-- 第2弾（公開時：--soon を外し、日付・タイトル・説明・タグ・リンクを入力） -->
+      <li class="ceo-top-card ceo-top-card--orange ceo-top-card--soon">
+        <a class="ceo-top-card__link" href="#" aria-disabled="true" tabindex="-1">
+          <div class="ceo-top-card__thumb">
+            <p class="ceo-top-card__num"><small>VOL.</small>02</p>
+            <span class="ceo-top-card__face" aria-hidden="true"></span>
+          </div>
+          <div class="ceo-top-card__body">
+            <p class="ceo-top-card__date">近日公開</p>
+            <h3 class="ceo-top-card__title">テーマは公開までお楽しみに</h3>
+            <p class="ceo-top-card__text">ただいま広報室で準備中です。</p>
+            <p class="ceo-top-card__more">準備中</p>
+          </div>
+        </a>
+      </li>
+
+      <!-- 第3弾（公開時：--soon を外し、日付・タイトル・説明・タグ・リンクを入力） -->
+      <li class="ceo-top-card ceo-top-card--green ceo-top-card--soon">
+        <a class="ceo-top-card__link" href="#" aria-disabled="true" tabindex="-1">
+          <div class="ceo-top-card__thumb">
+            <p class="ceo-top-card__num"><small>VOL.</small>03</p>
+            <span class="ceo-top-card__face" aria-hidden="true"></span>
+          </div>
+          <div class="ceo-top-card__body">
+            <p class="ceo-top-card__date">近日公開</p>
+            <h3 class="ceo-top-card__title">テーマは公開までお楽しみに</h3>
+            <p class="ceo-top-card__text">ただいま広報室で準備中です。</p>
+            <p class="ceo-top-card__more">準備中</p>
+          </div>
+        </a>
+      </li>
+
+    </ul>
+  </section>
+</div>
