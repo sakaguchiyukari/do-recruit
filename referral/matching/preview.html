@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>リファラル採用マッチング（完成イメージ）</title>
+</head>
+<body style="margin:0;padding:24px 16px;background:#FFFFFF;font-family:'Hiragino Sans','Noto Sans JP',sans-serif;">
+<!-- 確認用：blocks/ の12ブロックを順番どおりにつなげたもの -->
+<!-- =====================================================
+     [1/8] HTML基本構造
+     貼り付け場所：記事のいちばん上（ほかのブロックより前）
+     役割：タイトル・説明文の表示。JavaScriptが無効な環境ではお知らせを表示
+     ===================================================== -->
+<div id="yzw-match-head" class="yzw-app">
+  <p class="yzw-eyebrow">REFERRAL MATCHING</p>
+  <h2 class="yzw-title">あの人にぴったりの求人を探そう</h2>
+  <p class="yzw-lead">紹介したい人の希望条件を選ぶと、グループ各社の求人とのマッチ度が表示されます。</p>
+  <noscript>
+    <p class="yzw-alert">この検索機能はJavaScriptを使用しています。ブラウザの設定でJavaScriptを有効にしてください。</p>
+  </noscript>
+</div>
+
+<!-- =====================================================
+     [2/8] HTML検索フォーム
+     貼り付け場所：[1/8] の下
+     役割：絞り込み（職種・業種・キーワード）と希望条件（勤務地・雇用形態・こだわり）の入力欄
+     ※選択肢は [8/8] 求人データから自動で作られるため、ここを編集する必要はありません
+     ===================================================== -->
+<div id="yzw-match-form" class="yzw-app">
+  <form id="yzw-form" class="yzw-form" action="#" autocomplete="off">
+
+    <!-- 絞り込み：一致しない求人は表示しない -->
+    <fieldset class="yzw-fieldset">
+      <legend class="yzw-legend"><span class="yzw-legend-num">1</span>求人を絞り込む</legend>
+      <label class="yzw-field" for="yzw-f-jobtype">
+        <span class="yzw-label">職種</span>
+        <select id="yzw-f-jobtype" name="jobType" class="yzw-select">
+          <option value="">すべての職種</option>
+        </select>
+      </label>
+      <label class="yzw-field" for="yzw-f-industry">
+        <span class="yzw-label">業種</span>
+        <select id="yzw-f-industry" name="industry" class="yzw-select">
+          <option value="">すべての業種</option>
+        </select>
+      </label>
+      <label class="yzw-field" for="yzw-f-keyword">
+        <span class="yzw-label">キーワード</span>
+        <input type="search" id="yzw-f-keyword" name="keyword" class="yzw-input" placeholder="例：接客、未経験" maxlength="50">
+      </label>
+    </fieldset>
+
+    <!-- 希望条件：マッチ度の計算に使う -->
+    <fieldset class="yzw-fieldset">
+      <legend class="yzw-legend"><span class="yzw-legend-num">2</span>希望条件（マッチ度に反映）</legend>
+      <label class="yzw-field" for="yzw-f-area">
+        <span class="yzw-label">勤務地</span>
+        <select id="yzw-f-area" name="area" class="yzw-select">
+          <option value="">こだわらない</option>
+        </select>
+      </label>
+      <label class="yzw-field" for="yzw-f-employment">
+        <span class="yzw-label">雇用形態</span>
+        <select id="yzw-f-employment" name="employment" class="yzw-select">
+          <option value="">こだわらない</option>
+        </select>
+      </label>
+      <div class="yzw-field">
+        <span class="yzw-label">こだわり条件</span>
+        <div id="yzw-f-tags" class="yzw-tag-choices"></div>
+      </div>
+    </fieldset>
+
+    <!-- 操作 -->
+    <div class="yzw-form-actions">
+      <label class="yzw-check" for="yzw-f-closed">
+        <input type="checkbox" id="yzw-f-closed" name="showClosed" value="1">
+        <span>募集終了の求人も表示</span>
+      </label>
+      <button type="reset" class="yzw-btn-reset">条件をリセット</button>
+    </div>
+
+  </form>
+</div>
+
+<!-- =====================================================
+     [3/8] HTML検索結果
+     貼り付け場所：[2/8] の下
+     役割：件数・並び替え・求人カードの表示場所（カードはJavaScriptが自動で作成）
+     ===================================================== -->
+<div id="yzw-match-results" class="yzw-app">
+  <div class="yzw-result-head">
+    <p id="yzw-count" class="yzw-count" aria-live="polite">求人を読み込み中です…</p>
+    <label class="yzw-sort" for="yzw-sort">
+      <span class="yzw-sort-label">並び順</span>
+      <select id="yzw-sort" name="sort" class="yzw-select yzw-select--small">
+        <option value="match">マッチ度が高い順</option>
+        <option value="new">新着順</option>
+      </select>
+    </label>
+  </div>
+  <div id="yzw-list" class="yzw-list"></div>
+  <p id="yzw-empty" class="yzw-empty" style="display:none;">条件に合う求人が見つかりませんでした。条件を減らして探してみてください。</p>
+</div>
+
+<!-- [4-1/8] CSS基本デザイン：共通・ヘッダー
+     貼り付け場所：前のブロックの下（記事内ならどこでも可）
+     役割：文字色・余白のリセットと、タイトル部分の見た目
+     ※ div.yzw-app の中だけに効き、!important でブログ側CSSの干渉を防ぐ -->
+<style>
+div.yzw-app,div.yzw-app *{box-sizing:border-box !important;}
+div.yzw-app{width:100% !important;max-width:1000px !important;margin:0 auto 32px !important;padding:0 !important;color:#1F3A5F !important;font-size:15px !important;line-height:1.7 !important;letter-spacing:normal !important;text-align:left !important;}
+div.yzw-app p,div.yzw-app h2,div.yzw-app h3{margin:0 !important;padding:0 !important;border:0 !important;background:none !important;color:inherit !important;}
+div.yzw-app h2::before,div.yzw-app h2::after,div.yzw-app h3::before,div.yzw-app h3::after{content:none !important;display:none !important;}
+div#yzw-match-head{text-align:center !important;padding-top:8px !important;}
+div#yzw-match-head .yzw-eyebrow{display:inline-block !important;margin-bottom:10px !important;padding:4px 16px !important;border-radius:999px !important;background:#1F3A5F !important;color:#FFE45C !important;font-size:12px !important;font-weight:700 !important;letter-spacing:0.15em !important;}
+div#yzw-match-head .yzw-title{margin-bottom:8px !important;font-size:26px !important;font-weight:700 !important;line-height:1.4 !important;text-align:center !important;}
+div#yzw-match-head .yzw-lead{color:#5B6B7B !important;font-size:14px !important;text-align:center !important;}
+div.yzw-app .yzw-alert{margin-top:12px !important;padding:12px 16px !important;border:2px dashed #D6246A !important;border-radius:12px !important;background:#FFF4F8 !important;}
+</style>
+
+<!-- [4-2/8] CSS基本デザイン：検索フォーム
+     貼り付け場所：前のブロックの下（記事内ならどこでも可）
+     役割：検索フォーム（入力欄・こだわり条件・リセットボタン）の見た目
+     ※ div.yzw-app の中だけに効き、!important でブログ側CSSの干渉を防ぐ -->
+<style>
+div#yzw-match-form .yzw-form{display:grid !important;grid-template-columns:1fr 1fr !important;gap:20px !important;margin:0 !important;padding:24px !important;border:2px solid #1F3A5F !important;border-radius:24px !important;background:#FFFFFF !important;box-shadow:6px 6px 0 #1F3A5F !important;}
+div#yzw-match-form .yzw-fieldset{min-width:0 !important;margin:0 !important;padding:18px !important;border:0 !important;border-radius:16px !important;background:#F4F7FB !important;}
+div#yzw-match-form .yzw-legend{float:left !important;width:100% !important;margin:0 0 12px !important;padding:0 !important;font-size:15px !important;font-weight:700 !important;color:#1F3A5F !important;}
+div#yzw-match-form .yzw-legend-num{display:inline-block !important;width:24px !important;height:24px !important;margin-right:8px !important;border-radius:50% !important;background:#D6246A !important;color:#FFFFFF !important;font-size:13px !important;line-height:24px !important;text-align:center !important;}
+div#yzw-match-form .yzw-field{clear:both !important;display:block !important;margin:0 0 12px !important;}
+div#yzw-match-form .yzw-label{display:block !important;margin-bottom:4px !important;font-size:13px !important;font-weight:700 !important;}
+div.yzw-app .yzw-select,div.yzw-app .yzw-input{display:block !important;width:100% !important;height:44px !important;margin:0 !important;padding:0 12px !important;border:2px solid #1F3A5F !important;border-radius:10px !important;background:#FFFFFF !important;color:#1F3A5F !important;font-size:15px !important;font-family:inherit !important;box-shadow:none !important;}
+div.yzw-app .yzw-select:focus,div.yzw-app .yzw-input:focus{outline:3px solid #9FD8FF !important;outline-offset:1px !important;}
+div.yzw-app .yzw-select--small{display:inline-block !important;width:auto !important;height:38px !important;font-size:14px !important;}
+div#yzw-match-form .yzw-tag-choices{display:flex !important;flex-wrap:wrap !important;gap:8px !important;}
+div#yzw-match-form .yzw-chip{display:inline-block !important;margin:0 !important;cursor:pointer !important;}
+div#yzw-match-form .yzw-chip input{position:absolute !important;opacity:0 !important;width:1px !important;height:1px !important;}
+div#yzw-match-form .yzw-chip span{display:inline-block !important;padding:6px 14px !important;border:2px solid #1F3A5F !important;border-radius:999px !important;background:#FFFFFF !important;font-size:13px !important;font-weight:700 !important;transition:background 0.2s ease, transform 0.2s ease !important;}
+div#yzw-match-form .yzw-chip:hover span{transform:translateY(-2px) !important;}
+div#yzw-match-form .yzw-chip input:checked + span{background:#FFE45C !important;}
+div#yzw-match-form .yzw-chip input:focus-visible + span{outline:3px solid #9FD8FF !important;}
+div#yzw-match-form .yzw-form-actions{grid-column:1 / -1 !important;display:flex !important;flex-wrap:wrap !important;align-items:center !important;justify-content:space-between !important;gap:12px !important;}
+div#yzw-match-form .yzw-check{display:inline-flex !important;align-items:center !important;gap:6px !important;margin:0 !important;font-size:14px !important;cursor:pointer !important;}
+div#yzw-match-form .yzw-check input{width:18px !important;height:18px !important;margin:0 !important;}
+div#yzw-match-form .yzw-btn-reset{margin:0 !important;padding:10px 20px !important;border:2px solid #1F3A5F !important;border-radius:999px !important;background:#FFFFFF !important;color:#1F3A5F !important;font-size:14px !important;font-weight:700 !important;cursor:pointer !important;transition:background 0.2s ease !important;}
+div#yzw-match-form .yzw-btn-reset:hover{background:#FFB3CB !important;}
+</style>
+
+<!-- [4-3/8] CSS基本デザイン：求人カード
+     貼り付け場所：前のブロックの下（記事内ならどこでも可）
+     役割：件数・並び順・求人カード・募集状況バッジ・タグの見た目
+     ※ div.yzw-app の中だけに効き、!important でブログ側CSSの干渉を防ぐ -->
+<style>
+div#yzw-match-results .yzw-result-head{display:flex !important;flex-wrap:wrap !important;align-items:center !important;justify-content:space-between !important;gap:12px !important;margin-bottom:16px !important;}
+div#yzw-match-results .yzw-count{font-size:15px !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-count strong{color:#D6246A !important;font-size:22px !important;}
+div#yzw-match-results .yzw-sort{display:inline-flex !important;align-items:center !important;gap:8px !important;margin:0 !important;font-size:13px !important;}
+div#yzw-match-results .yzw-list{display:grid !important;grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr)) !important;gap:20px !important;padding:0 6px 6px 0 !important;}
+div#yzw-match-results .yzw-empty{padding:24px !important;border:2px dashed #1F3A5F !important;border-radius:16px !important;text-align:center !important;}
+div#yzw-match-results .yzw-card{display:flex !important;flex-direction:column !important;gap:10px !important;margin:0 !important;padding:20px !important;border:2px solid #1F3A5F !important;border-radius:20px !important;background:#FFFFFF !important;box-shadow:5px 5px 0 #1F3A5F !important;transition:transform 0.2s ease, box-shadow 0.2s ease !important;}
+div#yzw-match-results .yzw-card:hover{transform:translate(-2px, -2px) !important;box-shadow:7px 7px 0 #1F3A5F !important;}
+div#yzw-match-results .yzw-card--closed{opacity:0.6 !important;background:#F4F7FB !important;}
+div#yzw-match-results .yzw-card-top{display:flex !important;flex-wrap:wrap !important;align-items:center !important;gap:8px !important;}
+div#yzw-match-results .yzw-company{font-size:13px !important;color:#5B6B7B !important;}
+div#yzw-match-results .yzw-job-title{font-size:18px !important;font-weight:700 !important;line-height:1.4 !important;}
+div#yzw-match-results .yzw-badge{display:inline-block !important;padding:2px 10px !important;border:2px solid #1F3A5F !important;border-radius:999px !important;font-size:12px !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-badge--open{background:#B8F0D4 !important;}
+div#yzw-match-results .yzw-badge--few{background:#FFE45C !important;}
+div#yzw-match-results .yzw-badge--closed{background:#E3E8EE !important;}
+div#yzw-match-results .yzw-meta{display:flex !important;flex-wrap:wrap !important;gap:4px 14px !important;font-size:13px !important;}
+div#yzw-match-results .yzw-tags{display:flex !important;flex-wrap:wrap !important;gap:6px !important;}
+div#yzw-match-results .yzw-tag{display:inline-block !important;padding:2px 10px !important;border-radius:999px !important;background:#F4F7FB !important;font-size:12px !important;}
+div#yzw-match-results .yzw-tag--hit{background:#FFE45C !important;font-weight:700 !important;}
+</style>
+
+<!-- [4-4/8] CSS基本デザイン：マッチ度・応募ボタン
+     貼り付け場所：前のブロックの下（記事内ならどこでも可）
+     役割：マッチ度のバー・くわしく見る・応募ボタンの見た目
+     ※ div.yzw-app の中だけに効き、!important でブログ側CSSの干渉を防ぐ -->
+<style>
+div#yzw-match-results .yzw-score{padding:12px 14px !important;border-radius:14px !important;background:#FFF4F8 !important;}
+div#yzw-match-results .yzw-score-head{display:flex !important;align-items:baseline !important;justify-content:space-between !important;font-size:13px !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-score-num{color:#D6246A !important;font-size:24px !important;font-weight:700 !important;line-height:1.2 !important;}
+div#yzw-match-results .yzw-bar{display:block !important;height:10px !important;margin:6px 0 !important;border:2px solid #1F3A5F !important;border-radius:999px !important;background:#FFFFFF !important;overflow:hidden !important;}
+div#yzw-match-results .yzw-bar-fill{display:block !important;height:100% !important;background:linear-gradient(90deg, #FFB3CB, #D6246A) !important;}
+div#yzw-match-results .yzw-reasons{font-size:12px !important;color:#5B6B7B !important;}
+div#yzw-match-results .yzw-score--none{background:#F4F7FB !important;font-size:12px !important;color:#5B6B7B !important;}
+div#yzw-match-results .yzw-detail summary{cursor:pointer !important;font-size:13px !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-detail dl{margin:8px 0 0 !important;padding:0 !important;font-size:13px !important;}
+div#yzw-match-results .yzw-detail dt{margin:6px 0 0 !important;font-weight:700 !important;}
+div#yzw-match-results .yzw-detail dd{margin:0 !important;padding:0 !important;}
+div#yzw-match-results .yzw-apply{display:block !important;margin-top:auto !important;padding:12px 16px !important;border:2px solid #1F3A5F !important;border-radius:999px !important;background:#1F3A5F !important;color:#FFFFFF !important;font-size:14px !important;font-weight:700 !important;text-align:center !important;text-decoration:none !important;transition:background 0.2s ease, color 0.2s ease !important;}
+div#yzw-match-results a.yzw-apply:hover{background:#FFE45C !important;color:#1F3A5F !important;}
+div#yzw-match-results .yzw-apply--disabled{background:#E3E8EE !important;border-color:#E3E8EE !important;color:#5B6B7B !important;}
+</style>
+
+<!-- =====================================================
+     [5/8] CSSスマートフォン対応
+     貼り付け場所：前のブロックの下
+     役割：タブレット・スマートフォン向けにレイアウトと文字サイズを調整
+     ===================================================== -->
+<style>
+  /* タブレット以下：フォームを1列に */
+  @media (max-width: 768px) {
+    div#yzw-match-form .yzw-form {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+      padding: 18px !important;
+      border-radius: 20px !important;
+    }
+  }
+
+  /* スマートフォン：余白と文字サイズを詰めて縦長になりすぎないように */
+  @media (max-width: 480px) {
+    div.yzw-app {
+      margin-bottom: 24px !important;
+      font-size: 14px !important;
+    }
+    div#yzw-match-head .yzw-title {
+      font-size: 21px !important;
+    }
+    div#yzw-match-form .yzw-form {
+      padding: 14px !important;
+      box-shadow: 4px 4px 0 #1F3A5F !important;
+    }
+    div#yzw-match-form .yzw-fieldset {
+      padding: 14px !important;
+    }
+    div#yzw-match-form .yzw-form-actions {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+    div#yzw-match-form .yzw-btn-reset {
+      width: 100% !important;
+    }
+    div#yzw-match-results .yzw-result-head {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+    div#yzw-match-results .yzw-list {
+      gap: 16px !important;
+    }
+    div#yzw-match-results .yzw-card {
+      padding: 16px !important;
+      box-shadow: 4px 4px 0 #1F3A5F !important;
+    }
+    div#yzw-match-results .yzw-job-title {
+      font-size: 17px !important;
+    }
+  }
+</style>
+
+<!-- [6-1/8] JavaScript検索機能：カード表示
+     貼り付け場所：前のブロックの下
+     役割：共通の道具（文字の安全化など）・入力値の読み取り・求人カード1枚分のHTMLを作る処理
+     ※名前はすべて window.YZW の中にまとめ、ブログ側との衝突を防ぐ -->
+<script>
+(function () {
+  'use strict';
+  const Y = window.YZW = window.YZW || {};
+
+  // 共通の道具
+  Y.util = {
+    byId: function (id) { return document.getElementById(id); },
+    // データ内の < > などをHTMLとして解釈させない
+    esc: function (v) {
+      return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    },
+    // 重複と空欄を除く
+    uniq: function (list) {
+      const out = [];
+      list.forEach(function (v) { if (v && out.indexOf(v) === -1) { out.push(v); } });
+      return out;
+    },
+    // https:// で始まるURLだけを許可
+    safeUrl: function (u) {
+      return /^https:\/\/[^\s"'<>]+$/.test(String(u || '')) ? u : '';
+    }
+  };
+
+  function byId(id) { return document.getElementById(id); }
+
+  // 選択肢（option）を追加
+  Y.fillSelect = function (id, values) {
+    const el = byId(id);
+    if (!el) { return; }
+    values.forEach(function (v) {
+      const o = document.createElement('option');
+      o.value = v;
+      o.textContent = v;
+      el.appendChild(o);
+    });
+  };
+
+  // フォームの入力値を読み取る
+  Y.getPrefs = function () {
+    const tags = [];
+    document.querySelectorAll('#yzw-f-tags input:checked').forEach(function (el) { tags.push(el.value); });
+    return {
+      jobType: byId('yzw-f-jobtype').value,
+      industry: byId('yzw-f-industry').value,
+      keyword: byId('yzw-f-keyword').value.trim().toLowerCase(),
+      area: byId('yzw-f-area').value,
+      employment: byId('yzw-f-employment').value,
+      tags: tags,
+      showClosed: byId('yzw-f-closed').checked,
+      sort: byId('yzw-sort') ? byId('yzw-sort').value : 'match'
+    };
+  };
+
+  const STATUS = {
+    open: { label: '募集中', cls: 'open' },
+    few: { label: '残りわずか', cls: 'few' },
+    closed: { label: '募集終了', cls: 'closed' }
+  };
+
+  // 求人カード1枚分のHTML
+  Y.cardHtml = function (item, prefs) {
+    const esc = Y.util.esc;
+    const job = item.job;
+    const co = item.company || {};
+    const st = STATUS[job.status] || STATUS.open;
+    const m = item.match;
+    const url = Y.util.safeUrl(job.formUrl);
+    const closed = job.status === 'closed';
+
+    const tags = (job.tags || []).map(function (t) {
+      const hit = prefs.tags.indexOf(t) !== -1;
+      return '<span class="yzw-tag' + (hit ? ' yzw-tag--hit' : '') + '">#' + esc(t) + '</span>';
+    }).join('');
+
+    const score = m.score === null
+      ? '<div class="yzw-score yzw-score--none">希望条件を選ぶと、マッチ度が表示されます。</div>'
+      : '<div class="yzw-score"><div class="yzw-score-head"><span>マッチ度</span><span class="yzw-score-num">' + m.score + '%</span></div>' +
+        '<span class="yzw-bar"><span class="yzw-bar-fill" style="width:' + m.score + '%;"></span></span>' +
+        '<p class="yzw-reasons">' + (m.reasons.length ? esc(m.reasons.join(' / ')) : '一致する希望条件はありません') + '</p></div>';
+
+    const apply = (url && !closed)
+      ? '<a class="yzw-apply" href="' + esc(url) + '" target="_blank" rel="noopener">この求人で応募する →</a>'
+      : '<span class="yzw-apply yzw-apply--disabled">' + (closed ? '募集は終了しました' : '応募フォーム準備中') + '</span>';
+
+    return '<article class="yzw-card' + (closed ? ' yzw-card--closed' : '') + '">' +
+      '<div class="yzw-card-top"><span class="yzw-badge yzw-badge--' + st.cls + '">' + st.label + '</span>' +
+      '<span class="yzw-company">' + esc(co.name) + '</span></div>' +
+      '<h3 class="yzw-job-title">' + esc(job.title) + '</h3>' +
+      '<div class="yzw-meta"><span>📍 ' + esc(job.area) + '</span><span>💼 ' + esc(job.jobType) + '</span><span>🏷 ' + esc(job.employment) + '</span></div>' +
+      (tags ? '<div class="yzw-tags">' + tags + '</div>' : '') +
+      score +
+      '<details class="yzw-detail"><summary>くわしく見る</summary><dl>' +
+      '<dt>業種</dt><dd>' + esc(co.industry) + '</dd>' +
+      '<dt>給与</dt><dd>' + esc(job.salary) + '</dd>' +
+      '<dt>勤務時間</dt><dd>' + esc(job.hours) + '</dd>' +
+      '<dt>仕事内容</dt><dd>' + esc(job.description) + '</dd>' +
+      '</dl></details>' + apply + '</article>';
+  };
+
+  if (Y.tryInit) { Y.tryInit(); }
+})();
+</script>
+
+<!-- [6-2/8] JavaScript検索機能：絞り込み・起動
+     貼り付け場所：前のブロックの下
+     役割：選択肢の自動作成・絞り込み・並び替え・表示。必要なブロックがそろった時点で起動する
+     ※ブロックが足りないときは、件数の欄に足りないブロック名を表示する -->
+<script>
+(function () {
+  'use strict';
+  const Y = window.YZW = window.YZW || {};
+  function byId(id) { return document.getElementById(id); }
+
+  // 絞り込み → 並び替え → 表示
+  Y.render = function () {
+    const d = Y.data;
+    const p = Y.getPrefs();
+    const cos = {};
+    (d.companies || []).forEach(function (c) { cos[c.id] = c; });
+
+    const items = (d.jobs || []).map(function (job) {
+      const co = cos[job.companyId];
+      return { job: job, company: co, match: Y.calcMatch(job, co, p) };
+    }).filter(function (it) {
+      const j = it.job;
+      const c = it.company || {};
+      if (!p.showClosed && j.status === 'closed') { return false; }
+      if (p.jobType && j.jobType !== p.jobType) { return false; }
+      if (p.industry && c.industry !== p.industry) { return false; }
+      if (p.keyword) {
+        const text = [j.title, j.jobType, j.description, (j.tags || []).join(' '), c.name, c.industry].join(' ').toLowerCase();
+        if (text.indexOf(p.keyword) === -1) { return false; }
+      }
+      return true;
+    });
+
+    // 募集終了は後ろ。マッチ度順または新着順
+    items.sort(function (a, b) {
+      const ca = a.job.status === 'closed' ? 1 : 0;
+      const cb = b.job.status === 'closed' ? 1 : 0;
+      if (ca !== cb) { return ca - cb; }
+      if (p.sort === 'match') {
+        const sa = a.match.score === null ? -1 : a.match.score;
+        const sb = b.match.score === null ? -1 : b.match.score;
+        if (sa !== sb) { return sb - sa; }
+      }
+      return String(b.job.posted || '').localeCompare(String(a.job.posted || ''));
+    });
+
+    byId('yzw-list').innerHTML = items.map(function (it) { return Y.cardHtml(it, p); }).join('');
+    byId('yzw-empty').style.display = items.length ? 'none' : 'block';
+    byId('yzw-count').innerHTML = '<strong>' + items.length + '</strong> 件の求人' +
+      (d.updated ? '<span style="font-weight:400;font-size:12px;margin-left:8px;">（' + Y.util.esc(d.updated) + ' 更新）</span>' : '');
+  };
+
+  // 起動（すべてのブロックがそろったら1回だけ）
+  Y.tryInit = function () {
+    if (Y.started || !Y.data || !Y.calcMatch || !Y.cardHtml || !Y.getPrefs || !byId('yzw-form') || !byId('yzw-list')) { return; }
+    Y.started = true;
+    const u = Y.util;
+    const jobs = Y.data.jobs || [];
+    const cos = Y.data.companies || [];
+
+    Y.fillSelect('yzw-f-jobtype', u.uniq(jobs.map(function (j) { return j.jobType; })));
+    Y.fillSelect('yzw-f-industry', u.uniq(cos.map(function (c) { return c.industry; })));
+    Y.fillSelect('yzw-f-area', u.uniq(jobs.map(function (j) { return j.area; })));
+    Y.fillSelect('yzw-f-employment', u.uniq(jobs.map(function (j) { return j.employment; })));
+
+    const all = [];
+    jobs.forEach(function (j) { (j.tags || []).forEach(function (t) { all.push(t); }); });
+    const box = byId('yzw-f-tags');
+    if (box) {
+      box.innerHTML = u.uniq(all).map(function (t, i) {
+        return '<label class="yzw-chip" for="yzw-tag-' + i + '"><input type="checkbox" id="yzw-tag-' + i +
+          '" name="tags" value="' + u.esc(t) + '"><span>' + u.esc(t) + '</span></label>';
+      }).join('');
+    }
+
+    const form = byId('yzw-form');
+    form.addEventListener('change', Y.render);
+    form.addEventListener('input', Y.render);
+    form.addEventListener('submit', function (e) { e.preventDefault(); Y.render(); });
+    form.addEventListener('reset', function () { setTimeout(Y.render, 0); });
+    if (byId('yzw-sort')) { byId('yzw-sort').addEventListener('change', Y.render); }
+    Y.render();
+  };
+
+  // 読み込み後も起動していなければ、足りないブロックを表示
+  function checkMissing() {
+    if (Y.started) { return; }
+    const miss = [];
+    if (!byId('yzw-form')) { miss.push('[2/8] 検索フォーム'); }
+    if (!byId('yzw-list')) { miss.push('[3/8] 検索結果'); }
+    if (!Y.cardHtml) { miss.push('[6-1/8] カード表示'); }
+    if (!Y.calcMatch) { miss.push('[7/8] マッチング計算'); }
+    if (!Y.data) { miss.push('[8/8] 求人データ'); }
+    const el = byId('yzw-count');
+    if (el && miss.length) { el.textContent = '読み込みに失敗しました。見つからないブロック：' + miss.join('、'); }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', Y.tryInit);
+  } else {
+    Y.tryInit();
+  }
+  window.addEventListener('load', function () { Y.tryInit(); checkMissing(); });
+})();
+</script>
+
+<!-- =====================================================
+     [7/8] JavaScriptマッチング計算
+     貼り付け場所：[6-2/8] の下
+     役割：希望条件と求人を比べて、マッチ度（0〜100%）と一致した理由を返す
+     ・配点（WEIGHTS）の数字を変えると、重視する条件を調整できる
+     ・選ばれていない条件は計算から外す（こだわらない＝減点しない）
+     ===================================================== -->
+<script>
+(function () {
+  'use strict';
+
+  const Y = window.YZW = window.YZW || {};
+
+  // 条件ごとの配点（合計が100でなくても、自動で割合に直します）
+  const WEIGHTS = {
+    area: 35,        // 勤務地
+    employment: 30,  // 雇用形態
+    tags: 35         // こだわり条件（選んだうち何個に対応しているか）
+  };
+
+  Y.calcMatch = function (job, company, prefs) {
+    let possible = 0;
+    let earned = 0;
+    const reasons = [];
+
+    if (prefs.area) {
+      possible += WEIGHTS.area;
+      if (job.area === prefs.area) {
+        earned += WEIGHTS.area;
+        reasons.push('勤務地が一致');
+      }
+    }
+
+    if (prefs.employment) {
+      possible += WEIGHTS.employment;
+      if (job.employment === prefs.employment) {
+        earned += WEIGHTS.employment;
+        reasons.push('雇用形態が一致');
+      }
+    }
+
+    if (prefs.tags && prefs.tags.length) {
+      possible += WEIGHTS.tags;
+      const jobTags = job.tags || [];
+      const hits = prefs.tags.filter(function (t) { return jobTags.indexOf(t) !== -1; });
+      earned += WEIGHTS.tags * hits.length / prefs.tags.length;
+      if (hits.length) {
+        reasons.push(hits.join('・') + ' に対応');
+      }
+    }
+
+    // 希望条件が1つも選ばれていなければ、マッチ度は表示しない
+    if (possible === 0) {
+      return { score: null, reasons: [] };
+    }
+    return { score: Math.round(earned / possible * 100), reasons: reasons };
+  };
+
+  if (Y.tryInit) { Y.tryInit(); }
+})();
+</script>
+
+<!-- =====================================================
+     [8/8] 求人データ
+     貼り付け場所：[7/8] の下（記事のいちばん下）
+     役割：グループ企業と求人の一覧。検索フォームの選択肢もここから自動で作られる
+     ※現在はすべて「サンプル」です。会社名・求人内容・エリアは実際の内容に書き換えてください
+
+     ■ 書き換えのルール
+       ・文字は '（半角のシングルクォート）で囲む。全角のクォート記号は使わない
+       ・1件ごとの { } の後ろには , （半角カンマ）を付ける
+       ・status は 'open'（募集中）／'few'（残りわずか）／'closed'（募集終了）のどれか
+       ・formUrl は https:// で始まるGoogleフォームのURL。空欄 '' なら「応募フォーム準備中」と表示
+       ・posted は掲載日（新着順の並び替えに使用）。'2026-11-06' の形式
+     ===================================================== -->
+<script>
+(function () {
+  'use strict';
+
+  const Y = window.YZW = window.YZW || {};
+
+  Y.data = {
+    updated: '2026-11-06',
+
+    /* ---------- グループ企業 ---------- */
+    companies: [
+      { id: 'c01', name: '株式会社ドゥ.ヨネザワ 湯の谷ゴルフ俱楽部', industry: 'ゴルフ場・レジャー' },
+      { id: 'c02', name: 'グループ企業B（サンプル）', industry: '飲食' },
+      { id: 'c03', name: 'グループ企業C（サンプル）', industry: '小売' },
+      { id: 'c04', name: 'グループ企業D（サンプル）', industry: '製造' },
+      { id: 'c05', name: 'グループ企業E（サンプル）', industry: '介護・福祉' },
+      { id: 'c06', name: 'グループ企業F（サンプル）', industry: '物流' },
+      { id: 'c07', name: 'グループ企業G（サンプル）', industry: '不動産・管理' }
+    ],
+
+    /* ---------- 求人 ---------- */
+    jobs: [
+      {
+        id: 'j001', companyId: 'c01', status: 'open', posted: '2026-11-01',
+        title: 'フロント・受付スタッフ（サンプル）',
+        jobType: '接客・サービス', area: 'エリアA', employment: 'パート・アルバイト',
+        tags: ['未経験OK', '土日のみOK', 'シニア活躍中'],
+        salary: '時給 〇〇〇円〜（仮）', hours: '7:00〜15:00 のうち実働4時間〜（仮）',
+        description: 'ご来場のお客様の受付・会計・ご案内をお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j002', companyId: 'c01', status: 'few', posted: '2026-10-20',
+        title: 'コース管理スタッフ（サンプル）',
+        jobType: '製造・軽作業', area: 'エリアA', employment: '正社員',
+        tags: ['未経験OK', '車通勤OK'],
+        salary: '月給 〇〇万円〜（仮）', hours: '6:00〜15:00（仮）',
+        description: '芝刈りや整備など、ゴルフコースを整える仕事です。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j003', companyId: 'c02', status: 'open', posted: '2026-11-05',
+        title: 'ホール・キッチンスタッフ（サンプル）',
+        jobType: '調理・飲食', area: 'エリアB', employment: 'パート・アルバイト',
+        tags: ['未経験OK', '週2日〜OK', '学生歓迎'],
+        salary: '時給 〇〇〇円〜（仮）', hours: '11:00〜22:00 のうちシフト制（仮）',
+        description: '料理の提供や簡単な調理補助をお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j004', companyId: 'c03', status: 'open', posted: '2026-10-28',
+        title: '売場スタッフ（サンプル）',
+        jobType: '販売', area: 'エリアB', employment: '契約社員',
+        tags: ['車通勤OK', '週2日〜OK'],
+        salary: '時給 〇〇〇円〜（仮）', hours: '9:00〜18:00 のうち実働6時間（仮）',
+        description: '商品の陳列やレジ対応をお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j005', companyId: 'c04', status: 'open', posted: '2026-10-15',
+        title: '製造ラインスタッフ（サンプル）',
+        jobType: '製造・軽作業', area: 'エリアC', employment: '正社員',
+        tags: ['未経験OK', '車通勤OK', '資格取得支援'],
+        salary: '月給 〇〇万円〜（仮）', hours: '8:00〜17:00（仮）',
+        description: '機械の操作や製品のチェックをお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j006', companyId: 'c05', status: 'few', posted: '2026-11-03',
+        title: '介護スタッフ（サンプル）',
+        jobType: '介護・福祉', area: 'エリアC', employment: 'パート・アルバイト',
+        tags: ['資格取得支援', 'シニア活躍中', '週2日〜OK'],
+        salary: '時給 〇〇〇円〜（仮）', hours: '8:30〜17:30 のうち実働4時間〜（仮）',
+        description: '利用者さまの生活のサポートをお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j007', companyId: 'c06', status: 'open', posted: '2026-10-30',
+        title: '配送ドライバー（サンプル）',
+        jobType: 'ドライバー', area: 'エリアA', employment: '正社員',
+        tags: ['車通勤OK', '資格取得支援'],
+        salary: '月給 〇〇万円〜（仮）', hours: '8:00〜17:00（仮）',
+        description: '決まったルートでの配送をお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j008', companyId: 'c07', status: 'closed', posted: '2026-09-10',
+        title: '事務スタッフ（サンプル）',
+        jobType: '事務', area: 'エリアB', employment: '契約社員',
+        tags: ['土日休み'],
+        salary: '月給 〇〇万円〜（仮）', hours: '9:00〜18:00（仮）',
+        description: '電話対応やデータ入力をお願いします。（サンプル）',
+        formUrl: ''
+      }
+    ]
+  };
+
+  if (Y.tryInit) { Y.tryInit(); }
+})();
+</script>
+
+</body>
+</html>
