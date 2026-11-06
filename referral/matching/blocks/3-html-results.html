@@ -1,0 +1,19 @@
+<!-- =====================================================
+     [3/8] HTML検索結果
+     貼り付け場所：[2/8] の下
+     役割：件数・並び替え・求人カードの表示場所（カードはJavaScriptが自動で作成）
+     ===================================================== -->
+<div id="yzw-match-results" class="yzw-app">
+  <div class="yzw-result-head">
+    <p id="yzw-count" class="yzw-count" aria-live="polite">求人を読み込み中です…</p>
+    <label class="yzw-sort" for="yzw-sort">
+      <span class="yzw-sort-label">並び順</span>
+      <select id="yzw-sort" name="sort" class="yzw-select yzw-select--small">
+        <option value="match">マッチ度が高い順</option>
+        <option value="new">新着順</option>
+      </select>
+    </label>
+  </div>
+  <div id="yzw-list" class="yzw-list"></div>
+  <p id="yzw-empty" class="yzw-empty" style="display:none;">条件に合う求人が見つかりませんでした。条件を減らして探してみてください。</p>
+</div>

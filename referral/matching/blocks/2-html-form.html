@@ -1,0 +1,62 @@
+<!-- =====================================================
+     [2/8] HTML検索フォーム
+     貼り付け場所：[1/8] の下
+     役割：絞り込み（職種・業種・キーワード）と希望条件（勤務地・雇用形態・こだわり）の入力欄
+     ※選択肢は [8/8] 求人データから自動で作られるため、ここを編集する必要はありません
+     ===================================================== -->
+<div id="yzw-match-form" class="yzw-app">
+  <form id="yzw-form" class="yzw-form" action="#" autocomplete="off">
+
+    <!-- 絞り込み：一致しない求人は表示しない -->
+    <fieldset class="yzw-fieldset">
+      <legend class="yzw-legend"><span class="yzw-legend-num">1</span>求人を絞り込む</legend>
+      <label class="yzw-field" for="yzw-f-jobtype">
+        <span class="yzw-label">職種</span>
+        <select id="yzw-f-jobtype" name="jobType" class="yzw-select">
+          <option value="">すべての職種</option>
+        </select>
+      </label>
+      <label class="yzw-field" for="yzw-f-industry">
+        <span class="yzw-label">業種</span>
+        <select id="yzw-f-industry" name="industry" class="yzw-select">
+          <option value="">すべての業種</option>
+        </select>
+      </label>
+      <label class="yzw-field" for="yzw-f-keyword">
+        <span class="yzw-label">キーワード</span>
+        <input type="search" id="yzw-f-keyword" name="keyword" class="yzw-input" placeholder="例：接客、未経験" maxlength="50">
+      </label>
+    </fieldset>
+
+    <!-- 希望条件：マッチ度の計算に使う -->
+    <fieldset class="yzw-fieldset">
+      <legend class="yzw-legend"><span class="yzw-legend-num">2</span>希望条件（マッチ度に反映）</legend>
+      <label class="yzw-field" for="yzw-f-area">
+        <span class="yzw-label">勤務地</span>
+        <select id="yzw-f-area" name="area" class="yzw-select">
+          <option value="">こだわらない</option>
+        </select>
+      </label>
+      <label class="yzw-field" for="yzw-f-employment">
+        <span class="yzw-label">雇用形態</span>
+        <select id="yzw-f-employment" name="employment" class="yzw-select">
+          <option value="">こだわらない</option>
+        </select>
+      </label>
+      <div class="yzw-field">
+        <span class="yzw-label">こだわり条件</span>
+        <div id="yzw-f-tags" class="yzw-tag-choices"></div>
+      </div>
+    </fieldset>
+
+    <!-- 操作 -->
+    <div class="yzw-form-actions">
+      <label class="yzw-check" for="yzw-f-closed">
+        <input type="checkbox" id="yzw-f-closed" name="showClosed" value="1">
+        <span>募集終了の求人も表示</span>
+      </label>
+      <button type="reset" class="yzw-btn-reset">条件をリセット</button>
+    </div>
+
+  </form>
+</div>

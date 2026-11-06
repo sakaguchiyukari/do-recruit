@@ -1,0 +1,231 @@
+<!-- =====================================================
+     [6/8] JavaScript検索機能
+     貼り付け場所：[5/8] の下
+     役割：選択肢の自動作成・絞り込み・並び替え・求人カードの表示
+     ・関数や変数はすべて window.YZW の中にまとめ、ブログ側との名前の衝突を防ぐ
+     ・[7/8][8/8] と貼り付け順が前後しても動くように、全部そろった時点で起動する
+     ===================================================== -->
+<script>
+(function () {
+  'use strict';
+
+  const Y = window.YZW = window.YZW || {};
+
+  /* ---------- 小さな道具 ---------- */
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  // HTMLとして解釈されないように文字を置き換える（データに < などがあっても安全）
+  function esc(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // 重複と空欄を除いた一覧を作る
+  function uniq(list) {
+    const out = [];
+    list.forEach(function (v) {
+      if (v && out.indexOf(v) === -1) { out.push(v); }
+    });
+    return out;
+  }
+
+  // https:// で始まるURLだけを応募先として許可する
+  function safeUrl(url) {
+    return /^https:\/\/[^\s"'<>]+$/.test(String(url || '')) ? url : '';
+  }
+
+  const STATUS = {
+    open:   { label: '募集中',     cls: 'open' },
+    few:    { label: '残りわずか', cls: 'few' },
+    closed: { label: '募集終了',   cls: 'closed' }
+  };
+
+  /* ---------- 選択肢の作成 ---------- */
+  function fillSelect(id, values) {
+    const el = byId(id);
+    if (!el) { return; }
+    values.forEach(function (v) {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      el.appendChild(opt);
+    });
+  }
+
+  function buildTagChoices(tags) {
+    const box = byId('yzw-f-tags');
+    if (!box) { return; }
+    box.innerHTML = tags.map(function (t, i) {
+      return '<label class="yzw-chip" for="yzw-tag-' + i + '">' +
+        '<input type="checkbox" id="yzw-tag-' + i + '" name="tags" value="' + esc(t) + '">' +
+        '<span>' + esc(t) + '</span></label>';
+    }).join('');
+  }
+
+  /* ---------- 入力値の取得 ---------- */
+  function getPrefs() {
+    const tags = [];
+    document.querySelectorAll('#yzw-f-tags input:checked').forEach(function (el) {
+      tags.push(el.value);
+    });
+    return {
+      jobType:    byId('yzw-f-jobtype').value,
+      industry:   byId('yzw-f-industry').value,
+      keyword:    byId('yzw-f-keyword').value.trim().toLowerCase(),
+      area:       byId('yzw-f-area').value,
+      employment: byId('yzw-f-employment').value,
+      tags:       tags,
+      showClosed: byId('yzw-f-closed').checked,
+      sort:       byId('yzw-sort') ? byId('yzw-sort').value : 'match'
+    };
+  }
+
+  /* ---------- カード1枚分のHTML ---------- */
+  function cardHtml(item, prefs) {
+    const job = item.job;
+    const company = item.company || {};
+    const st = STATUS[job.status] || STATUS.open;
+    const m = item.match;
+    const url = safeUrl(job.formUrl);
+
+    const tags = (job.tags || []).map(function (t) {
+      const hit = prefs.tags.indexOf(t) !== -1;
+      return '<span class="yzw-tag' + (hit ? ' yzw-tag--hit' : '') + '">#' + esc(t) + '</span>';
+    }).join('');
+
+    const score = m.score === null
+      ? '<div class="yzw-score yzw-score--none">希望条件を選ぶと、マッチ度が表示されます。</div>'
+      : '<div class="yzw-score">' +
+          '<div class="yzw-score-head"><span>マッチ度</span><span class="yzw-score-num">' + m.score + '%</span></div>' +
+          '<span class="yzw-bar"><span class="yzw-bar-fill" style="width:' + m.score + '%;"></span></span>' +
+          '<p class="yzw-reasons">' + (m.reasons.length ? esc(m.reasons.join(' / ')) : '一致する希望条件はありません') + '</p>' +
+        '</div>';
+
+    const apply = (url && job.status !== 'closed')
+      ? '<a class="yzw-apply" href="' + esc(url) + '" target="_blank" rel="noopener">この求人で応募する →</a>'
+      : '<span class="yzw-apply yzw-apply--disabled">' + (job.status === 'closed' ? '募集は終了しました' : '応募フォーム準備中') + '</span>';
+
+    return '<article class="yzw-card' + (job.status === 'closed' ? ' yzw-card--closed' : '') + '">' +
+      '<div class="yzw-card-top">' +
+        '<span class="yzw-badge yzw-badge--' + st.cls + '">' + st.label + '</span>' +
+        '<span class="yzw-company">' + esc(company.name) + '</span>' +
+      '</div>' +
+      '<h3 class="yzw-job-title">' + esc(job.title) + '</h3>' +
+      '<div class="yzw-meta">' +
+        '<span>📍 ' + esc(job.area) + '</span>' +
+        '<span>💼 ' + esc(job.jobType) + '</span>' +
+        '<span>🏷 ' + esc(job.employment) + '</span>' +
+      '</div>' +
+      (tags ? '<div class="yzw-tags">' + tags + '</div>' : '') +
+      score +
+      '<details class="yzw-detail"><summary>くわしく見る</summary><dl>' +
+        '<dt>業種</dt><dd>' + esc(company.industry) + '</dd>' +
+        '<dt>給与</dt><dd>' + esc(job.salary) + '</dd>' +
+        '<dt>勤務時間</dt><dd>' + esc(job.hours) + '</dd>' +
+        '<dt>仕事内容</dt><dd>' + esc(job.description) + '</dd>' +
+      '</dl></details>' +
+      apply +
+    '</article>';
+  }
+
+  /* ---------- 絞り込み・並び替え・表示 ---------- */
+  Y.render = function () {
+    const data = Y.data;
+    const prefs = getPrefs();
+    const companies = {};
+    (data.companies || []).forEach(function (c) { companies[c.id] = c; });
+
+    const items = (data.jobs || []).map(function (job) {
+      const company = companies[job.companyId];
+      return { job: job, company: company, match: Y.calcMatch(job, company, prefs) };
+    }).filter(function (it) {
+      const job = it.job;
+      const company = it.company || {};
+      if (!prefs.showClosed && job.status === 'closed') { return false; }
+      if (prefs.jobType && job.jobType !== prefs.jobType) { return false; }
+      if (prefs.industry && company.industry !== prefs.industry) { return false; }
+      if (prefs.keyword) {
+        const text = [job.title, job.jobType, job.description, (job.tags || []).join(' '), company.name, company.industry]
+          .join(' ').toLowerCase();
+        if (text.indexOf(prefs.keyword) === -1) { return false; }
+      }
+      return true;
+    });
+
+    // 募集終了は常に後ろ。その中でマッチ度順 or 新着順
+    items.sort(function (a, b) {
+      const ca = a.job.status === 'closed' ? 1 : 0;
+      const cb = b.job.status === 'closed' ? 1 : 0;
+      if (ca !== cb) { return ca - cb; }
+      if (prefs.sort === 'match') {
+        const sa = a.match.score === null ? -1 : a.match.score;
+        const sb = b.match.score === null ? -1 : b.match.score;
+        if (sa !== sb) { return sb - sa; }
+      }
+      return String(b.job.posted || '').localeCompare(String(a.job.posted || ''));
+    });
+
+    byId('yzw-list').innerHTML = items.map(function (it) { return cardHtml(it, prefs); }).join('');
+    byId('yzw-empty').style.display = items.length ? 'none' : 'block';
+    byId('yzw-count').innerHTML = '<strong>' + items.length + '</strong> 件の求人' +
+      (data.updated ? '<span style="font-weight:400;font-size:12px;margin-left:8px;">（' + esc(data.updated) + ' 更新）</span>' : '');
+  };
+
+  /* ---------- 起動 ---------- */
+  Y.tryInit = function () {
+    if (Y.started) { return; }
+    if (!Y.data || !Y.calcMatch || !byId('yzw-form') || !byId('yzw-list')) { return; }
+    Y.started = true;
+
+    const data = Y.data;
+    const companies = data.companies || [];
+    const jobs = data.jobs || [];
+    const industryOf = {};
+    companies.forEach(function (c) { industryOf[c.id] = c.industry; });
+
+    fillSelect('yzw-f-jobtype', uniq(jobs.map(function (j) { return j.jobType; })));
+    fillSelect('yzw-f-industry', uniq(companies.map(function (c) { return c.industry; })));
+    fillSelect('yzw-f-area', uniq(jobs.map(function (j) { return j.area; })));
+    fillSelect('yzw-f-employment', uniq(jobs.map(function (j) { return j.employment; })));
+    const allTags = [];
+    jobs.forEach(function (j) { (j.tags || []).forEach(function (t) { allTags.push(t); }); });
+    buildTagChoices(uniq(allTags));
+
+    const form = byId('yzw-form');
+    form.addEventListener('change', Y.render);
+    form.addEventListener('input', Y.render);
+    form.addEventListener('submit', function (e) { e.preventDefault(); Y.render(); });
+    form.addEventListener('reset', function () { setTimeout(Y.render, 0); });
+    if (byId('yzw-sort')) { byId('yzw-sort').addEventListener('change', Y.render); }
+
+    Y.render();
+  };
+
+  // ページ読み込み後も起動していなければ、足りないブロックを画面に表示する
+  function checkMissing() {
+    if (Y.started) { return; }
+    const missing = [];
+    if (!byId('yzw-form')) { missing.push('[2/8] 検索フォーム'); }
+    if (!byId('yzw-list')) { missing.push('[3/8] 検索結果'); }
+    if (!Y.calcMatch) { missing.push('[7/8] マッチング計算'); }
+    if (!Y.data) { missing.push('[8/8] 求人データ'); }
+    const count = byId('yzw-count');
+    if (count && missing.length) {
+      count.textContent = '読み込みに失敗しました。次のブロックが見つかりません：' + missing.join('、');
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', Y.tryInit);
+  } else {
+    Y.tryInit();
+  }
+  window.addEventListener('load', function () {
+    Y.tryInit();
+    checkMissing();
+  });
+})();
+</script>

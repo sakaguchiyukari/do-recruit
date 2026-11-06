@@ -1,0 +1,113 @@
+<!-- =====================================================
+     [8/8] 求人データ
+     貼り付け場所：[7/8] の下（記事のいちばん下）
+     役割：グループ企業と求人の一覧。検索フォームの選択肢もここから自動で作られる
+     ※現在はすべて「サンプル」です。会社名・求人内容・エリアは実際の内容に書き換えてください
+
+     ■ 書き換えのルール
+       ・文字は '（半角のシングルクォート）で囲む。全角のクォート記号は使わない
+       ・1件ごとの { } の後ろには , （半角カンマ）を付ける
+       ・status は 'open'（募集中）／'few'（残りわずか）／'closed'（募集終了）のどれか
+       ・formUrl は https:// で始まるGoogleフォームのURL。空欄 '' なら「応募フォーム準備中」と表示
+       ・posted は掲載日（新着順の並び替えに使用）。'2026-11-06' の形式
+     ===================================================== -->
+<script>
+(function () {
+  'use strict';
+
+  const Y = window.YZW = window.YZW || {};
+
+  Y.data = {
+    updated: '2026-11-06',
+
+    /* ---------- グループ企業 ---------- */
+    companies: [
+      { id: 'c01', name: '株式会社ドゥ.ヨネザワ 湯の谷ゴルフ俱楽部', industry: 'ゴルフ場・レジャー' },
+      { id: 'c02', name: 'グループ企業B（サンプル）', industry: '飲食' },
+      { id: 'c03', name: 'グループ企業C（サンプル）', industry: '小売' },
+      { id: 'c04', name: 'グループ企業D（サンプル）', industry: '製造' },
+      { id: 'c05', name: 'グループ企業E（サンプル）', industry: '介護・福祉' },
+      { id: 'c06', name: 'グループ企業F（サンプル）', industry: '物流' },
+      { id: 'c07', name: 'グループ企業G（サンプル）', industry: '不動産・管理' }
+    ],
+
+    /* ---------- 求人 ---------- */
+    jobs: [
+      {
+        id: 'j001', companyId: 'c01', status: 'open', posted: '2026-11-01',
+        title: 'フロント・受付スタッフ（サンプル）',
+        jobType: '接客・サービス', area: 'エリアA', employment: 'パート・アルバイト',
+        tags: ['未経験OK', '土日のみOK', 'シニア活躍中'],
+        salary: '時給 〇〇〇円〜（仮）', hours: '7:00〜15:00 のうち実働4時間〜（仮）',
+        description: 'ご来場のお客様の受付・会計・ご案内をお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j002', companyId: 'c01', status: 'few', posted: '2026-10-20',
+        title: 'コース管理スタッフ（サンプル）',
+        jobType: '製造・軽作業', area: 'エリアA', employment: '正社員',
+        tags: ['未経験OK', '車通勤OK'],
+        salary: '月給 〇〇万円〜（仮）', hours: '6:00〜15:00（仮）',
+        description: '芝刈りや整備など、ゴルフコースを整える仕事です。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j003', companyId: 'c02', status: 'open', posted: '2026-11-05',
+        title: 'ホール・キッチンスタッフ（サンプル）',
+        jobType: '調理・飲食', area: 'エリアB', employment: 'パート・アルバイト',
+        tags: ['未経験OK', '週2日〜OK', '学生歓迎'],
+        salary: '時給 〇〇〇円〜（仮）', hours: '11:00〜22:00 のうちシフト制（仮）',
+        description: '料理の提供や簡単な調理補助をお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j004', companyId: 'c03', status: 'open', posted: '2026-10-28',
+        title: '売場スタッフ（サンプル）',
+        jobType: '販売', area: 'エリアB', employment: '契約社員',
+        tags: ['車通勤OK', '週2日〜OK'],
+        salary: '時給 〇〇〇円〜（仮）', hours: '9:00〜18:00 のうち実働6時間（仮）',
+        description: '商品の陳列やレジ対応をお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j005', companyId: 'c04', status: 'open', posted: '2026-10-15',
+        title: '製造ラインスタッフ（サンプル）',
+        jobType: '製造・軽作業', area: 'エリアC', employment: '正社員',
+        tags: ['未経験OK', '車通勤OK', '資格取得支援'],
+        salary: '月給 〇〇万円〜（仮）', hours: '8:00〜17:00（仮）',
+        description: '機械の操作や製品のチェックをお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j006', companyId: 'c05', status: 'few', posted: '2026-11-03',
+        title: '介護スタッフ（サンプル）',
+        jobType: '介護・福祉', area: 'エリアC', employment: 'パート・アルバイト',
+        tags: ['資格取得支援', 'シニア活躍中', '週2日〜OK'],
+        salary: '時給 〇〇〇円〜（仮）', hours: '8:30〜17:30 のうち実働4時間〜（仮）',
+        description: '利用者さまの生活のサポートをお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j007', companyId: 'c06', status: 'open', posted: '2026-10-30',
+        title: '配送ドライバー（サンプル）',
+        jobType: 'ドライバー', area: 'エリアA', employment: '正社員',
+        tags: ['車通勤OK', '資格取得支援'],
+        salary: '月給 〇〇万円〜（仮）', hours: '8:00〜17:00（仮）',
+        description: '決まったルートでの配送をお願いします。（サンプル）',
+        formUrl: ''
+      },
+      {
+        id: 'j008', companyId: 'c07', status: 'closed', posted: '2026-09-10',
+        title: '事務スタッフ（サンプル）',
+        jobType: '事務', area: 'エリアB', employment: '契約社員',
+        tags: ['土日休み'],
+        salary: '月給 〇〇万円〜（仮）', hours: '9:00〜18:00（仮）',
+        description: '電話対応やデータ入力をお願いします。（サンプル）',
+        formUrl: ''
+      }
+    ]
+  };
+
+  if (Y.tryInit) { Y.tryInit(); }
+})();
+</script>

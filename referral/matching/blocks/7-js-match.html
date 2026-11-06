@@ -1,0 +1,61 @@
+<!-- =====================================================
+     [7/8] JavaScriptマッチング計算
+     貼り付け場所：[6/8] の下
+     役割：希望条件と求人を比べて、マッチ度（0〜100%）と一致した理由を返す
+     ・配点（WEIGHTS）の数字を変えると、重視する条件を調整できる
+     ・選ばれていない条件は計算から外す（こだわらない＝減点しない）
+     ===================================================== -->
+<script>
+(function () {
+  'use strict';
+
+  const Y = window.YZW = window.YZW || {};
+
+  // 条件ごとの配点（合計が100でなくても、自動で割合に直します）
+  const WEIGHTS = {
+    area: 35,        // 勤務地
+    employment: 30,  // 雇用形態
+    tags: 35         // こだわり条件（選んだうち何個に対応しているか）
+  };
+
+  Y.calcMatch = function (job, company, prefs) {
+    let possible = 0;
+    let earned = 0;
+    const reasons = [];
+
+    if (prefs.area) {
+      possible += WEIGHTS.area;
+      if (job.area === prefs.area) {
+        earned += WEIGHTS.area;
+        reasons.push('勤務地が一致');
+      }
+    }
+
+    if (prefs.employment) {
+      possible += WEIGHTS.employment;
+      if (job.employment === prefs.employment) {
+        earned += WEIGHTS.employment;
+        reasons.push('雇用形態が一致');
+      }
+    }
+
+    if (prefs.tags && prefs.tags.length) {
+      possible += WEIGHTS.tags;
+      const jobTags = job.tags || [];
+      const hits = prefs.tags.filter(function (t) { return jobTags.indexOf(t) !== -1; });
+      earned += WEIGHTS.tags * hits.length / prefs.tags.length;
+      if (hits.length) {
+        reasons.push(hits.join('・') + ' に対応');
+      }
+    }
+
+    // 希望条件が1つも選ばれていなければ、マッチ度は表示しない
+    if (possible === 0) {
+      return { score: null, reasons: [] };
+    }
+    return { score: Math.round(earned / possible * 100), reasons: reasons };
+  };
+
+  if (Y.tryInit) { Y.tryInit(); }
+})();
+</script>

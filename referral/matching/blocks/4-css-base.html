@@ -1,0 +1,427 @@
+<!-- =====================================================
+     [4/8] CSS基本デザイン
+     貼り付け場所：[3/8] の下（記事内ならどこでも可）
+     役割：見た目の設定。すべて div.yzw-app 配下に限定し、!important でブログ側CSSの干渉を防ぐ
+     色：紺 #1F3A5F／黄 #FFE45C／ピンク #FFB3CB／水色 #9FD8FF／ミント #B8F0D4／差し色 #D6246A
+     ===================================================== -->
+<style>
+  /* ---------- 共通リセット ---------- */
+  div.yzw-app,
+  div.yzw-app * {
+    box-sizing: border-box !important;
+  }
+  div.yzw-app {
+    width: 100% !important;
+    max-width: 1000px !important;
+    margin: 0 auto 32px !important;
+    padding: 0 !important;
+    color: #1F3A5F !important;
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+    letter-spacing: normal !important;
+    text-align: left !important;
+  }
+  div.yzw-app p,
+  div.yzw-app h2,
+  div.yzw-app h3 {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    color: inherit !important;
+  }
+  div.yzw-app h2::before, div.yzw-app h2::after,
+  div.yzw-app h3::before, div.yzw-app h3::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* ---------- [1] ヘッダー ---------- */
+  div#yzw-match-head {
+    text-align: center !important;
+    padding-top: 8px !important;
+  }
+  div#yzw-match-head .yzw-eyebrow {
+    display: inline-block !important;
+    margin-bottom: 10px !important;
+    padding: 4px 16px !important;
+    border-radius: 999px !important;
+    background: #1F3A5F !important;
+    color: #FFE45C !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.15em !important;
+  }
+  div#yzw-match-head .yzw-title {
+    margin-bottom: 8px !important;
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+    text-align: center !important;
+  }
+  div#yzw-match-head .yzw-lead {
+    color: #5B6B7B !important;
+    font-size: 14px !important;
+    text-align: center !important;
+  }
+  div.yzw-app .yzw-alert {
+    margin-top: 12px !important;
+    padding: 12px 16px !important;
+    border: 2px dashed #D6246A !important;
+    border-radius: 12px !important;
+    background: #FFF4F8 !important;
+  }
+
+  /* ---------- [2] 検索フォーム ---------- */
+  div#yzw-match-form .yzw-form {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+    margin: 0 !important;
+    padding: 24px !important;
+    border: 2px solid #1F3A5F !important;
+    border-radius: 24px !important;
+    background: #FFFFFF !important;
+    box-shadow: 6px 6px 0 #1F3A5F !important;
+  }
+  div#yzw-match-form .yzw-fieldset {
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 18px !important;
+    border: 0 !important;
+    border-radius: 16px !important;
+    background: #F4F7FB !important;
+  }
+  div#yzw-match-form .yzw-legend {
+    float: left !important;
+    width: 100% !important;
+    margin: 0 0 12px !important;
+    padding: 0 !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #1F3A5F !important;
+  }
+  div#yzw-match-form .yzw-legend-num {
+    display: inline-block !important;
+    width: 24px !important;
+    height: 24px !important;
+    margin-right: 8px !important;
+    border-radius: 50% !important;
+    background: #D6246A !important;
+    color: #FFFFFF !important;
+    font-size: 13px !important;
+    line-height: 24px !important;
+    text-align: center !important;
+  }
+  div#yzw-match-form .yzw-field {
+    clear: both !important;
+    display: block !important;
+    margin: 0 0 12px !important;
+  }
+  div#yzw-match-form .yzw-label {
+    display: block !important;
+    margin-bottom: 4px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+  }
+  div.yzw-app .yzw-select,
+  div.yzw-app .yzw-input {
+    display: block !important;
+    width: 100% !important;
+    height: 44px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 2px solid #1F3A5F !important;
+    border-radius: 10px !important;
+    background: #FFFFFF !important;
+    color: #1F3A5F !important;
+    font-size: 15px !important;
+    font-family: inherit !important;
+    box-shadow: none !important;
+  }
+  div.yzw-app .yzw-select:focus,
+  div.yzw-app .yzw-input:focus {
+    outline: 3px solid #9FD8FF !important;
+    outline-offset: 1px !important;
+  }
+  div.yzw-app .yzw-select--small {
+    display: inline-block !important;
+    width: auto !important;
+    height: 38px !important;
+    font-size: 14px !important;
+  }
+
+  /* こだわり条件（チップ型チェックボックス） */
+  div#yzw-match-form .yzw-tag-choices {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  div#yzw-match-form .yzw-chip {
+    display: inline-block !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+  }
+  div#yzw-match-form .yzw-chip input {
+    position: absolute !important;
+    opacity: 0 !important;
+    width: 1px !important;
+    height: 1px !important;
+  }
+  div#yzw-match-form .yzw-chip span {
+    display: inline-block !important;
+    padding: 6px 14px !important;
+    border: 2px solid #1F3A5F !important;
+    border-radius: 999px !important;
+    background: #FFFFFF !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    transition: background 0.2s ease, transform 0.2s ease !important;
+  }
+  div#yzw-match-form .yzw-chip:hover span {
+    transform: translateY(-2px) !important;
+  }
+  div#yzw-match-form .yzw-chip input:checked + span {
+    background: #FFE45C !important;
+  }
+  div#yzw-match-form .yzw-chip input:focus-visible + span {
+    outline: 3px solid #9FD8FF !important;
+  }
+
+  /* 操作エリア */
+  div#yzw-match-form .yzw-form-actions {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+  }
+  div#yzw-match-form .yzw-check {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+  }
+  div#yzw-match-form .yzw-check input {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+  }
+  div#yzw-match-form .yzw-btn-reset {
+    margin: 0 !important;
+    padding: 10px 20px !important;
+    border: 2px solid #1F3A5F !important;
+    border-radius: 999px !important;
+    background: #FFFFFF !important;
+    color: #1F3A5F !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: background 0.2s ease !important;
+  }
+  div#yzw-match-form .yzw-btn-reset:hover {
+    background: #FFB3CB !important;
+  }
+
+  /* ---------- [3] 検索結果 ---------- */
+  div#yzw-match-results .yzw-result-head {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  div#yzw-match-results .yzw-count {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+  }
+  div#yzw-match-results .yzw-count strong {
+    color: #D6246A !important;
+    font-size: 22px !important;
+  }
+  div#yzw-match-results .yzw-sort {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    font-size: 13px !important;
+  }
+  div#yzw-match-results .yzw-list {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)) !important;
+    gap: 20px !important;
+    padding: 0 6px 6px 0 !important;
+  }
+  div#yzw-match-results .yzw-empty {
+    padding: 24px !important;
+    border: 2px dashed #1F3A5F !important;
+    border-radius: 16px !important;
+    text-align: center !important;
+  }
+
+  /* 求人カード */
+  div#yzw-match-results .yzw-card {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    border: 2px solid #1F3A5F !important;
+    border-radius: 20px !important;
+    background: #FFFFFF !important;
+    box-shadow: 5px 5px 0 #1F3A5F !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  }
+  div#yzw-match-results .yzw-card:hover {
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 7px 7px 0 #1F3A5F !important;
+  }
+  div#yzw-match-results .yzw-card--closed {
+    opacity: 0.6 !important;
+    background: #F4F7FB !important;
+  }
+  div#yzw-match-results .yzw-card-top {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  div#yzw-match-results .yzw-company {
+    font-size: 13px !important;
+    color: #5B6B7B !important;
+  }
+  div#yzw-match-results .yzw-job-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+  }
+
+  /* 募集状況バッジ */
+  div#yzw-match-results .yzw-badge {
+    display: inline-block !important;
+    padding: 2px 10px !important;
+    border: 2px solid #1F3A5F !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+  div#yzw-match-results .yzw-badge--open   { background: #B8F0D4 !important; }
+  div#yzw-match-results .yzw-badge--few    { background: #FFE45C !important; }
+  div#yzw-match-results .yzw-badge--closed { background: #E3E8EE !important; }
+
+  /* 条件・タグ */
+  div#yzw-match-results .yzw-meta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px 14px !important;
+    font-size: 13px !important;
+  }
+  div#yzw-match-results .yzw-tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  div#yzw-match-results .yzw-tag {
+    display: inline-block !important;
+    padding: 2px 10px !important;
+    border-radius: 999px !important;
+    background: #F4F7FB !important;
+    font-size: 12px !important;
+  }
+  div#yzw-match-results .yzw-tag--hit {
+    background: #FFE45C !important;
+    font-weight: 700 !important;
+  }
+
+  /* マッチ度 */
+  div#yzw-match-results .yzw-score {
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    background: #FFF4F8 !important;
+  }
+  div#yzw-match-results .yzw-score-head {
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+  }
+  div#yzw-match-results .yzw-score-num {
+    color: #D6246A !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+  }
+  div#yzw-match-results .yzw-bar {
+    display: block !important;
+    height: 10px !important;
+    margin: 6px 0 !important;
+    border: 2px solid #1F3A5F !important;
+    border-radius: 999px !important;
+    background: #FFFFFF !important;
+    overflow: hidden !important;
+  }
+  div#yzw-match-results .yzw-bar-fill {
+    display: block !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, #FFB3CB, #D6246A) !important;
+  }
+  div#yzw-match-results .yzw-reasons {
+    font-size: 12px !important;
+    color: #5B6B7B !important;
+  }
+  div#yzw-match-results .yzw-score--none {
+    background: #F4F7FB !important;
+    font-size: 12px !important;
+    color: #5B6B7B !important;
+  }
+
+  /* くわしく見る */
+  div#yzw-match-results .yzw-detail summary {
+    cursor: pointer !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+  }
+  div#yzw-match-results .yzw-detail dl {
+    margin: 8px 0 0 !important;
+    padding: 0 !important;
+    font-size: 13px !important;
+  }
+  div#yzw-match-results .yzw-detail dt {
+    margin: 6px 0 0 !important;
+    font-weight: 700 !important;
+  }
+  div#yzw-match-results .yzw-detail dd {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 応募ボタン */
+  div#yzw-match-results .yzw-apply {
+    display: block !important;
+    margin-top: auto !important;
+    padding: 12px 16px !important;
+    border: 2px solid #1F3A5F !important;
+    border-radius: 999px !important;
+    background: #1F3A5F !important;
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    transition: background 0.2s ease, color 0.2s ease !important;
+  }
+  div#yzw-match-results a.yzw-apply:hover {
+    background: #FFE45C !important;
+    color: #1F3A5F !important;
+  }
+  div#yzw-match-results .yzw-apply--disabled {
+    background: #E3E8EE !important;
+    border-color: #E3E8EE !important;
+    color: #5B6B7B !important;
+  }
+</style>

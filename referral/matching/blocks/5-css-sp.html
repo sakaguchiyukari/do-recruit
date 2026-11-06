@@ -1,0 +1,55 @@
+<!-- =====================================================
+     [5/8] CSSスマートフォン対応
+     貼り付け場所：[4/8] の下
+     役割：タブレット・スマートフォン向けにレイアウトと文字サイズを調整
+     ===================================================== -->
+<style>
+  /* タブレット以下：フォームを1列に */
+  @media (max-width: 768px) {
+    div#yzw-match-form .yzw-form {
+      grid-template-columns: 1fr !important;
+      gap: 14px !important;
+      padding: 18px !important;
+      border-radius: 20px !important;
+    }
+  }
+
+  /* スマートフォン：余白と文字サイズを詰めて縦長になりすぎないように */
+  @media (max-width: 480px) {
+    div.yzw-app {
+      margin-bottom: 24px !important;
+      font-size: 14px !important;
+    }
+    div#yzw-match-head .yzw-title {
+      font-size: 21px !important;
+    }
+    div#yzw-match-form .yzw-form {
+      padding: 14px !important;
+      box-shadow: 4px 4px 0 #1F3A5F !important;
+    }
+    div#yzw-match-form .yzw-fieldset {
+      padding: 14px !important;
+    }
+    div#yzw-match-form .yzw-form-actions {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+    div#yzw-match-form .yzw-btn-reset {
+      width: 100% !important;
+    }
+    div#yzw-match-results .yzw-result-head {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+    div#yzw-match-results .yzw-list {
+      gap: 16px !important;
+    }
+    div#yzw-match-results .yzw-card {
+      padding: 16px !important;
+      box-shadow: 4px 4px 0 #1F3A5F !important;
+    }
+    div#yzw-match-results .yzw-job-title {
+      font-size: 17px !important;
+    }
+  }
+</style>
