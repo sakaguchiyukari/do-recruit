@@ -1,0 +1,110 @@
+<!-- ==========================================================
+     教えて！CEO 第一弾：共通CSS
+     ※ 各Chapterより上に1回だけ貼り付けてください
+     ========================================================== -->
+<style>
+  /* ---------- 基本設定（色・CEOイラスト） ---------- */
+  .ceo {
+    --ceo-main: #0a5cab;   /* メインカラー（青） */
+    --ceo-accent: #ff8a3d; /* アクセント（オレンジ） */
+    --ceo-text: #24303c;   /* 本文色 */
+    /* CEOイラスト（SVG埋め込み） */
+    --ceo-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='40' fill='%23dcebf9'/%3E%3Cpath d='M11 80c2-15 13-21 29-21s27 6 29 21z' fill='%230a5cab'/%3E%3Cpath d='M33 59l7 11 7-11z' fill='%23fff'/%3E%3Cpath d='M39 62h2l2 10h-6z' fill='%23ff8a3d'/%3E%3Crect x='34' y='48' width='12' height='11' rx='3' fill='%23e8b993'/%3E%3Ccircle cx='25' cy='38' r='3.5' fill='%23f0c6a2'/%3E%3Ccircle cx='55' cy='38' r='3.5' fill='%23f0c6a2'/%3E%3Cellipse cx='40' cy='37' rx='15' ry='16' fill='%23f3cdab'/%3E%3Cpath d='M25 37c-2-12 5-19 15-19s17 7 15 19c-1-4-2-7-4-9c-1-3-3-4-5-4c-2 2-4 2-6 2s-4 0-6-2c-2 0-4 1-5 4c-2 2-3 5-4 9z' fill='%236b7078'/%3E%3Cpath d='M26 33c0-3 1-5 3-6M54 33c0-3-1-5-3-6' stroke='%23aab0b7' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3Cpath d='M35 29q5-1.5 10 0' stroke='%23e2b38f' stroke-width='1' fill='none' stroke-linecap='round'/%3E%3Cpath d='M30 34.5q3.5-2 7 0M43 34.5q3.5-2 7 0' stroke='%234f5359' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Cpath d='M31 39q2.5-2 5 0M44 39q2.5-2 5 0' stroke='%23333' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M32 43q-1 3 1 6M48 43q1 3-1 6' stroke='%23e2b38f' stroke-width='1' fill='none' stroke-linecap='round'/%3E%3Cpath d='M35 47q5 4 10 0' stroke='%238a4b3a' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 40px) clamp(16px, 4vw, 32px);
+    color: var(--ceo-text);
+    line-height: 1.9;
+  }
+  .ceo * {
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  /* ---------- Chapter見出し ---------- */
+  .ceo__ch {
+    margin-bottom: 16px;
+    color: var(--ceo-main);
+    font-size: 1.3em;
+  }
+  .ceo__ch span {
+    display: block;
+    color: var(--ceo-accent);
+    font-size: .55em;
+    letter-spacing: .2em;
+  }
+
+  /* ---------- Q&Aカード ---------- */
+  .ceo__qa {
+    margin-top: 16px;
+    padding: clamp(20px, 4vw, 28px);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 4px 20px #0a5cab17;
+    transition: transform .3s, box-shadow .3s;
+  }
+  .ceo__qa:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px #0a5cab29;
+  }
+
+  /* 質問 */
+  .ceo__q {
+    font-size: 1.05em;
+    line-height: 1.6;
+  }
+  .ceo__q b {
+    margin-right: 8px;
+    color: var(--ceo-accent);
+  }
+
+  /* 回答（左にCEOイラスト） */
+  .ceo__a {
+    position: relative;
+    min-height: 52px;
+    margin-top: 14px;
+    padding-left: 64px;
+  }
+  .ceo__a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #dcebf9 var(--ceo-icon) center / cover;
+    box-shadow: 0 0 0 3px #fff, 0 2px 8px #0a5cab33;
+  }
+  /* スマホ：イラストを小さくして本文幅を確保 */
+  @media (max-width: 600px) {
+    .ceo__a {
+      min-height: 40px;
+      padding-left: 52px;
+    }
+    .ceo__a::before {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  /* ---------- フェードイン（対応ブラウザはスクロール連動） ---------- */
+  @keyframes ceoFade {
+    from { opacity: 0; transform: translateY(20px); }
+  }
+  .ceo__qa {
+    animation: ceoFade .8s both;
+  }
+  @supports (animation-timeline: view()) {
+    .ceo__qa {
+      animation-timeline: view();
+      animation-range: entry 0 entry 60%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ceo * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>

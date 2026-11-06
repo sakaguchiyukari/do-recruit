@@ -1,68 +1,112 @@
 <!-- ==========================================================
-     教えて！CEO 第一弾：共通スタイル（最初に1回だけ貼る）
+     教えて！CEO 第一弾：共通CSS
+     ※ 各Chapterより上に1回だけ貼り付けてください
      ========================================================== -->
 <style>
-/* ---------- 変数（色・CEO写真） ---------- */
-.ceo {
-  --ceo-main: #0a5cab;   /* メインカラー */
-  --ceo-accent: #ff8a3d; /* アクセント（Q番号・CHAPTER） */
-  --ceo-text: #24303c;   /* 本文 */
-  /* CEO写真：ブログにアップした画像URLに差し替える場合は url("https://〜.jpg") に変更 */
-  --ceo-photo: url("data:image/jpeg;base64,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");
-  max-width: 720px;
-  margin: 0 auto clamp(40px, 8vw, 64px);
-  padding: 0 clamp(16px, 4vw, 32px);
-  color: var(--ceo-text);
-  line-height: 1.9;
-}
-.ceo * { box-sizing: border-box; margin: 0; }
+  /* ---------- 基本設定（色・CEOイラスト） ---------- */
+  .ceo {
+    --ceo-main: #0a5cab;   /* メインカラー（青） */
+    --ceo-accent: #ff8a3d; /* アクセント（オレンジ） */
+    --ceo-text: #24303c;   /* 本文色 */
+    /* CEOイラスト（SVG埋め込み） */
+    --ceo-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='40' fill='%23dcebf9'/%3E%3Cpath d='M11 80c2-15 13-21 29-21s27 6 29 21z' fill='%230a5cab'/%3E%3Cpath d='M33 59l7 11 7-11z' fill='%23fff'/%3E%3Cpath d='M39 62h2l2 10h-6z' fill='%23ff8a3d'/%3E%3Crect x='34' y='48' width='12' height='11' rx='3' fill='%23e8b993'/%3E%3Ccircle cx='25' cy='38' r='3.5' fill='%23f0c6a2'/%3E%3Ccircle cx='55' cy='38' r='3.5' fill='%23f0c6a2'/%3E%3Cellipse cx='40' cy='37' rx='15' ry='16' fill='%23f3cdab'/%3E%3Cpath d='M25 37c-2-12 5-19 15-19s17 7 15 19c-1-4-2-7-4-9c-1-3-3-4-5-4c-2 2-4 2-6 2s-4 0-6-2c-2 0-4 1-5 4c-2 2-3 5-4 9z' fill='%236b7078'/%3E%3Cpath d='M26 33c0-3 1-5 3-6M54 33c0-3-1-5-3-6' stroke='%23aab0b7' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3Cpath d='M35 29q5-1.5 10 0' stroke='%23e2b38f' stroke-width='1' fill='none' stroke-linecap='round'/%3E%3Cpath d='M30 34.5q3.5-2 7 0M43 34.5q3.5-2 7 0' stroke='%234f5359' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Cpath d='M31 39q2.5-2 5 0M44 39q2.5-2 5 0' stroke='%23333' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M32 43q-1 3 1 6M48 43q1 3-1 6' stroke='%23e2b38f' stroke-width='1' fill='none' stroke-linecap='round'/%3E%3Cpath d='M35 47q5 4 10 0' stroke='%238a4b3a' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 40px) clamp(16px, 4vw, 32px);
+    color: var(--ceo-text);
+    line-height: 1.9;
+  }
+  .ceo * {
+    box-sizing: border-box;
+    margin: 0;
+  }
 
-/* ---------- 章見出し ---------- */
-.ceo__ch { margin-bottom: 16px; color: var(--ceo-main); font-size: 1.3em; line-height: 1.5; }
-.ceo__ch span { display: block; color: var(--ceo-accent); font-size: .55em; letter-spacing: .2em; }
+  /* ---------- Chapter見出し ---------- */
+  .ceo__ch {
+    margin-bottom: 16px;
+    color: var(--ceo-main);
+    font-size: 1.3em;
+  }
+  .ceo__ch span {
+    display: block;
+    color: var(--ceo-accent);
+    font-size: .55em;
+    letter-spacing: .2em;
+  }
 
-/* ---------- Q&Aカード ---------- */
-.ceo__qa {
-  margin-top: 16px;
-  padding: clamp(20px, 4vw, 28px);
-  border-radius: 20px;
-  background: #fff;
-  box-shadow: 0 4px 20px #0a5cab17;
-  transition: transform .3s, box-shadow .3s;
-}
-.ceo__qa:hover { transform: translateY(-4px); box-shadow: 0 14px 32px #0a5cab29; }
-.ceo__q { font-size: 1.05em; line-height: 1.6; }
-.ceo__q b { margin-right: 8px; color: var(--ceo-accent); }
+  /* ---------- Q&Aカード ---------- */
+  .ceo__qa {
+    margin-top: 16px;
+    padding: clamp(20px, 4vw, 28px);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 4px 20px #0a5cab17;
+    transition: transform .3s, box-shadow .3s;
+  }
+  .ceo__qa:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px #0a5cab29;
+  }
 
-/* ---------- 回答（左にCEO写真） ---------- */
-.ceo__a { position: relative; min-height: 56px; margin-top: 14px; padding-left: 70px; }
-.ceo__a::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: #dcebf9 var(--ceo-photo) center / cover;
-  box-shadow: 0 0 0 3px #fff, 0 2px 8px #0a5cab33;
-}
+  /* 質問 */
+  .ceo__q {
+    font-size: 1.05em;
+    line-height: 1.6;
+  }
+  .ceo__q b {
+    margin-right: 8px;
+    color: var(--ceo-accent);
+  }
 
-/* ---------- スマホ：写真を小さくして本文幅を確保 ---------- */
-@media (max-width: 480px) {
-  .ceo__a { min-height: 44px; padding-left: 56px; }
-  .ceo__a::before { width: 44px; height: 44px; }
-}
+  /* 回答（左にCEOイラスト） */
+  .ceo__a {
+    position: relative;
+    min-height: 52px;
+    margin-top: 14px;
+    padding-left: 64px;
+  }
+  .ceo__a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #dcebf9 var(--ceo-icon) center / cover;
+    box-shadow: 0 0 0 3px #fff, 0 2px 8px #0a5cab33;
+  }
+  /* スマホ：イラストを小さくして本文幅を確保 */
+  @media (max-width: 600px) {
+    .ceo__a {
+      min-height: 40px;
+      padding-left: 52px;
+    }
+    .ceo__a::before {
+      width: 40px;
+      height: 40px;
+    }
+  }
 
-/* ---------- フェードイン（対応ブラウザはスクロール連動） ---------- */
-@keyframes ceoFade { from { opacity: 0; transform: translateY(20px); } }
-.ceo__qa { animation: ceoFade .8s both; }
-@supports (animation-timeline: view()) {
-  .ceo__qa { animation-timeline: view(); animation-range: entry 0 entry 60%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ceo * { animation: none !important; transition: none !important; }
-}
+  /* ---------- フェードイン（対応ブラウザはスクロール連動） ---------- */
+  @keyframes ceoFade {
+    from { opacity: 0; transform: translateY(20px); }
+  }
+  .ceo__qa {
+    animation: ceoFade .8s both;
+  }
+  @supports (animation-timeline: view()) {
+    .ceo__qa {
+      animation-timeline: view();
+      animation-range: entry 0 entry 60%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ceo * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
 </style>
 
 <!-- ==========================================================
