@@ -7,12 +7,12 @@
   <script>document.documentElement.classList.add('js-enabled');</script>
 
   <title>ホームページ セキュリティ点検チェックリスト｜WordPress・静的HTML</title>
-  <meta name="description" content="WordPressで制作したホームページと静的HTMLで制作したホームページの定期セキュリティ点検用チェックリスト。サーバー・ドメイン・SSL・バックアップまで項目ごとに確認できます。">
+  <meta name="description" content="複数のWordPressサイト・静的HTMLサイトを、サイトごとに定期セキュリティ点検できるチェックリスト。確認状況（OK・確認中・要検討・対象外）とメモを記録できます。">
 
   <!-- OGP（og:url / og:image は公開URLに合わせて差し替える） -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="ホームページ セキュリティ点検チェックリスト">
-  <meta property="og:description" content="WordPress・静的HTMLサイトの定期セキュリティ点検用チェックリスト。">
+  <meta property="og:description" content="複数サイトのWordPress・静的HTMLのセキュリティ点検をサイトごとに記録できるチェックリスト。">
   <meta property="og:image" content="https://example.com/security-checklist/assets/img/ogp/ogp-security-checklist.png">
   <meta property="og:url" content="https://example.com/security-checklist/">
   <meta property="og:site_name" content="ホームページ セキュリティ点検チェックリスト">
@@ -38,32 +38,84 @@
         <span class="l-header__title-line">ホームページ</span>
         <span class="l-header__title-line">セキュリティ点検</span><span class="l-header__title-line">チェックリスト</span>
       </h1>
-      <p class="l-header__lead">WordPressサイトと静的HTMLサイトの定期点検用です。サイトの種類を選び、確認できた項目にチェックを入れてください。チェック内容はこのブラウザにのみ保存されます。</p>
+      <p class="l-header__lead">管理しているサイトを登録し、サイトごとに点検結果を記録できます。各項目は「OK・確認中・要検討・対象外」から選び、必要に応じてメモを残してください。記録はこのブラウザに保存されます。</p>
     </div>
   </header>
 
-  <!-- ==================== 点検情報フォーム ==================== -->
+  <!-- ==================== 管理サイト一覧 ==================== -->
+  <section class="p-sites" aria-labelledby="sites-title">
+    <div class="l-container">
+      <div class="p-sites__head">
+        <div>
+          <h2 class="p-sites__title" id="sites-title">管理サイト</h2>
+          <p class="p-sites__count js-site-count"></p>
+        </div>
+        <button class="c-button c-button--primary js-site-add" type="button">＋ サイトを追加</button>
+      </div>
+
+      <ul class="p-sites__list js-site-list" aria-label="登録済みのサイト"></ul>
+
+      <!-- データの書き出し・読み込み（端末の移行・バックアップ用） -->
+      <div class="p-sites__data">
+        <p class="p-sites__data-text">記録はこのブラウザだけに保存されます。別のPCへの移行やバックアップには、データの書き出しを使ってください。</p>
+        <div class="p-sites__data-actions">
+          <button class="c-button c-button--ghost c-button--sm js-export" type="button">データを書き出す（JSON）</button>
+          <label class="c-button c-button--ghost c-button--sm c-file">
+            データを読み込む
+            <input class="c-file__input js-import" type="file" accept=".json,application/json">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- サイトカードの雛形（JSで複製して使う） -->
+    <template id="site-card-template">
+      <li class="p-sites__item">
+        <button class="c-site js-site-card" type="button" aria-pressed="false">
+          <span class="c-site__top">
+            <span class="c-site__type"></span>
+            <span class="c-site__flag"></span>
+          </span>
+          <span class="c-site__name"></span>
+          <span class="c-site__url"></span>
+          <span class="c-site__bar" aria-hidden="true"><span class="c-site__bar-fill"></span></span>
+          <span class="c-site__stats"></span>
+        </button>
+      </li>
+    </template>
+  </section>
+
+  <!-- ==================== 選択中サイトの情報 ==================== -->
   <section class="p-meta" aria-labelledby="meta-title">
     <div class="l-container">
       <form class="p-meta__card js-reveal js-meta-form" action="#" method="post" novalidate>
         <div class="p-meta__head">
-          <h2 class="p-meta__title" id="meta-title">点検情報</h2>
+          <h2 class="p-meta__title" id="meta-title">サイト情報</h2>
           <p class="p-meta__status js-meta-status" role="status" aria-live="polite"></p>
         </div>
 
         <div class="p-meta__grid">
           <!-- サイト名 -->
           <div class="c-field">
-            <label class="c-field__label" for="meta-site">サイト名<span class="c-field__required">必須</span></label>
-            <input class="c-field__input" type="text" id="meta-site" name="site" placeholder="例：サンプル株式会社 公式サイト" autocomplete="organization" maxlength="80" required aria-describedby="meta-site-error">
-            <p class="c-field__error" id="meta-site-error"></p>
+            <label class="c-field__label" for="meta-name">サイト名<span class="c-field__required">必須</span></label>
+            <input class="c-field__input" type="text" id="meta-name" name="name" placeholder="例：サンプル株式会社 公式サイト" autocomplete="off" maxlength="80" required aria-describedby="meta-name-error">
+            <p class="c-field__error" id="meta-name-error"></p>
           </div>
 
           <!-- URL -->
           <div class="c-field">
             <label class="c-field__label" for="meta-url">サイトURL<span class="c-field__required">必須</span></label>
-            <input class="c-field__input" type="url" id="meta-url" name="url" placeholder="https://www.example.com/" autocomplete="url" inputmode="url" pattern="https?://.+" maxlength="200" required aria-describedby="meta-url-error">
+            <input class="c-field__input" type="url" id="meta-url" name="url" placeholder="https://www.example.com/" autocomplete="off" inputmode="url" pattern="https?://.+" maxlength="200" required aria-describedby="meta-url-error">
             <p class="c-field__error" id="meta-url-error"></p>
+          </div>
+
+          <!-- サイトの種類 -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-type">サイトの種類<span class="c-field__required">必須</span></label>
+            <select class="c-field__input c-field__input--select" id="meta-type" name="type" required>
+              <option value="wp">WordPress</option>
+              <option value="html">静的HTML</option>
+            </select>
           </div>
 
           <!-- 点検日 -->
@@ -81,25 +133,31 @@
         </div>
 
         <div class="p-meta__actions">
-          <button class="c-button c-button--primary" type="submit">点検情報を保存</button>
+          <button class="c-button c-button--primary" type="submit">サイト情報を保存</button>
           <button class="c-button c-button--ghost js-print" type="button">印刷・PDF保存</button>
-          <button class="c-button c-button--text js-reset" type="button">表示中のチェックをリセット</button>
+          <div class="p-meta__danger">
+            <button class="c-button c-button--text js-reset" type="button">点検結果をリセット</button>
+            <button class="c-button c-button--text js-site-delete" type="button">このサイトを削除</button>
+          </div>
         </div>
       </form>
     </div>
   </section>
 
-  <!-- ==================== ツールバー（タブ＋進捗） ==================== -->
+  <!-- ==================== ツールバー（サイト切替＋進捗） ==================== -->
   <!-- SP：画面下部に固定 / タブレット以上：画面上部に追従 -->
   <div class="l-toolbar">
     <div class="l-toolbar__inner">
-      <div class="c-tabs js-tabs" role="tablist" aria-label="サイトの種類">
-        <button class="c-tabs__tab js-tab" type="button" role="tab" id="tab-wp" aria-controls="panel-wp" aria-selected="true">WordPress</button>
-        <button class="c-tabs__tab js-tab" type="button" role="tab" id="tab-html" aria-controls="panel-html" aria-selected="false" tabindex="-1">静的HTML</button>
+      <div class="l-toolbar__site">
+        <label class="u-visually-hidden" for="site-switch">点検するサイト</label>
+        <select class="c-select js-site-switch" id="site-switch"></select>
       </div>
 
       <div class="c-progress">
-        <p class="c-progress__text"><span class="c-progress__label">進捗</span><span class="js-progress-text">0 / 0</span></p>
+        <p class="c-progress__text">
+          <span class="c-progress__label">完了</span>
+          <span class="js-progress-text">0 / 0</span>
+        </p>
         <div class="c-progress__track js-progress" role="progressbar" aria-label="点検の進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
           <span class="c-progress__bar"></span>
         </div>
@@ -111,10 +169,29 @@
   <main class="l-main" id="main">
     <div class="l-container l-container--narrow">
 
+      <!-- ==================== 集計・絞り込み ==================== -->
+      <div class="p-summary js-reveal">
+        <ul class="p-summary__list" aria-label="確認状況の集計">
+          <li class="p-summary__item p-summary__item--ok"><span class="p-summary__label">OK</span><span class="p-summary__num js-sum" data-status="ok">0</span></li>
+          <li class="p-summary__item p-summary__item--progress"><span class="p-summary__label">確認中</span><span class="p-summary__num js-sum" data-status="progress">0</span></li>
+          <li class="p-summary__item p-summary__item--review"><span class="p-summary__label">要検討</span><span class="p-summary__num js-sum" data-status="review">0</span></li>
+          <li class="p-summary__item p-summary__item--na"><span class="p-summary__label">対象外</span><span class="p-summary__num js-sum" data-status="na">0</span></li>
+          <li class="p-summary__item"><span class="p-summary__label">未確認</span><span class="p-summary__num js-sum" data-status="none">0</span></li>
+        </ul>
+
+        <div class="c-filter" role="group" aria-label="表示する項目の絞り込み">
+          <button class="c-filter__button js-filter" type="button" data-filter="all" aria-pressed="true">すべて</button>
+          <button class="c-filter__button js-filter" type="button" data-filter="none" aria-pressed="false">未確認</button>
+          <button class="c-filter__button js-filter" type="button" data-filter="progress" aria-pressed="false">確認中</button>
+          <button class="c-filter__button js-filter" type="button" data-filter="review" aria-pressed="false">要検討</button>
+        </div>
+      </div>
+
       <!-- ========== パネル：WordPressで制作したサイト ========== -->
-      <section class="p-panel js-panel" id="panel-wp" role="tabpanel" aria-labelledby="tab-wp" data-panel="wp">
-        <div class="p-panel__head js-reveal">
-          <h2 class="p-panel__title">WordPressで制作したサイト</h2>
+      <section class="p-panel js-panel" id="panel-wp" data-type="wp" aria-labelledby="panel-wp-title">
+        <div class="p-panel__head">
+          <p class="p-panel__site js-panel-site"></p>
+          <h2 class="p-panel__title" id="panel-wp-title">WordPressで制作したサイト</h2>
           <p class="p-panel__lead">CMS本体・テーマ・プラグインの更新と、ログイン周りの対策が中心です。<br>全7カテゴリ・29項目</p>
         </div>
         <div class="p-panel__body">
@@ -126,85 +203,173 @@
               <span class="p-category__count js-category-count">0 / 8</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-core-01" name="wp-core-01">
-                <label class="c-check__label" for="wp-core-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">WordPress本体の更新</span>
-                    <span class="c-check__desc">「ダッシュボード > 更新」で最新版になっているか。セキュリティ修正を含むマイナーリリースは、標準で自動更新される設定になっている。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-core-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-01-title">WordPress本体の更新</h4>
+                  <p class="c-check__desc">「ダッシュボード > 更新」で最新版になっているか。セキュリティ修正を含むマイナーリリースは、標準で自動更新される設定になっている。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「WordPress本体の更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-01" id="wp-core-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-01" id="wp-core-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-01" id="wp-core-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-01" id="wp-core-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-01-memo">「WordPress本体の更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-01-memo" name="wp-core-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-core-02" name="wp-core-02">
-                <label class="c-check__label" for="wp-core-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">テーマの更新</span>
-                    <span class="c-check__desc">使用中のテーマ（子テーマを使っている場合は親テーマ）が最新か。親テーマを直接編集していると、更新で変更が消えるため注意する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-core-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-02-title">テーマの更新</h4>
+                  <p class="c-check__desc">使用中のテーマ（子テーマを使っている場合は親テーマ）が最新か。親テーマを直接編集していると、更新で変更が消えるため注意する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「テーマの更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-02" id="wp-core-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-02" id="wp-core-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-02" id="wp-core-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-02" id="wp-core-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-02-memo">「テーマの更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-02-memo" name="wp-core-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-core-03" name="wp-core-03">
-                <label class="c-check__label" for="wp-core-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">プラグインの更新</span>
-                    <span class="c-check__desc">「プラグイン」画面に更新の通知がないか。更新前にバックアップを取り、更新後に表示とフォームを確認する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-core-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-03-title">プラグインの更新</h4>
+                  <p class="c-check__desc">「プラグイン」画面に更新の通知がないか。更新前にバックアップを取り、更新後に表示とフォームを確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「プラグインの更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-03" id="wp-core-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-03" id="wp-core-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-03" id="wp-core-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-03" id="wp-core-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-03-memo">「プラグインの更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-03-memo" name="wp-core-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-core-04" name="wp-core-04">
-                <label class="c-check__label" for="wp-core-04">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">不要なプラグイン・テーマの削除</span>
-                    <span class="c-check__desc">停止しているだけのプラグイン・テーマもサーバー上にファイルが残り、攻撃の対象になり得る。使わないものは削除する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-core-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-04-title">不要なプラグイン・テーマの削除</h4>
+                  <p class="c-check__desc">停止しているだけのプラグイン・テーマもサーバー上にファイルが残り、攻撃の対象になり得る。使わないものは削除する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不要なプラグイン・テーマの削除」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-04" id="wp-core-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-04" id="wp-core-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-04" id="wp-core-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-04" id="wp-core-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-04-memo">「不要なプラグイン・テーマの削除」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-04-memo" name="wp-core-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-core-05" name="wp-core-05">
-                <label class="c-check__label" for="wp-core-05">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">更新が止まったプラグインの有無</span>
-                    <span class="c-check__desc">WordPress.org の配布ページで最終更新日を確認する。長期間更新がない、または配布停止のものは代わりを検討する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-core-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-05-title">更新が止まったプラグインの有無</h4>
+                  <p class="c-check__desc">WordPress.org の配布ページで最終更新日を確認する。長期間更新がない、または配布停止のものは代わりを検討する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「更新が止まったプラグインの有無」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-05" id="wp-core-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-05" id="wp-core-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-05" id="wp-core-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-05" id="wp-core-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-05-memo">「更新が止まったプラグインの有無」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-05-memo" name="wp-core-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-core-06" name="wp-core-06">
-                <label class="c-check__label" for="wp-core-06">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">PHPバージョン</span>
-                    <span class="c-check__desc">「ツール > サイトヘルス」またはサーバー管理画面で確認する。php.net でサポート期間内のバージョンか（PHP 8.2 のサポートは2026年12月末に終了予定）。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-core-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-06-title">PHPバージョン</h4>
+                  <p class="c-check__desc">「ツール > サイトヘルス」またはサーバー管理画面で確認する。php.net でサポート期間内のバージョンか（PHP 8.2 のサポートは2026年12月末に終了予定）。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「PHPバージョン」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-06" id="wp-core-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-06" id="wp-core-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-06" id="wp-core-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-06" id="wp-core-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-06-memo">「PHPバージョン」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-06-memo" name="wp-core-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-core-07" name="wp-core-07">
-                <label class="c-check__label" for="wp-core-07">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">セキュリティ対策プラグインの稼働</span>
-                    <span class="c-check__desc">プラグインが有効になっているか、通知メールが届いているか、スキャン結果に警告がないか、有料版の場合はライセンスの期限が切れていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-core-07" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-07-title">セキュリティ対策プラグインの稼働</h4>
+                  <p class="c-check__desc">プラグインが有効になっているか、通知メールが届いているか、スキャン結果に警告がないか、有料版の場合はライセンスの期限が切れていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ対策プラグインの稼働」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-07" id="wp-core-07-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-07-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-07" id="wp-core-07-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-07-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-07" id="wp-core-07-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-07-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-07" id="wp-core-07-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-07-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-07-memo">「セキュリティ対策プラグインの稼働」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-07-memo" name="wp-core-07-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-core-08" name="wp-core-08">
-                <label class="c-check__label" for="wp-core-08">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">コメント・投稿の不審な内容</span>
-                    <span class="c-check__desc">身に覚えのない投稿・固定ページ・リンクがないか。コメント機能を使っていない場合は「設定 > ディスカッション」で無効にする。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-core-08" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-08-title">コメント・投稿の不審な内容</h4>
+                  <p class="c-check__desc">身に覚えのない投稿・固定ページ・リンクがないか。コメント機能を使っていない場合は「設定 > ディスカッション」で無効にする。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「コメント・投稿の不審な内容」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-08" id="wp-core-08-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-08-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-08" id="wp-core-08-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-08-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-08" id="wp-core-08-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-08-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-08" id="wp-core-08-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-08-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-08-memo">「コメント・投稿の不審な内容」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-08-memo" name="wp-core-08-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -217,45 +382,89 @@
               <span class="p-category__count js-category-count">0 / 4</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-account-01" name="wp-account-01">
-                <label class="c-check__label" for="wp-account-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">管理者アカウントの棚卸し</span>
-                    <span class="c-check__desc">「ユーザー」画面で権限「管理者」を絞り込み、不要なアカウントを削除する。見覚えのない管理者は不正侵入の兆候のため要注意。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-account-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-account-01-title">管理者アカウントの棚卸し</h4>
+                  <p class="c-check__desc">「ユーザー」画面で権限「管理者」を絞り込み、不要なアカウントを削除する。見覚えのない管理者は不正侵入の兆候のため要注意。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「管理者アカウントの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-account-01" id="wp-account-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-account-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-account-01" id="wp-account-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-account-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-account-01" id="wp-account-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-account-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-account-01" id="wp-account-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-account-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-account-01-memo">「管理者アカウントの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-account-01-memo" name="wp-account-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-account-02" name="wp-account-02">
-                <label class="c-check__label" for="wp-account-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">二段階認証の設定</span>
-                    <span class="c-check__desc">WordPress本体には二段階認証の機能がないため、プラグインで導入する。管理者権限を持つアカウントすべてに設定されているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-account-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-account-02-title">二段階認証の設定</h4>
+                  <p class="c-check__desc">WordPress本体には二段階認証の機能がないため、プラグインで導入する。管理者権限を持つアカウントすべてに設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「二段階認証の設定」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-account-02" id="wp-account-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-account-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-account-02" id="wp-account-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-account-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-account-02" id="wp-account-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-account-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-account-02" id="wp-account-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-account-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-account-02-memo">「二段階認証の設定」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-account-02-memo" name="wp-account-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-account-03" name="wp-account-03">
-                <label class="c-check__label" for="wp-account-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">不審なログイン履歴</span>
-                    <span class="c-check__desc">WordPress本体はログイン履歴を残さないため、セキュリティプラグインのログやサーバーのアクセスログで、見覚えのない日時・場所からのログインがないか確認する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-account-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-account-03-title">不審なログイン履歴</h4>
+                  <p class="c-check__desc">WordPress本体はログイン履歴を残さないため、セキュリティプラグインのログやサーバーのアクセスログで、見覚えのない日時・場所からのログインがないか確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なログイン履歴」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-account-03" id="wp-account-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-account-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-account-03" id="wp-account-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-account-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-account-03" id="wp-account-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-account-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-account-03" id="wp-account-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-account-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-account-03-memo">「不審なログイン履歴」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-account-03-memo" name="wp-account-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-account-04" name="wp-account-04">
-                <label class="c-check__label" for="wp-account-04">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">ログイン画面の保護</span>
-                    <span class="c-check__desc">ログイン試行回数の制限、IPアドレスでのアクセス制限、使っていない場合のXML-RPC無効化などが設定されているか。ユーザー名に「admin」を使っていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-account-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-account-04-title">ログイン画面の保護</h4>
+                  <p class="c-check__desc">ログイン試行回数の制限、IPアドレスでのアクセス制限、使っていない場合のXML-RPC無効化などが設定されているか。ユーザー名に「admin」を使っていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ログイン画面の保護」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-account-04" id="wp-account-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-account-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-account-04" id="wp-account-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-account-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-account-04" id="wp-account-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-account-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-account-04" id="wp-account-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-account-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-account-04-memo">「ログイン画面の保護」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-account-04-memo" name="wp-account-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -268,65 +477,131 @@
               <span class="p-category__count js-category-count">0 / 6</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-server-01" name="wp-server-01">
-                <label class="c-check__label" for="wp-server-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">サーバー管理画面の二段階認証</span>
-                    <span class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-server-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-01-title">サーバー管理画面の二段階認証</h4>
+                  <p class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-01" id="wp-server-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-01" id="wp-server-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-01" id="wp-server-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-01" id="wp-server-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-01-memo">「サーバー管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-01-memo" name="wp-server-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-server-02" name="wp-server-02">
-                <label class="c-check__label" for="wp-server-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">サーバー・FTPアカウントの棚卸し</span>
-                    <span class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-server-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-02-title">サーバー・FTPアカウントの棚卸し</h4>
+                  <p class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー・FTPアカウントの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-02" id="wp-server-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-02" id="wp-server-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-02" id="wp-server-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-02" id="wp-server-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-02-memo">「サーバー・FTPアカウントの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-02-memo" name="wp-server-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-server-03" name="wp-server-03">
-                <label class="c-check__label" for="wp-server-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">ファイル転送の暗号化（SFTP / FTPS）</span>
-                    <span class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-server-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-03-title">ファイル転送の暗号化（SFTP / FTPS）</h4>
+                  <p class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ファイル転送の暗号化（SFTP / FTPS）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-03" id="wp-server-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-03" id="wp-server-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-03" id="wp-server-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-03" id="wp-server-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-03-memo">「ファイル転送の暗号化（SFTP / FTPS）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-03-memo" name="wp-server-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-server-04" name="wp-server-04">
-                <label class="c-check__label" for="wp-server-04">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">WAF（不正アクセス防止機能）の有効化</span>
-                    <span class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-server-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-04-title">WAF（不正アクセス防止機能）の有効化</h4>
+                  <p class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「WAF（不正アクセス防止機能）の有効化」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-04" id="wp-server-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-04" id="wp-server-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-04" id="wp-server-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-04" id="wp-server-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-04-memo">「WAF（不正アクセス防止機能）の有効化」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-04-memo" name="wp-server-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-server-05" name="wp-server-05">
-                <label class="c-check__label" for="wp-server-05">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">アクセスログ・エラーログの確認</span>
-                    <span class="c-check__desc">wp-login.php・xmlrpc.php への短時間の大量アクセスや、.env などの存在しないファイルへのアクセスがないか。PHPエラーが急に増えていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-server-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-05-title">アクセスログ・エラーログの確認</h4>
+                  <p class="c-check__desc">wp-login.php・xmlrpc.php への短時間の大量アクセスや、.env などの存在しないファイルへのアクセスがないか。PHPエラーが急に増えていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「アクセスログ・エラーログの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-05" id="wp-server-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-05" id="wp-server-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-05" id="wp-server-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-05" id="wp-server-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-05-memo">「アクセスログ・エラーログの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-05-memo" name="wp-server-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-server-06" name="wp-server-06">
-                <label class="c-check__label" for="wp-server-06">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">不審なファイルの有無</span>
-                    <span class="c-check__desc">置いた覚えのないPHPファイル、最近更新された見覚えのないファイルがないか。通常、wp-content/uploads 内にPHPファイルは置かれない。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-server-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-06-title">不審なファイルの有無</h4>
+                  <p class="c-check__desc">置いた覚えのないPHPファイル、最近更新された見覚えのないファイルがないか。通常、wp-content/uploads 内にPHPファイルは置かれない。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なファイルの有無」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-06" id="wp-server-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-06" id="wp-server-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-06" id="wp-server-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-06" id="wp-server-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-06-memo">「不審なファイルの有無」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-06-memo" name="wp-server-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -339,45 +614,89 @@
               <span class="p-category__count js-category-count">0 / 4</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-dns-01" name="wp-dns-01">
-                <label class="c-check__label" for="wp-dns-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">ドメインの有効期限</span>
-                    <span class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-dns-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-dns-01-title">ドメインの有効期限</h4>
+                  <p class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメインの有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-dns-01" id="wp-dns-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-dns-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-01" id="wp-dns-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-dns-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-01" id="wp-dns-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-dns-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-01" id="wp-dns-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-dns-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-dns-01-memo">「ドメインの有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-dns-01-memo" name="wp-dns-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-dns-02" name="wp-dns-02">
-                <label class="c-check__label" for="wp-dns-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">ドメイン管理画面の二段階認証</span>
-                    <span class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-dns-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-dns-02-title">ドメイン管理画面の二段階認証</h4>
+                  <p class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメイン管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-dns-02" id="wp-dns-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-dns-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-02" id="wp-dns-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-dns-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-02" id="wp-dns-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-dns-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-02" id="wp-dns-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-dns-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-dns-02-memo">「ドメイン管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-dns-02-memo" name="wp-dns-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-dns-03" name="wp-dns-03">
-                <label class="c-check__label" for="wp-dns-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">DNS設定に不審な変更がないか</span>
-                    <span class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-dns-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-dns-03-title">DNS設定に不審な変更がないか</h4>
+                  <p class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「DNS設定に不審な変更がないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-dns-03" id="wp-dns-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-dns-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-03" id="wp-dns-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-dns-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-03" id="wp-dns-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-dns-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-03" id="wp-dns-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-dns-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-dns-03-memo">「DNS設定に不審な変更がないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-dns-03-memo" name="wp-dns-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-dns-04" name="wp-dns-04">
-                <label class="c-check__label" for="wp-dns-04">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">メールのなりすまし対策（SPF・DKIM・DMARC）</span>
-                    <span class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-dns-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-dns-04-title">メールのなりすまし対策（SPF・DKIM・DMARC）</h4>
+                  <p class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「メールのなりすまし対策（SPF・DKIM・DMARC）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-dns-04" id="wp-dns-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-dns-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-04" id="wp-dns-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-dns-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-04" id="wp-dns-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-dns-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-04" id="wp-dns-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-dns-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-dns-04-memo">「メールのなりすまし対策（SPF・DKIM・DMARC）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-dns-04-memo" name="wp-dns-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -390,25 +709,47 @@
               <span class="p-category__count js-category-count">0 / 2</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-ssl-01" name="wp-ssl-01">
-                <label class="c-check__label" for="wp-ssl-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">SSL証明書の有効期限</span>
-                    <span class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-ssl-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-ssl-01-title">SSL証明書の有効期限</h4>
+                  <p class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「SSL証明書の有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-ssl-01" id="wp-ssl-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-ssl-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-01" id="wp-ssl-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-ssl-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-01" id="wp-ssl-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-ssl-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-01" id="wp-ssl-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-ssl-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-ssl-01-memo">「SSL証明書の有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-ssl-01-memo" name="wp-ssl-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-ssl-02" name="wp-ssl-02">
-                <label class="c-check__label" for="wp-ssl-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">常時SSL（httpからhttpsへの転送）</span>
-                    <span class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。「設定 > 一般」の2つのアドレスが https か。画像などが http で読み込まれていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-ssl-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-ssl-02-title">常時SSL（httpからhttpsへの転送）</h4>
+                  <p class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。「設定 > 一般」の2つのアドレスが https か。画像などが http で読み込まれていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「常時SSL（httpからhttpsへの転送）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-ssl-02" id="wp-ssl-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-ssl-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-02" id="wp-ssl-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-ssl-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-02" id="wp-ssl-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-ssl-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-02" id="wp-ssl-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-ssl-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-ssl-02-memo">「常時SSL（httpからhttpsへの転送）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-ssl-02-memo" name="wp-ssl-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -421,25 +762,47 @@
               <span class="p-category__count js-category-count">0 / 2</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-backup-01" name="wp-backup-01">
-                <label class="c-check__label" for="wp-backup-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">バックアップの取得状況</span>
-                    <span class="c-check__desc">ファイルとデータベースの両方が、自動で定期的に取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-backup-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-backup-01-title">バックアップの取得状況</h4>
+                  <p class="c-check__desc">ファイルとデータベースの両方が、自動で定期的に取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「バックアップの取得状況」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-backup-01" id="wp-backup-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-backup-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-01" id="wp-backup-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-backup-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-01" id="wp-backup-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-backup-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-01" id="wp-backup-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-backup-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-backup-01-memo">「バックアップの取得状況」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-backup-01-memo" name="wp-backup-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-backup-02" name="wp-backup-02">
-                <label class="c-check__label" for="wp-backup-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">復元手順の確認</span>
-                    <span class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-backup-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-backup-02-title">復元手順の確認</h4>
+                  <p class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「復元手順の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-backup-02" id="wp-backup-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-backup-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-02" id="wp-backup-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-backup-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-02" id="wp-backup-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-backup-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-02" id="wp-backup-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-backup-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-backup-02-memo">「復元手順の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-backup-02-memo" name="wp-backup-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -452,35 +815,69 @@
               <span class="p-category__count js-category-count">0 / 3</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-monitor-01" name="wp-monitor-01">
-                <label class="c-check__label" for="wp-monitor-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">セキュリティ診断レポートの確認</span>
-                    <span class="c-check__desc">診断ツールや外部サービスのレポートに「要対応」の項目がないか。前回指摘された項目が対応済みか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-monitor-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-monitor-01-title">セキュリティ診断レポートの確認</h4>
+                  <p class="c-check__desc">無料の診断サービスやセキュリティプラグインの結果に警告がないか。前回指摘された項目が対応済みか。</p>
+                  <a class="c-check__guide-link" href="#guide">診断ツールと進め方を見る</a>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ診断レポートの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-monitor-01" id="wp-monitor-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-monitor-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-01" id="wp-monitor-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-monitor-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-01" id="wp-monitor-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-monitor-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-01" id="wp-monitor-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-monitor-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-monitor-01-memo">「セキュリティ診断レポートの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-monitor-01-memo" name="wp-monitor-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-monitor-02" name="wp-monitor-02">
-                <label class="c-check__label" for="wp-monitor-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">サイトの表示・改ざんの確認</span>
-                    <span class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-monitor-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-monitor-02-title">サイトの表示・改ざんの確認</h4>
+                  <p class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サイトの表示・改ざんの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-monitor-02" id="wp-monitor-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-monitor-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-02" id="wp-monitor-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-monitor-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-02" id="wp-monitor-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-monitor-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-02" id="wp-monitor-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-monitor-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-monitor-02-memo">「サイトの表示・改ざんの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-monitor-02-memo" name="wp-monitor-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="wp-monitor-03" name="wp-monitor-03">
-                <label class="c-check__label" for="wp-monitor-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">問い合わせフォームの動作確認</span>
-                    <span class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策（reCAPTCHA等）が動作しているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="wp-monitor-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-monitor-03-title">問い合わせフォームの動作確認</h4>
+                  <p class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策（reCAPTCHA等）が動作しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「問い合わせフォームの動作確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-monitor-03" id="wp-monitor-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-monitor-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-03" id="wp-monitor-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-monitor-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-03" id="wp-monitor-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-monitor-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-03" id="wp-monitor-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-monitor-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-monitor-03-memo">「問い合わせフォームの動作確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-monitor-03-memo" name="wp-monitor-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -488,9 +885,10 @@
       </section>
 
       <!-- ========== パネル：静的HTMLで制作したサイト ========== -->
-      <section class="p-panel js-panel" id="panel-html" role="tabpanel" aria-labelledby="tab-html" data-panel="html">
-        <div class="p-panel__head js-reveal">
-          <h2 class="p-panel__title">静的HTMLで制作したサイト</h2>
+      <section class="p-panel js-panel" id="panel-html" data-type="html" aria-labelledby="panel-html-title">
+        <div class="p-panel__head">
+          <p class="p-panel__site js-panel-site"></p>
+          <h2 class="p-panel__title" id="panel-html-title">静的HTMLで制作したサイト</h2>
           <p class="p-panel__lead">CMSがない分、フォームプログラムと「公開してはいけないファイル」の確認が中心です。<br>全6カテゴリ・22項目</p>
         </div>
         <div class="p-panel__body">
@@ -502,55 +900,110 @@
               <span class="p-category__count js-category-count">0 / 5</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-core-01" name="html-core-01">
-                <label class="c-check__label" for="html-core-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">フォーム・プログラムの更新</span>
-                    <span class="c-check__desc">メールフォームなどのプログラムが配布元の最新版か、配布が終了していないか。サーバーのPHPバージョンがサポート期間内か。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-core-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-01-title">フォーム・プログラムの更新</h4>
+                  <p class="c-check__desc">メールフォームなどのプログラムが配布元の最新版か、配布が終了していないか。サーバーのPHPバージョンがサポート期間内か。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「フォーム・プログラムの更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-01" id="html-core-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-01" id="html-core-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-01" id="html-core-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-01" id="html-core-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-01-memo">「フォーム・プログラムの更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-01-memo" name="html-core-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-core-02" name="html-core-02">
-                <label class="c-check__label" for="html-core-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">不要ファイルが公開されていないか</span>
-                    <span class="c-check__desc">旧ページ・テストページ、.bak や .zip などのバックアップ、.git フォルダ、.env、phpinfo.php などが公開ディレクトリに残っていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-core-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-02-title">不要ファイルが公開されていないか</h4>
+                  <p class="c-check__desc">旧ページ・テストページ、.bak や .zip などのバックアップ、.git フォルダ、.env、phpinfo.php などが公開ディレクトリに残っていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不要ファイルが公開されていないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-02" id="html-core-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-02" id="html-core-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-02" id="html-core-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-02" id="html-core-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-02-memo">「不要ファイルが公開されていないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-02-memo" name="html-core-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-core-03" name="html-core-03">
-                <label class="c-check__label" for="html-core-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">ファイル一覧が見えないか</span>
-                    <span class="c-check__desc">index.html を置いていないフォルダ（例：/images/）のURLを開き、ファイル一覧が表示されないか。Apacheでは .htaccess の「Options -Indexes」で止められる。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-core-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-03-title">ファイル一覧が見えないか</h4>
+                  <p class="c-check__desc">index.html を置いていないフォルダ（例：/images/）のURLを開き、ファイル一覧が表示されないか。Apacheでは .htaccess の「Options -Indexes」で止められる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ファイル一覧が見えないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-03" id="html-core-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-03" id="html-core-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-03" id="html-core-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-03" id="html-core-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-03-memo">「ファイル一覧が見えないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-03-memo" name="html-core-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-core-04" name="html-core-04">
-                <label class="c-check__label" for="html-core-04">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">リンク切れ・外部リンク先の確認</span>
-                    <span class="c-check__desc">リンク切れがないか。リンク先のドメインが失効して、第三者の別サイトになっていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-core-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-04-title">リンク切れ・外部リンク先の確認</h4>
+                  <p class="c-check__desc">リンク切れがないか。リンク先のドメインが失効して、第三者の別サイトになっていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「リンク切れ・外部リンク先の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-04" id="html-core-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-04" id="html-core-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-04" id="html-core-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-04" id="html-core-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-04-memo">「リンク切れ・外部リンク先の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-04-memo" name="html-core-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-core-05" name="html-core-05">
-                <label class="c-check__label" for="html-core-05">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">外部から読み込むスクリプトの確認</span>
-                    <span class="c-check__desc">解析タグ・広告タグ・CDN・外部ウィジェットの読み込み元が現存し、信頼できるか。使っていないタグは削除する。2024年には配信ドメインの所有者が変わり不正なコードが配信された例（polyfill.io）がある。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-core-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-05-title">外部から読み込むスクリプトの確認</h4>
+                  <p class="c-check__desc">解析タグ・広告タグ・CDN・外部ウィジェットの読み込み元が現存し、信頼できるか。使っていないタグは削除する。2024年には配信ドメインの所有者が変わり不正なコードが配信された例（polyfill.io）がある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「外部から読み込むスクリプトの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-05" id="html-core-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-05" id="html-core-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-05" id="html-core-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-05" id="html-core-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-05-memo">「外部から読み込むスクリプトの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-05-memo" name="html-core-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -563,65 +1016,131 @@
               <span class="p-category__count js-category-count">0 / 6</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-server-01" name="html-server-01">
-                <label class="c-check__label" for="html-server-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">サーバー管理画面の二段階認証</span>
-                    <span class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-server-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-01-title">サーバー管理画面の二段階認証</h4>
+                  <p class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-01" id="html-server-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-01" id="html-server-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-01" id="html-server-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-01" id="html-server-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-01-memo">「サーバー管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-01-memo" name="html-server-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-server-02" name="html-server-02">
-                <label class="c-check__label" for="html-server-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">サーバー・FTPアカウントの棚卸し</span>
-                    <span class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-server-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-02-title">サーバー・FTPアカウントの棚卸し</h4>
+                  <p class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー・FTPアカウントの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-02" id="html-server-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-02" id="html-server-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-02" id="html-server-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-02" id="html-server-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-02-memo">「サーバー・FTPアカウントの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-02-memo" name="html-server-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-server-03" name="html-server-03">
-                <label class="c-check__label" for="html-server-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">ファイル転送の暗号化（SFTP / FTPS）</span>
-                    <span class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-server-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-03-title">ファイル転送の暗号化（SFTP / FTPS）</h4>
+                  <p class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ファイル転送の暗号化（SFTP / FTPS）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-03" id="html-server-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-03" id="html-server-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-03" id="html-server-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-03" id="html-server-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-03-memo">「ファイル転送の暗号化（SFTP / FTPS）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-03-memo" name="html-server-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-server-04" name="html-server-04">
-                <label class="c-check__label" for="html-server-04">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">WAF（不正アクセス防止機能）の有効化</span>
-                    <span class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-server-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-04-title">WAF（不正アクセス防止機能）の有効化</h4>
+                  <p class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「WAF（不正アクセス防止機能）の有効化」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-04" id="html-server-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-04" id="html-server-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-04" id="html-server-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-04" id="html-server-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-04-memo">「WAF（不正アクセス防止機能）の有効化」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-04-memo" name="html-server-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-server-05" name="html-server-05">
-                <label class="c-check__label" for="html-server-05">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">アクセスログ・エラーログの確認</span>
-                    <span class="c-check__desc">フォームプログラムへの短時間の大量アクセスや、.env・.git などの存在しないファイルへのアクセスがないか。エラーが急に増えていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-server-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-05-title">アクセスログ・エラーログの確認</h4>
+                  <p class="c-check__desc">フォームプログラムへの短時間の大量アクセスや、.env・.git などの存在しないファイルへのアクセスがないか。エラーが急に増えていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「アクセスログ・エラーログの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-05" id="html-server-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-05" id="html-server-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-05" id="html-server-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-05" id="html-server-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-05-memo">「アクセスログ・エラーログの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-05-memo" name="html-server-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-server-06" name="html-server-06">
-                <label class="c-check__label" for="html-server-06">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">不審なファイルの有無</span>
-                    <span class="c-check__desc">置いた覚えのないファイル（特にPHPファイル）や、最近更新された見覚えのないファイルが公開ディレクトリにないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-server-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-06-title">不審なファイルの有無</h4>
+                  <p class="c-check__desc">置いた覚えのないファイル（特にPHPファイル）や、最近更新された見覚えのないファイルが公開ディレクトリにないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なファイルの有無」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-06" id="html-server-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-06" id="html-server-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-06" id="html-server-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-06" id="html-server-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-06-memo">「不審なファイルの有無」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-06-memo" name="html-server-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -634,45 +1153,89 @@
               <span class="p-category__count js-category-count">0 / 4</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-dns-01" name="html-dns-01">
-                <label class="c-check__label" for="html-dns-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">ドメインの有効期限</span>
-                    <span class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-dns-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-dns-01-title">ドメインの有効期限</h4>
+                  <p class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメインの有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-dns-01" id="html-dns-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-dns-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-dns-01" id="html-dns-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-dns-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-dns-01" id="html-dns-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-dns-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-dns-01" id="html-dns-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-dns-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-dns-01-memo">「ドメインの有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-dns-01-memo" name="html-dns-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-dns-02" name="html-dns-02">
-                <label class="c-check__label" for="html-dns-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">ドメイン管理画面の二段階認証</span>
-                    <span class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-dns-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-dns-02-title">ドメイン管理画面の二段階認証</h4>
+                  <p class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメイン管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-dns-02" id="html-dns-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-dns-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-dns-02" id="html-dns-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-dns-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-dns-02" id="html-dns-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-dns-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-dns-02" id="html-dns-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-dns-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-dns-02-memo">「ドメイン管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-dns-02-memo" name="html-dns-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-dns-03" name="html-dns-03">
-                <label class="c-check__label" for="html-dns-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">DNS設定に不審な変更がないか</span>
-                    <span class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-dns-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-dns-03-title">DNS設定に不審な変更がないか</h4>
+                  <p class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「DNS設定に不審な変更がないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-dns-03" id="html-dns-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-dns-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-dns-03" id="html-dns-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-dns-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-dns-03" id="html-dns-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-dns-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-dns-03" id="html-dns-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-dns-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-dns-03-memo">「DNS設定に不審な変更がないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-dns-03-memo" name="html-dns-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-dns-04" name="html-dns-04">
-                <label class="c-check__label" for="html-dns-04">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">メールのなりすまし対策（SPF・DKIM・DMARC）</span>
-                    <span class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-dns-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-dns-04-title">メールのなりすまし対策（SPF・DKIM・DMARC）</h4>
+                  <p class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「メールのなりすまし対策（SPF・DKIM・DMARC）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-dns-04" id="html-dns-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-dns-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-dns-04" id="html-dns-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-dns-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-dns-04" id="html-dns-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-dns-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-dns-04" id="html-dns-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-dns-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-dns-04-memo">「メールのなりすまし対策（SPF・DKIM・DMARC）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-dns-04-memo" name="html-dns-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -685,25 +1248,47 @@
               <span class="p-category__count js-category-count">0 / 2</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-ssl-01" name="html-ssl-01">
-                <label class="c-check__label" for="html-ssl-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">SSL証明書の有効期限</span>
-                    <span class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-ssl-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-ssl-01-title">SSL証明書の有効期限</h4>
+                  <p class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「SSL証明書の有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-ssl-01" id="html-ssl-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-ssl-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-01" id="html-ssl-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-ssl-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-01" id="html-ssl-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-ssl-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-01" id="html-ssl-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-ssl-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-ssl-01-memo">「SSL証明書の有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-ssl-01-memo" name="html-ssl-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-ssl-02" name="html-ssl-02">
-                <label class="c-check__label" for="html-ssl-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">常時SSL（httpからhttpsへの転送）</span>
-                    <span class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。画像・CSS・JSなどが http で読み込まれていないか（ブラウザの開発者ツールで確認できる）。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-ssl-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-ssl-02-title">常時SSL（httpからhttpsへの転送）</h4>
+                  <p class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。画像・CSS・JSなどが http で読み込まれていないか（ブラウザの開発者ツールで確認できる）。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「常時SSL（httpからhttpsへの転送）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-ssl-02" id="html-ssl-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-ssl-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-02" id="html-ssl-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-ssl-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-02" id="html-ssl-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-ssl-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-02" id="html-ssl-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-ssl-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-ssl-02-memo">「常時SSL（httpからhttpsへの転送）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-ssl-02-memo" name="html-ssl-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -716,25 +1301,47 @@
               <span class="p-category__count js-category-count">0 / 2</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-backup-01" name="html-backup-01">
-                <label class="c-check__label" for="html-backup-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">バックアップの取得状況</span>
-                    <span class="c-check__desc">サイトのファイル一式とフォームの設定ファイルが取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-backup-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-backup-01-title">バックアップの取得状況</h4>
+                  <p class="c-check__desc">サイトのファイル一式とフォームの設定ファイルが取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「バックアップの取得状況」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-backup-01" id="html-backup-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-backup-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-backup-01" id="html-backup-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-backup-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-backup-01" id="html-backup-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-backup-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-backup-01" id="html-backup-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-backup-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-backup-01-memo">「バックアップの取得状況」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-backup-01-memo" name="html-backup-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-backup-02" name="html-backup-02">
-                <label class="c-check__label" for="html-backup-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">復元手順の確認</span>
-                    <span class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-backup-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-backup-02-title">復元手順の確認</h4>
+                  <p class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「復元手順の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-backup-02" id="html-backup-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-backup-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-backup-02" id="html-backup-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-backup-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-backup-02" id="html-backup-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-backup-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-backup-02" id="html-backup-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-backup-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-backup-02-memo">「復元手順の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-backup-02-memo" name="html-backup-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
@@ -747,48 +1354,174 @@
               <span class="p-category__count js-category-count">0 / 3</span>
             </div>
             <ul class="p-category__list">
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-monitor-01" name="html-monitor-01">
-                <label class="c-check__label" for="html-monitor-01">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">セキュリティ診断レポートの確認</span>
-                    <span class="c-check__desc">診断ツールや外部サービスのレポートに「要対応」の項目がないか。前回指摘された項目が対応済みか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-monitor-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-monitor-01-title">セキュリティ診断レポートの確認</h4>
+                  <p class="c-check__desc">無料の診断サービスの結果に警告がないか。前回指摘された項目が対応済みか。</p>
+                  <a class="c-check__guide-link" href="#guide">診断ツールと進め方を見る</a>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ診断レポートの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-monitor-01" id="html-monitor-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-monitor-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-01" id="html-monitor-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-monitor-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-01" id="html-monitor-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-monitor-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-01" id="html-monitor-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-monitor-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-monitor-01-memo">「セキュリティ診断レポートの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-monitor-01-memo" name="html-monitor-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-monitor-02" name="html-monitor-02">
-                <label class="c-check__label" for="html-monitor-02">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">サイトの表示・改ざんの確認</span>
-                    <span class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-monitor-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-monitor-02-title">サイトの表示・改ざんの確認</h4>
+                  <p class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サイトの表示・改ざんの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-monitor-02" id="html-monitor-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-monitor-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-02" id="html-monitor-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-monitor-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-02" id="html-monitor-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-monitor-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-02" id="html-monitor-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-monitor-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-monitor-02-memo">「サイトの表示・改ざんの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-monitor-02-memo" name="html-monitor-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
-              <li class="c-check">
-                <input class="c-check__input js-check" type="checkbox" id="html-monitor-03" name="html-monitor-03">
-                <label class="c-check__label" for="html-monitor-03">
-                  <span class="c-check__box" aria-hidden="true"></span>
-                  <span class="c-check__body">
-                    <span class="c-check__title">問い合わせフォームの動作確認</span>
-                    <span class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策が動作しているか。</span>
-                  </span>
-                </label>
+              <li class="c-check js-item" data-item="html-monitor-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-monitor-03-title">問い合わせフォームの動作確認</h4>
+                  <p class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策が動作しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「問い合わせフォームの動作確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-monitor-03" id="html-monitor-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-monitor-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-03" id="html-monitor-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-monitor-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-03" id="html-monitor-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-monitor-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-03" id="html-monitor-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-monitor-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-monitor-03-memo">「問い合わせフォームの動作確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-monitor-03-memo" name="html-monitor-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
               </li>
             </ul>
           </section>
         </div>
       </section>
 
+      <!-- ==================== セキュリティ診断の進め方 ==================== -->
+      <section class="p-guide js-reveal" id="guide" aria-labelledby="guide-title">
+        <p class="p-guide__eyebrow">How to check</p>
+        <h2 class="p-guide__title" id="guide-title">セキュリティ診断の進め方</h2>
+        <p class="p-guide__lead">特別な契約がなくても、無料のサービスで外部から確認できます。URLを入力するだけのものが中心です。診断は、管理を任されているサイトに対してのみ行ってください。</p>
+
+        <!-- 手順 -->
+        <ol class="p-guide__steps">
+          <li class="p-guide__step">
+            <h3 class="p-guide__step-title">毎月：危険サイト判定・改ざんの有無を見る</h3>
+            <p class="p-guide__step-text">Google Search Console の「セキュリティの問題」と、セーフブラウジングのサイトステータスで警告が出ていないかを確認します。あわせて Sucuri SiteCheck にURLを入れ、マルウェアやブラックリスト登録の警告がないかを見ます。</p>
+          </li>
+          <li class="p-guide__step">
+            <h3 class="p-guide__step-title">毎月（WordPress）：プラグインのスキャン結果を見る</h3>
+            <p class="p-guide__step-text">Wordfence などのセキュリティプラグインでスキャンを実行し、警告の内容を確認します。「ツール &gt; サイトヘルス」の「おすすめの改善」も確認します。</p>
+          </li>
+          <li class="p-guide__step">
+            <h3 class="p-guide__step-title">四半期ごと：通信・メールの設定を診断する</h3>
+            <p class="p-guide__step-text">SSL Labs で証明書と暗号化の設定を、HTTP Observatory でセキュリティヘッダーを、MXToolbox で SPF・DMARC の設定を確認します。</p>
+          </li>
+          <li class="p-guide__step">
+            <h3 class="p-guide__step-title">結果を記録する</h3>
+            <p class="p-guide__step-text">問題がなければ「OK」、警告があれば「要検討」にして、ツール名と警告の内容をメモ欄に残します。評価（A〜Fなど）も書いておくと、次回と比べられます。</p>
+          </li>
+        </ol>
+
+        <!-- 全サイト共通のツール -->
+        <h3 class="p-guide__subtitle">全サイト共通（ブラウザだけで使える無料サービス）</h3>
+        <ul class="p-guide__tools">
+          <li class="c-tool">
+            <p class="c-tool__tag">改ざん・危険判定</p>
+            <h4 class="c-tool__name">Google Search Console</h4>
+            <p class="c-tool__text">「セキュリティと手動による対策 &gt; セキュリティの問題」で、Googleが検出したハッキングやマルウェアを確認できる。事前にサイトの所有権の確認が必要。</p>
+            <a class="c-tool__link c-link" href="https://search.google.com/search-console" target="_blank" rel="noopener">Search Console を開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">改ざん・危険判定</p>
+            <h4 class="c-tool__name">Google セーフブラウジング サイトステータス</h4>
+            <p class="c-tool__text">URLを入力すると、Googleが危険なサイトと判定していないかを確認できる。登録不要。</p>
+            <a class="c-tool__link c-link" href="https://transparencyreport.google.com/safe-browsing/search?hl=ja" target="_blank" rel="noopener">サイトステータスを開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">マルウェア</p>
+            <h4 class="c-tool__name">Sucuri SiteCheck</h4>
+            <p class="c-tool__text">URLを入力すると、外から見える範囲のマルウェア・不正なリダイレクト・ブラックリスト登録を調べる。サーバー内部のファイルまでは調べられない。</p>
+            <a class="c-tool__link c-link" href="https://sitecheck.sucuri.net/" target="_blank" rel="noopener">SiteCheck を開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">SSL</p>
+            <h4 class="c-tool__name">Qualys SSL Labs（SSL Server Test）</h4>
+            <p class="c-tool__text">証明書の有効期限と、暗号化の設定をA〜Fで評価する。結果が出るまで1〜2分かかる。</p>
+            <a class="c-tool__link c-link" href="https://www.ssllabs.com/ssltest/" target="_blank" rel="noopener">SSL Server Test を開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">セキュリティヘッダー</p>
+            <h4 class="c-tool__name">HTTP Observatory（Mozilla）</h4>
+            <p class="c-tool__text">HTTPS転送やセキュリティ関連のヘッダーの設定状況を採点する。改善点も一覧で表示される。</p>
+            <a class="c-tool__link c-link" href="https://developer.mozilla.org/en-US/observatory" target="_blank" rel="noopener">HTTP Observatory を開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">メール</p>
+            <h4 class="c-tool__name">MXToolbox</h4>
+            <p class="c-tool__text">ドメインを入力し、SPF・DMARC・DKIMのレコードの有無や誤りを確認できる。メールサーバーのブラックリスト登録も調べられる。</p>
+            <a class="c-tool__link c-link" href="https://mxtoolbox.com/SuperTool.aspx" target="_blank" rel="noopener">MXToolbox を開く</a>
+          </li>
+        </ul>
+
+        <!-- WordPress向け -->
+        <h3 class="p-guide__subtitle">WordPressのみ（管理画面・プラグイン）</h3>
+        <ul class="p-guide__tools">
+          <li class="c-tool">
+            <p class="c-tool__tag">標準機能</p>
+            <h4 class="c-tool__name">サイトヘルス</h4>
+            <p class="c-tool__text">「ツール &gt; サイトヘルス」で、PHPバージョン、停止中のプラグイン・テーマ、HTTPSの状態などの改善点を確認できる。</p>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">プラグイン</p>
+            <h4 class="c-tool__name">Wordfence Security</h4>
+            <p class="c-tool__text">無料版で、マルウェア・改ざんファイルのスキャンや、脆弱性のあるプラグインの検出ができる。無料版は、新しい攻撃への対策ルールの反映が有料版より遅れる。</p>
+            <a class="c-tool__link c-link" href="https://wordpress.org/plugins/wordfence/" target="_blank" rel="noopener">配布ページを開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">プラグイン</p>
+            <h4 class="c-tool__name">SiteGuard WP Plugin</h4>
+            <p class="c-tool__text">日本製のプラグイン。ログインページの変更・画像認証・ログイン履歴の記録などで、管理画面を守る。マルウェアのスキャン機能はない。</p>
+            <a class="c-tool__link c-link" href="https://wordpress.org/plugins/siteguard/" target="_blank" rel="noopener">配布ページを開く</a>
+          </li>
+        </ul>
+
+        <p class="p-guide__note">このほか、レンタルサーバーによってはウイルスチェックや改ざん検知の機能があります。サーバーの管理画面に診断結果のページがないかも確認してください。</p>
+      </section>
+
       <!-- ==================== 補足・参考情報 ==================== -->
       <section class="p-note js-reveal" aria-labelledby="note-title">
         <h2 class="p-note__title" id="note-title">ご利用にあたって</h2>
         <ul class="p-note__list">
-          <li>本チェックリストの内容は2026年11月時点の情報にもとづきます。PHPのサポート期間やSSL証明書の有効期間などは変わるため、公式情報で最新の状況を確認してください。</li>
-          <li>チェックと点検情報は、お使いのブラウザ（localStorage）にのみ保存されます。別の端末・ブラウザとは共有されません。記録を残す場合は「印刷・PDF保存」をご利用ください。</li>
-          <li>「要対応」となった項目は、対応内容と日付を別途記録しておくと、次回の点検で経過を追えます。</li>
+          <li>本チェックリストの内容は2026年11月時点の情報にもとづきます。PHPのサポート期間やSSL証明書の有効期間、各サービスの仕様は変わるため、公式情報で最新の状況を確認してください。</li>
+          <li>進捗の「完了」は、OKと対象外の合計です。確認中・要検討の項目は完了に含みません。</li>
+          <li>記録はお使いのブラウザ（localStorage）にのみ保存されます。ブラウザのデータを消去すると記録も消えるため、定期的に「データを書き出す」でバックアップしてください。</li>
         </ul>
 
         <h3 class="p-note__subtitle">参考情報（公式）</h3>
