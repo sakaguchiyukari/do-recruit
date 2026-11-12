@@ -2,12 +2,14 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- claude.ai の Artifact として公開したとき、左右の余白に safe-area を含めていることを示す -->
+  <meta name="claude:viewport-fit-sides" content="cover">
   <!-- JS有効時のみフェードインの初期状態（opacity: 0）を適用するためのフラグ -->
   <script>document.documentElement.classList.add('js-enabled');</script>
 
   <title>ホームページ セキュリティ点検チェックリスト｜WordPress・静的HTML</title>
-  <meta name="description" content="複数のWordPressサイト・静的HTMLサイトを、サイトごとに定期セキュリティ点検できるチェックリスト。確認状況（OK・確認中・要検討・対象外）とメモを記録できます。">
+  <meta name="description" content="複数のWordPressサイト・静的HTMLサイトを、サイトごとに定期セキュリティ点検できるチェックリスト。確認状況（OK・確認中・要検討・対象外）とメモを記録し、チームで共有できます。">
 
   <!-- OGP（og:url / og:image は公開URLに合わせて差し替える） -->
   <meta property="og:type" content="website">
@@ -38,7 +40,12 @@
         <span class="l-header__title-line">ホームページ</span>
         <span class="l-header__title-line">セキュリティ点検</span><span class="l-header__title-line">チェックリスト</span>
       </h1>
-      <p class="l-header__lead">管理しているサイトを登録し、サイトごとに点検結果を記録できます。各項目は「OK・確認中・要検討・対象外」から選び、必要に応じてメモを残してください。記録はこのブラウザに保存されます。</p>
+      <p class="l-header__lead">管理しているサイトを登録し、サイトごとに点検結果を記録できます。各項目は「OK・確認中・要検討・対象外」から選び、必要に応じてメモを残してください。</p>
+      <!-- 保存先の表示（チーム共有 / このブラウザのみ）。JSが内容を入れる -->
+      <p class="c-mode js-mode" role="status" aria-live="polite" data-mode="local">
+        <span class="c-mode__dot" aria-hidden="true"></span>
+        <span class="c-mode__text js-mode-text">このブラウザに保存します</span>
+      </p>
     </div>
   </header>
 
@@ -50,17 +57,23 @@
           <h2 class="p-sites__title" id="sites-title">管理サイト</h2>
           <p class="p-sites__count js-site-count"></p>
         </div>
-        <button class="c-button c-button--primary js-site-add" type="button">＋ サイトを追加</button>
+        <button class="c-button c-button--primary js-site-add js-write" type="button">＋ サイトを追加</button>
       </div>
 
       <ul class="p-sites__list js-site-list" aria-label="登録済みのサイト"></ul>
 
+      <!-- サイトが1件もないときの表示 -->
+      <div class="p-sites__empty js-site-empty" hidden>
+        <p class="p-sites__empty-title js-site-empty-title">まだサイトが登録されていません</p>
+        <p class="p-sites__empty-text js-site-empty-text">「＋ サイトを追加」から、点検するサイトを登録してください。</p>
+      </div>
+
       <!-- データの書き出し・読み込み（端末の移行・バックアップ用） -->
       <div class="p-sites__data">
-        <p class="p-sites__data-text">記録はこのブラウザだけに保存されます。別のPCへの移行やバックアップには、データの書き出しを使ってください。</p>
+        <p class="p-sites__data-text js-data-text">記録はこのブラウザだけに保存されます。別のPCへの移行やバックアップには、データの書き出しを使ってください。</p>
         <div class="p-sites__data-actions">
           <button class="c-button c-button--ghost c-button--sm js-export" type="button">データを書き出す（JSON）</button>
-          <label class="c-button c-button--ghost c-button--sm c-file">
+          <label class="c-button c-button--ghost c-button--sm c-file js-write">
             データを読み込む
             <input class="c-file__input js-import" type="file" accept=".json,application/json">
           </label>
@@ -80,13 +93,14 @@
           <span class="c-site__url"></span>
           <span class="c-site__bar" aria-hidden="true"><span class="c-site__bar-fill"></span></span>
           <span class="c-site__stats"></span>
+          <span class="c-site__by"></span>
         </button>
       </li>
     </template>
   </section>
 
   <!-- ==================== 選択中サイトの情報 ==================== -->
-  <section class="p-meta" aria-labelledby="meta-title">
+  <section class="p-meta js-needs-site" aria-labelledby="meta-title">
     <div class="l-container">
       <form class="p-meta__card js-reveal js-meta-form" action="#" method="post" novalidate>
         <div class="p-meta__head">
@@ -133,11 +147,12 @@
         </div>
 
         <div class="p-meta__actions">
-          <button class="c-button c-button--primary" type="submit">サイト情報を保存</button>
+          <button class="c-button c-button--primary js-write" type="submit">サイト情報を保存</button>
+          <!-- 印刷はローカルで開いたときのみ（Artifact内では印刷できないため非表示） -->
           <button class="c-button c-button--ghost js-print" type="button">印刷・PDF保存</button>
           <div class="p-meta__danger">
-            <button class="c-button c-button--text js-reset" type="button">点検結果をリセット</button>
-            <button class="c-button c-button--text js-site-delete" type="button">このサイトを削除</button>
+            <button class="c-button c-button--text js-reset js-write" type="button">点検結果をリセット</button>
+            <button class="c-button c-button--text js-site-delete js-write" type="button">このサイトを削除</button>
           </div>
         </div>
       </form>
@@ -146,7 +161,7 @@
 
   <!-- ==================== ツールバー（サイト切替＋進捗） ==================== -->
   <!-- SP：画面下部に固定 / タブレット以上：画面上部に追従 -->
-  <div class="l-toolbar">
+  <div class="l-toolbar js-needs-site">
     <div class="l-toolbar__inner">
       <div class="l-toolbar__site">
         <label class="u-visually-hidden" for="site-switch">点検するサイト</label>
@@ -170,7 +185,7 @@
     <div class="l-container l-container--narrow">
 
       <!-- ==================== 集計・絞り込み ==================== -->
-      <div class="p-summary js-reveal">
+      <div class="p-summary js-reveal js-needs-site">
         <ul class="p-summary__list" aria-label="確認状況の集計">
           <li class="p-summary__item p-summary__item--ok"><span class="p-summary__label">OK</span><span class="p-summary__num js-sum" data-status="ok">0</span></li>
           <li class="p-summary__item p-summary__item--progress"><span class="p-summary__label">確認中</span><span class="p-summary__num js-sum" data-status="progress">0</span></li>
@@ -1521,7 +1536,8 @@
         <ul class="p-note__list">
           <li>本チェックリストの内容は2026年11月時点の情報にもとづきます。PHPのサポート期間やSSL証明書の有効期間、各サービスの仕様は変わるため、公式情報で最新の状況を確認してください。</li>
           <li>進捗の「完了」は、OKと対象外の合計です。確認中・要検討の項目は完了に含みません。</li>
-          <li>記録はお使いのブラウザ（localStorage）にのみ保存されます。ブラウザのデータを消去すると記録も消えるため、定期的に「データを書き出す」でバックアップしてください。</li>
+          <li>claude.ai で共有したページとして開いた場合、記録はチーム共有のデータベースに保存され、同じページを開いている全員に反映されます。HTMLファイルを直接開いた場合は、お使いのブラウザにのみ保存されます。</li>
+          <li>共有データも誤操作で消える可能性があるため、定期的に「データを書き出す」でバックアップしてください。</li>
         </ul>
 
         <h3 class="p-note__subtitle">参考情報（公式）</h3>
@@ -1535,6 +1551,17 @@
 
     </div>
   </main>
+
+  <!-- ==================== 確認ダイアログ（confirm() の代わり） ==================== -->
+  <dialog class="c-dialog js-dialog" aria-labelledby="dialog-message">
+    <form class="c-dialog__inner" method="dialog">
+      <p class="c-dialog__message" id="dialog-message"></p>
+      <div class="c-dialog__actions">
+        <button class="c-button c-button--ghost" type="submit" value="cancel">キャンセル</button>
+        <button class="c-button c-button--danger js-dialog-ok" type="submit" value="ok">実行する</button>
+      </div>
+    </form>
+  </dialog>
 
   <!-- ==================== フッター ==================== -->
   <footer class="l-footer">

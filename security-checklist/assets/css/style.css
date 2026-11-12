@@ -22,6 +22,12 @@
   --color-accent-soft: #e4f1eb;
   --color-error: #b3261e;
   --color-focus: #2f6fdf;
+  --color-on-ink: #ffffff;        /* 濃色（ink）の上の文字 */
+  --color-on-status: #ffffff;     /* 状態色の上の文字 */
+  --color-toolbar: rgba(255, 255, 255, 0.92);
+  --color-placeholder: #8f99a3;
+  --color-review-row: #fffaf3;
+  --color-backdrop: rgba(15, 28, 46, 0.45);
 
   /* Color：確認状況（OK / 確認中 / 要検討 / 対象外） */
   --color-ok: #1f7a5c;
@@ -69,6 +75,72 @@
   --width-content: 1080px;
   --width-narrow: 860px;
   --toolbar-height-sp: 4.5rem;
+}
+
+/* ダークモード：OS設定に追従（claude.ai でテーマを明示的に選んだ場合はそちらを優先） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-ink: #e6ebe8;
+    --color-text: #d2d9d5;
+    --color-text-muted: #9aa59f;
+    --color-bg: #121614;
+    --color-surface: #1b201e;
+    --color-rule: #2c3431;
+    --color-accent: #4fb48d;
+    --color-accent-strong: #74cda8;
+    --color-accent-soft: #1c372d;
+    --color-error: #f0877d;
+    --color-focus: #7ea8ff;
+    --color-on-ink: #121614;
+    --color-on-status: #0f1412;
+    --color-toolbar: rgba(27, 32, 30, 0.92);
+    --color-placeholder: #6f7a75;
+    --color-review-row: #241c12;
+    --color-backdrop: rgba(0, 0, 0, 0.6);
+    --color-ok: #4fb48d;
+    --color-ok-soft: #1c372d;
+    --color-progress: #86a8f2;
+    --color-progress-soft: #1f2a44;
+    --color-review: #eaa75f;
+    --color-review-soft: #3a2914;
+    --color-na: #98a1a8;
+    --color-na-soft: #2a2f31;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+}
+
+/* claude.ai でダークを明示的に選んだ場合（上と同じ値） */
+:root[data-theme="dark"] {
+  --color-ink: #e6ebe8;
+  --color-text: #d2d9d5;
+  --color-text-muted: #9aa59f;
+  --color-bg: #121614;
+  --color-surface: #1b201e;
+  --color-rule: #2c3431;
+  --color-accent: #4fb48d;
+  --color-accent-strong: #74cda8;
+  --color-accent-soft: #1c372d;
+  --color-error: #f0877d;
+  --color-focus: #7ea8ff;
+  --color-on-ink: #121614;
+  --color-on-status: #0f1412;
+  --color-toolbar: rgba(27, 32, 30, 0.92);
+  --color-placeholder: #6f7a75;
+  --color-review-row: #241c12;
+  --color-backdrop: rgba(0, 0, 0, 0.6);
+  --color-ok: #4fb48d;
+  --color-ok-soft: #1c372d;
+  --color-progress: #86a8f2;
+  --color-progress-soft: #1f2a44;
+  --color-review: #eaa75f;
+  --color-review-soft: #3a2914;
+  --color-na: #98a1a8;
+  --color-na-soft: #2a2f31;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
 }
 
 
@@ -158,7 +230,9 @@ a {
   width: 100%;
   max-width: calc(var(--width-content) + var(--space-gutter) * 2);
   margin-inline: auto;
-  padding-inline: var(--space-gutter);
+  /* 横向きのスマホでノッチ等に隠れないよう safe-area を考慮 */
+  padding-left: max(var(--space-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-gutter), env(safe-area-inset-right, 0px));
 }
 
 .l-container--narrow {
@@ -234,7 +308,7 @@ a {
   z-index: 10;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   border-top: 1px solid var(--color-rule);
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: var(--color-toolbar);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
@@ -246,7 +320,9 @@ a {
   max-width: calc(var(--width-narrow) + var(--space-gutter) * 2);
   min-height: var(--toolbar-height-sp);
   margin-inline: auto;
-  padding: var(--space-xs) var(--space-gutter);
+  padding-block: var(--space-xs);
+  padding-left: max(var(--space-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-gutter), env(safe-area-inset-right, 0px));
 }
 
 .l-toolbar__site {
@@ -255,9 +331,19 @@ a {
 }
 
 @media (min-width: 768px) {
+  /* 追従ツールバーの上（スマホアプリのステータスバー部分）を背景色で塗る */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10;
+    height: env(safe-area-inset-top, 0px);
+    background-color: var(--color-bg);
+  }
+
   .l-toolbar {
     position: sticky;
-    inset: 0 0 auto;
+    top: env(safe-area-inset-top, 0px);
     margin-top: var(--space-lg);
     padding-bottom: 0;
     border-top: 0;
@@ -321,7 +407,7 @@ a {
 
 .c-button--primary {
   background-color: var(--color-ink);
-  color: #fff;
+  color: var(--color-on-ink);
 }
 
 .c-button--ghost {
@@ -360,6 +446,114 @@ a {
   .c-button--text:hover {
     color: var(--color-error);
   }
+}
+
+
+.c-button--danger {
+  background-color: var(--color-error);
+  color: var(--color-on-status);
+}
+
+.c-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (hover: hover) {
+  .c-button--danger:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+}
+
+
+/* ==========================================================================
+   Component：保存先の表示（チーム共有 / このブラウザのみ）
+   ========================================================================== */
+.c-mode {
+  --mode-color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: var(--space-md);
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.c-mode__dot {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--mode-color);
+}
+
+.c-mode[data-mode="shared"] {
+  --mode-color: var(--color-ok);
+}
+
+.c-mode[data-mode="connecting"] {
+  --mode-color: var(--color-progress);
+}
+
+.c-mode[data-mode="error"],
+.c-mode[data-mode="readonly"] {
+  --mode-color: var(--color-review);
+}
+
+/* 接続中は点を点滅させる */
+.c-mode[data-mode="connecting"] .c-mode__dot {
+  animation: mode-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes mode-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+
+/* ==========================================================================
+   Component：確認ダイアログ
+   ========================================================================== */
+.c-dialog {
+  width: min(28rem, calc(100% - 2rem));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+}
+
+.c-dialog::backdrop {
+  background-color: var(--color-backdrop);
+}
+
+.c-dialog__inner {
+  display: grid;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+}
+
+.c-dialog__message {
+  color: var(--color-ink);
+  font-size: var(--fs-base);
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.c-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-xs);
 }
 
 
@@ -437,7 +631,7 @@ a {
 }
 
 .c-field__input::placeholder {
-  color: #9aa3ad;
+  color: var(--color-placeholder);
 }
 
 .c-field__input:focus {
@@ -632,10 +826,15 @@ a {
   transition: transform 0.5s var(--ease);
 }
 
-.c-site__stats {
+.c-site__stats,
+.c-site__by {
   color: var(--color-text-muted);
   font-size: var(--fs-xs);
   line-height: 1.5;
+}
+
+.c-site__by:empty {
+  display: none;
 }
 
 /* 選択中のサイト */
@@ -682,7 +881,7 @@ a {
 
 .c-check[data-status="review"] {
   --check-color: var(--color-review);
-  background-color: #fffaf3;
+  background-color: var(--color-review-row);
 }
 
 .c-check[data-status="na"] {
@@ -838,7 +1037,7 @@ a {
 
 .c-status__input:checked + .c-status__label {
   background-color: var(--status-color);
-  color: #fff;
+  color: var(--color-on-status);
   box-shadow: var(--shadow-sm);
 }
 
@@ -888,7 +1087,7 @@ a {
 .c-filter__button[aria-pressed="true"] {
   border-color: var(--color-ink);
   background-color: var(--color-ink);
-  color: #fff;
+  color: var(--color-on-ink);
 }
 
 @media (hover: hover) {
@@ -1022,6 +1221,30 @@ a {
 
 .p-sites__item {
   scroll-snap-align: start;
+}
+
+/* サイトが1件もないとき */
+.p-sites__empty {
+  display: grid;
+  gap: 0.25rem;
+  padding: var(--space-lg);
+  border: 1px dashed var(--color-rule);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.p-sites__empty[hidden] {
+  display: none;
+}
+
+.p-sites__empty-title {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.p-sites__empty-text {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
 }
 
 .p-sites__data {
@@ -1327,7 +1550,7 @@ a {
 
 .p-category.is-complete .p-category__count {
   background-color: var(--color-accent);
-  color: #fff;
+  color: var(--color-on-status);
 }
 
 /* 絞り込みで表示する項目が無いカテゴリ */
@@ -1405,7 +1628,7 @@ a {
   height: 2rem;
   border-radius: 50%;
   background-color: var(--color-ink);
-  color: #fff;
+  color: var(--color-on-ink);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   font-weight: 700;
@@ -1506,6 +1729,19 @@ a {
 
 
 /* ==========================================================================
+   State：ページ全体の状態（JSが <body> に付与）
+   ========================================================================== */
+/* 選択中のサイトがないときは、サイトに紐づく部分を隠す */
+.is-no-site .js-needs-site {
+  display: none;
+}
+
+/* 閲覧のみの権限では編集ボタンを隠す（入力欄はJSで無効化） */
+.is-readonly .js-write {
+  display: none;
+}
+
+/* ==========================================================================
    Utility
    ========================================================================== */
 /* 視覚的に隠し、スクリーンリーダーには読ませる */
@@ -1530,7 +1766,7 @@ a {
   padding: 0.75rem 1.25rem;
   border-radius: var(--radius-sm);
   background-color: var(--color-ink);
-  color: #fff;
+  color: var(--color-on-ink);
   font-size: var(--fs-sm);
   transform: translateY(-200%);
   transition: transform var(--duration-fast) var(--ease);
@@ -1542,8 +1778,8 @@ a {
 
 /* フェードイン：JS有効時のみ初期状態を隠す */
 .js-enabled .js-reveal {
-  opacity: 0;
-  transform: translateY(1.25rem);
+  opacity: 0.3;
+  transform: translateY(1rem);
   transition:
     opacity var(--duration-reveal) var(--ease),
     transform var(--duration-reveal) var(--ease);
@@ -1572,6 +1808,17 @@ a {
    Print：印刷・PDF保存用（選択中サイトの点検結果のみ）
    ========================================================================== */
 @media print {
+  /* ダークモードでも印刷は明るい配色にする（ダーク指定より詳細度を上げて上書き） */
+  :root:not([data-print-a]):not([data-print-b]) {
+    --color-ink: #0f1c2e;
+    --color-text: #1d2733;
+    --color-text-muted: #5b6672;
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-rule: #e2e5df;
+    color-scheme: light;
+  }
+
   :root {
     --space-xl: 1.5rem;
     --space-lg: 1rem;

@@ -1,0 +1,4511 @@
+<title>セキュリティ点検チェックリスト</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="複数のWordPressサイト・静的HTMLサイトの定期セキュリティ点検を、チームで共有して記録するチェックリスト。">
+<style>
+@charset "UTF-8";
+/* ==========================================================================
+   ホームページ セキュリティ点検チェックリスト
+   構成：Foundation → Layout(l-) → Component(c-) → Project(p-) → Utility(u-) → Print
+   命名：FLOCSS + BEM / 状態クラスは is- / JSフックは js-（js- にはスタイルを当てない）
+   ========================================================================== */
+
+
+/* ==========================================================================
+   Foundation：デザイントークン
+   ========================================================================== */
+:root {
+  /* Color：ベース */
+  --color-ink: #0f1c2e;
+  --color-text: #1d2733;
+  --color-text-muted: #5b6672;
+  --color-bg: #f4f5f1;
+  --color-surface: #ffffff;
+  --color-rule: #e2e5df;
+  --color-accent: #1f7a5c;
+  --color-accent-strong: #165c45;
+  --color-accent-soft: #e4f1eb;
+  --color-error: #b3261e;
+  --color-focus: #2f6fdf;
+  --color-on-ink: #ffffff;        /* 濃色（ink）の上の文字 */
+  --color-on-status: #ffffff;     /* 状態色の上の文字 */
+  --color-toolbar: rgba(255, 255, 255, 0.92);
+  --color-placeholder: #8f99a3;
+  --color-review-row: #fffaf3;
+  --color-backdrop: rgba(15, 28, 46, 0.45);
+
+  /* Color：確認状況（OK / 確認中 / 要検討 / 対象外） */
+  --color-ok: #1f7a5c;
+  --color-ok-soft: #e4f1eb;
+  --color-progress: #2f5fbf;
+  --color-progress-soft: #e7eefb;
+  --color-review: #b45309;
+  --color-review-soft: #fdf0e1;
+  --color-na: #6b7480;
+  --color-na-soft: #eceeec;
+
+  /* Typography */
+  --font-base: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: clamp(1.125rem, 1rem + 0.4vw, 1.25rem);
+  --fs-xl: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+  --fs-hero: clamp(1.75rem, 1.2rem + 2.4vw, 2.75rem);
+
+  /* Space */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: clamp(0.75rem, 0.65rem + 0.4vw, 1rem);
+  --space-md: clamp(1rem, 0.8rem + 0.8vw, 1.5rem);
+  --space-lg: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+  --space-xl: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
+  --space-gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+
+  /* Radius / Shadow */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-full: 999px;
+  --shadow-sm: 0 1px 2px rgba(15, 28, 46, 0.04), 0 2px 8px rgba(15, 28, 46, 0.04);
+  --shadow-md: 0 2px 4px rgba(15, 28, 46, 0.04), 0 12px 32px rgba(15, 28, 46, 0.07);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 0.25s;
+  --duration-reveal: 0.7s;
+
+  /* Layout */
+  --width-content: 1080px;
+  --width-narrow: 860px;
+  --toolbar-height-sp: 4.5rem;
+}
+
+/* ダークモード：OS設定に追従（claude.ai でテーマを明示的に選んだ場合はそちらを優先） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-ink: #e6ebe8;
+    --color-text: #d2d9d5;
+    --color-text-muted: #9aa59f;
+    --color-bg: #121614;
+    --color-surface: #1b201e;
+    --color-rule: #2c3431;
+    --color-accent: #4fb48d;
+    --color-accent-strong: #74cda8;
+    --color-accent-soft: #1c372d;
+    --color-error: #f0877d;
+    --color-focus: #7ea8ff;
+    --color-on-ink: #121614;
+    --color-on-status: #0f1412;
+    --color-toolbar: rgba(27, 32, 30, 0.92);
+    --color-placeholder: #6f7a75;
+    --color-review-row: #241c12;
+    --color-backdrop: rgba(0, 0, 0, 0.6);
+    --color-ok: #4fb48d;
+    --color-ok-soft: #1c372d;
+    --color-progress: #86a8f2;
+    --color-progress-soft: #1f2a44;
+    --color-review: #eaa75f;
+    --color-review-soft: #3a2914;
+    --color-na: #98a1a8;
+    --color-na-soft: #2a2f31;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+}
+
+/* claude.ai でダークを明示的に選んだ場合（上と同じ値） */
+:root[data-theme="dark"] {
+  --color-ink: #e6ebe8;
+  --color-text: #d2d9d5;
+  --color-text-muted: #9aa59f;
+  --color-bg: #121614;
+  --color-surface: #1b201e;
+  --color-rule: #2c3431;
+  --color-accent: #4fb48d;
+  --color-accent-strong: #74cda8;
+  --color-accent-soft: #1c372d;
+  --color-error: #f0877d;
+  --color-focus: #7ea8ff;
+  --color-on-ink: #121614;
+  --color-on-status: #0f1412;
+  --color-toolbar: rgba(27, 32, 30, 0.92);
+  --color-placeholder: #6f7a75;
+  --color-review-row: #241c12;
+  --color-backdrop: rgba(0, 0, 0, 0.6);
+  --color-ok: #4fb48d;
+  --color-ok-soft: #1c372d;
+  --color-progress: #86a8f2;
+  --color-progress-soft: #1f2a44;
+  --color-review: #eaa75f;
+  --color-review-soft: #3a2914;
+  --color-na: #98a1a8;
+  --color-na-soft: #2a2f31;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
+}
+
+
+/* ==========================================================================
+   Foundation：リセット・ベース
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  /* SPでは下部固定ツールバーの分だけ余白を確保 */
+  padding-bottom: calc(var(--toolbar-height-sp) + env(safe-area-inset-bottom, 0px));
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: var(--fs-base);
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+/* フォーカス表示（キーボード操作時のみ） */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;
+  }
+}
+
+
+/* ==========================================================================
+   Layout：コンテナ
+   ========================================================================== */
+.l-container {
+  width: 100%;
+  max-width: calc(var(--width-content) + var(--space-gutter) * 2);
+  margin-inline: auto;
+  /* 横向きのスマホでノッチ等に隠れないよう safe-area を考慮 */
+  padding-left: max(var(--space-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-gutter), env(safe-area-inset-right, 0px));
+}
+
+.l-container--narrow {
+  max-width: calc(var(--width-narrow) + var(--space-gutter) * 2);
+}
+
+
+/* ==========================================================================
+   Layout：ヘッダー
+   ========================================================================== */
+.l-header {
+  padding-block: var(--space-xl) var(--space-lg);
+}
+
+.l-header__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+  color: var(--color-accent);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.l-header__eyebrow::before {
+  content: "";
+  width: 1.5rem;
+  height: 2px;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+}
+
+.l-header__title {
+  color: var(--color-ink);
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+}
+
+/* 語句の途中で改行しないよう、まとまり単位で折り返す */
+.l-header__title-line {
+  display: inline-block;
+}
+
+.l-header__title-line:first-child {
+  display: block;
+}
+
+.l-header__lead {
+  max-width: 40em;
+  margin-top: var(--space-md);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+@media (min-width: 768px) {
+  .l-header__lead {
+    font-size: var(--fs-base);
+  }
+}
+
+
+/* ==========================================================================
+   Layout：ツールバー（サイト切替＋進捗）
+   SP：画面下部に固定 / 768px以上：上部に追従
+   ========================================================================== */
+.l-toolbar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 10;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid var(--color-rule);
+  background-color: var(--color-toolbar);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.l-toolbar__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  max-width: calc(var(--width-narrow) + var(--space-gutter) * 2);
+  min-height: var(--toolbar-height-sp);
+  margin-inline: auto;
+  padding-block: var(--space-xs);
+  padding-left: max(var(--space-gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-gutter), env(safe-area-inset-right, 0px));
+}
+
+.l-toolbar__site {
+  flex: 0 1 55%;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  /* 追従ツールバーの上（スマホアプリのステータスバー部分）を背景色で塗る */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10;
+    height: env(safe-area-inset-top, 0px);
+    background-color: var(--color-bg);
+  }
+
+  .l-toolbar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    margin-top: var(--space-lg);
+    padding-bottom: 0;
+    border-top: 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .l-toolbar__inner {
+    gap: var(--space-lg);
+    min-height: 4.25rem;
+  }
+
+  .l-toolbar__site {
+    flex-basis: 20rem;
+  }
+}
+
+
+/* ==========================================================================
+   Layout：メイン・フッター
+   ========================================================================== */
+.l-main {
+  padding-block: var(--space-lg) var(--space-xl);
+}
+
+.l-footer {
+  padding-block: var(--space-lg);
+  border-top: 1px solid var(--color-rule);
+}
+
+.l-footer__text {
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  text-align: center;
+}
+
+
+/* ==========================================================================
+   Component：ボタン
+   ========================================================================== */
+.c-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: none;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
+}
+
+.c-button--primary {
+  background-color: var(--color-ink);
+  color: var(--color-on-ink);
+}
+
+.c-button--ghost {
+  border-color: var(--color-rule);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.c-button--text {
+  min-height: 2.75rem;
+  padding-inline: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.c-button--sm {
+  min-height: 2.75rem;
+  padding: 0.5rem 1.125rem;
+  font-size: var(--fs-xs);
+}
+
+@media (hover: hover) {
+  .c-button--primary:hover {
+    background-color: var(--color-accent-strong);
+    box-shadow: 0 8px 20px rgba(22, 92, 69, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .c-button--ghost:hover {
+    border-color: var(--color-ink);
+    transform: translateY(-2px);
+  }
+
+  .c-button--text:hover {
+    color: var(--color-error);
+  }
+}
+
+
+.c-button--danger {
+  background-color: var(--color-error);
+  color: var(--color-on-status);
+}
+
+.c-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (hover: hover) {
+  .c-button--danger:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+}
+
+
+/* ==========================================================================
+   Component：保存先の表示（チーム共有 / このブラウザのみ）
+   ========================================================================== */
+.c-mode {
+  --mode-color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: var(--space-md);
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.c-mode__dot {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--mode-color);
+}
+
+.c-mode[data-mode="shared"] {
+  --mode-color: var(--color-ok);
+}
+
+.c-mode[data-mode="connecting"] {
+  --mode-color: var(--color-progress);
+}
+
+.c-mode[data-mode="error"],
+.c-mode[data-mode="readonly"] {
+  --mode-color: var(--color-review);
+}
+
+/* 接続中は点を点滅させる */
+.c-mode[data-mode="connecting"] .c-mode__dot {
+  animation: mode-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes mode-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+
+/* ==========================================================================
+   Component：確認ダイアログ
+   ========================================================================== */
+.c-dialog {
+  width: min(28rem, calc(100% - 2rem));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+}
+
+.c-dialog::backdrop {
+  background-color: var(--color-backdrop);
+}
+
+.c-dialog__inner {
+  display: grid;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+}
+
+.c-dialog__message {
+  color: var(--color-ink);
+  font-size: var(--fs-base);
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.c-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+}
+
+
+/* ==========================================================================
+   Component：ファイル選択（ボタンの見た目で input[type=file] を包む）
+   ========================================================================== */
+.c-file {
+  position: relative;
+}
+
+.c-file__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.c-file:focus-within {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================================
+   Component：フォーム項目
+   ========================================================================== */
+.c-field {
+  display: grid;
+  align-content: start;
+  gap: var(--space-xs);
+}
+
+.c-field__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--color-ink);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.c-field__required,
+.c-field__optional {
+  padding: 0.1em 0.6em;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.c-field__required {
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent-strong);
+}
+
+.c-field__optional {
+  background-color: var(--color-bg);
+  color: var(--color-text-muted);
+}
+
+.c-field__input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg);
+  font-size: var(--fs-base); /* 16px未満だとiOSで入力時にズームされる */
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    background-color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease);
+}
+
+.c-field__input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.c-field__input:focus {
+  border-color: var(--color-accent);
+  background-color: var(--color-surface);
+  box-shadow: 0 0 0 4px var(--color-accent-soft);
+  outline: none; /* box-shadow でフォーカスを表示しているため */
+}
+
+.c-field__input[aria-invalid="true"] {
+  border-color: var(--color-error);
+}
+
+/* セレクトボックスの矢印（背景のSVGで描画） */
+.c-field__input--select,
+.c-select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%235b6672' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  cursor: pointer;
+}
+
+.c-field__error {
+  color: var(--color-error);
+  font-size: var(--fs-xs);
+}
+
+.c-field__error:empty {
+  display: none;
+}
+
+
+/* ==========================================================================
+   Component：サイト切替セレクト（ツールバー内）
+   ========================================================================== */
+.c-select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 2.25rem 0.5rem 1rem;
+  overflow: hidden;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  background-position: right 0.9rem center;
+  color: var(--color-ink);
+  font-size: var(--fs-base);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+
+@media (hover: hover) {
+  .c-select:hover {
+    border-color: var(--color-ink);
+  }
+}
+
+
+/* ==========================================================================
+   Component：進捗バー
+   ========================================================================== */
+.c-progress {
+  flex: 1;
+  min-width: 0;
+}
+
+.c-progress__text {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+
+.c-progress__label {
+  color: var(--color-text-muted);
+  font-family: var(--font-base);
+  font-weight: 500;
+}
+
+.c-progress__track {
+  /* --progress（0〜1）はJSが設定する */
+  --progress: 0;
+  overflow: hidden;
+  height: 0.375rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-rule);
+}
+
+.c-progress__bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--color-accent);
+  transform: scaleX(var(--progress));
+  transform-origin: left center;
+  transition: transform 0.5s var(--ease);
+}
+
+
+/* ==========================================================================
+   Component：サイトカード
+   ========================================================================== */
+.c-site {
+  /* --progress（0〜1）はJSが設定する */
+  --progress: 0;
+  display: grid;
+  gap: 0.35rem;
+  width: 100%;
+  height: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
+}
+
+.c-site__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.c-site__type {
+  color: var(--color-accent);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.c-site__flag {
+  padding: 0.05em 0.6em;
+  border-radius: var(--radius-full);
+  background-color: var(--color-review-soft);
+  color: var(--color-review);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.c-site__flag:empty {
+  display: none;
+}
+
+.c-site__name {
+  overflow: hidden;
+  color: var(--color-ink);
+  font-weight: 700;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c-site__url {
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c-site__url:empty {
+  display: none;
+}
+
+.c-site__bar {
+  overflow: hidden;
+  height: 0.25rem;
+  margin-top: 0.25rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-rule);
+}
+
+.c-site__bar-fill {
+  display: block;
+  height: 100%;
+  background-color: var(--color-accent);
+  transform: scaleX(var(--progress));
+  transform-origin: left center;
+  transition: transform 0.5s var(--ease);
+}
+
+.c-site__stats,
+.c-site__by {
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+
+.c-site__by:empty {
+  display: none;
+}
+
+/* 選択中のサイト */
+.c-site[aria-pressed="true"] {
+  border-color: var(--color-ink);
+  box-shadow: var(--shadow-md);
+}
+
+@media (hover: hover) {
+  .c-site:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+}
+
+
+/* ==========================================================================
+   Component：チェック項目（確認状況＋メモ）
+   ========================================================================== */
+.c-check {
+  /* 状態ごとの色（data-status に応じて切り替え） */
+  --check-color: transparent;
+  display: grid;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-left: 3px solid var(--check-color);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease);
+}
+
+.c-check + .c-check {
+  margin-top: 0.25rem;
+}
+
+.c-check[data-status="ok"] {
+  --check-color: var(--color-ok);
+}
+
+.c-check[data-status="progress"] {
+  --check-color: var(--color-progress);
+}
+
+.c-check[data-status="review"] {
+  --check-color: var(--color-review);
+  background-color: var(--color-review-row);
+}
+
+.c-check[data-status="na"] {
+  --check-color: var(--color-na);
+}
+
+.c-check__main {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.c-check__title {
+  color: var(--color-ink);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+}
+
+.c-check[data-status="na"] .c-check__title {
+  color: var(--color-text-muted);
+}
+
+.c-check__desc {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.75;
+}
+
+.c-check__guide-link {
+  justify-self: start;
+  margin-top: 0.25rem;
+  color: var(--color-accent-strong);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.c-check__guide-link::after {
+  content: "↓";
+  margin-left: 0.3em;
+}
+
+/* メモ：確認中・要検討のとき、またはメモが入力済みのときに表示 */
+.c-check__memo {
+  display: none;
+}
+
+.c-check[data-status="progress"] .c-check__memo,
+.c-check[data-status="review"] .c-check__memo,
+.c-check.has-memo .c-check__memo {
+  display: block;
+}
+
+.c-check__memo-input {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.875rem;
+  border: 1px dashed var(--color-rule);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  resize: vertical;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+
+.c-check__memo-input:focus {
+  border-style: solid;
+  border-color: var(--check-color);
+  outline: none; /* 枠線の色・線種の変化でフォーカスを表示 */
+}
+
+/* 絞り込み時に対象外の項目を隠す */
+.c-check.is-filtered-out {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .c-check {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-md);
+    align-items: start;
+  }
+
+  .c-check__memo {
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* ==========================================================================
+   Component：確認状況（ラジオボタンをセグメント状に表示）
+   ========================================================================== */
+.c-status {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg);
+}
+
+/* 実体のラジオは視覚的に隠し、ラベルをボタンとして見せる */
+.c-status__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.c-status__label {
+  --status-color: var(--color-text-muted);
+  --status-soft: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem; /* タップ領域 44px を確保 */
+  padding: 0.25rem 0.5rem;
+  border-radius: calc(var(--radius-sm) - 0.125rem);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease);
+}
+
+.c-status__label--ok {
+  --status-color: var(--color-ok);
+  --status-soft: var(--color-ok-soft);
+}
+
+.c-status__label--progress {
+  --status-color: var(--color-progress);
+  --status-soft: var(--color-progress-soft);
+}
+
+.c-status__label--review {
+  --status-color: var(--color-review);
+  --status-soft: var(--color-review-soft);
+}
+
+.c-status__label--na {
+  --status-color: var(--color-na);
+  --status-soft: var(--color-na-soft);
+}
+
+.c-status__input:checked + .c-status__label {
+  background-color: var(--status-color);
+  color: var(--color-on-status);
+  box-shadow: var(--shadow-sm);
+}
+
+.c-status__input:focus-visible + .c-status__label {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+@media (hover: hover) {
+  .c-status__input:not(:checked) + .c-status__label:hover {
+    background-color: var(--status-soft);
+    color: var(--status-color);
+  }
+}
+
+@media (min-width: 768px) {
+  .c-status {
+    grid-template-columns: repeat(4, 4rem);
+  }
+}
+
+
+/* ==========================================================================
+   Component：絞り込みボタン
+   ========================================================================== */
+.c-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.c-filter__button {
+  min-height: 2.75rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.c-filter__button[aria-pressed="true"] {
+  border-color: var(--color-ink);
+  background-color: var(--color-ink);
+  color: var(--color-on-ink);
+}
+
+@media (hover: hover) {
+  .c-filter__button[aria-pressed="false"]:hover {
+    border-color: var(--color-ink);
+    color: var(--color-ink);
+  }
+}
+
+
+/* ==========================================================================
+   Component：リンク
+   ========================================================================== */
+.c-link {
+  color: var(--color-accent-strong);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.c-link::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: 0.25em;
+  font-size: 0.85em;
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+@media (hover: hover) {
+  .c-link:hover {
+    color: var(--color-ink);
+  }
+
+  .c-link:hover::after {
+    transform: translate(2px, -2px);
+  }
+}
+
+
+/* ==========================================================================
+   Component：ツールカード（診断ツールの紹介）
+   ========================================================================== */
+.c-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: var(--space-md);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
+}
+
+.c-tool__tag {
+  color: var(--color-accent);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.c-tool__name {
+  color: var(--color-ink);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+}
+
+.c-tool__text {
+  flex: 1;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.75;
+}
+
+.c-tool__link {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .c-tool:hover {
+    border-color: transparent;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+}
+
+
+/* ==========================================================================
+   Project：管理サイト一覧
+   ========================================================================== */
+.p-sites__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.p-sites__title {
+  color: var(--color-ink);
+  font-size: var(--fs-xl);
+  line-height: 1.4;
+}
+
+.p-sites__count {
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+}
+
+/* SP：横スクロールで並べて縦長を防ぐ / タブレット以上：グリッド */
+.p-sites__list {
+  display: grid;
+  grid-auto-columns: minmax(13.5rem, 72%);
+  grid-auto-flow: column;
+  gap: var(--space-sm);
+  margin-inline: calc(var(--space-gutter) * -1);
+  padding: 0.25rem var(--space-gutter) var(--space-sm);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: var(--space-gutter);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.p-sites__item {
+  scroll-snap-align: start;
+}
+
+/* サイトが1件もないとき */
+.p-sites__empty {
+  display: grid;
+  gap: 0.25rem;
+  padding: var(--space-lg);
+  border: 1px dashed var(--color-rule);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.p-sites__empty[hidden] {
+  display: none;
+}
+
+.p-sites__empty-title {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.p-sites__empty-text {
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+.p-sites__data {
+  display: grid;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.p-sites__data-text {
+  color: var(--color-text-muted);
+  font-size: var(--fs-xs);
+}
+
+.p-sites__data-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+@media (min-width: 768px) {
+  .p-sites__list {
+    grid-template-columns: repeat(auto-fill, minmax(14.5rem, 1fr));
+    grid-auto-flow: row;
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .p-sites__data {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+}
+
+
+/* ==========================================================================
+   Project：サイト情報フォーム
+   ========================================================================== */
+.p-meta {
+  margin-top: var(--space-xl);
+}
+
+.p-meta .l-container {
+  max-width: calc(var(--width-narrow) + var(--space-gutter) * 2);
+}
+
+.p-meta__card {
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.p-meta__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xs) var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.p-meta__title {
+  color: var(--color-ink);
+  font-size: var(--fs-lg);
+}
+
+.p-meta__status {
+  color: var(--color-accent-strong);
+  font-size: var(--fs-xs);
+}
+
+.p-meta__grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.p-meta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-rule);
+}
+
+/* SPでは主ボタンを全幅にして押しやすくする */
+.p-meta__actions .c-button--primary,
+.p-meta__actions .c-button--ghost {
+  flex: 1 1 100%;
+}
+
+.p-meta__danger {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+@media (min-width: 600px) {
+  .p-meta__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .p-meta__actions .c-button--primary,
+  .p-meta__actions .c-button--ghost {
+    flex: 0 0 auto;
+  }
+
+  .p-meta__danger {
+    margin-left: auto;
+  }
+}
+
+
+/* ==========================================================================
+   Project：集計・絞り込み
+   ========================================================================== */
+.p-summary {
+  display: grid;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.p-summary__list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.375rem;
+}
+
+.p-summary__item {
+  --summary-color: var(--color-text-muted);
+  display: grid;
+  justify-items: center;
+  padding: 0.5rem 0.25rem;
+  border-top: 3px solid var(--summary-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+}
+
+.p-summary__item--ok {
+  --summary-color: var(--color-ok);
+}
+
+.p-summary__item--progress {
+  --summary-color: var(--color-progress);
+}
+
+.p-summary__item--review {
+  --summary-color: var(--color-review);
+}
+
+.p-summary__item--na {
+  --summary-color: var(--color-na-soft);
+}
+
+.p-summary__label {
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.p-summary__num {
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .p-summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-md);
+  }
+}
+
+
+/* ==========================================================================
+   Project：パネル（WordPress / 静的HTML）
+   ========================================================================== */
+.p-panel[hidden] {
+  display: none;
+}
+
+/* 追従ツールバーに見出しが隠れないよう、スクロール位置をずらす */
+.p-panel {
+  scroll-margin-top: 6rem;
+}
+
+/* JS無効時は両パネルを縦に並べて表示する */
+.p-panel + .p-panel {
+  margin-top: var(--space-xl);
+}
+
+.p-panel__head {
+  margin-bottom: var(--space-lg);
+}
+
+.p-panel__site {
+  color: var(--color-accent);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.p-panel__site:empty {
+  display: none;
+}
+
+.p-panel__title {
+  color: var(--color-ink);
+  font-size: var(--fs-xl);
+  line-height: 1.5;
+}
+
+.p-panel__lead {
+  margin-top: var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+.p-panel__body {
+  display: grid;
+  gap: var(--space-md);
+}
+
+/* 絞り込みで該当がない場合のメッセージ（JSが is-empty を付与） */
+.p-panel__body.is-empty::before {
+  content: "該当する項目はありません。";
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+
+/* ==========================================================================
+   Project：カテゴリカード
+   ========================================================================== */
+.p-category {
+  padding: var(--space-md) var(--space-xs) var(--space-xs);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition:
+    box-shadow var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease);
+}
+
+.p-category__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0 var(--space-md) var(--space-sm);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.p-category__num {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.p-category__title {
+  flex: 1;
+  color: var(--color-ink);
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+}
+
+.p-category__count {
+  flex-shrink: 0;
+  padding: 0.2em 0.75em;
+  border-radius: var(--radius-full);
+  background-color: var(--color-bg);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.p-category__list {
+  display: grid;
+  padding-block: var(--space-xs);
+}
+
+/* カテゴリ内の全項目が完了した状態 */
+.p-category.is-complete {
+  border-color: var(--color-accent-soft);
+}
+
+.p-category.is-complete .p-category__count {
+  background-color: var(--color-accent);
+  color: var(--color-on-status);
+}
+
+/* 絞り込みで表示する項目が無いカテゴリ */
+.p-category.is-filtered-out {
+  display: none;
+}
+
+@media (hover: hover) {
+  .p-category:hover {
+    box-shadow: var(--shadow-md);
+  }
+}
+
+@media (min-width: 768px) {
+  .p-category {
+    padding: var(--space-lg) var(--space-sm) var(--space-sm);
+  }
+}
+
+
+/* ==========================================================================
+   Project：セキュリティ診断の進め方
+   ========================================================================== */
+.p-guide {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-rule);
+  scroll-margin-top: 5rem;
+}
+
+.p-guide__eyebrow {
+  color: var(--color-accent);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.p-guide__title {
+  margin-top: 0.25rem;
+  color: var(--color-ink);
+  font-size: var(--fs-xl);
+  line-height: 1.5;
+}
+
+.p-guide__lead {
+  max-width: 40em;
+  margin-top: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+/* 手順：番号付きのタイムライン */
+.p-guide__steps {
+  display: grid;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  counter-reset: guide-step;
+}
+
+.p-guide__step {
+  position: relative;
+  padding-left: 3rem;
+  counter-increment: guide-step;
+}
+
+.p-guide__step::before {
+  content: counter(guide-step);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--color-ink);
+  color: var(--color-on-ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+/* 番号同士をつなぐ縦線 */
+.p-guide__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 2.5rem;
+  bottom: calc(var(--space-md) * -1 + 0.5rem);
+  left: calc(1rem - 1px);
+  width: 2px;
+  background-color: var(--color-rule);
+}
+
+.p-guide__step-title {
+  color: var(--color-ink);
+  font-size: var(--fs-base);
+  line-height: 2rem;
+}
+
+.p-guide__step-text {
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+.p-guide__subtitle {
+  margin-top: var(--space-xl);
+  color: var(--color-ink);
+  font-size: var(--fs-lg);
+}
+
+.p-guide__tools {
+  display: grid;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.p-guide__note {
+  margin-top: var(--space-md);
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
+
+@media (min-width: 600px) {
+  .p-guide__tools {
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  }
+}
+
+
+/* ==========================================================================
+   Project：補足・参考情報
+   ========================================================================== */
+.p-note {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-rule);
+}
+
+.p-note__title {
+  color: var(--color-ink);
+  font-size: var(--fs-lg);
+}
+
+.p-note__subtitle {
+  margin-top: var(--space-lg);
+  color: var(--color-ink);
+  font-size: var(--fs-base);
+}
+
+.p-note__list,
+.p-note__links {
+  display: grid;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+  font-size: var(--fs-sm);
+}
+
+.p-note__list li {
+  position: relative;
+  padding-left: 1.1em;
+  color: var(--color-text-muted);
+}
+
+.p-note__list li::before {
+  content: "";
+  position: absolute;
+  top: 0.75em;
+  left: 0;
+  width: 0.35em;
+  height: 0.35em;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+}
+
+
+/* ==========================================================================
+   State：ページ全体の状態（JSが <body> に付与）
+   ========================================================================== */
+/* 選択中のサイトがないときは、サイトに紐づく部分を隠す */
+.is-no-site .js-needs-site {
+  display: none;
+}
+
+/* 閲覧のみの権限では編集ボタンを隠す（入力欄はJSで無効化） */
+.is-readonly .js-write {
+  display: none;
+}
+
+/* ==========================================================================
+   Utility
+   ========================================================================== */
+/* 視覚的に隠し、スクリーンリーダーには読ませる */
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* スキップリンク：フォーカス時のみ表示 */
+.u-skip-link {
+  position: absolute;
+  top: var(--space-xs);
+  left: var(--space-xs);
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-ink);
+  color: var(--color-on-ink);
+  font-size: var(--fs-sm);
+  transform: translateY(-200%);
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.u-skip-link:focus {
+  transform: translateY(0);
+}
+
+/* フェードイン：JS有効時のみ初期状態を隠す */
+.js-enabled .js-reveal {
+  opacity: 0.3;
+  transform: translateY(1rem);
+  transition:
+    opacity var(--duration-reveal) var(--ease),
+    transform var(--duration-reveal) var(--ease);
+}
+
+.js-enabled .js-reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important; /* OS設定を最優先するため例外的に使用 */
+  }
+
+  .js-enabled .js-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* ==========================================================================
+   Print：印刷・PDF保存用（選択中サイトの点検結果のみ）
+   ========================================================================== */
+@media print {
+  /* ダークモードでも印刷は明るい配色にする（ダーク指定より詳細度を上げて上書き） */
+  :root:not([data-print-a]):not([data-print-b]) {
+    --color-ink: #0f1c2e;
+    --color-text: #1d2733;
+    --color-text-muted: #5b6672;
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-rule: #e2e5df;
+    color-scheme: light;
+  }
+
+  :root {
+    --space-xl: 1.5rem;
+    --space-lg: 1rem;
+    --space-md: 0.75rem;
+  }
+
+  body {
+    padding: 0;
+    background: #fff;
+    font-size: 10pt;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .u-skip-link,
+  .l-header__lead,
+  .p-sites,
+  .l-toolbar,
+  .p-meta__actions,
+  .c-filter,
+  .c-check__guide-link,
+  .p-guide,
+  .p-note,
+  .l-footer {
+    display: none;
+  }
+
+  .js-enabled .js-reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .l-header {
+    padding-block: 0 var(--space-md);
+  }
+
+  .p-meta {
+    margin-top: 0;
+  }
+
+  .p-meta__card,
+  .p-category {
+    border: 1px solid var(--color-rule);
+    box-shadow: none;
+  }
+
+  .p-meta__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .c-field__input {
+    min-height: 0;
+    padding: 0.3rem 0.6rem;
+    background: #fff;
+    background-image: none;
+  }
+
+  .p-summary {
+    margin-top: var(--space-md);
+  }
+
+  /* 印刷では絞り込みを解除して全項目を出す */
+  .c-check.is-filtered-out {
+    display: grid;
+  }
+
+  .p-category.is-filtered-out {
+    display: block;
+  }
+
+  .p-panel__body.is-empty::before {
+    display: none;
+  }
+
+  .c-check {
+    grid-template-columns: minmax(0, 1fr) auto;
+    break-inside: avoid;
+  }
+
+  /* 選択されていない状態は印刷しない */
+  .c-status {
+    grid-template-columns: auto;
+    background: none;
+  }
+
+  .c-status__input:not(:checked) + .c-status__label {
+    display: none;
+  }
+
+  .c-check__memo {
+    grid-column: 1 / -1;
+  }
+
+  /* メモは入力済みのものだけ印刷 */
+  .c-check:not(.has-memo) .c-check__memo {
+    display: none;
+  }
+
+  .c-check__memo-input {
+    border-style: solid;
+    resize: none;
+  }
+}
+
+</style>
+<!-- JS有効時のみフェードインの初期状態を適用するためのフラグ -->
+<script>document.documentElement.classList.add('js-enabled');</script>
+
+<a class="u-skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ==================== ヘッダー ==================== -->
+  <header class="l-header">
+    <div class="l-container">
+      <p class="l-header__eyebrow">Website Security Checklist</p>
+      <h1 class="l-header__title">
+        <span class="l-header__title-line">ホームページ</span>
+        <span class="l-header__title-line">セキュリティ点検</span><span class="l-header__title-line">チェックリスト</span>
+      </h1>
+      <p class="l-header__lead">管理しているサイトを登録し、サイトごとに点検結果を記録できます。各項目は「OK・確認中・要検討・対象外」から選び、必要に応じてメモを残してください。</p>
+      <!-- 保存先の表示（チーム共有 / このブラウザのみ）。JSが内容を入れる -->
+      <p class="c-mode js-mode" role="status" aria-live="polite" data-mode="local">
+        <span class="c-mode__dot" aria-hidden="true"></span>
+        <span class="c-mode__text js-mode-text">このブラウザに保存します</span>
+      </p>
+    </div>
+  </header>
+
+  <!-- ==================== 管理サイト一覧 ==================== -->
+  <section class="p-sites" aria-labelledby="sites-title">
+    <div class="l-container">
+      <div class="p-sites__head">
+        <div>
+          <h2 class="p-sites__title" id="sites-title">管理サイト</h2>
+          <p class="p-sites__count js-site-count"></p>
+        </div>
+        <button class="c-button c-button--primary js-site-add js-write" type="button">＋ サイトを追加</button>
+      </div>
+
+      <ul class="p-sites__list js-site-list" aria-label="登録済みのサイト"></ul>
+
+      <!-- サイトが1件もないときの表示 -->
+      <div class="p-sites__empty js-site-empty" hidden>
+        <p class="p-sites__empty-title js-site-empty-title">まだサイトが登録されていません</p>
+        <p class="p-sites__empty-text js-site-empty-text">「＋ サイトを追加」から、点検するサイトを登録してください。</p>
+      </div>
+
+      <!-- データの書き出し・読み込み（端末の移行・バックアップ用） -->
+      <div class="p-sites__data">
+        <p class="p-sites__data-text js-data-text">記録はこのブラウザだけに保存されます。別のPCへの移行やバックアップには、データの書き出しを使ってください。</p>
+        <div class="p-sites__data-actions">
+          <button class="c-button c-button--ghost c-button--sm js-export" type="button">データを書き出す（JSON）</button>
+          <label class="c-button c-button--ghost c-button--sm c-file js-write">
+            データを読み込む
+            <input class="c-file__input js-import" type="file" accept=".json,application/json">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- サイトカードの雛形（JSで複製して使う） -->
+    <template id="site-card-template">
+      <li class="p-sites__item">
+        <button class="c-site js-site-card" type="button" aria-pressed="false">
+          <span class="c-site__top">
+            <span class="c-site__type"></span>
+            <span class="c-site__flag"></span>
+          </span>
+          <span class="c-site__name"></span>
+          <span class="c-site__url"></span>
+          <span class="c-site__bar" aria-hidden="true"><span class="c-site__bar-fill"></span></span>
+          <span class="c-site__stats"></span>
+          <span class="c-site__by"></span>
+        </button>
+      </li>
+    </template>
+  </section>
+
+  <!-- ==================== 選択中サイトの情報 ==================== -->
+  <section class="p-meta js-needs-site" aria-labelledby="meta-title">
+    <div class="l-container">
+      <form class="p-meta__card js-reveal js-meta-form" action="#" method="post" novalidate>
+        <div class="p-meta__head">
+          <h2 class="p-meta__title" id="meta-title">サイト情報</h2>
+          <p class="p-meta__status js-meta-status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="p-meta__grid">
+          <!-- サイト名 -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-name">サイト名<span class="c-field__required">必須</span></label>
+            <input class="c-field__input" type="text" id="meta-name" name="name" placeholder="例：サンプル株式会社 公式サイト" autocomplete="off" maxlength="80" required aria-describedby="meta-name-error">
+            <p class="c-field__error" id="meta-name-error"></p>
+          </div>
+
+          <!-- URL -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-url">サイトURL<span class="c-field__required">必須</span></label>
+            <input class="c-field__input" type="url" id="meta-url" name="url" placeholder="https://www.example.com/" autocomplete="off" inputmode="url" pattern="https?://.+" maxlength="200" required aria-describedby="meta-url-error">
+            <p class="c-field__error" id="meta-url-error"></p>
+          </div>
+
+          <!-- サイトの種類 -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-type">サイトの種類<span class="c-field__required">必須</span></label>
+            <select class="c-field__input c-field__input--select" id="meta-type" name="type" required>
+              <option value="wp">WordPress</option>
+              <option value="html">静的HTML</option>
+            </select>
+          </div>
+
+          <!-- 点検日 -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-date">点検日<span class="c-field__required">必須</span></label>
+            <input class="c-field__input" type="date" id="meta-date" name="date" min="2020-01-01" max="2099-12-31" required aria-describedby="meta-date-error">
+            <p class="c-field__error" id="meta-date-error"></p>
+          </div>
+
+          <!-- 担当者 -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-person">点検担当者<span class="c-field__optional">任意</span></label>
+            <input class="c-field__input" type="text" id="meta-person" name="person" placeholder="例：山田 太郎" autocomplete="name" maxlength="40">
+          </div>
+        </div>
+
+        <div class="p-meta__actions">
+          <button class="c-button c-button--primary js-write" type="submit">サイト情報を保存</button>
+          <!-- 印刷はローカルで開いたときのみ（Artifact内では印刷できないため非表示） -->
+          <button class="c-button c-button--ghost js-print" type="button">印刷・PDF保存</button>
+          <div class="p-meta__danger">
+            <button class="c-button c-button--text js-reset js-write" type="button">点検結果をリセット</button>
+            <button class="c-button c-button--text js-site-delete js-write" type="button">このサイトを削除</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== ツールバー（サイト切替＋進捗） ==================== -->
+  <!-- SP：画面下部に固定 / タブレット以上：画面上部に追従 -->
+  <div class="l-toolbar js-needs-site">
+    <div class="l-toolbar__inner">
+      <div class="l-toolbar__site">
+        <label class="u-visually-hidden" for="site-switch">点検するサイト</label>
+        <select class="c-select js-site-switch" id="site-switch"></select>
+      </div>
+
+      <div class="c-progress">
+        <p class="c-progress__text">
+          <span class="c-progress__label">完了</span>
+          <span class="js-progress-text">0 / 0</span>
+        </p>
+        <div class="c-progress__track js-progress" role="progressbar" aria-label="点検の進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="c-progress__bar"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== メイン（チェックリスト） ==================== -->
+  <main class="l-main" id="main">
+    <div class="l-container l-container--narrow">
+
+      <!-- ==================== 集計・絞り込み ==================== -->
+      <div class="p-summary js-reveal js-needs-site">
+        <ul class="p-summary__list" aria-label="確認状況の集計">
+          <li class="p-summary__item p-summary__item--ok"><span class="p-summary__label">OK</span><span class="p-summary__num js-sum" data-status="ok">0</span></li>
+          <li class="p-summary__item p-summary__item--progress"><span class="p-summary__label">確認中</span><span class="p-summary__num js-sum" data-status="progress">0</span></li>
+          <li class="p-summary__item p-summary__item--review"><span class="p-summary__label">要検討</span><span class="p-summary__num js-sum" data-status="review">0</span></li>
+          <li class="p-summary__item p-summary__item--na"><span class="p-summary__label">対象外</span><span class="p-summary__num js-sum" data-status="na">0</span></li>
+          <li class="p-summary__item"><span class="p-summary__label">未確認</span><span class="p-summary__num js-sum" data-status="none">0</span></li>
+        </ul>
+
+        <div class="c-filter" role="group" aria-label="表示する項目の絞り込み">
+          <button class="c-filter__button js-filter" type="button" data-filter="all" aria-pressed="true">すべて</button>
+          <button class="c-filter__button js-filter" type="button" data-filter="none" aria-pressed="false">未確認</button>
+          <button class="c-filter__button js-filter" type="button" data-filter="progress" aria-pressed="false">確認中</button>
+          <button class="c-filter__button js-filter" type="button" data-filter="review" aria-pressed="false">要検討</button>
+        </div>
+      </div>
+
+      <!-- ========== パネル：WordPressで制作したサイト ========== -->
+      <section class="p-panel js-panel" id="panel-wp" data-type="wp" aria-labelledby="panel-wp-title">
+        <div class="p-panel__head">
+          <p class="p-panel__site js-panel-site"></p>
+          <h2 class="p-panel__title" id="panel-wp-title">WordPressで制作したサイト</h2>
+          <p class="p-panel__lead">CMS本体・テーマ・プラグインの更新と、ログイン周りの対策が中心です。<br>全7カテゴリ・29項目</p>
+        </div>
+        <div class="p-panel__body">
+          <!-- WordPress：サイト本体・CMS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-core">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">01</span>
+              <h3 class="p-category__title" id="wp-cat-core">サイト本体・CMS</h3>
+              <span class="p-category__count js-category-count">0 / 8</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="wp-core-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-01-title">WordPress本体の更新</h4>
+                  <p class="c-check__desc">「ダッシュボード > 更新」で最新版になっているか。セキュリティ修正を含むマイナーリリースは、標準で自動更新される設定になっている。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「WordPress本体の更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-01" id="wp-core-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-01" id="wp-core-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-01" id="wp-core-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-01" id="wp-core-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-01-memo">「WordPress本体の更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-01-memo" name="wp-core-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-core-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-02-title">テーマの更新</h4>
+                  <p class="c-check__desc">使用中のテーマ（子テーマを使っている場合は親テーマ）が最新か。親テーマを直接編集していると、更新で変更が消えるため注意する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「テーマの更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-02" id="wp-core-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-02" id="wp-core-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-02" id="wp-core-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-02" id="wp-core-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-02-memo">「テーマの更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-02-memo" name="wp-core-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-core-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-03-title">プラグインの更新</h4>
+                  <p class="c-check__desc">「プラグイン」画面に更新の通知がないか。更新前にバックアップを取り、更新後に表示とフォームを確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「プラグインの更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-03" id="wp-core-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-03" id="wp-core-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-03" id="wp-core-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-03" id="wp-core-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-03-memo">「プラグインの更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-03-memo" name="wp-core-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-core-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-04-title">不要なプラグイン・テーマの削除</h4>
+                  <p class="c-check__desc">停止しているだけのプラグイン・テーマもサーバー上にファイルが残り、攻撃の対象になり得る。使わないものは削除する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不要なプラグイン・テーマの削除」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-04" id="wp-core-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-04" id="wp-core-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-04" id="wp-core-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-04" id="wp-core-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-04-memo">「不要なプラグイン・テーマの削除」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-04-memo" name="wp-core-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-core-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-05-title">更新が止まったプラグインの有無</h4>
+                  <p class="c-check__desc">WordPress.org の配布ページで最終更新日を確認する。長期間更新がない、または配布停止のものは代わりを検討する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「更新が止まったプラグインの有無」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-05" id="wp-core-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-05" id="wp-core-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-05" id="wp-core-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-05" id="wp-core-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-05-memo">「更新が止まったプラグインの有無」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-05-memo" name="wp-core-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-core-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-06-title">PHPバージョン</h4>
+                  <p class="c-check__desc">「ツール > サイトヘルス」またはサーバー管理画面で確認する。php.net でサポート期間内のバージョンか（PHP 8.2 のサポートは2026年12月末に終了予定）。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「PHPバージョン」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-06" id="wp-core-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-06" id="wp-core-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-06" id="wp-core-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-06" id="wp-core-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-06-memo">「PHPバージョン」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-06-memo" name="wp-core-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-core-07" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-07-title">セキュリティ対策プラグインの稼働</h4>
+                  <p class="c-check__desc">プラグインが有効になっているか、通知メールが届いているか、スキャン結果に警告がないか、有料版の場合はライセンスの期限が切れていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ対策プラグインの稼働」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-07" id="wp-core-07-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-07-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-07" id="wp-core-07-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-07-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-07" id="wp-core-07-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-07-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-07" id="wp-core-07-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-07-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-07-memo">「セキュリティ対策プラグインの稼働」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-07-memo" name="wp-core-07-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-core-08" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-core-08-title">コメント・投稿の不審な内容</h4>
+                  <p class="c-check__desc">身に覚えのない投稿・固定ページ・リンクがないか。コメント機能を使っていない場合は「設定 > ディスカッション」で無効にする。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「コメント・投稿の不審な内容」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-core-08" id="wp-core-08-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-core-08-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-core-08" id="wp-core-08-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-core-08-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-core-08" id="wp-core-08-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-core-08-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-core-08" id="wp-core-08-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-core-08-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-core-08-memo">「コメント・投稿の不審な内容」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-core-08-memo" name="wp-core-08-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：アカウント・ログイン -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-account">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">02</span>
+              <h3 class="p-category__title" id="wp-cat-account">アカウント・ログイン</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="wp-account-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-account-01-title">管理者アカウントの棚卸し</h4>
+                  <p class="c-check__desc">「ユーザー」画面で権限「管理者」を絞り込み、不要なアカウントを削除する。見覚えのない管理者は不正侵入の兆候のため要注意。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「管理者アカウントの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-account-01" id="wp-account-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-account-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-account-01" id="wp-account-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-account-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-account-01" id="wp-account-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-account-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-account-01" id="wp-account-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-account-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-account-01-memo">「管理者アカウントの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-account-01-memo" name="wp-account-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-account-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-account-02-title">二段階認証の設定</h4>
+                  <p class="c-check__desc">WordPress本体には二段階認証の機能がないため、プラグインで導入する。管理者権限を持つアカウントすべてに設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「二段階認証の設定」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-account-02" id="wp-account-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-account-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-account-02" id="wp-account-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-account-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-account-02" id="wp-account-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-account-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-account-02" id="wp-account-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-account-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-account-02-memo">「二段階認証の設定」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-account-02-memo" name="wp-account-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-account-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-account-03-title">不審なログイン履歴</h4>
+                  <p class="c-check__desc">WordPress本体はログイン履歴を残さないため、セキュリティプラグインのログやサーバーのアクセスログで、見覚えのない日時・場所からのログインがないか確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なログイン履歴」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-account-03" id="wp-account-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-account-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-account-03" id="wp-account-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-account-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-account-03" id="wp-account-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-account-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-account-03" id="wp-account-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-account-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-account-03-memo">「不審なログイン履歴」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-account-03-memo" name="wp-account-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-account-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-account-04-title">ログイン画面の保護</h4>
+                  <p class="c-check__desc">ログイン試行回数の制限、IPアドレスでのアクセス制限、使っていない場合のXML-RPC無効化などが設定されているか。ユーザー名に「admin」を使っていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ログイン画面の保護」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-account-04" id="wp-account-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-account-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-account-04" id="wp-account-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-account-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-account-04" id="wp-account-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-account-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-account-04" id="wp-account-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-account-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-account-04-memo">「ログイン画面の保護」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-account-04-memo" name="wp-account-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：サーバー -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-server">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">03</span>
+              <h3 class="p-category__title" id="wp-cat-server">サーバー</h3>
+              <span class="p-category__count js-category-count">0 / 6</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="wp-server-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-01-title">サーバー管理画面の二段階認証</h4>
+                  <p class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-01" id="wp-server-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-01" id="wp-server-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-01" id="wp-server-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-01" id="wp-server-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-01-memo">「サーバー管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-01-memo" name="wp-server-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-server-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-02-title">サーバー・FTPアカウントの棚卸し</h4>
+                  <p class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー・FTPアカウントの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-02" id="wp-server-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-02" id="wp-server-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-02" id="wp-server-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-02" id="wp-server-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-02-memo">「サーバー・FTPアカウントの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-02-memo" name="wp-server-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-server-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-03-title">ファイル転送の暗号化（SFTP / FTPS）</h4>
+                  <p class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ファイル転送の暗号化（SFTP / FTPS）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-03" id="wp-server-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-03" id="wp-server-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-03" id="wp-server-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-03" id="wp-server-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-03-memo">「ファイル転送の暗号化（SFTP / FTPS）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-03-memo" name="wp-server-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-server-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-04-title">WAF（不正アクセス防止機能）の有効化</h4>
+                  <p class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「WAF（不正アクセス防止機能）の有効化」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-04" id="wp-server-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-04" id="wp-server-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-04" id="wp-server-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-04" id="wp-server-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-04-memo">「WAF（不正アクセス防止機能）の有効化」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-04-memo" name="wp-server-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-server-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-05-title">アクセスログ・エラーログの確認</h4>
+                  <p class="c-check__desc">wp-login.php・xmlrpc.php への短時間の大量アクセスや、.env などの存在しないファイルへのアクセスがないか。PHPエラーが急に増えていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「アクセスログ・エラーログの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-05" id="wp-server-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-05" id="wp-server-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-05" id="wp-server-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-05" id="wp-server-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-05-memo">「アクセスログ・エラーログの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-05-memo" name="wp-server-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-server-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-server-06-title">不審なファイルの有無</h4>
+                  <p class="c-check__desc">置いた覚えのないPHPファイル、最近更新された見覚えのないファイルがないか。通常、wp-content/uploads 内にPHPファイルは置かれない。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なファイルの有無」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-server-06" id="wp-server-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-server-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-server-06" id="wp-server-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-server-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-server-06" id="wp-server-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-server-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-server-06" id="wp-server-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-server-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-server-06-memo">「不審なファイルの有無」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-server-06-memo" name="wp-server-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：ドメイン・DNS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-dns">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">04</span>
+              <h3 class="p-category__title" id="wp-cat-dns">ドメイン・DNS</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="wp-dns-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-dns-01-title">ドメインの有効期限</h4>
+                  <p class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメインの有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-dns-01" id="wp-dns-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-dns-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-01" id="wp-dns-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-dns-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-01" id="wp-dns-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-dns-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-01" id="wp-dns-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-dns-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-dns-01-memo">「ドメインの有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-dns-01-memo" name="wp-dns-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-dns-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-dns-02-title">ドメイン管理画面の二段階認証</h4>
+                  <p class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメイン管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-dns-02" id="wp-dns-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-dns-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-02" id="wp-dns-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-dns-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-02" id="wp-dns-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-dns-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-02" id="wp-dns-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-dns-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-dns-02-memo">「ドメイン管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-dns-02-memo" name="wp-dns-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-dns-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-dns-03-title">DNS設定に不審な変更がないか</h4>
+                  <p class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「DNS設定に不審な変更がないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-dns-03" id="wp-dns-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-dns-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-03" id="wp-dns-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-dns-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-03" id="wp-dns-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-dns-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-03" id="wp-dns-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-dns-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-dns-03-memo">「DNS設定に不審な変更がないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-dns-03-memo" name="wp-dns-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-dns-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-dns-04-title">メールのなりすまし対策（SPF・DKIM・DMARC）</h4>
+                  <p class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「メールのなりすまし対策（SPF・DKIM・DMARC）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-dns-04" id="wp-dns-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-dns-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-04" id="wp-dns-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-dns-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-04" id="wp-dns-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-dns-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-dns-04" id="wp-dns-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-dns-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-dns-04-memo">「メールのなりすまし対策（SPF・DKIM・DMARC）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-dns-04-memo" name="wp-dns-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：SSL・通信 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-ssl">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">05</span>
+              <h3 class="p-category__title" id="wp-cat-ssl">SSL・通信</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="wp-ssl-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-ssl-01-title">SSL証明書の有効期限</h4>
+                  <p class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「SSL証明書の有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-ssl-01" id="wp-ssl-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-ssl-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-01" id="wp-ssl-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-ssl-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-01" id="wp-ssl-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-ssl-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-01" id="wp-ssl-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-ssl-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-ssl-01-memo">「SSL証明書の有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-ssl-01-memo" name="wp-ssl-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-ssl-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-ssl-02-title">常時SSL（httpからhttpsへの転送）</h4>
+                  <p class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。「設定 > 一般」の2つのアドレスが https か。画像などが http で読み込まれていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「常時SSL（httpからhttpsへの転送）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-ssl-02" id="wp-ssl-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-ssl-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-02" id="wp-ssl-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-ssl-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-02" id="wp-ssl-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-ssl-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-ssl-02" id="wp-ssl-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-ssl-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-ssl-02-memo">「常時SSL（httpからhttpsへの転送）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-ssl-02-memo" name="wp-ssl-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：バックアップ -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-backup">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">06</span>
+              <h3 class="p-category__title" id="wp-cat-backup">バックアップ</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="wp-backup-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-backup-01-title">バックアップの取得状況</h4>
+                  <p class="c-check__desc">ファイルとデータベースの両方が、自動で定期的に取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「バックアップの取得状況」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-backup-01" id="wp-backup-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-backup-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-01" id="wp-backup-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-backup-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-01" id="wp-backup-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-backup-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-01" id="wp-backup-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-backup-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-backup-01-memo">「バックアップの取得状況」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-backup-01-memo" name="wp-backup-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-backup-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-backup-02-title">復元手順の確認</h4>
+                  <p class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「復元手順の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-backup-02" id="wp-backup-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-backup-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-02" id="wp-backup-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-backup-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-02" id="wp-backup-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-backup-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-backup-02" id="wp-backup-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-backup-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-backup-02-memo">「復元手順の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-backup-02-memo" name="wp-backup-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：診断・監視 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-monitor">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">07</span>
+              <h3 class="p-category__title" id="wp-cat-monitor">診断・監視</h3>
+              <span class="p-category__count js-category-count">0 / 3</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="wp-monitor-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-monitor-01-title">セキュリティ診断レポートの確認</h4>
+                  <p class="c-check__desc">無料の診断サービスやセキュリティプラグインの結果に警告がないか。前回指摘された項目が対応済みか。</p>
+                  <a class="c-check__guide-link" href="#guide">診断ツールと進め方を見る</a>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ診断レポートの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-monitor-01" id="wp-monitor-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-monitor-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-01" id="wp-monitor-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-monitor-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-01" id="wp-monitor-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-monitor-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-01" id="wp-monitor-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-monitor-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-monitor-01-memo">「セキュリティ診断レポートの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-monitor-01-memo" name="wp-monitor-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-monitor-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-monitor-02-title">サイトの表示・改ざんの確認</h4>
+                  <p class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サイトの表示・改ざんの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-monitor-02" id="wp-monitor-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-monitor-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-02" id="wp-monitor-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-monitor-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-02" id="wp-monitor-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-monitor-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-02" id="wp-monitor-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-monitor-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-monitor-02-memo">「サイトの表示・改ざんの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-monitor-02-memo" name="wp-monitor-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="wp-monitor-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="wp-monitor-03-title">問い合わせフォームの動作確認</h4>
+                  <p class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策（reCAPTCHA等）が動作しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「問い合わせフォームの動作確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="wp-monitor-03" id="wp-monitor-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="wp-monitor-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-03" id="wp-monitor-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="wp-monitor-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-03" id="wp-monitor-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="wp-monitor-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="wp-monitor-03" id="wp-monitor-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="wp-monitor-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="wp-monitor-03-memo">「問い合わせフォームの動作確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="wp-monitor-03-memo" name="wp-monitor-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <!-- ========== パネル：静的HTMLで制作したサイト ========== -->
+      <section class="p-panel js-panel" id="panel-html" data-type="html" aria-labelledby="panel-html-title">
+        <div class="p-panel__head">
+          <p class="p-panel__site js-panel-site"></p>
+          <h2 class="p-panel__title" id="panel-html-title">静的HTMLで制作したサイト</h2>
+          <p class="p-panel__lead">CMSがない分、フォームプログラムと「公開してはいけないファイル」の確認が中心です。<br>全6カテゴリ・22項目</p>
+        </div>
+        <div class="p-panel__body">
+          <!-- 静的HTML：サイト本体 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-core">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">01</span>
+              <h3 class="p-category__title" id="html-cat-core">サイト本体</h3>
+              <span class="p-category__count js-category-count">0 / 5</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="html-core-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-01-title">フォーム・プログラムの更新</h4>
+                  <p class="c-check__desc">メールフォームなどのプログラムが配布元の最新版か、配布が終了していないか。サーバーのPHPバージョンがサポート期間内か。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「フォーム・プログラムの更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-01" id="html-core-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-01" id="html-core-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-01" id="html-core-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-01" id="html-core-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-01-memo">「フォーム・プログラムの更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-01-memo" name="html-core-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-core-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-02-title">不要ファイルが公開されていないか</h4>
+                  <p class="c-check__desc">旧ページ・テストページ、.bak や .zip などのバックアップ、.git フォルダ、.env、phpinfo.php などが公開ディレクトリに残っていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不要ファイルが公開されていないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-02" id="html-core-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-02" id="html-core-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-02" id="html-core-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-02" id="html-core-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-02-memo">「不要ファイルが公開されていないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-02-memo" name="html-core-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-core-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-03-title">ファイル一覧が見えないか</h4>
+                  <p class="c-check__desc">index.html を置いていないフォルダ（例：/images/）のURLを開き、ファイル一覧が表示されないか。Apacheでは .htaccess の「Options -Indexes」で止められる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ファイル一覧が見えないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-03" id="html-core-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-03" id="html-core-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-03" id="html-core-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-03" id="html-core-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-03-memo">「ファイル一覧が見えないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-03-memo" name="html-core-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-core-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-04-title">リンク切れ・外部リンク先の確認</h4>
+                  <p class="c-check__desc">リンク切れがないか。リンク先のドメインが失効して、第三者の別サイトになっていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「リンク切れ・外部リンク先の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-04" id="html-core-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-04" id="html-core-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-04" id="html-core-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-04" id="html-core-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-04-memo">「リンク切れ・外部リンク先の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-04-memo" name="html-core-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-core-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-core-05-title">外部から読み込むスクリプトの確認</h4>
+                  <p class="c-check__desc">解析タグ・広告タグ・CDN・外部ウィジェットの読み込み元が現存し、信頼できるか。使っていないタグは削除する。2024年には配信ドメインの所有者が変わり不正なコードが配信された例（polyfill.io）がある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「外部から読み込むスクリプトの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-core-05" id="html-core-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-core-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-core-05" id="html-core-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-core-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-core-05" id="html-core-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-core-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-core-05" id="html-core-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-core-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-core-05-memo">「外部から読み込むスクリプトの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-core-05-memo" name="html-core-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：サーバー -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-server">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">02</span>
+              <h3 class="p-category__title" id="html-cat-server">サーバー</h3>
+              <span class="p-category__count js-category-count">0 / 6</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="html-server-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-01-title">サーバー管理画面の二段階認証</h4>
+                  <p class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-01" id="html-server-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-01" id="html-server-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-01" id="html-server-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-01" id="html-server-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-01-memo">「サーバー管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-01-memo" name="html-server-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-server-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-02-title">サーバー・FTPアカウントの棚卸し</h4>
+                  <p class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー・FTPアカウントの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-02" id="html-server-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-02" id="html-server-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-02" id="html-server-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-02" id="html-server-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-02-memo">「サーバー・FTPアカウントの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-02-memo" name="html-server-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-server-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-03-title">ファイル転送の暗号化（SFTP / FTPS）</h4>
+                  <p class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ファイル転送の暗号化（SFTP / FTPS）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-03" id="html-server-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-03" id="html-server-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-03" id="html-server-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-03" id="html-server-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-03-memo">「ファイル転送の暗号化（SFTP / FTPS）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-03-memo" name="html-server-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-server-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-04-title">WAF（不正アクセス防止機能）の有効化</h4>
+                  <p class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「WAF（不正アクセス防止機能）の有効化」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-04" id="html-server-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-04" id="html-server-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-04" id="html-server-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-04" id="html-server-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-04-memo">「WAF（不正アクセス防止機能）の有効化」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-04-memo" name="html-server-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-server-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-05-title">アクセスログ・エラーログの確認</h4>
+                  <p class="c-check__desc">フォームプログラムへの短時間の大量アクセスや、.env・.git などの存在しないファイルへのアクセスがないか。エラーが急に増えていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「アクセスログ・エラーログの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-05" id="html-server-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-05" id="html-server-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-05" id="html-server-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-05" id="html-server-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-05-memo">「アクセスログ・エラーログの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-05-memo" name="html-server-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-server-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-server-06-title">不審なファイルの有無</h4>
+                  <p class="c-check__desc">置いた覚えのないファイル（特にPHPファイル）や、最近更新された見覚えのないファイルが公開ディレクトリにないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なファイルの有無」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-server-06" id="html-server-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-server-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-server-06" id="html-server-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-server-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-server-06" id="html-server-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-server-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-server-06" id="html-server-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-server-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-server-06-memo">「不審なファイルの有無」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-server-06-memo" name="html-server-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：ドメイン・DNS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-dns">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">03</span>
+              <h3 class="p-category__title" id="html-cat-dns">ドメイン・DNS</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="html-dns-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-dns-01-title">ドメインの有効期限</h4>
+                  <p class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメインの有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-dns-01" id="html-dns-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-dns-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-dns-01" id="html-dns-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-dns-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-dns-01" id="html-dns-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-dns-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-dns-01" id="html-dns-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-dns-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-dns-01-memo">「ドメインの有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-dns-01-memo" name="html-dns-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-dns-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-dns-02-title">ドメイン管理画面の二段階認証</h4>
+                  <p class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメイン管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-dns-02" id="html-dns-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-dns-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-dns-02" id="html-dns-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-dns-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-dns-02" id="html-dns-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-dns-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-dns-02" id="html-dns-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-dns-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-dns-02-memo">「ドメイン管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-dns-02-memo" name="html-dns-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-dns-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-dns-03-title">DNS設定に不審な変更がないか</h4>
+                  <p class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「DNS設定に不審な変更がないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-dns-03" id="html-dns-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-dns-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-dns-03" id="html-dns-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-dns-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-dns-03" id="html-dns-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-dns-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-dns-03" id="html-dns-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-dns-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-dns-03-memo">「DNS設定に不審な変更がないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-dns-03-memo" name="html-dns-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-dns-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-dns-04-title">メールのなりすまし対策（SPF・DKIM・DMARC）</h4>
+                  <p class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「メールのなりすまし対策（SPF・DKIM・DMARC）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-dns-04" id="html-dns-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-dns-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-dns-04" id="html-dns-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-dns-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-dns-04" id="html-dns-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-dns-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-dns-04" id="html-dns-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-dns-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-dns-04-memo">「メールのなりすまし対策（SPF・DKIM・DMARC）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-dns-04-memo" name="html-dns-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：SSL・通信 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-ssl">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">04</span>
+              <h3 class="p-category__title" id="html-cat-ssl">SSL・通信</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="html-ssl-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-ssl-01-title">SSL証明書の有効期限</h4>
+                  <p class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「SSL証明書の有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-ssl-01" id="html-ssl-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-ssl-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-01" id="html-ssl-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-ssl-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-01" id="html-ssl-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-ssl-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-01" id="html-ssl-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-ssl-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-ssl-01-memo">「SSL証明書の有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-ssl-01-memo" name="html-ssl-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-ssl-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-ssl-02-title">常時SSL（httpからhttpsへの転送）</h4>
+                  <p class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。画像・CSS・JSなどが http で読み込まれていないか（ブラウザの開発者ツールで確認できる）。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「常時SSL（httpからhttpsへの転送）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-ssl-02" id="html-ssl-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-ssl-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-02" id="html-ssl-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-ssl-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-02" id="html-ssl-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-ssl-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-ssl-02" id="html-ssl-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-ssl-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-ssl-02-memo">「常時SSL（httpからhttpsへの転送）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-ssl-02-memo" name="html-ssl-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：バックアップ -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-backup">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">05</span>
+              <h3 class="p-category__title" id="html-cat-backup">バックアップ</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="html-backup-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-backup-01-title">バックアップの取得状況</h4>
+                  <p class="c-check__desc">サイトのファイル一式とフォームの設定ファイルが取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「バックアップの取得状況」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-backup-01" id="html-backup-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-backup-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-backup-01" id="html-backup-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-backup-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-backup-01" id="html-backup-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-backup-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-backup-01" id="html-backup-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-backup-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-backup-01-memo">「バックアップの取得状況」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-backup-01-memo" name="html-backup-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-backup-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-backup-02-title">復元手順の確認</h4>
+                  <p class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「復元手順の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-backup-02" id="html-backup-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-backup-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-backup-02" id="html-backup-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-backup-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-backup-02" id="html-backup-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-backup-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-backup-02" id="html-backup-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-backup-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-backup-02-memo">「復元手順の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-backup-02-memo" name="html-backup-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：診断・監視 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-monitor">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">06</span>
+              <h3 class="p-category__title" id="html-cat-monitor">診断・監視</h3>
+              <span class="p-category__count js-category-count">0 / 3</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="html-monitor-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-monitor-01-title">セキュリティ診断レポートの確認</h4>
+                  <p class="c-check__desc">無料の診断サービスの結果に警告がないか。前回指摘された項目が対応済みか。</p>
+                  <a class="c-check__guide-link" href="#guide">診断ツールと進め方を見る</a>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ診断レポートの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-monitor-01" id="html-monitor-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-monitor-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-01" id="html-monitor-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-monitor-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-01" id="html-monitor-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-monitor-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-01" id="html-monitor-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-monitor-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-monitor-01-memo">「セキュリティ診断レポートの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-monitor-01-memo" name="html-monitor-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-monitor-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-monitor-02-title">サイトの表示・改ざんの確認</h4>
+                  <p class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サイトの表示・改ざんの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-monitor-02" id="html-monitor-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-monitor-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-02" id="html-monitor-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-monitor-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-02" id="html-monitor-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-monitor-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-02" id="html-monitor-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-monitor-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-monitor-02-memo">「サイトの表示・改ざんの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-monitor-02-memo" name="html-monitor-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="html-monitor-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="html-monitor-03-title">問い合わせフォームの動作確認</h4>
+                  <p class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策が動作しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「問い合わせフォームの動作確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="html-monitor-03" id="html-monitor-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="html-monitor-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-03" id="html-monitor-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="html-monitor-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-03" id="html-monitor-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="html-monitor-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="html-monitor-03" id="html-monitor-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="html-monitor-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="html-monitor-03-memo">「問い合わせフォームの動作確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="html-monitor-03-memo" name="html-monitor-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <!-- ==================== セキュリティ診断の進め方 ==================== -->
+      <section class="p-guide js-reveal" id="guide" aria-labelledby="guide-title">
+        <p class="p-guide__eyebrow">How to check</p>
+        <h2 class="p-guide__title" id="guide-title">セキュリティ診断の進め方</h2>
+        <p class="p-guide__lead">特別な契約がなくても、無料のサービスで外部から確認できます。URLを入力するだけのものが中心です。診断は、管理を任されているサイトに対してのみ行ってください。</p>
+
+        <!-- 手順 -->
+        <ol class="p-guide__steps">
+          <li class="p-guide__step">
+            <h3 class="p-guide__step-title">毎月：危険サイト判定・改ざんの有無を見る</h3>
+            <p class="p-guide__step-text">Google Search Console の「セキュリティの問題」と、セーフブラウジングのサイトステータスで警告が出ていないかを確認します。あわせて Sucuri SiteCheck にURLを入れ、マルウェアやブラックリスト登録の警告がないかを見ます。</p>
+          </li>
+          <li class="p-guide__step">
+            <h3 class="p-guide__step-title">毎月（WordPress）：プラグインのスキャン結果を見る</h3>
+            <p class="p-guide__step-text">Wordfence などのセキュリティプラグインでスキャンを実行し、警告の内容を確認します。「ツール &gt; サイトヘルス」の「おすすめの改善」も確認します。</p>
+          </li>
+          <li class="p-guide__step">
+            <h3 class="p-guide__step-title">四半期ごと：通信・メールの設定を診断する</h3>
+            <p class="p-guide__step-text">SSL Labs で証明書と暗号化の設定を、HTTP Observatory でセキュリティヘッダーを、MXToolbox で SPF・DMARC の設定を確認します。</p>
+          </li>
+          <li class="p-guide__step">
+            <h3 class="p-guide__step-title">結果を記録する</h3>
+            <p class="p-guide__step-text">問題がなければ「OK」、警告があれば「要検討」にして、ツール名と警告の内容をメモ欄に残します。評価（A〜Fなど）も書いておくと、次回と比べられます。</p>
+          </li>
+        </ol>
+
+        <!-- 全サイト共通のツール -->
+        <h3 class="p-guide__subtitle">全サイト共通（ブラウザだけで使える無料サービス）</h3>
+        <ul class="p-guide__tools">
+          <li class="c-tool">
+            <p class="c-tool__tag">改ざん・危険判定</p>
+            <h4 class="c-tool__name">Google Search Console</h4>
+            <p class="c-tool__text">「セキュリティと手動による対策 &gt; セキュリティの問題」で、Googleが検出したハッキングやマルウェアを確認できる。事前にサイトの所有権の確認が必要。</p>
+            <a class="c-tool__link c-link" href="https://search.google.com/search-console" target="_blank" rel="noopener">Search Console を開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">改ざん・危険判定</p>
+            <h4 class="c-tool__name">Google セーフブラウジング サイトステータス</h4>
+            <p class="c-tool__text">URLを入力すると、Googleが危険なサイトと判定していないかを確認できる。登録不要。</p>
+            <a class="c-tool__link c-link" href="https://transparencyreport.google.com/safe-browsing/search?hl=ja" target="_blank" rel="noopener">サイトステータスを開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">マルウェア</p>
+            <h4 class="c-tool__name">Sucuri SiteCheck</h4>
+            <p class="c-tool__text">URLを入力すると、外から見える範囲のマルウェア・不正なリダイレクト・ブラックリスト登録を調べる。サーバー内部のファイルまでは調べられない。</p>
+            <a class="c-tool__link c-link" href="https://sitecheck.sucuri.net/" target="_blank" rel="noopener">SiteCheck を開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">SSL</p>
+            <h4 class="c-tool__name">Qualys SSL Labs（SSL Server Test）</h4>
+            <p class="c-tool__text">証明書の有効期限と、暗号化の設定をA〜Fで評価する。結果が出るまで1〜2分かかる。</p>
+            <a class="c-tool__link c-link" href="https://www.ssllabs.com/ssltest/" target="_blank" rel="noopener">SSL Server Test を開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">セキュリティヘッダー</p>
+            <h4 class="c-tool__name">HTTP Observatory（Mozilla）</h4>
+            <p class="c-tool__text">HTTPS転送やセキュリティ関連のヘッダーの設定状況を採点する。改善点も一覧で表示される。</p>
+            <a class="c-tool__link c-link" href="https://developer.mozilla.org/en-US/observatory" target="_blank" rel="noopener">HTTP Observatory を開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">メール</p>
+            <h4 class="c-tool__name">MXToolbox</h4>
+            <p class="c-tool__text">ドメインを入力し、SPF・DMARC・DKIMのレコードの有無や誤りを確認できる。メールサーバーのブラックリスト登録も調べられる。</p>
+            <a class="c-tool__link c-link" href="https://mxtoolbox.com/SuperTool.aspx" target="_blank" rel="noopener">MXToolbox を開く</a>
+          </li>
+        </ul>
+
+        <!-- WordPress向け -->
+        <h3 class="p-guide__subtitle">WordPressのみ（管理画面・プラグイン）</h3>
+        <ul class="p-guide__tools">
+          <li class="c-tool">
+            <p class="c-tool__tag">標準機能</p>
+            <h4 class="c-tool__name">サイトヘルス</h4>
+            <p class="c-tool__text">「ツール &gt; サイトヘルス」で、PHPバージョン、停止中のプラグイン・テーマ、HTTPSの状態などの改善点を確認できる。</p>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">プラグイン</p>
+            <h4 class="c-tool__name">Wordfence Security</h4>
+            <p class="c-tool__text">無料版で、マルウェア・改ざんファイルのスキャンや、脆弱性のあるプラグインの検出ができる。無料版は、新しい攻撃への対策ルールの反映が有料版より遅れる。</p>
+            <a class="c-tool__link c-link" href="https://wordpress.org/plugins/wordfence/" target="_blank" rel="noopener">配布ページを開く</a>
+          </li>
+          <li class="c-tool">
+            <p class="c-tool__tag">プラグイン</p>
+            <h4 class="c-tool__name">SiteGuard WP Plugin</h4>
+            <p class="c-tool__text">日本製のプラグイン。ログインページの変更・画像認証・ログイン履歴の記録などで、管理画面を守る。マルウェアのスキャン機能はない。</p>
+            <a class="c-tool__link c-link" href="https://wordpress.org/plugins/siteguard/" target="_blank" rel="noopener">配布ページを開く</a>
+          </li>
+        </ul>
+
+        <p class="p-guide__note">このほか、レンタルサーバーによってはウイルスチェックや改ざん検知の機能があります。サーバーの管理画面に診断結果のページがないかも確認してください。</p>
+      </section>
+
+      <!-- ==================== 補足・参考情報 ==================== -->
+      <section class="p-note js-reveal" aria-labelledby="note-title">
+        <h2 class="p-note__title" id="note-title">ご利用にあたって</h2>
+        <ul class="p-note__list">
+          <li>本チェックリストの内容は2026年11月時点の情報にもとづきます。PHPのサポート期間やSSL証明書の有効期間、各サービスの仕様は変わるため、公式情報で最新の状況を確認してください。</li>
+          <li>進捗の「完了」は、OKと対象外の合計です。確認中・要検討の項目は完了に含みません。</li>
+          <li>claude.ai で共有したページとして開いた場合、記録はチーム共有のデータベースに保存され、同じページを開いている全員に反映されます。HTMLファイルを直接開いた場合は、お使いのブラウザにのみ保存されます。</li>
+          <li>共有データも誤操作で消える可能性があるため、定期的に「データを書き出す」でバックアップしてください。</li>
+        </ul>
+
+        <h3 class="p-note__subtitle">参考情報（公式）</h3>
+        <ul class="p-note__links">
+          <li><a class="c-link" href="https://developer.wordpress.org/advanced-administration/security/hardening/" target="_blank" rel="noopener">WordPress.org：Hardening WordPress（セキュリティ強化ガイド）</a></li>
+          <li><a class="c-link" href="https://www.php.net/supported-versions.php" target="_blank" rel="noopener">PHP公式：サポート中のバージョン一覧</a></li>
+          <li><a class="c-link" href="https://support.google.com/a/answer/81126?hl=ja" target="_blank" rel="noopener">Google：メール送信者のガイドライン（SPF・DKIM・DMARC）</a></li>
+          <li><a class="c-link" href="https://support.google.com/webmasters/answer/9044101?hl=ja" target="_blank" rel="noopener">Google Search Console：セキュリティの問題レポート</a></li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== 確認ダイアログ（confirm() の代わり） ==================== -->
+  <dialog class="c-dialog js-dialog" aria-labelledby="dialog-message">
+    <form class="c-dialog__inner" method="dialog">
+      <p class="c-dialog__message" id="dialog-message"></p>
+      <div class="c-dialog__actions">
+        <button class="c-button c-button--ghost" type="submit" value="cancel">キャンセル</button>
+        <button class="c-button c-button--danger js-dialog-ok" type="submit" value="ok">実行する</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ==================== フッター ==================== -->
+  <footer class="l-footer">
+    <div class="l-container">
+      <p class="l-footer__text">ホームページ セキュリティ点検チェックリスト</p>
+    </div>
+  </footer>
+
+<script>
+/**
+ * ホームページ セキュリティ点検チェックリスト
+ *
+ * 保存先は開き方で自動的に切り替わる。
+ * - claude.ai の Artifact として開いた場合：チーム共有のデータベース（db capability）
+ *     ログインしているメンバー全員が同じ記録を見て編集でき、変更はリアルタイムに反映される。
+ * - HTMLファイルを直接開いた場合：このブラウザの localStorage
+ *
+ * 機能
+ * - 複数サイトの登録・切替・削除（サイトごとに点検結果を保存）
+ * - 確認状況（OK / 確認中 / 要検討 / 対象外）とメモ
+ * - 集計・絞り込み・進捗表示、最終更新者の表示（共有時）
+ * - データの書き出し / 読み込み（JSON）
+ * - フェードイン（IntersectionObserver）
+ *
+ * file:// で直接開いても動くよう、ESモジュールではなく defer の単一ファイル構成にしている。
+ * 入力された文字列・共有データは必ず textContent / value で扱い、innerHTML には入れない。
+ */
+(() => {
+  'use strict';
+
+  /* ==================================================================
+     定数
+     ================================================================== */
+  const LOCAL_KEY = 'security-checklist:v2';   // ローカル保存用（全サイトのデータ）
+  const LEGACY_KEY = 'security-checklist:v1';  // 1サイト版のデータ（自動で引き継ぐ）
+  const CURRENT_KEY = 'security-checklist:current'; // 選択中のサイト（閲覧者ごと）
+  const COLLECTION = 'sites';                   // 共有データベースのコレクション名
+  const STATUSES = ['ok', 'progress', 'review', 'na'];
+  const DONE_STATUSES = ['ok', 'na'];           // 「完了」に数える状態
+  const TYPE_LABELS = { wp: 'WordPress', html: '静的HTML' };
+  const MEMO_DELAY = 700;                       // メモ入力を保存するまでの待ち時間（ms）
+  const CONNECT_TIMEOUT = 10000;                // 共有データの読み込み待ち上限（ms）
+
+  /* ==================================================================
+     ユーティリティ
+     ================================================================== */
+  const pad = (n) => String(n).padStart(2, '0');
+
+  const today = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  };
+
+  const formatDateTime = (iso) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+
+  const createId = () => `site-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
+  const isPlainObject = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+
+  const toText = (value, max) => (typeof value === 'string' ? value.slice(0, max) : '');
+
+  const storageGet = (key) => {
+    try {
+      return window.localStorage.getItem(key);
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const storageSet = (key, value) => {
+    try {
+      window.localStorage.setItem(key, value);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  /* ==================================================================
+     データの形を整える（読み込み・共有データ・インポート共通）
+     ================================================================== */
+  const normalizeSite = (raw) => {
+    if (!isPlainObject(raw)) return null;
+
+    const items = {};
+    if (isPlainObject(raw.items)) {
+      Object.entries(raw.items).forEach(([key, item]) => {
+        if (!/^[a-z]+-[a-z]+-\d{2}$/.test(key) || !isPlainObject(item)) return;
+        const status = STATUSES.includes(item.s) ? item.s : '';
+        const memo = toText(item.m, 400);
+        if (status || memo) items[key] = { s: status, m: memo };
+      });
+    }
+
+    // id は共有データベースのパスにもなるため、使える文字だけを許可する
+    const id = typeof raw.id === 'string' && /^[A-Za-z0-9_\-.~:@+]{1,60}$/.test(raw.id) ? raw.id : createId();
+
+    return {
+      id,
+      name: toText(raw.name, 80) || '名称未設定のサイト',
+      url: toText(raw.url, 200),
+      type: raw.type === 'html' ? 'html' : 'wp',
+      date: /^\d{4}-\d{2}-\d{2}$/.test(raw.date) ? raw.date : today(),
+      person: toText(raw.person, 40),
+      createdAt: toText(raw.createdAt, 40),
+      updatedAt: toText(raw.updatedAt, 40),
+      updatedBy: toText(raw.updatedBy, 80),
+      items,
+    };
+  };
+
+  const sortSites = (sites) => sites.sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || ''));
+
+  // 共有データベースに書き込む形（id はドキュメント名なので含めない）
+  const toDoc = (site) => ({
+    name: site.name,
+    url: site.url,
+    type: site.type,
+    date: site.date,
+    person: site.person,
+    createdAt: site.createdAt,
+    updatedAt: site.updatedAt,
+    updatedBy: site.updatedBy,
+    items: site.items,
+  });
+
+  /* ==================================================================
+     状態
+     ================================================================== */
+  const state = {
+    mode: 'local',     // local | connecting | shared
+    sites: [],
+    currentId: storageGet(CURRENT_KEY),
+    readOnly: false,
+    writeDenied: false, // 書き込みが権限不足で拒否されたことがあるか
+    loaded: false,     // 共有データの初回読み込みが終わったか
+    userId: null,
+  };
+
+  // 共有モードで使う capability（取得できなければ null のまま）
+  const shared = { db: null, user: null, downloads: null };
+
+  const getCurrentSite = () => state.sites.find((s) => s.id === state.currentId) || null;
+
+  const ensureCurrent = () => {
+    if (!getCurrentSite()) state.currentId = state.sites.length ? state.sites[0].id : null;
+  };
+
+  const rememberCurrent = () => {
+    if (state.currentId) storageSet(CURRENT_KEY, state.currentId);
+  };
+
+  const stamp = (site) => {
+    site.updatedAt = new Date().toISOString();
+    site.updatedBy = state.userId || '';
+  };
+
+  /* ==================================================================
+     ローカル保存（HTMLファイルを直接開いたとき / 共有に接続できないとき）
+     ================================================================== */
+  const migrateLegacy = () => {
+    try {
+      const raw = storageGet(LEGACY_KEY);
+      if (!raw) return null;
+      const legacy = JSON.parse(raw);
+      const items = {};
+      Object.keys(legacy.checks || {}).forEach((key) => {
+        items[key] = { s: 'ok', m: '' };
+      });
+      const meta = legacy.meta || {};
+      return normalizeSite({
+        name: meta.site,
+        url: meta.url,
+        date: meta.date,
+        person: meta.person,
+        type: legacy.tab === 'tab-html' ? 'html' : 'wp',
+        createdAt: new Date().toISOString(),
+        items,
+      });
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const createSite = (index) => normalizeSite({
+    id: createId(),
+    name: `サイト ${index}`,
+    type: 'wp',
+    date: today(),
+    createdAt: new Date().toISOString(),
+  });
+
+  const loadLocal = () => {
+    try {
+      const parsed = JSON.parse(storageGet(LOCAL_KEY) || '{}');
+      const sites = Array.isArray(parsed.sites) ? parsed.sites.map(normalizeSite).filter(Boolean) : [];
+      if (sites.length) return sites;
+    } catch (error) {
+      // 壊れたデータは無視して新規で始める
+    }
+    return [migrateLegacy() || createSite(1)];
+  };
+
+  const saveLocal = () => storageSet(LOCAL_KEY, JSON.stringify({ version: 2, sites: state.sites }));
+
+  /* ==================================================================
+     共有データベースへの書き込み
+     同じドキュメントへの書き込みは1件ずつ順番に行う（db の決まり）
+     ================================================================== */
+  const writeChains = new Map();
+
+  const handleWriteError = (error) => {
+    const code = error && error.code;
+    if (code === 'invalid_argument') {
+      // 権限が足りない書き込みは invalid_argument で拒否される
+      state.writeDenied = true;
+      setReadOnly(true);
+      showNotice('このページを編集する権限がありません。共有の設定で「編集」以上の権限をもらってください。');
+    } else if (code === 'quota_exceeded') {
+      showNotice('共有データの保存容量の上限に達しました。不要なサイトを削除してください。');
+    } else if (code === 'revoked') {
+      setMode('error', '共有データへのアクセスが終了しました。ページを開き直してください。');
+    } else {
+      showNotice('保存できませんでした。通信状況を確認して、もう一度操作してください。');
+    }
+  };
+
+  const queueWrite = (siteId, task) => {
+    const ref = shared.db.collection(COLLECTION).doc(siteId);
+    const prev = writeChains.get(siteId) || Promise.resolve();
+    const next = prev.then(() => task(ref)).catch(handleWriteError);
+    writeChains.set(siteId, next);
+    return next;
+  };
+
+  /* ==================================================================
+     保存処理の窓口（ローカル / 共有の違いをここで吸収する）
+     ================================================================== */
+  const store = {
+    addSite(site) {
+      state.sites.push(site);
+      if (state.mode === 'shared') {
+        queueWrite(site.id, (ref) => ref.set(toDoc(site)));
+      } else {
+        saveLocal();
+      }
+    },
+
+    updateMeta(site, patch) {
+      Object.assign(site, patch);
+      stamp(site);
+      if (state.mode === 'shared') {
+        queueWrite(site.id, (ref) => ref.update({ ...patch, updatedAt: site.updatedAt, updatedBy: site.updatedBy }));
+      } else {
+        saveLocal();
+      }
+    },
+
+    // 1項目の状態・メモを保存（共有時はその項目だけをマージするので、他の人の編集を上書きしない）
+    updateItem(site, itemId, record) {
+      if (record.s || record.m) {
+        site.items[itemId] = record;
+      } else {
+        delete site.items[itemId];
+      }
+      stamp(site);
+      if (state.mode === 'shared') {
+        queueWrite(site.id, (ref) => ref.update({
+          items: { [itemId]: { s: record.s, m: record.m } },
+          updatedAt: site.updatedAt,
+          updatedBy: site.updatedBy,
+        }));
+      } else {
+        saveLocal();
+      }
+    },
+
+    resetItems(site) {
+      const cleared = {};
+      Object.keys(site.items).forEach((key) => {
+        cleared[key] = { s: '', m: '' };
+      });
+      site.items = {};
+      stamp(site);
+      if (state.mode === 'shared') {
+        queueWrite(site.id, (ref) => ref.update({ items: cleared, updatedAt: site.updatedAt, updatedBy: site.updatedBy }));
+      } else {
+        saveLocal();
+      }
+    },
+
+    deleteSite(site) {
+      state.sites = state.sites.filter((s) => s.id !== site.id);
+      if (state.mode === 'shared') {
+        queueWrite(site.id, (ref) => ref.delete());
+      } else {
+        if (!state.sites.length) state.sites.push(createSite(1)); // ローカルは最低1件残す
+        saveLocal();
+      }
+    },
+
+    async replaceAll(sites) {
+      const removed = state.sites.filter((s) => !sites.some((n) => n.id === s.id));
+      state.sites = sites;
+      if (state.mode === 'shared') {
+        await Promise.all([
+          ...sites.map((site) => queueWrite(site.id, (ref) => ref.set(toDoc(site)))),
+          ...removed.map((site) => queueWrite(site.id, (ref) => ref.delete())),
+        ]);
+      } else {
+        saveLocal();
+      }
+    },
+  };
+
+  /* ==================================================================
+     集計
+     ================================================================== */
+
+  // 種類ごとの項目ID一覧（HTMLから取得するので、項目を増やしても自動で反映される）
+  const itemIdsByType = {};
+  document.querySelectorAll('.js-panel').forEach((panel) => {
+    itemIdsByType[panel.dataset.type] = Array.from(panel.querySelectorAll('.js-item'))
+      .map((item) => item.dataset.item);
+  });
+
+  const countSite = (site) => {
+    const ids = itemIdsByType[site.type] || [];
+    const counts = { ok: 0, progress: 0, review: 0, na: 0, none: 0 };
+    ids.forEach((id) => {
+      const status = site.items[id] ? site.items[id].s : '';
+      counts[status || 'none'] += 1;
+    });
+    const done = DONE_STATUSES.reduce((sum, key) => sum + counts[key], 0);
+    return { ...counts, done, total: ids.length };
+  };
+
+  /* ==================================================================
+     DOM参照
+     ================================================================== */
+  const el = {
+    mode: document.querySelector('.js-mode'),
+    modeText: document.querySelector('.js-mode-text'),
+    siteList: document.querySelector('.js-site-list'),
+    siteCount: document.querySelector('.js-site-count'),
+    siteEmpty: document.querySelector('.js-site-empty'),
+    siteEmptyTitle: document.querySelector('.js-site-empty-title'),
+    siteEmptyText: document.querySelector('.js-site-empty-text'),
+    siteTemplate: document.getElementById('site-card-template'),
+    siteSwitch: document.querySelector('.js-site-switch'),
+    siteAdd: document.querySelector('.js-site-add'),
+    siteDelete: document.querySelector('.js-site-delete'),
+    metaForm: document.querySelector('.js-meta-form'),
+    metaStatus: document.querySelector('.js-meta-status'),
+    panels: document.querySelectorAll('.js-panel'),
+    sums: document.querySelectorAll('.js-sum'),
+    filters: document.querySelectorAll('.js-filter'),
+    progressText: document.querySelector('.js-progress-text'),
+    progressTrack: document.querySelector('.js-progress'),
+    print: document.querySelector('.js-print'),
+    reset: document.querySelector('.js-reset'),
+    dataText: document.querySelector('.js-data-text'),
+    exportButton: document.querySelector('.js-export'),
+    importInput: document.querySelector('.js-import'),
+    dialog: document.querySelector('.js-dialog'),
+  };
+
+  let currentFilter = 'all';
+  let metaDirty = false;            // サイト情報フォームに未保存の入力があるか
+  const memoTimers = new Map();     // メモの保存待ちタイマー（項目IDごと）
+
+  const getActivePanel = () => document.querySelector('.js-panel:not([hidden])');
+
+  const showNotice = (text) => {
+    if (el.metaStatus) el.metaStatus.textContent = text;
+  };
+
+  /* ==================================================================
+     表示：保存先・権限
+     ================================================================== */
+  const MODE_TEXT = {
+    local: 'このブラウザにのみ保存します',
+    connecting: '共有データを読み込んでいます…',
+    shared: 'チームで共有中：変更はこのページを開いている全員に反映されます',
+    readonly: 'チームで共有中（閲覧のみ）：編集するには共有の権限が必要です',
+  };
+
+  function setMode(mode, text) {
+    if (el.mode) el.mode.dataset.mode = mode;
+    if (el.modeText) el.modeText.textContent = text || MODE_TEXT[mode] || '';
+  }
+
+  // 閲覧のみの場合は入力欄を無効にし、編集ボタンを隠す
+  function setReadOnly(readOnly) {
+    state.readOnly = readOnly;
+    document.body.classList.toggle('is-readonly', readOnly);
+    document.querySelectorAll('.js-panel input, .js-panel textarea, .js-meta-form input, .js-meta-form select')
+      .forEach((field) => { field.disabled = readOnly; });
+    if (el.importInput) el.importInput.disabled = readOnly;
+    if (state.mode === 'shared') setMode(readOnly ? 'readonly' : 'shared');
+  }
+
+  /* ==================================================================
+     確認ダイアログ（Artifact内では confirm() が使えないため自前で用意）
+     ================================================================== */
+  const askConfirm = (message, okLabel = '実行する') => new Promise((resolve) => {
+    const dialog = el.dialog;
+    if (!dialog || typeof dialog.showModal !== 'function') {
+      resolve(window.confirm(message));
+      return;
+    }
+    dialog.querySelector('.c-dialog__message').textContent = message;
+    dialog.querySelector('.js-dialog-ok').textContent = okLabel;
+    dialog.returnValue = '';
+    dialog.addEventListener('close', () => resolve(dialog.returnValue === 'ok'), { once: true });
+    dialog.showModal();
+  });
+
+  /* ==================================================================
+     表示：サイト一覧・サイト切替
+     ================================================================== */
+
+  // 最終更新者の名前を表示（共有時のみ。保存しているのはIDだけで、名前は表示のたびに引く）
+  const fillUpdaterNames = () => {
+    if (!shared.user) return;
+    const targets = Array.from(document.querySelectorAll('[data-updated-by]'))
+      .filter((node) => node.dataset.updatedBy);
+    const ids = [...new Set(targets.map((node) => node.dataset.updatedBy))];
+    if (!ids.length) return;
+
+    shared.user.profiles(ids).then((profiles) => {
+      targets.forEach((node) => {
+        const profile = profiles[node.dataset.updatedBy];
+        const name = profile && profile.isMe ? 'あなた' : (profile && profile.name) || 'メンバー';
+        node.textContent = `${node.dataset.prefix || ''}${name}`;
+      });
+    });
+  };
+
+  const renderSiteList = () => {
+    if (!el.siteList || !el.siteTemplate) return;
+
+    const fragment = document.createDocumentFragment();
+
+    state.sites.forEach((site) => {
+      const node = el.siteTemplate.content.cloneNode(true);
+      const card = node.querySelector('.js-site-card');
+      const counts = countSite(site);
+      const ratio = counts.total ? counts.done / counts.total : 0;
+
+      card.dataset.siteId = site.id;
+      card.setAttribute('aria-pressed', String(site.id === state.currentId));
+      card.style.setProperty('--progress', String(ratio));
+
+      node.querySelector('.c-site__type').textContent = TYPE_LABELS[site.type];
+      node.querySelector('.c-site__flag').textContent = counts.review ? `要検討 ${counts.review}` : '';
+      node.querySelector('.c-site__name').textContent = site.name;
+      node.querySelector('.c-site__url').textContent = site.url.replace(/^https?:\/\//, '');
+
+      const stats = [`完了 ${counts.done} / ${counts.total}`];
+      if (counts.progress) stats.push(`確認中 ${counts.progress}`);
+      if (site.updatedAt) stats.push(`更新 ${formatDateTime(site.updatedAt)}`);
+      node.querySelector('.c-site__stats').textContent = stats.join('・');
+
+      const by = node.querySelector('.c-site__by');
+      if (state.mode === 'shared' && site.updatedBy) {
+        by.dataset.updatedBy = site.updatedBy;
+        by.dataset.prefix = '更新者：';
+      }
+
+      fragment.appendChild(node);
+    });
+
+    el.siteList.replaceChildren(fragment);
+    if (el.siteCount) el.siteCount.textContent = state.sites.length ? `${state.sites.length}サイト登録中` : '';
+
+    // 空の状態（共有データの読み込み中も含む）
+    if (el.siteEmpty) {
+      el.siteEmpty.hidden = state.sites.length > 0;
+      const loading = state.mode === 'connecting';
+      el.siteEmptyTitle.textContent = loading ? '共有データを読み込んでいます' : 'まだサイトが登録されていません';
+      el.siteEmptyText.textContent = loading
+        ? 'しばらくお待ちください。'
+        : '「＋ サイトを追加」から、点検するサイトを登録してください。';
+    }
+
+    fillUpdaterNames();
+  };
+
+  const renderSiteSwitch = () => {
+    if (!el.siteSwitch) return;
+    const options = state.sites.map((site) => {
+      const option = document.createElement('option');
+      option.value = site.id;
+      option.textContent = site.name; // SPの下部バーで切れないよう、種類は付けない
+      return option;
+    });
+    el.siteSwitch.replaceChildren(...options);
+    if (state.currentId) el.siteSwitch.value = state.currentId;
+  };
+
+  /* ==================================================================
+     表示：サイト情報フォーム
+     ================================================================== */
+  const renderMetaStatus = (site) => {
+    if (!el.metaStatus) return;
+    el.metaStatus.replaceChildren();
+    if (!site.updatedAt) return;
+
+    el.metaStatus.append(`最終更新：${formatDateTime(site.updatedAt)}`);
+    if (state.mode === 'shared' && site.updatedBy) {
+      const by = document.createElement('span');
+      by.dataset.updatedBy = site.updatedBy;
+      by.dataset.prefix = '・';
+      el.metaStatus.append(by);
+      fillUpdaterNames();
+    }
+  };
+
+  // force：サイトを切り替えたときなど、入力途中でも上書きする
+  const fillMetaForm = ({ force = false } = {}) => {
+    const site = getCurrentSite();
+    if (!el.metaForm || !site) return;
+
+    // 他のメンバーの更新が届いても、入力中の内容は消さない
+    const editing = metaDirty || el.metaForm.contains(document.activeElement);
+    if (!force && editing) return;
+
+    ['name', 'url', 'type', 'date', 'person'].forEach((key) => {
+      const field = el.metaForm.elements.namedItem(key);
+      if (field) field.value = site[key];
+    });
+    el.metaForm.querySelectorAll('[aria-invalid]').forEach((input) => input.removeAttribute('aria-invalid'));
+    el.metaForm.querySelectorAll('.c-field__error').forEach((error) => { error.textContent = ''; });
+    metaDirty = false;
+    renderMetaStatus(site);
+  };
+
+  /* ==================================================================
+     表示：チェックリスト
+     ================================================================== */
+  const applyItem = (item, record) => {
+    const status = record ? record.s : '';
+    const memo = record ? record.m : '';
+
+    item.dataset.status = status;
+    item.querySelectorAll('input[type="radio"]').forEach((radio) => {
+      radio.checked = radio.value === status;
+    });
+
+    // 入力中・保存待ちのメモは、届いたデータで上書きしない
+    const textarea = item.querySelector('.js-memo');
+    const typing = textarea && (document.activeElement === textarea || memoTimers.has(item.dataset.item));
+    if (textarea && !typing) textarea.value = memo;
+    item.classList.toggle('has-memo', Boolean(typing ? textarea.value.trim() : memo));
+  };
+
+  const updateCategory = (category) => {
+    const items = category.querySelectorAll('.js-item');
+    const done = Array.from(items).filter((item) => DONE_STATUSES.includes(item.dataset.status)).length;
+    const count = category.querySelector('.js-category-count');
+    if (count) count.textContent = `${done} / ${items.length}`;
+    category.classList.toggle('is-complete', done === items.length);
+  };
+
+  const updateSummary = () => {
+    const site = getCurrentSite();
+    if (!site) return;
+    const counts = countSite(site);
+    const ratio = counts.total ? counts.done / counts.total : 0;
+
+    el.sums.forEach((sum) => {
+      sum.textContent = String(counts[sum.dataset.status] || 0);
+    });
+
+    if (el.progressText) el.progressText.textContent = `${counts.done} / ${counts.total}`;
+    if (el.progressTrack) {
+      el.progressTrack.style.setProperty('--progress', String(ratio));
+      el.progressTrack.setAttribute('aria-valuenow', String(Math.round(ratio * 100)));
+    }
+  };
+
+  const applyFilter = () => {
+    const panel = getActivePanel();
+    if (!panel) return;
+
+    panel.querySelectorAll('.js-category').forEach((category) => {
+      let visible = 0;
+      category.querySelectorAll('.js-item').forEach((item) => {
+        const status = item.dataset.status || 'none';
+        const match = currentFilter === 'all' || status === currentFilter;
+        item.classList.toggle('is-filtered-out', !match);
+        if (match) visible += 1;
+      });
+      category.classList.toggle('is-filtered-out', visible === 0);
+    });
+
+    const body = panel.querySelector('.p-panel__body');
+    if (body) {
+      body.classList.toggle('is-empty', !panel.querySelector('.js-category:not(.is-filtered-out)'));
+    }
+  };
+
+  const renderChecklist = () => {
+    const site = getCurrentSite();
+
+    el.panels.forEach((panel) => {
+      panel.hidden = !site || panel.dataset.type !== site.type;
+    });
+    if (!site) return;
+
+    const panel = getActivePanel();
+    if (!panel) return;
+
+    const siteLabel = panel.querySelector('.js-panel-site');
+    if (siteLabel) siteLabel.textContent = site.name;
+
+    panel.querySelectorAll('.js-item').forEach((item) => applyItem(item, site.items[item.dataset.item]));
+    panel.querySelectorAll('.js-category').forEach(updateCategory);
+    applyFilter();
+    updateSummary();
+  };
+
+  const renderAll = ({ forceMeta = false } = {}) => {
+    ensureCurrent();
+    document.body.classList.toggle('is-no-site', !getCurrentSite());
+    renderSiteSwitch();
+    fillMetaForm({ force: forceMeta });
+    renderChecklist();
+    renderSiteList();
+  };
+
+  /* ==================================================================
+     操作：サイトの選択・追加・削除
+     ================================================================== */
+  const selectSite = (id) => {
+    if (!state.sites.some((s) => s.id === id)) return;
+    state.currentId = id;
+    rememberCurrent();
+    renderAll({ forceMeta: true });
+  };
+
+  const initSites = () => {
+    if (el.siteList) {
+      el.siteList.addEventListener('click', (event) => {
+        const card = event.target.closest('.js-site-card');
+        if (card) selectSite(card.dataset.siteId);
+      });
+    }
+
+    if (el.siteSwitch) {
+      el.siteSwitch.addEventListener('change', () => selectSite(el.siteSwitch.value));
+    }
+
+    if (el.siteAdd) {
+      el.siteAdd.addEventListener('click', () => {
+        if (state.readOnly || state.mode === 'connecting') return;
+        const site = createSite(state.sites.length + 1);
+        stamp(site);
+        store.addSite(site);
+        selectSite(site.id);
+        showNotice('新しいサイトを追加しました。サイト名とURLを入力して保存してください。');
+
+        // そのまま入力できるようにサイト名へ移動
+        const nameInput = el.metaForm && el.metaForm.elements.namedItem('name');
+        if (nameInput) {
+          nameInput.focus({ preventScroll: true });
+          nameInput.select();
+          el.metaForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    }
+
+    if (el.siteDelete) {
+      el.siteDelete.addEventListener('click', async () => {
+        const site = getCurrentSite();
+        if (!site || state.readOnly) return;
+        const note = state.mode === 'shared' ? '\nチーム全員の画面から削除されます。' : '';
+        const ok = await askConfirm(`「${site.name}」と点検結果を削除します。元に戻せません。${note}`, '削除する');
+        if (!ok) return;
+
+        store.deleteSite(site);
+        state.currentId = null;
+        renderAll({ forceMeta: true });
+        showNotice(`「${site.name}」を削除しました。`);
+      });
+    }
+  };
+
+  /* ==================================================================
+     操作：サイト情報フォーム
+     ================================================================== */
+  const getErrorMessage = (input) => {
+    const { validity } = input;
+    if (validity.valueMissing) return '入力してください。';
+    if (validity.typeMismatch || validity.patternMismatch) {
+      return input.type === 'url' ? 'https:// から始まるURLを入力してください。' : '形式が正しくありません。';
+    }
+    if (validity.rangeUnderflow || validity.rangeOverflow) return '日付を確認してください。';
+    if (validity.tooLong) return `${input.maxLength}文字以内で入力してください。`;
+    return '';
+  };
+
+  const validateField = (input) => {
+    const errorId = input.getAttribute('aria-describedby');
+    const error = errorId ? document.getElementById(errorId) : null;
+    const message = input.checkValidity() ? '' : getErrorMessage(input);
+
+    input.setAttribute('aria-invalid', String(Boolean(message)));
+    if (error) error.textContent = message;
+    return !message;
+  };
+
+  const initMetaForm = () => {
+    if (!el.metaForm) return;
+
+    const fields = Array.from(el.metaForm.querySelectorAll('input[name], select[name]'));
+
+    fields.forEach((input) => {
+      input.addEventListener('blur', () => validateField(input));
+      input.addEventListener('input', () => {
+        metaDirty = true;
+        if (input.getAttribute('aria-invalid') === 'true') validateField(input);
+      });
+    });
+
+    el.metaForm.addEventListener('submit', async (event) => {
+      event.preventDefault(); // 送信はせず、保存のみ行う
+      const site = getCurrentSite();
+      if (!site || state.readOnly) return;
+
+      const results = fields.map(validateField);
+      if (results.includes(false)) {
+        const firstInvalid = fields.find((input) => input.getAttribute('aria-invalid') === 'true');
+        if (firstInvalid) firstInvalid.focus();
+        showNotice('未入力・誤りのある項目があります。');
+        return;
+      }
+
+      const patch = {};
+      fields.forEach((input) => {
+        patch[input.name] = input.value.trim();
+      });
+
+      if (patch.type !== site.type) {
+        const ok = await askConfirm('サイトの種類を変更すると、表示するチェック項目が切り替わります。\n元の種類の点検結果は保持されます。', '変更する');
+        if (!ok) return;
+      }
+
+      store.updateMeta(site, patch);
+      metaDirty = false;
+      renderAll({ forceMeta: true });
+      showNotice(`保存しました（${formatDateTime(site.updatedAt)}）`);
+    });
+  };
+
+  /* ==================================================================
+     操作：確認状況・メモ
+     ================================================================== */
+  const refreshAfterItemChange = (item) => {
+    const category = item.closest('.js-category');
+    if (category) updateCategory(category);
+    updateSummary();
+    renderSiteList();
+  };
+
+  const initChecklist = () => {
+    // 確認状況：選択済みのボタンをもう一度押すと「未確認」に戻す
+    document.addEventListener('click', (event) => {
+      const radio = event.target;
+      if (!(radio instanceof HTMLInputElement) || radio.type !== 'radio') return;
+      const item = radio.closest('.js-item');
+      const site = getCurrentSite();
+      if (!item || !site || state.readOnly) return;
+
+      const id = item.dataset.item;
+      const current = site.items[id] || { s: '', m: '' };
+      const record = { s: current.s === radio.value ? '' : radio.value, m: current.m || '' };
+
+      store.updateItem(site, id, record);
+      applyItem(item, record);
+      refreshAfterItemChange(item);
+    });
+
+    // メモ：入力が止まってから保存（共有データへの書き込み回数を抑える）
+    document.addEventListener('input', (event) => {
+      const textarea = event.target;
+      if (!textarea.classList || !textarea.classList.contains('js-memo')) return;
+      const item = textarea.closest('.js-item');
+      const site = getCurrentSite();
+      if (!item || !site || state.readOnly) return;
+
+      const id = item.dataset.item;
+      const siteId = site.id;
+      clearTimeout(memoTimers.get(id));
+      memoTimers.set(id, setTimeout(() => {
+        memoTimers.delete(id);
+        const target = state.sites.find((s) => s.id === siteId);
+        if (!target) return;
+        const current = target.items[id] || { s: '', m: '' };
+        store.updateItem(target, id, { s: current.s || '', m: textarea.value.slice(0, 400) });
+        renderSiteList();
+      }, MEMO_DELAY));
+    });
+
+    // メモ欄を離れたときに表示状態（has-memo）を更新
+    document.addEventListener('focusout', (event) => {
+      const textarea = event.target;
+      if (!textarea.classList || !textarea.classList.contains('js-memo')) return;
+      const item = textarea.closest('.js-item');
+      if (item) item.classList.toggle('has-memo', Boolean(textarea.value.trim()));
+    });
+  };
+
+  /* ==================================================================
+     操作：絞り込み
+     ================================================================== */
+  const initFilter = () => {
+    el.filters.forEach((button) => {
+      button.addEventListener('click', () => {
+        currentFilter = button.dataset.filter;
+        el.filters.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+        applyFilter();
+      });
+    });
+  };
+
+  /* ==================================================================
+     操作：印刷・リセット
+     ================================================================== */
+  const initActions = () => {
+    if (el.print) {
+      el.print.addEventListener('click', () => window.print());
+    }
+
+    if (el.reset) {
+      el.reset.addEventListener('click', async () => {
+        const site = getCurrentSite();
+        if (!site || state.readOnly) return;
+        const ok = await askConfirm(`「${site.name}」の点検結果とメモをすべて消去します。\nサイト情報は残ります。`, '消去する');
+        if (!ok) return;
+
+        store.resetItems(site);
+        renderAll();
+        showNotice('点検結果をリセットしました。');
+      });
+    }
+  };
+
+  /* ==================================================================
+     操作：データの書き出し・読み込み
+     ================================================================== */
+  const saveFile = async (filename, text) => {
+    // Artifact内では downloads capability で保存（閲覧者に確認が表示される）
+    if (shared.downloads) {
+      try {
+        await shared.downloads.save({ filename, data: text });
+        showNotice('データを書き出しました。');
+      } catch (error) {
+        if (error && error.code !== 'declined') showNotice('書き出せませんでした。時間をおいてもう一度お試しください。');
+      }
+      return;
+    }
+
+    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const initDataTransfer = () => {
+    if (el.exportButton) {
+      el.exportButton.addEventListener('click', () => {
+        const json = JSON.stringify({ version: 2, exportedAt: new Date().toISOString(), sites: state.sites }, null, 2);
+        saveFile(`security-checklist-${today().replace(/-/g, '')}.json`, json);
+      });
+    }
+
+    if (el.importInput) {
+      el.importInput.addEventListener('change', () => {
+        const file = el.importInput.files && el.importInput.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.addEventListener('load', async () => {
+          try {
+            const parsed = JSON.parse(String(reader.result));
+            const sites = Array.isArray(parsed.sites) ? parsed.sites.map(normalizeSite).filter(Boolean) : [];
+            if (!sites.length) throw new Error('サイトのデータが見つかりません');
+
+            // 作成日時がないデータは、並び順を保つために連番で補う
+            const base = Date.now();
+            sites.forEach((site, i) => {
+              if (!site.createdAt) site.createdAt = new Date(base + i).toISOString();
+            });
+
+            const note = state.mode === 'shared' ? '\nチーム全員の記録が置き換わります。' : '';
+            const ok = await askConfirm(`${sites.length}サイト分のデータを読み込みます。現在の記録はすべて置き換わります。${note}`, '読み込む');
+            if (!ok) return;
+
+            await store.replaceAll(sortSites(sites));
+            state.currentId = null;
+            renderAll({ forceMeta: true });
+            showNotice(`${sites.length}サイト分のデータを読み込みました。`);
+          } catch (error) {
+            showNotice('読み込めませんでした。このチェックリストから書き出したJSONファイルを選んでください。');
+          } finally {
+            el.importInput.value = ''; // 同じファイルを再度選べるようにする
+          }
+        });
+        reader.readAsText(file);
+      });
+    }
+  };
+
+  /* ==================================================================
+     演出：フェードイン
+     ================================================================== */
+  const initReveal = () => {
+    const targets = document.querySelectorAll('.js-reveal');
+    if (!targets.length) return;
+
+    const reveal = (target) => target.classList.add('is-revealed');
+
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(reveal);
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        reveal(entry.target);
+        observer.unobserve(entry.target); // 発火は1回のみ
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+    targets.forEach((target) => observer.observe(target));
+  };
+
+  /* ==================================================================
+     起動：保存先の決定
+     ================================================================== */
+  const startLocal = (text) => {
+    state.mode = 'local';
+    state.sites = loadLocal();
+    saveLocal(); // 旧データからの引き継ぎ結果を保存
+    setMode('local', text);
+    renderAll({ forceMeta: true });
+  };
+
+  const startShared = async () => {
+    state.mode = 'connecting';
+    setMode('connecting');
+    renderAll({ forceMeta: true });
+
+    const claude = window.claude;
+    const [db, user, downloads] = await Promise.all([
+      claude.use('db'),
+      claude.use('user'),
+      claude.use('downloads'),
+    ]);
+
+    shared.downloads = downloads;
+
+    // ログインしていない等で共有データを使えない場合は、このブラウザに保存する
+    if (!db) {
+      startLocal('共有データに接続できないため、このブラウザにのみ保存します（claude.ai にログインして開くと共有されます）');
+      return;
+    }
+
+    shared.db = db;
+    shared.user = user;
+    state.userId = user ? await user.id() : null;
+    if (el.dataText) el.dataText.textContent = '記録はチームで共有されています。誤操作に備えて、定期的にデータを書き出してバックアップしてください。';
+
+    // 書き込み権限の確認（null は「不明」なので、書き込みが拒否されたら閲覧のみに切り替える）
+    const canWrite = user ? await user.can('data.write') : null;
+
+    // 10秒で読み込めなければ案内を出す（購読はそのまま続ける）
+    const timer = setTimeout(() => {
+      if (!state.loaded) setMode('error', '共有データに接続できません。通信状況を確認してください（つながりしだい表示されます）');
+    }, CONNECT_TIMEOUT);
+
+    db.collection(COLLECTION).onSnapshot((snap) => {
+      state.sites = sortSites(snap.docs.map((doc) => normalizeSite({ ...doc.data(), id: doc.id })).filter(Boolean));
+
+      if (!snap.metadata.fromCache && !state.loaded) {
+        state.loaded = true;
+        clearTimeout(timer);
+      }
+      state.mode = 'shared';
+      setReadOnly(canWrite === false || state.writeDenied);
+      renderAll();
+    }, (error) => {
+      clearTimeout(timer);
+      setMode('error', error && error.code === 'revoked'
+        ? '共有データへのアクセスが終了しました。ページを開き直してください。'
+        : '共有データを読み込めませんでした。ページを開き直してください。');
+    });
+  };
+
+  /* ==================================================================
+     初期化（1つの失敗でページ全体を止めない）
+     ================================================================== */
+  const isHosted = Boolean(window.claude && typeof window.claude.use === 'function');
+
+  // Artifact内では印刷できないため、印刷ボタンを出さない
+  if (isHosted && el.print) el.print.hidden = true;
+
+  [
+    ['sites', initSites],
+    ['meta-form', initMetaForm],
+    ['checklist', initChecklist],
+    ['filter', initFilter],
+    ['actions', initActions],
+    ['data-transfer', initDataTransfer],
+    ['reveal', initReveal],
+  ].forEach(([name, init]) => {
+    try {
+      init();
+    } catch (error) {
+      console.error(`[security-checklist] "${name}" の初期化に失敗しました`, error);
+    }
+  });
+
+  if (isHosted) {
+    startShared().catch((error) => {
+      console.error('[security-checklist] 共有データの初期化に失敗しました', error);
+      startLocal('共有データに接続できないため、このブラウザにのみ保存します');
+    });
+  } else {
+    startLocal();
+  }
+})();
+
+</script>
