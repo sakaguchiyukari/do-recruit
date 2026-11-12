@@ -28,7 +28,14 @@
   const COLLECTION = 'sites';                   // 共有データベースのコレクション名
   const STATUSES = ['ok', 'progress', 'review', 'na'];
   const DONE_STATUSES = ['ok', 'na'];           // 「完了」に数える状態
-  const TYPE_LABELS = { wp: 'WordPress', html: '静的HTML' };
+  // サイトの種類（キーは保存データと index.html の data-type に対応。既存のキーは変更しない）
+  const TYPE_LABELS = {
+    wp: 'WordPress',
+    html: '静的HTML',
+    cms: 'その他のCMS',
+    builder: 'ホームページ作成サービス',
+    ec: 'ネットショップ作成サービス',
+  };
   const MEMO_DELAY = 700;                       // メモ入力を保存するまでの待ち時間（ms）
   const CONNECT_TIMEOUT = 10000;                // 共有データの読み込み待ち上限（ms）
 
@@ -95,7 +102,7 @@
       id,
       name: toText(raw.name, 80) || '名称未設定のサイト',
       url: toText(raw.url, 200),
-      type: raw.type === 'html' ? 'html' : 'wp',
+      type: Object.prototype.hasOwnProperty.call(TYPE_LABELS, raw.type) ? raw.type : 'wp',
       date: /^\d{4}-\d{2}-\d{2}$/.test(raw.date) ? raw.date : today(),
       person: toText(raw.person, 40),
       createdAt: toText(raw.createdAt, 40),

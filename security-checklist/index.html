@@ -9,12 +9,12 @@
   <script>document.documentElement.classList.add('js-enabled');</script>
 
   <title>ホームページ セキュリティ点検チェックリスト｜WordPress・静的HTML</title>
-  <meta name="description" content="複数のWordPressサイト・静的HTMLサイトを、サイトごとに定期セキュリティ点検できるチェックリスト。確認状況（OK・確認中・要検討・対象外）とメモを記録し、チームで共有できます。">
+  <meta name="description" content="WordPress・静的HTML・各種CMS・作成サービスで作った複数のサイトを、サイトごとに定期セキュリティ点検できるチェックリスト。確認状況（OK・確認中・要検討・対象外）とメモを記録し、チームで共有できます。">
 
   <!-- OGP（og:url / og:image は公開URLに合わせて差し替える） -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="ホームページ セキュリティ点検チェックリスト">
-  <meta property="og:description" content="複数サイトのWordPress・静的HTMLのセキュリティ点検をサイトごとに記録できるチェックリスト。">
+  <meta property="og:description" content="WordPress・静的HTML・各種サービスで作った複数サイトのセキュリティ点検をサイトごとに記録できるチェックリスト。">
   <meta property="og:image" content="https://example.com/security-checklist/assets/img/ogp/ogp-security-checklist.png">
   <meta property="og:url" content="https://example.com/security-checklist/">
   <meta property="og:site_name" content="ホームページ セキュリティ点検チェックリスト">
@@ -129,6 +129,9 @@
             <select class="c-field__input c-field__input--select" id="meta-type" name="type" required>
               <option value="wp">WordPress</option>
               <option value="html">静的HTML</option>
+              <option value="cms">その他のCMS（Movable Type・EC-CUBEなど）</option>
+              <option value="builder">ホームページ作成サービス（STUDIO・Wixなど）</option>
+              <option value="ec">ネットショップ作成サービス（Shopify・BASEなど）</option>
             </select>
           </div>
 
@@ -1438,6 +1441,1739 @@
         </div>
       </section>
 
+      <!-- ========== パネル：その他のCMSで制作したサイト ========== -->
+      <section class="p-panel js-panel" id="panel-cms" data-type="cms" aria-labelledby="panel-cms-title">
+        <div class="p-panel__head">
+          <p class="p-panel__site js-panel-site"></p>
+          <h2 class="p-panel__title" id="panel-cms-title">その他のCMSで制作したサイト</h2>
+          <p class="p-panel__lead">Movable Type・EC-CUBE・a-blog cms など、サーバーに設置して使うCMSが対象です。本体・拡張機能の更新とログイン周りの対策が中心です。<br>全7カテゴリ・28項目</p>
+        </div>
+        <div class="p-panel__body">
+          <!-- その他のCMS：CMS本体・拡張機能 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="cms-cat-core">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">01</span>
+              <h3 class="p-category__title" id="cms-cat-core">CMS本体・拡張機能</h3>
+              <span class="p-category__count js-category-count">0 / 7</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="cms-core-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-core-01-title">CMS本体の更新</h4>
+                  <p class="c-check__desc">開発元の公式サイトで最新版とセキュリティ情報を確認し、最新版になっているか。脆弱性の公表を知るため、開発元のお知らせを受け取れるようにしておく。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「CMS本体の更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-core-01" id="cms-core-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-core-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-core-01" id="cms-core-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-core-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-core-01" id="cms-core-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-core-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-core-01" id="cms-core-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-core-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-core-01-memo">「CMS本体の更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-core-01-memo" name="cms-core-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-core-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-core-02-title">サポート期間の確認</h4>
+                  <p class="c-check__desc">使っているバージョンが、開発元のサポート期間内か。サポートが終わったバージョンは、脆弱性が見つかっても修正されない。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サポート期間の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-core-02" id="cms-core-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-core-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-core-02" id="cms-core-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-core-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-core-02" id="cms-core-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-core-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-core-02" id="cms-core-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-core-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-core-02-memo">「サポート期間の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-core-02-memo" name="cms-core-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-core-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-core-03-title">プラグイン・拡張機能の更新</h4>
+                  <p class="c-check__desc">追加したプラグイン・拡張機能・テーマ（テンプレート）が最新か。配布や開発が止まったものは代わりを検討する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「プラグイン・拡張機能の更新」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-core-03" id="cms-core-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-core-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-core-03" id="cms-core-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-core-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-core-03" id="cms-core-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-core-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-core-03" id="cms-core-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-core-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-core-03-memo">「プラグイン・拡張機能の更新」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-core-03-memo" name="cms-core-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-core-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-core-04-title">不要な拡張機能・ファイルの削除</h4>
+                  <p class="c-check__desc">使っていないプラグインやテーマ、インストール用・テスト用のファイルがサーバーに残っていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不要な拡張機能・ファイルの削除」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-core-04" id="cms-core-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-core-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-core-04" id="cms-core-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-core-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-core-04" id="cms-core-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-core-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-core-04" id="cms-core-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-core-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-core-04-memo">「不要な拡張機能・ファイルの削除」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-core-04-memo" name="cms-core-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-core-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-core-05-title">PHP・データベースのバージョン</h4>
+                  <p class="c-check__desc">サーバー管理画面で確認する。PHPとMySQL（MariaDB）がサポート期間内のバージョンで、CMSの動作環境に合っているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「PHP・データベースのバージョン」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-core-05" id="cms-core-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-core-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-core-05" id="cms-core-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-core-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-core-05" id="cms-core-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-core-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-core-05" id="cms-core-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-core-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-core-05-memo">「PHP・データベースのバージョン」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-core-05-memo" name="cms-core-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-core-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-core-06-title">個人情報・決済を扱う機能</h4>
+                  <p class="c-check__desc">会員機能やネットショップ機能がある場合、クレジットカード情報をサイトに保存していないか（決済代行会社の画面で入力する方式か）。本人認証（EMV 3-Dセキュア）を導入しているか。該当しなければ「対象外」にする。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「個人情報・決済を扱う機能」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-core-06" id="cms-core-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-core-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-core-06" id="cms-core-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-core-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-core-06" id="cms-core-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-core-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-core-06" id="cms-core-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-core-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-core-06-memo">「個人情報・決済を扱う機能」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-core-06-memo" name="cms-core-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-core-07" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-core-07-title">不審なコンテンツの確認</h4>
+                  <p class="c-check__desc">身に覚えのないページ・記事・リンクがないか。コメントや問い合わせの機能にスパムが届いていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なコンテンツの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-core-07" id="cms-core-07-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-core-07-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-core-07" id="cms-core-07-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-core-07-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-core-07" id="cms-core-07-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-core-07-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-core-07" id="cms-core-07-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-core-07-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-core-07-memo">「不審なコンテンツの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-core-07-memo" name="cms-core-07-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- その他のCMS：アカウント・ログイン -->
+          <section class="p-category js-reveal js-category" aria-labelledby="cms-cat-account">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">02</span>
+              <h3 class="p-category__title" id="cms-cat-account">アカウント・ログイン</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="cms-account-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-account-01-title">管理者アカウントの棚卸し</h4>
+                  <p class="c-check__desc">管理画面のユーザー一覧で、退職者や過去の制作会社のアカウント、不要な管理者権限が残っていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「管理者アカウントの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-account-01" id="cms-account-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-account-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-account-01" id="cms-account-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-account-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-account-01" id="cms-account-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-account-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-account-01" id="cms-account-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-account-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-account-01-memo">「管理者アカウントの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-account-01-memo" name="cms-account-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-account-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-account-02-title">二段階認証の設定</h4>
+                  <p class="c-check__desc">CMSに二段階認証の機能があれば有効にする。ない場合は、管理画面へのIPアドレス制限やBasic認証で入口を守る。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「二段階認証の設定」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-account-02" id="cms-account-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-account-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-account-02" id="cms-account-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-account-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-account-02" id="cms-account-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-account-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-account-02" id="cms-account-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-account-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-account-02-memo">「二段階認証の設定」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-account-02-memo" name="cms-account-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-account-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-account-03-title">不審なログイン履歴</h4>
+                  <p class="c-check__desc">CMSのログやサーバーのアクセスログで、見覚えのない日時・場所からのログインがないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なログイン履歴」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-account-03" id="cms-account-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-account-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-account-03" id="cms-account-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-account-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-account-03" id="cms-account-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-account-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-account-03" id="cms-account-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-account-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-account-03-memo">「不審なログイン履歴」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-account-03-memo" name="cms-account-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-account-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-account-04-title">ログイン画面の保護</h4>
+                  <p class="c-check__desc">ログイン試行回数の制限や、管理画面へのアクセス制限が設定されているか。推測しやすいユーザー名・パスワードを使っていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ログイン画面の保護」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-account-04" id="cms-account-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-account-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-account-04" id="cms-account-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-account-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-account-04" id="cms-account-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-account-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-account-04" id="cms-account-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-account-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-account-04-memo">「ログイン画面の保護」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-account-04-memo" name="cms-account-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- その他のCMS：サーバー -->
+          <section class="p-category js-reveal js-category" aria-labelledby="cms-cat-server">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">03</span>
+              <h3 class="p-category__title" id="cms-cat-server">サーバー</h3>
+              <span class="p-category__count js-category-count">0 / 6</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="cms-server-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-server-01-title">サーバー管理画面の二段階認証</h4>
+                  <p class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-server-01" id="cms-server-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-server-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-server-01" id="cms-server-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-server-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-server-01" id="cms-server-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-server-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-server-01" id="cms-server-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-server-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-server-01-memo">「サーバー管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-server-01-memo" name="cms-server-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-server-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-server-02-title">サーバー・FTPアカウントの棚卸し</h4>
+                  <p class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サーバー・FTPアカウントの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-server-02" id="cms-server-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-server-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-server-02" id="cms-server-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-server-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-server-02" id="cms-server-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-server-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-server-02" id="cms-server-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-server-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-server-02-memo">「サーバー・FTPアカウントの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-server-02-memo" name="cms-server-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-server-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-server-03-title">ファイル転送の暗号化（SFTP / FTPS）</h4>
+                  <p class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ファイル転送の暗号化（SFTP / FTPS）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-server-03" id="cms-server-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-server-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-server-03" id="cms-server-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-server-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-server-03" id="cms-server-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-server-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-server-03" id="cms-server-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-server-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-server-03-memo">「ファイル転送の暗号化（SFTP / FTPS）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-server-03-memo" name="cms-server-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-server-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-server-04-title">WAF（不正アクセス防止機能）の有効化</h4>
+                  <p class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「WAF（不正アクセス防止機能）の有効化」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-server-04" id="cms-server-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-server-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-server-04" id="cms-server-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-server-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-server-04" id="cms-server-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-server-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-server-04" id="cms-server-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-server-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-server-04-memo">「WAF（不正アクセス防止機能）の有効化」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-server-04-memo" name="cms-server-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-server-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-server-05-title">アクセスログ・エラーログの確認</h4>
+                  <p class="c-check__desc">管理画面のログインページへの短時間の大量アクセスや、.env などの存在しないファイルへのアクセスがないか。PHPエラーが急に増えていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「アクセスログ・エラーログの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-server-05" id="cms-server-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-server-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-server-05" id="cms-server-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-server-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-server-05" id="cms-server-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-server-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-server-05" id="cms-server-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-server-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-server-05-memo">「アクセスログ・エラーログの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-server-05-memo" name="cms-server-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-server-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-server-06-title">不審なファイルの有無</h4>
+                  <p class="c-check__desc">置いた覚えのないPHPファイル、最近更新された見覚えのないファイルがないか。画像などのアップロード用フォルダにPHPファイルが置かれていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なファイルの有無」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-server-06" id="cms-server-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-server-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-server-06" id="cms-server-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-server-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-server-06" id="cms-server-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-server-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-server-06" id="cms-server-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-server-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-server-06-memo">「不審なファイルの有無」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-server-06-memo" name="cms-server-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- その他のCMS：ドメイン・DNS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="cms-cat-dns">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">04</span>
+              <h3 class="p-category__title" id="cms-cat-dns">ドメイン・DNS</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="cms-dns-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-dns-01-title">ドメインの有効期限</h4>
+                  <p class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメインの有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-dns-01" id="cms-dns-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-dns-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-01" id="cms-dns-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-dns-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-01" id="cms-dns-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-dns-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-01" id="cms-dns-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-dns-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-dns-01-memo">「ドメインの有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-dns-01-memo" name="cms-dns-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-dns-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-dns-02-title">ドメイン管理画面の二段階認証</h4>
+                  <p class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメイン管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-dns-02" id="cms-dns-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-dns-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-02" id="cms-dns-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-dns-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-02" id="cms-dns-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-dns-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-02" id="cms-dns-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-dns-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-dns-02-memo">「ドメイン管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-dns-02-memo" name="cms-dns-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-dns-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-dns-03-title">DNS設定に不審な変更がないか</h4>
+                  <p class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「DNS設定に不審な変更がないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-dns-03" id="cms-dns-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-dns-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-03" id="cms-dns-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-dns-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-03" id="cms-dns-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-dns-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-03" id="cms-dns-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-dns-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-dns-03-memo">「DNS設定に不審な変更がないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-dns-03-memo" name="cms-dns-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-dns-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-dns-04-title">メールのなりすまし対策（SPF・DKIM・DMARC）</h4>
+                  <p class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「メールのなりすまし対策（SPF・DKIM・DMARC）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-dns-04" id="cms-dns-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-dns-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-04" id="cms-dns-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-dns-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-04" id="cms-dns-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-dns-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-dns-04" id="cms-dns-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-dns-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-dns-04-memo">「メールのなりすまし対策（SPF・DKIM・DMARC）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-dns-04-memo" name="cms-dns-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- その他のCMS：SSL・通信 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="cms-cat-ssl">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">05</span>
+              <h3 class="p-category__title" id="cms-cat-ssl">SSL・通信</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="cms-ssl-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-ssl-01-title">SSL証明書の有効期限</h4>
+                  <p class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「SSL証明書の有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-ssl-01" id="cms-ssl-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-ssl-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-ssl-01" id="cms-ssl-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-ssl-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-ssl-01" id="cms-ssl-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-ssl-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-ssl-01" id="cms-ssl-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-ssl-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-ssl-01-memo">「SSL証明書の有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-ssl-01-memo" name="cms-ssl-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-ssl-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-ssl-02-title">常時SSL（httpからhttpsへの転送）</h4>
+                  <p class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。画像・CSS・JSなどが http で読み込まれていないか（ブラウザの開発者ツールで確認できる）。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「常時SSL（httpからhttpsへの転送）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-ssl-02" id="cms-ssl-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-ssl-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-ssl-02" id="cms-ssl-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-ssl-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-ssl-02" id="cms-ssl-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-ssl-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-ssl-02" id="cms-ssl-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-ssl-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-ssl-02-memo">「常時SSL（httpからhttpsへの転送）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-ssl-02-memo" name="cms-ssl-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- その他のCMS：バックアップ -->
+          <section class="p-category js-reveal js-category" aria-labelledby="cms-cat-backup">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">06</span>
+              <h3 class="p-category__title" id="cms-cat-backup">バックアップ</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="cms-backup-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-backup-01-title">バックアップの取得状況</h4>
+                  <p class="c-check__desc">ファイルとデータベースの両方が、自動で定期的に取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「バックアップの取得状況」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-backup-01" id="cms-backup-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-backup-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-backup-01" id="cms-backup-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-backup-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-backup-01" id="cms-backup-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-backup-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-backup-01" id="cms-backup-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-backup-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-backup-01-memo">「バックアップの取得状況」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-backup-01-memo" name="cms-backup-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-backup-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-backup-02-title">復元手順の確認</h4>
+                  <p class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「復元手順の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-backup-02" id="cms-backup-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-backup-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-backup-02" id="cms-backup-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-backup-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-backup-02" id="cms-backup-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-backup-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-backup-02" id="cms-backup-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-backup-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-backup-02-memo">「復元手順の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-backup-02-memo" name="cms-backup-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- その他のCMS：診断・監視 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="cms-cat-monitor">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">07</span>
+              <h3 class="p-category__title" id="cms-cat-monitor">診断・監視</h3>
+              <span class="p-category__count js-category-count">0 / 3</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="cms-monitor-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-monitor-01-title">セキュリティ診断レポートの確認</h4>
+                  <p class="c-check__desc">無料の診断サービスの結果に警告がないか。前回指摘された項目が対応済みか。</p>
+                  <a class="c-check__guide-link" href="#guide">診断ツールと進め方を見る</a>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ診断レポートの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-monitor-01" id="cms-monitor-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-monitor-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-01" id="cms-monitor-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-monitor-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-01" id="cms-monitor-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-monitor-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-01" id="cms-monitor-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-monitor-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-monitor-01-memo">「セキュリティ診断レポートの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-monitor-01-memo" name="cms-monitor-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-monitor-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-monitor-02-title">サイトの表示・改ざんの確認</h4>
+                  <p class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サイトの表示・改ざんの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-monitor-02" id="cms-monitor-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-monitor-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-02" id="cms-monitor-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-monitor-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-02" id="cms-monitor-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-monitor-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-02" id="cms-monitor-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-monitor-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-monitor-02-memo">「サイトの表示・改ざんの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-monitor-02-memo" name="cms-monitor-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="cms-monitor-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="cms-monitor-03-title">問い合わせフォームの動作確認</h4>
+                  <p class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策が動作しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「問い合わせフォームの動作確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="cms-monitor-03" id="cms-monitor-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="cms-monitor-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-03" id="cms-monitor-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="cms-monitor-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-03" id="cms-monitor-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="cms-monitor-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="cms-monitor-03" id="cms-monitor-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="cms-monitor-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="cms-monitor-03-memo">「問い合わせフォームの動作確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="cms-monitor-03-memo" name="cms-monitor-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <!-- ========== パネル：ホームページ作成サービスで制作したサイト ========== -->
+      <section class="p-panel js-panel" id="panel-builder" data-type="builder" aria-labelledby="panel-builder-title">
+        <div class="p-panel__head">
+          <p class="p-panel__site js-panel-site"></p>
+          <h2 class="p-panel__title" id="panel-builder-title">ホームページ作成サービスで制作したサイト</h2>
+          <p class="p-panel__lead">STUDIO・Wix・Jimdo・ペライチなど、サーバーの管理が不要なサービスが対象です。サーバーやシステムの更新はサービス側が行うため、契約・アカウント・連携の管理が中心です。<br>全6カテゴリ・21項目</p>
+        </div>
+        <div class="p-panel__body">
+          <!-- ホームページ作成サービス：サービス・サイト設定 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="builder-cat-core">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">01</span>
+              <h3 class="p-category__title" id="builder-cat-core">サービス・サイト設定</h3>
+              <span class="p-category__count js-category-count">0 / 6</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="builder-core-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-core-01-title">契約プラン・支払い状況</h4>
+                  <p class="c-check__desc">契約が有効で、支払い方法（カードの有効期限など）に問題がないか。支払いが止まると、サイトの公開停止や独自ドメインの解除につながる場合がある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「契約プラン・支払い状況」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-core-01" id="builder-core-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-core-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-core-01" id="builder-core-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-core-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-core-01" id="builder-core-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-core-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-core-01" id="builder-core-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-core-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-core-01-memo">「契約プラン・支払い状況」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-core-01-memo" name="builder-core-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-core-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-core-02-title">追加したアプリ・連携サービス</h4>
+                  <p class="c-check__desc">追加したアプリや連携サービスを見直し、使っていないものは削除する。どの情報へのアクセスを許可しているかも確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「追加したアプリ・連携サービス」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-core-02" id="builder-core-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-core-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-core-02" id="builder-core-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-core-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-core-02" id="builder-core-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-core-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-core-02" id="builder-core-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-core-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-core-02-memo">「追加したアプリ・連携サービス」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-core-02-memo" name="builder-core-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-core-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-core-03-title">埋め込みコード・外部スクリプト</h4>
+                  <p class="c-check__desc">解析タグ・チャット・SNSなど、埋め込んだコードの読み込み元が現存し、信頼できるか。使っていないコードは削除する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「埋め込みコード・外部スクリプト」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-core-03" id="builder-core-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-core-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-core-03" id="builder-core-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-core-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-core-03" id="builder-core-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-core-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-core-03" id="builder-core-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-core-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-core-03-memo">「埋め込みコード・外部スクリプト」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-core-03-memo" name="builder-core-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-core-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-core-04-title">フォームで受け取ったデータの管理</h4>
+                  <p class="c-check__desc">フォームの送信内容がサービス上に保存される場合、閲覧できるメンバーを限定しているか。不要になったデータを削除しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「フォームで受け取ったデータの管理」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-core-04" id="builder-core-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-core-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-core-04" id="builder-core-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-core-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-core-04" id="builder-core-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-core-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-core-04" id="builder-core-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-core-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-core-04-memo">「フォームで受け取ったデータの管理」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-core-04-memo" name="builder-core-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-core-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-core-05-title">非公開ページの確認</h4>
+                  <p class="c-check__desc">公開前のページやテスト用のページが、意図せず公開されたり、検索結果に出たりしていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「非公開ページの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-core-05" id="builder-core-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-core-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-core-05" id="builder-core-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-core-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-core-05" id="builder-core-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-core-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-core-05" id="builder-core-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-core-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-core-05-memo">「非公開ページの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-core-05-memo" name="builder-core-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-core-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-core-06-title">サービスからのお知らせ</h4>
+                  <p class="c-check__desc">セキュリティに関するお知らせ・仕様変更・規約変更を確認しているか。通知先のメールアドレスが受信できるか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サービスからのお知らせ」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-core-06" id="builder-core-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-core-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-core-06" id="builder-core-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-core-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-core-06" id="builder-core-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-core-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-core-06" id="builder-core-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-core-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-core-06-memo">「サービスからのお知らせ」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-core-06-memo" name="builder-core-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ホームページ作成サービス：アカウント・ログイン -->
+          <section class="p-category js-reveal js-category" aria-labelledby="builder-cat-account">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">02</span>
+              <h3 class="p-category__title" id="builder-cat-account">アカウント・ログイン</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="builder-account-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-account-01-title">管理者・編集メンバーの棚卸し</h4>
+                  <p class="c-check__desc">招待したメンバー（退職者や過去の制作会社など）が残っていないか。権限は必要最小限か。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「管理者・編集メンバーの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-account-01" id="builder-account-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-account-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-account-01" id="builder-account-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-account-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-account-01" id="builder-account-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-account-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-account-01" id="builder-account-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-account-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-account-01-memo">「管理者・編集メンバーの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-account-01-memo" name="builder-account-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-account-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-account-02-title">二段階認証の設定</h4>
+                  <p class="c-check__desc">サービスに二段階認証があれば有効にする。Googleアカウントなどでログインしている場合は、そのアカウントの二段階認証を設定する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「二段階認証の設定」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-account-02" id="builder-account-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-account-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-account-02" id="builder-account-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-account-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-account-02" id="builder-account-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-account-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-account-02" id="builder-account-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-account-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-account-02-memo">「二段階認証の設定」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-account-02-memo" name="builder-account-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-account-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-account-03-title">ログイン用アカウントの管理</h4>
+                  <p class="c-check__desc">ログインに使うメールアドレスが、個人や退職者のアドレスになっていないか。パスワードを使い回していないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ログイン用アカウントの管理」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-account-03" id="builder-account-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-account-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-account-03" id="builder-account-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-account-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-account-03" id="builder-account-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-account-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-account-03" id="builder-account-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-account-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-account-03-memo">「ログイン用アカウントの管理」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-account-03-memo" name="builder-account-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-account-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-account-04-title">不審なログイン・操作履歴</h4>
+                  <p class="c-check__desc">サービスにログイン履歴や操作履歴の機能があれば、見覚えのないログインや変更がないか確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なログイン・操作履歴」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-account-04" id="builder-account-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-account-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-account-04" id="builder-account-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-account-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-account-04" id="builder-account-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-account-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-account-04" id="builder-account-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-account-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-account-04-memo">「不審なログイン・操作履歴」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-account-04-memo" name="builder-account-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ホームページ作成サービス：ドメイン・DNS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="builder-cat-dns">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">03</span>
+              <h3 class="p-category__title" id="builder-cat-dns">ドメイン・DNS</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="builder-dns-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-dns-01-title">ドメインの有効期限</h4>
+                  <p class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメインの有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-dns-01" id="builder-dns-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-dns-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-01" id="builder-dns-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-dns-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-01" id="builder-dns-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-dns-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-01" id="builder-dns-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-dns-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-dns-01-memo">「ドメインの有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-dns-01-memo" name="builder-dns-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-dns-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-dns-02-title">ドメイン管理画面の二段階認証</h4>
+                  <p class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメイン管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-dns-02" id="builder-dns-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-dns-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-02" id="builder-dns-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-dns-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-02" id="builder-dns-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-dns-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-02" id="builder-dns-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-dns-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-dns-02-memo">「ドメイン管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-dns-02-memo" name="builder-dns-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-dns-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-dns-03-title">DNS設定に不審な変更がないか</h4>
+                  <p class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「DNS設定に不審な変更がないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-dns-03" id="builder-dns-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-dns-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-03" id="builder-dns-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-dns-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-03" id="builder-dns-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-dns-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-03" id="builder-dns-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-dns-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-dns-03-memo">「DNS設定に不審な変更がないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-dns-03-memo" name="builder-dns-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-dns-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-dns-04-title">メールのなりすまし対策（SPF・DKIM・DMARC）</h4>
+                  <p class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「メールのなりすまし対策（SPF・DKIM・DMARC）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-dns-04" id="builder-dns-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-dns-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-04" id="builder-dns-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-dns-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-04" id="builder-dns-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-dns-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-dns-04" id="builder-dns-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-dns-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-dns-04-memo">「メールのなりすまし対策（SPF・DKIM・DMARC）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-dns-04-memo" name="builder-dns-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ホームページ作成サービス：SSL・通信 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="builder-cat-ssl">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">04</span>
+              <h3 class="p-category__title" id="builder-cat-ssl">SSL・通信</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="builder-ssl-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-ssl-01-title">SSL（https）の有効化</h4>
+                  <p class="c-check__desc">独自ドメインを接続したあと、https で表示されるか。多くのサービスでは証明書の発行・更新が自動で行われるが、DNS設定を変えると自動更新できなくなる場合がある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「SSL（https）の有効化」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-ssl-01" id="builder-ssl-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-ssl-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-ssl-01" id="builder-ssl-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-ssl-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-ssl-01" id="builder-ssl-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-ssl-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-ssl-01" id="builder-ssl-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-ssl-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-ssl-01-memo">「SSL（https）の有効化」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-ssl-01-memo" name="builder-ssl-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-ssl-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-ssl-02-title">常時SSL（httpからhttpsへの転送）</h4>
+                  <p class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。サービスの管理画面にSSLの設定項目があれば、有効になっているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「常時SSL（httpからhttpsへの転送）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-ssl-02" id="builder-ssl-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-ssl-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-ssl-02" id="builder-ssl-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-ssl-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-ssl-02" id="builder-ssl-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-ssl-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-ssl-02" id="builder-ssl-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-ssl-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-ssl-02-memo">「常時SSL（httpからhttpsへの転送）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-ssl-02-memo" name="builder-ssl-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ホームページ作成サービス：バックアップ -->
+          <section class="p-category js-reveal js-category" aria-labelledby="builder-cat-backup">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">05</span>
+              <h3 class="p-category__title" id="builder-cat-backup">バックアップ</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="builder-backup-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-backup-01-title">サイトデータの保管</h4>
+                  <p class="c-check__desc">サービスのバックアップ機能・履歴（以前の版に戻す）機能の有無を把握しているか。文章や画像の元データを手元にも保管しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サイトデータの保管」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-backup-01" id="builder-backup-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-backup-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-backup-01" id="builder-backup-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-backup-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-backup-01" id="builder-backup-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-backup-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-backup-01" id="builder-backup-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-backup-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-backup-01-memo">「サイトデータの保管」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-backup-01-memo" name="builder-backup-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-backup-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-backup-02-title">復元・移行手順の確認</h4>
+                  <p class="c-check__desc">誤って消したページを履歴から戻す方法と、サービスが使えなくなった場合の対応を、担当者が把握しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「復元・移行手順の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-backup-02" id="builder-backup-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-backup-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-backup-02" id="builder-backup-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-backup-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-backup-02" id="builder-backup-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-backup-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-backup-02" id="builder-backup-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-backup-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-backup-02-memo">「復元・移行手順の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-backup-02-memo" name="builder-backup-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ホームページ作成サービス：診断・監視 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="builder-cat-monitor">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">06</span>
+              <h3 class="p-category__title" id="builder-cat-monitor">診断・監視</h3>
+              <span class="p-category__count js-category-count">0 / 3</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="builder-monitor-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-monitor-01-title">セキュリティ診断レポートの確認</h4>
+                  <p class="c-check__desc">無料の診断サービスの結果に警告がないか。前回指摘された項目が対応済みか。</p>
+                  <a class="c-check__guide-link" href="#guide">診断ツールと進め方を見る</a>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ診断レポートの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-monitor-01" id="builder-monitor-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-monitor-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-01" id="builder-monitor-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-monitor-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-01" id="builder-monitor-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-monitor-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-01" id="builder-monitor-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-monitor-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-monitor-01-memo">「セキュリティ診断レポートの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-monitor-01-memo" name="builder-monitor-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-monitor-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-monitor-02-title">サイトの表示・改ざんの確認</h4>
+                  <p class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サイトの表示・改ざんの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-monitor-02" id="builder-monitor-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-monitor-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-02" id="builder-monitor-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-monitor-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-02" id="builder-monitor-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-monitor-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-02" id="builder-monitor-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-monitor-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-monitor-02-memo">「サイトの表示・改ざんの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-monitor-02-memo" name="builder-monitor-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="builder-monitor-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="builder-monitor-03-title">問い合わせフォームの動作確認</h4>
+                  <p class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策が動作しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「問い合わせフォームの動作確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="builder-monitor-03" id="builder-monitor-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="builder-monitor-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-03" id="builder-monitor-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="builder-monitor-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-03" id="builder-monitor-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="builder-monitor-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="builder-monitor-03" id="builder-monitor-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="builder-monitor-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="builder-monitor-03-memo">「問い合わせフォームの動作確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="builder-monitor-03-memo" name="builder-monitor-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <!-- ========== パネル：ネットショップ作成サービスで制作したショップ ========== -->
+      <section class="p-panel js-panel" id="panel-ec" data-type="ec" aria-labelledby="panel-ec-title">
+        <div class="p-panel__head">
+          <p class="p-panel__site js-panel-site"></p>
+          <h2 class="p-panel__title" id="panel-ec-title">ネットショップ作成サービスで制作したショップ</h2>
+          <p class="p-panel__lead">Shopify・BASE・STORES・カラーミーショップなどが対象です。顧客情報と決済を扱うため、アカウント・アプリ・決済設定の管理が中心です。<br>全6カテゴリ・22項目</p>
+        </div>
+        <div class="p-panel__body">
+          <!-- ネットショップ作成サービス：ショップ設定 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="ec-cat-core">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">01</span>
+              <h3 class="p-category__title" id="ec-cat-core">ショップ設定</h3>
+              <span class="p-category__count js-category-count">0 / 7</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="ec-core-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-core-01-title">契約プラン・支払い状況</h4>
+                  <p class="c-check__desc">契約が有効で、支払い方法（カードの有効期限など）に問題がないか。支払いが止まると、ショップの公開停止につながる場合がある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「契約プラン・支払い状況」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-core-01" id="ec-core-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-core-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-core-01" id="ec-core-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-core-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-core-01" id="ec-core-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-core-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-core-01" id="ec-core-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-core-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-core-01-memo">「契約プラン・支払い状況」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-core-01-memo" name="ec-core-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-core-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-core-02-title">追加したアプリの棚卸し</h4>
+                  <p class="c-check__desc">追加したアプリを見直し、使っていないものは削除する。顧客情報や注文情報へのアクセスを許可しているアプリは特に確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「追加したアプリの棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-core-02" id="ec-core-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-core-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-core-02" id="ec-core-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-core-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-core-02" id="ec-core-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-core-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-core-02" id="ec-core-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-core-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-core-02-memo">「追加したアプリの棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-core-02-memo" name="ec-core-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-core-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-core-03-title">決済設定とカード情報の取り扱い</h4>
+                  <p class="c-check__desc">カード決済はサービスや決済代行会社の機能を使い、カード情報を自社で保存していないか。本人認証（EMV 3-Dセキュア）が有効か。EC加盟店には2025年3月末までの導入が求められている。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「決済設定とカード情報の取り扱い」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-core-03" id="ec-core-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-core-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-core-03" id="ec-core-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-core-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-core-03" id="ec-core-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-core-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-core-03" id="ec-core-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-core-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-core-03-memo">「決済設定とカード情報の取り扱い」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-core-03-memo" name="ec-core-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-core-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-core-04-title">不正注文の確認</h4>
+                  <p class="c-check__desc">短時間の大量注文、同じ住所への複数の注文、カード決済の失敗が続く注文など、不正利用が疑われる注文がないか。サービスの不正注文対策の機能を使っているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不正注文の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-core-04" id="ec-core-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-core-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-core-04" id="ec-core-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-core-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-core-04" id="ec-core-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-core-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-core-04" id="ec-core-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-core-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-core-04-memo">「不正注文の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-core-04-memo" name="ec-core-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-core-05" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-core-05-title">顧客データの取り扱い</h4>
+                  <p class="c-check__desc">書き出した顧客データ（CSVなど）を、パソコンやメールに放置していないか。不要になったデータは削除する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「顧客データの取り扱い」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-core-05" id="ec-core-05-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-core-05-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-core-05" id="ec-core-05-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-core-05-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-core-05" id="ec-core-05-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-core-05-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-core-05" id="ec-core-05-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-core-05-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-core-05-memo">「顧客データの取り扱い」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-core-05-memo" name="ec-core-05-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-core-06" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-core-06-title">テーマ・カスタムコードの確認</h4>
+                  <p class="c-check__desc">テーマに追加したコードや外部スクリプトの読み込み元が信頼できるか。使っていないコードは削除する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「テーマ・カスタムコードの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-core-06" id="ec-core-06-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-core-06-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-core-06" id="ec-core-06-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-core-06-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-core-06" id="ec-core-06-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-core-06-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-core-06" id="ec-core-06-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-core-06-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-core-06-memo">「テーマ・カスタムコードの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-core-06-memo" name="ec-core-06-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-core-07" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-core-07-title">サービスからのお知らせ</h4>
+                  <p class="c-check__desc">セキュリティに関するお知らせ・仕様変更・規約変更を確認しているか。通知先のメールアドレスが受信できるか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サービスからのお知らせ」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-core-07" id="ec-core-07-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-core-07-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-core-07" id="ec-core-07-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-core-07-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-core-07" id="ec-core-07-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-core-07-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-core-07" id="ec-core-07-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-core-07-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-core-07-memo">「サービスからのお知らせ」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-core-07-memo" name="ec-core-07-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ネットショップ作成サービス：アカウント・ログイン -->
+          <section class="p-category js-reveal js-category" aria-labelledby="ec-cat-account">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">02</span>
+              <h3 class="p-category__title" id="ec-cat-account">アカウント・ログイン</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="ec-account-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-account-01-title">スタッフアカウントと権限の棚卸し</h4>
+                  <p class="c-check__desc">退職者や過去の制作会社のアカウントが残っていないか。スタッフごとの権限が必要最小限か。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「スタッフアカウントと権限の棚卸し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-account-01" id="ec-account-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-account-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-account-01" id="ec-account-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-account-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-account-01" id="ec-account-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-account-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-account-01" id="ec-account-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-account-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-account-01-memo">「スタッフアカウントと権限の棚卸し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-account-01-memo" name="ec-account-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-account-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-account-02-title">二段階認証の設定</h4>
+                  <p class="c-check__desc">オーナーとスタッフ全員のアカウントで、二段階認証が有効になっているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「二段階認証の設定」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-account-02" id="ec-account-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-account-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-account-02" id="ec-account-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-account-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-account-02" id="ec-account-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-account-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-account-02" id="ec-account-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-account-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-account-02-memo">「二段階認証の設定」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-account-02-memo" name="ec-account-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-account-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-account-03-title">振込先口座・決済情報の確認</h4>
+                  <p class="c-check__desc">売上の振込先口座や決済サービスの登録内容が、知らないうちに変更されていないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「振込先口座・決済情報の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-account-03" id="ec-account-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-account-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-account-03" id="ec-account-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-account-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-account-03" id="ec-account-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-account-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-account-03" id="ec-account-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-account-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-account-03-memo">「振込先口座・決済情報の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-account-03-memo" name="ec-account-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-account-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-account-04-title">不審なログイン・操作履歴</h4>
+                  <p class="c-check__desc">ログイン履歴や操作履歴の機能があれば、見覚えのないログインや設定変更がないか確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「不審なログイン・操作履歴」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-account-04" id="ec-account-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-account-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-account-04" id="ec-account-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-account-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-account-04" id="ec-account-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-account-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-account-04" id="ec-account-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-account-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-account-04-memo">「不審なログイン・操作履歴」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-account-04-memo" name="ec-account-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ネットショップ作成サービス：ドメイン・DNS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="ec-cat-dns">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">03</span>
+              <h3 class="p-category__title" id="ec-cat-dns">ドメイン・DNS</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="ec-dns-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-dns-01-title">ドメインの有効期限</h4>
+                  <p class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメインの有効期限」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-dns-01" id="ec-dns-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-dns-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-01" id="ec-dns-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-dns-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-01" id="ec-dns-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-dns-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-01" id="ec-dns-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-dns-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-dns-01-memo">「ドメインの有効期限」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-dns-01-memo" name="ec-dns-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-dns-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-dns-02-title">ドメイン管理画面の二段階認証</h4>
+                  <p class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ドメイン管理画面の二段階認証」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-dns-02" id="ec-dns-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-dns-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-02" id="ec-dns-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-dns-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-02" id="ec-dns-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-dns-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-02" id="ec-dns-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-dns-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-dns-02-memo">「ドメイン管理画面の二段階認証」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-dns-02-memo" name="ec-dns-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-dns-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-dns-03-title">DNS設定に不審な変更がないか</h4>
+                  <p class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「DNS設定に不審な変更がないか」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-dns-03" id="ec-dns-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-dns-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-03" id="ec-dns-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-dns-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-03" id="ec-dns-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-dns-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-03" id="ec-dns-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-dns-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-dns-03-memo">「DNS設定に不審な変更がないか」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-dns-03-memo" name="ec-dns-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-dns-04" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-dns-04-title">メールのなりすまし対策（SPF・DKIM・DMARC）</h4>
+                  <p class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「メールのなりすまし対策（SPF・DKIM・DMARC）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-dns-04" id="ec-dns-04-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-dns-04-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-04" id="ec-dns-04-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-dns-04-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-04" id="ec-dns-04-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-dns-04-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-dns-04" id="ec-dns-04-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-dns-04-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-dns-04-memo">「メールのなりすまし対策（SPF・DKIM・DMARC）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-dns-04-memo" name="ec-dns-04-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ネットショップ作成サービス：SSL・通信 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="ec-cat-ssl">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">04</span>
+              <h3 class="p-category__title" id="ec-cat-ssl">SSL・通信</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="ec-ssl-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-ssl-01-title">SSL（https）の有効化</h4>
+                  <p class="c-check__desc">独自ドメインを接続したあと、https で表示されるか。多くのサービスでは証明書の発行・更新が自動で行われるが、DNS設定を変えると自動更新できなくなる場合がある。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「SSL（https）の有効化」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-ssl-01" id="ec-ssl-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-ssl-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-ssl-01" id="ec-ssl-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-ssl-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-ssl-01" id="ec-ssl-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-ssl-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-ssl-01" id="ec-ssl-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-ssl-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-ssl-01-memo">「SSL（https）の有効化」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-ssl-01-memo" name="ec-ssl-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-ssl-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-ssl-02-title">常時SSL（httpからhttpsへの転送）</h4>
+                  <p class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。サービスの管理画面にSSLの設定項目があれば、有効になっているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「常時SSL（httpからhttpsへの転送）」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-ssl-02" id="ec-ssl-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-ssl-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-ssl-02" id="ec-ssl-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-ssl-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-ssl-02" id="ec-ssl-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-ssl-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-ssl-02" id="ec-ssl-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-ssl-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-ssl-02-memo">「常時SSL（httpからhttpsへの転送）」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-ssl-02-memo" name="ec-ssl-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ネットショップ作成サービス：バックアップ -->
+          <section class="p-category js-reveal js-category" aria-labelledby="ec-cat-backup">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">05</span>
+              <h3 class="p-category__title" id="ec-cat-backup">バックアップ</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="ec-backup-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-backup-01-title">ショップデータの書き出し</h4>
+                  <p class="c-check__desc">商品・注文・顧客のデータを定期的に書き出しているか。書き出した顧客データは、アクセスを制限した場所に保管する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「ショップデータの書き出し」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-backup-01" id="ec-backup-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-backup-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-backup-01" id="ec-backup-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-backup-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-backup-01" id="ec-backup-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-backup-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-backup-01" id="ec-backup-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-backup-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-backup-01-memo">「ショップデータの書き出し」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-backup-01-memo" name="ec-backup-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-backup-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-backup-02-title">復元・移行手順の確認</h4>
+                  <p class="c-check__desc">誤って商品やページを消した場合の戻し方と、サービスが使えなくなった場合の対応を、担当者が把握しているか。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「復元・移行手順の確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-backup-02" id="ec-backup-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-backup-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-backup-02" id="ec-backup-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-backup-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-backup-02" id="ec-backup-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-backup-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-backup-02" id="ec-backup-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-backup-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-backup-02-memo">「復元・移行手順の確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-backup-02-memo" name="ec-backup-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ネットショップ作成サービス：診断・監視 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="ec-cat-monitor">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">06</span>
+              <h3 class="p-category__title" id="ec-cat-monitor">診断・監視</h3>
+              <span class="p-category__count js-category-count">0 / 3</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check js-item" data-item="ec-monitor-01" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-monitor-01-title">セキュリティ診断レポートの確認</h4>
+                  <p class="c-check__desc">無料の診断サービスの結果に警告がないか。前回指摘された項目が対応済みか。</p>
+                  <a class="c-check__guide-link" href="#guide">診断ツールと進め方を見る</a>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「セキュリティ診断レポートの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-monitor-01" id="ec-monitor-01-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-monitor-01-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-01" id="ec-monitor-01-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-monitor-01-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-01" id="ec-monitor-01-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-monitor-01-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-01" id="ec-monitor-01-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-monitor-01-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-monitor-01-memo">「セキュリティ診断レポートの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-monitor-01-memo" name="ec-monitor-01-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-monitor-02" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-monitor-02-title">サイトの表示・改ざんの確認</h4>
+                  <p class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「サイトの表示・改ざんの確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-monitor-02" id="ec-monitor-02-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-monitor-02-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-02" id="ec-monitor-02-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-monitor-02-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-02" id="ec-monitor-02-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-monitor-02-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-02" id="ec-monitor-02-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-monitor-02-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-monitor-02-memo">「サイトの表示・改ざんの確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-monitor-02-memo" name="ec-monitor-02-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+              <li class="c-check js-item" data-item="ec-monitor-03" data-status="">
+                <div class="c-check__main">
+                  <h4 class="c-check__title" id="ec-monitor-03-title">注文・問い合わせメールの動作確認</h4>
+                  <p class="c-check__desc">テスト注文や問い合わせを送り、ショップ側と購入者側のメールが届くか（迷惑メールフォルダも確認）。</p>
+                </div>
+                <fieldset class="c-status">
+                  <legend class="u-visually-hidden">「注文・問い合わせメールの動作確認」の確認状況</legend>
+                  <input class="c-status__input" type="radio" name="ec-monitor-03" id="ec-monitor-03-ok" value="ok">
+                  <label class="c-status__label c-status__label--ok" for="ec-monitor-03-ok">OK</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-03" id="ec-monitor-03-progress" value="progress">
+                  <label class="c-status__label c-status__label--progress" for="ec-monitor-03-progress">確認中</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-03" id="ec-monitor-03-review" value="review">
+                  <label class="c-status__label c-status__label--review" for="ec-monitor-03-review">要検討</label>
+                  <input class="c-status__input" type="radio" name="ec-monitor-03" id="ec-monitor-03-na" value="na">
+                  <label class="c-status__label c-status__label--na" for="ec-monitor-03-na">対象外</label>
+                </fieldset>
+                <div class="c-check__memo">
+                  <label class="u-visually-hidden" for="ec-monitor-03-memo">「注文・問い合わせメールの動作確認」のメモ</label>
+                  <textarea class="c-check__memo-input js-memo" id="ec-monitor-03-memo" name="ec-monitor-03-memo" rows="2" maxlength="400" placeholder="気になった点・対応予定などをメモ"></textarea>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
       <!-- ==================== セキュリティ診断の進め方 ==================== -->
       <section class="p-guide js-reveal" id="guide" aria-labelledby="guide-title">
         <p class="p-guide__eyebrow">How to check</p>
@@ -1528,6 +3264,7 @@
         </ul>
 
         <p class="p-guide__note">このほか、レンタルサーバーによってはウイルスチェックや改ざん検知の機能があります。サーバーの管理画面に診断結果のページがないかも確認してください。</p>
+        <p class="p-guide__note">ホームページ作成サービス・ネットショップ作成サービスでは、サーバーやシステムの診断はサービス側の管理範囲です。上の「全サイト共通」のサービスで、外から見える状態（危険サイト判定・SSL・メール設定）を確認してください。</p>
       </section>
 
       <!-- ==================== 補足・参考情報 ==================== -->
