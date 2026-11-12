@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- JS有効時のみフェードインの初期状態（opacity: 0）を適用するためのフラグ -->
+  <script>document.documentElement.classList.add('js-enabled');</script>
+
+  <title>ホームページ セキュリティ点検チェックリスト｜WordPress・静的HTML</title>
+  <meta name="description" content="WordPressで制作したホームページと静的HTMLで制作したホームページの定期セキュリティ点検用チェックリスト。サーバー・ドメイン・SSL・バックアップまで項目ごとに確認できます。">
+
+  <!-- OGP（og:url / og:image は公開URLに合わせて差し替える） -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ホームページ セキュリティ点検チェックリスト">
+  <meta property="og:description" content="WordPress・静的HTMLサイトの定期セキュリティ点検用チェックリスト。">
+  <meta property="og:image" content="https://example.com/security-checklist/assets/img/ogp/ogp-security-checklist.png">
+  <meta property="og:url" content="https://example.com/security-checklist/">
+  <meta property="og:site_name" content="ホームページ セキュリティ点検チェックリスト">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- 社内ツールとして使う場合は検索エンジンに載せない（公開する場合は削除） -->
+  <meta name="robots" content="noindex">
+
+  <link rel="icon" href="assets/img/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer src="assets/js/main.js"></script>
+</head>
+<body>
+  <a class="u-skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ==================== ヘッダー ==================== -->
+  <header class="l-header">
+    <div class="l-container">
+      <p class="l-header__eyebrow">Website Security Checklist</p>
+      <h1 class="l-header__title">
+        <span class="l-header__title-line">ホームページ</span>
+        <span class="l-header__title-line">セキュリティ点検</span><span class="l-header__title-line">チェックリスト</span>
+      </h1>
+      <p class="l-header__lead">WordPressサイトと静的HTMLサイトの定期点検用です。サイトの種類を選び、確認できた項目にチェックを入れてください。チェック内容はこのブラウザにのみ保存されます。</p>
+    </div>
+  </header>
+
+  <!-- ==================== 点検情報フォーム ==================== -->
+  <section class="p-meta" aria-labelledby="meta-title">
+    <div class="l-container">
+      <form class="p-meta__card js-reveal js-meta-form" action="#" method="post" novalidate>
+        <div class="p-meta__head">
+          <h2 class="p-meta__title" id="meta-title">点検情報</h2>
+          <p class="p-meta__status js-meta-status" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="p-meta__grid">
+          <!-- サイト名 -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-site">サイト名<span class="c-field__required">必須</span></label>
+            <input class="c-field__input" type="text" id="meta-site" name="site" placeholder="例：サンプル株式会社 公式サイト" autocomplete="organization" maxlength="80" required aria-describedby="meta-site-error">
+            <p class="c-field__error" id="meta-site-error"></p>
+          </div>
+
+          <!-- URL -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-url">サイトURL<span class="c-field__required">必須</span></label>
+            <input class="c-field__input" type="url" id="meta-url" name="url" placeholder="https://www.example.com/" autocomplete="url" inputmode="url" pattern="https?://.+" maxlength="200" required aria-describedby="meta-url-error">
+            <p class="c-field__error" id="meta-url-error"></p>
+          </div>
+
+          <!-- 点検日 -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-date">点検日<span class="c-field__required">必須</span></label>
+            <input class="c-field__input" type="date" id="meta-date" name="date" min="2020-01-01" max="2099-12-31" required aria-describedby="meta-date-error">
+            <p class="c-field__error" id="meta-date-error"></p>
+          </div>
+
+          <!-- 担当者 -->
+          <div class="c-field">
+            <label class="c-field__label" for="meta-person">点検担当者<span class="c-field__optional">任意</span></label>
+            <input class="c-field__input" type="text" id="meta-person" name="person" placeholder="例：山田 太郎" autocomplete="name" maxlength="40">
+          </div>
+        </div>
+
+        <div class="p-meta__actions">
+          <button class="c-button c-button--primary" type="submit">点検情報を保存</button>
+          <button class="c-button c-button--ghost js-print" type="button">印刷・PDF保存</button>
+          <button class="c-button c-button--text js-reset" type="button">表示中のチェックをリセット</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== ツールバー（タブ＋進捗） ==================== -->
+  <!-- SP：画面下部に固定 / タブレット以上：画面上部に追従 -->
+  <div class="l-toolbar">
+    <div class="l-toolbar__inner">
+      <div class="c-tabs js-tabs" role="tablist" aria-label="サイトの種類">
+        <button class="c-tabs__tab js-tab" type="button" role="tab" id="tab-wp" aria-controls="panel-wp" aria-selected="true">WordPress</button>
+        <button class="c-tabs__tab js-tab" type="button" role="tab" id="tab-html" aria-controls="panel-html" aria-selected="false" tabindex="-1">静的HTML</button>
+      </div>
+
+      <div class="c-progress">
+        <p class="c-progress__text"><span class="c-progress__label">進捗</span><span class="js-progress-text">0 / 0</span></p>
+        <div class="c-progress__track js-progress" role="progressbar" aria-label="点検の進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="c-progress__bar"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== メイン（チェックリスト） ==================== -->
+  <main class="l-main" id="main">
+    <div class="l-container l-container--narrow">
+
+      <!-- ========== パネル：WordPressで制作したサイト ========== -->
+      <section class="p-panel js-panel" id="panel-wp" role="tabpanel" aria-labelledby="tab-wp" data-panel="wp">
+        <div class="p-panel__head js-reveal">
+          <h2 class="p-panel__title">WordPressで制作したサイト</h2>
+          <p class="p-panel__lead">CMS本体・テーマ・プラグインの更新と、ログイン周りの対策が中心です。<br>全7カテゴリ・29項目</p>
+        </div>
+        <div class="p-panel__body">
+          <!-- WordPress：サイト本体・CMS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-core">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">01</span>
+              <h3 class="p-category__title" id="wp-cat-core">サイト本体・CMS</h3>
+              <span class="p-category__count js-category-count">0 / 8</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-core-01" name="wp-core-01">
+                <label class="c-check__label" for="wp-core-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">WordPress本体の更新</span>
+                    <span class="c-check__desc">「ダッシュボード > 更新」で最新版になっているか。セキュリティ修正を含むマイナーリリースは、標準で自動更新される設定になっている。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-core-02" name="wp-core-02">
+                <label class="c-check__label" for="wp-core-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">テーマの更新</span>
+                    <span class="c-check__desc">使用中のテーマ（子テーマを使っている場合は親テーマ）が最新か。親テーマを直接編集していると、更新で変更が消えるため注意する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-core-03" name="wp-core-03">
+                <label class="c-check__label" for="wp-core-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">プラグインの更新</span>
+                    <span class="c-check__desc">「プラグイン」画面に更新の通知がないか。更新前にバックアップを取り、更新後に表示とフォームを確認する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-core-04" name="wp-core-04">
+                <label class="c-check__label" for="wp-core-04">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">不要なプラグイン・テーマの削除</span>
+                    <span class="c-check__desc">停止しているだけのプラグイン・テーマもサーバー上にファイルが残り、攻撃の対象になり得る。使わないものは削除する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-core-05" name="wp-core-05">
+                <label class="c-check__label" for="wp-core-05">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">更新が止まったプラグインの有無</span>
+                    <span class="c-check__desc">WordPress.org の配布ページで最終更新日を確認する。長期間更新がない、または配布停止のものは代わりを検討する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-core-06" name="wp-core-06">
+                <label class="c-check__label" for="wp-core-06">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">PHPバージョン</span>
+                    <span class="c-check__desc">「ツール > サイトヘルス」またはサーバー管理画面で確認する。php.net でサポート期間内のバージョンか（PHP 8.2 のサポートは2026年12月末に終了予定）。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-core-07" name="wp-core-07">
+                <label class="c-check__label" for="wp-core-07">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">セキュリティ対策プラグインの稼働</span>
+                    <span class="c-check__desc">プラグインが有効になっているか、通知メールが届いているか、スキャン結果に警告がないか、有料版の場合はライセンスの期限が切れていないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-core-08" name="wp-core-08">
+                <label class="c-check__label" for="wp-core-08">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">コメント・投稿の不審な内容</span>
+                    <span class="c-check__desc">身に覚えのない投稿・固定ページ・リンクがないか。コメント機能を使っていない場合は「設定 > ディスカッション」で無効にする。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：アカウント・ログイン -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-account">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">02</span>
+              <h3 class="p-category__title" id="wp-cat-account">アカウント・ログイン</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-account-01" name="wp-account-01">
+                <label class="c-check__label" for="wp-account-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">管理者アカウントの棚卸し</span>
+                    <span class="c-check__desc">「ユーザー」画面で権限「管理者」を絞り込み、不要なアカウントを削除する。見覚えのない管理者は不正侵入の兆候のため要注意。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-account-02" name="wp-account-02">
+                <label class="c-check__label" for="wp-account-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">二段階認証の設定</span>
+                    <span class="c-check__desc">WordPress本体には二段階認証の機能がないため、プラグインで導入する。管理者権限を持つアカウントすべてに設定されているか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-account-03" name="wp-account-03">
+                <label class="c-check__label" for="wp-account-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">不審なログイン履歴</span>
+                    <span class="c-check__desc">WordPress本体はログイン履歴を残さないため、セキュリティプラグインのログやサーバーのアクセスログで、見覚えのない日時・場所からのログインがないか確認する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-account-04" name="wp-account-04">
+                <label class="c-check__label" for="wp-account-04">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">ログイン画面の保護</span>
+                    <span class="c-check__desc">ログイン試行回数の制限、IPアドレスでのアクセス制限、使っていない場合のXML-RPC無効化などが設定されているか。ユーザー名に「admin」を使っていないか。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：サーバー -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-server">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">03</span>
+              <h3 class="p-category__title" id="wp-cat-server">サーバー</h3>
+              <span class="p-category__count js-category-count">0 / 6</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-server-01" name="wp-server-01">
+                <label class="c-check__label" for="wp-server-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">サーバー管理画面の二段階認証</span>
+                    <span class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-server-02" name="wp-server-02">
+                <label class="c-check__label" for="wp-server-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">サーバー・FTPアカウントの棚卸し</span>
+                    <span class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-server-03" name="wp-server-03">
+                <label class="c-check__label" for="wp-server-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">ファイル転送の暗号化（SFTP / FTPS）</span>
+                    <span class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-server-04" name="wp-server-04">
+                <label class="c-check__label" for="wp-server-04">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">WAF（不正アクセス防止機能）の有効化</span>
+                    <span class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-server-05" name="wp-server-05">
+                <label class="c-check__label" for="wp-server-05">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">アクセスログ・エラーログの確認</span>
+                    <span class="c-check__desc">wp-login.php・xmlrpc.php への短時間の大量アクセスや、.env などの存在しないファイルへのアクセスがないか。PHPエラーが急に増えていないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-server-06" name="wp-server-06">
+                <label class="c-check__label" for="wp-server-06">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">不審なファイルの有無</span>
+                    <span class="c-check__desc">置いた覚えのないPHPファイル、最近更新された見覚えのないファイルがないか。通常、wp-content/uploads 内にPHPファイルは置かれない。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：ドメイン・DNS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-dns">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">04</span>
+              <h3 class="p-category__title" id="wp-cat-dns">ドメイン・DNS</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-dns-01" name="wp-dns-01">
+                <label class="c-check__label" for="wp-dns-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">ドメインの有効期限</span>
+                    <span class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-dns-02" name="wp-dns-02">
+                <label class="c-check__label" for="wp-dns-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">ドメイン管理画面の二段階認証</span>
+                    <span class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-dns-03" name="wp-dns-03">
+                <label class="c-check__label" for="wp-dns-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">DNS設定に不審な変更がないか</span>
+                    <span class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-dns-04" name="wp-dns-04">
+                <label class="c-check__label" for="wp-dns-04">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">メールのなりすまし対策（SPF・DKIM・DMARC）</span>
+                    <span class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：SSL・通信 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-ssl">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">05</span>
+              <h3 class="p-category__title" id="wp-cat-ssl">SSL・通信</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-ssl-01" name="wp-ssl-01">
+                <label class="c-check__label" for="wp-ssl-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">SSL証明書の有効期限</span>
+                    <span class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-ssl-02" name="wp-ssl-02">
+                <label class="c-check__label" for="wp-ssl-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">常時SSL（httpからhttpsへの転送）</span>
+                    <span class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。「設定 > 一般」の2つのアドレスが https か。画像などが http で読み込まれていないか。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：バックアップ -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-backup">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">06</span>
+              <h3 class="p-category__title" id="wp-cat-backup">バックアップ</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-backup-01" name="wp-backup-01">
+                <label class="c-check__label" for="wp-backup-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">バックアップの取得状況</span>
+                    <span class="c-check__desc">ファイルとデータベースの両方が、自動で定期的に取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-backup-02" name="wp-backup-02">
+                <label class="c-check__label" for="wp-backup-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">復元手順の確認</span>
+                    <span class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- WordPress：診断・監視 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="wp-cat-monitor">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">07</span>
+              <h3 class="p-category__title" id="wp-cat-monitor">診断・監視</h3>
+              <span class="p-category__count js-category-count">0 / 3</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-monitor-01" name="wp-monitor-01">
+                <label class="c-check__label" for="wp-monitor-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">セキュリティ診断レポートの確認</span>
+                    <span class="c-check__desc">診断ツールや外部サービスのレポートに「要対応」の項目がないか。前回指摘された項目が対応済みか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-monitor-02" name="wp-monitor-02">
+                <label class="c-check__label" for="wp-monitor-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">サイトの表示・改ざんの確認</span>
+                    <span class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="wp-monitor-03" name="wp-monitor-03">
+                <label class="c-check__label" for="wp-monitor-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">問い合わせフォームの動作確認</span>
+                    <span class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策（reCAPTCHA等）が動作しているか。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <!-- ========== パネル：静的HTMLで制作したサイト ========== -->
+      <section class="p-panel js-panel" id="panel-html" role="tabpanel" aria-labelledby="tab-html" data-panel="html">
+        <div class="p-panel__head js-reveal">
+          <h2 class="p-panel__title">静的HTMLで制作したサイト</h2>
+          <p class="p-panel__lead">CMSがない分、フォームプログラムと「公開してはいけないファイル」の確認が中心です。<br>全6カテゴリ・22項目</p>
+        </div>
+        <div class="p-panel__body">
+          <!-- 静的HTML：サイト本体 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-core">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">01</span>
+              <h3 class="p-category__title" id="html-cat-core">サイト本体</h3>
+              <span class="p-category__count js-category-count">0 / 5</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-core-01" name="html-core-01">
+                <label class="c-check__label" for="html-core-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">フォーム・プログラムの更新</span>
+                    <span class="c-check__desc">メールフォームなどのプログラムが配布元の最新版か、配布が終了していないか。サーバーのPHPバージョンがサポート期間内か。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-core-02" name="html-core-02">
+                <label class="c-check__label" for="html-core-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">不要ファイルが公開されていないか</span>
+                    <span class="c-check__desc">旧ページ・テストページ、.bak や .zip などのバックアップ、.git フォルダ、.env、phpinfo.php などが公開ディレクトリに残っていないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-core-03" name="html-core-03">
+                <label class="c-check__label" for="html-core-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">ファイル一覧が見えないか</span>
+                    <span class="c-check__desc">index.html を置いていないフォルダ（例：/images/）のURLを開き、ファイル一覧が表示されないか。Apacheでは .htaccess の「Options -Indexes」で止められる。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-core-04" name="html-core-04">
+                <label class="c-check__label" for="html-core-04">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">リンク切れ・外部リンク先の確認</span>
+                    <span class="c-check__desc">リンク切れがないか。リンク先のドメインが失効して、第三者の別サイトになっていないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-core-05" name="html-core-05">
+                <label class="c-check__label" for="html-core-05">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">外部から読み込むスクリプトの確認</span>
+                    <span class="c-check__desc">解析タグ・広告タグ・CDN・外部ウィジェットの読み込み元が現存し、信頼できるか。使っていないタグは削除する。2024年には配信ドメインの所有者が変わり不正なコードが配信された例（polyfill.io）がある。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：サーバー -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-server">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">02</span>
+              <h3 class="p-category__title" id="html-cat-server">サーバー</h3>
+              <span class="p-category__count js-category-count">0 / 6</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-server-01" name="html-server-01">
+                <label class="c-check__label" for="html-server-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">サーバー管理画面の二段階認証</span>
+                    <span class="c-check__desc">レンタルサーバーの契約者ページ・コントロールパネルのログインに二段階認証が設定されているか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-server-02" name="html-server-02">
+                <label class="c-check__label" for="html-server-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">サーバー・FTPアカウントの棚卸し</span>
+                    <span class="c-check__desc">退職者や過去の制作会社に発行したFTP・SSH・データベースのアカウントが残っていないか。共有していたパスワードは変更する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-server-03" name="html-server-03">
+                <label class="c-check__label" for="html-server-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">ファイル転送の暗号化（SFTP / FTPS）</span>
+                    <span class="c-check__desc">通常のFTPはIDとパスワードが暗号化されずに送られる。FTPクライアントの接続設定がSFTPまたはFTPSになっているか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-server-04" name="html-server-04">
+                <label class="c-check__label" for="html-server-04">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">WAF（不正アクセス防止機能）の有効化</span>
+                    <span class="c-check__desc">サーバー管理画面でWAFが「有効」になっているか。有効化後は、誤検知でフォーム送信や管理画面の保存が止まっていないかも確認する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-server-05" name="html-server-05">
+                <label class="c-check__label" for="html-server-05">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">アクセスログ・エラーログの確認</span>
+                    <span class="c-check__desc">フォームプログラムへの短時間の大量アクセスや、.env・.git などの存在しないファイルへのアクセスがないか。エラーが急に増えていないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-server-06" name="html-server-06">
+                <label class="c-check__label" for="html-server-06">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">不審なファイルの有無</span>
+                    <span class="c-check__desc">置いた覚えのないファイル（特にPHPファイル）や、最近更新された見覚えのないファイルが公開ディレクトリにないか。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：ドメイン・DNS -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-dns">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">03</span>
+              <h3 class="p-category__title" id="html-cat-dns">ドメイン・DNS</h3>
+              <span class="p-category__count js-category-count">0 / 4</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-dns-01" name="html-dns-01">
+                <label class="c-check__label" for="html-dns-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">ドメインの有効期限</span>
+                    <span class="c-check__desc">有効期限・自動更新の設定、登録しているクレジットカードの期限、登録メールアドレスが受信できるかを確認する。失効すると第三者に取得される恐れがある。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-dns-02" name="html-dns-02">
+                <label class="c-check__label" for="html-dns-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">ドメイン管理画面の二段階認証</span>
+                    <span class="c-check__desc">ドメインを登録している会社の管理画面のログインに二段階認証が設定されているか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-dns-03" name="html-dns-03">
+                <label class="c-check__label" for="html-dns-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">DNS設定に不審な変更がないか</span>
+                    <span class="c-check__desc">ネームサーバー、A・CNAME・MX・TXTレコードが意図どおりか。解約済みのサービスを指したままのサブドメインがないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-dns-04" name="html-dns-04">
+                <label class="c-check__label" for="html-dns-04">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">メールのなりすまし対策（SPF・DKIM・DMARC）</span>
+                    <span class="c-check__desc">SPF・DKIM・DMARCのレコードが設定されているか。メールを送らないドメインでも、SPF「v=spf1 -all」とDMARCで送信元の詐称を防げる。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：SSL・通信 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-ssl">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">04</span>
+              <h3 class="p-category__title" id="html-cat-ssl">SSL・通信</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-ssl-01" name="html-ssl-01">
+                <label class="c-check__label" for="html-ssl-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">SSL証明書の有効期限</span>
+                    <span class="c-check__desc">証明書の有効期限と自動更新が機能しているか。公開SSL証明書の最長有効期間は2026年3月から200日に短縮され、今後さらに短くなる予定のため、自動更新の確認が重要。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-ssl-02" name="html-ssl-02">
+                <label class="c-check__label" for="html-ssl-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">常時SSL（httpからhttpsへの転送）</span>
+                    <span class="c-check__desc">http:// や www の有無を変えてアクセスし、https:// に転送されるか。画像・CSS・JSなどが http で読み込まれていないか（ブラウザの開発者ツールで確認できる）。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：バックアップ -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-backup">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">05</span>
+              <h3 class="p-category__title" id="html-cat-backup">バックアップ</h3>
+              <span class="p-category__count js-category-count">0 / 2</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-backup-01" name="html-backup-01">
+                <label class="c-check__label" for="html-backup-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">バックアップの取得状況</span>
+                    <span class="c-check__desc">サイトのファイル一式とフォームの設定ファイルが取得されているか。最終取得日時と保存世代数、保存先がサイトと同じサーバーだけになっていないか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-backup-02" name="html-backup-02">
+                <label class="c-check__label" for="html-backup-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">復元手順の確認</span>
+                    <span class="c-check__desc">復元の手順書があり、担当者が決まっているか。実際に復元できるかを、テスト環境などで一度試しておく。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 静的HTML：診断・監視 -->
+          <section class="p-category js-reveal js-category" aria-labelledby="html-cat-monitor">
+            <div class="p-category__head">
+              <span class="p-category__num" aria-hidden="true">06</span>
+              <h3 class="p-category__title" id="html-cat-monitor">診断・監視</h3>
+              <span class="p-category__count js-category-count">0 / 3</span>
+            </div>
+            <ul class="p-category__list">
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-monitor-01" name="html-monitor-01">
+                <label class="c-check__label" for="html-monitor-01">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">セキュリティ診断レポートの確認</span>
+                    <span class="c-check__desc">診断ツールや外部サービスのレポートに「要対応」の項目がないか。前回指摘された項目が対応済みか。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-monitor-02" name="html-monitor-02">
+                <label class="c-check__label" for="html-monitor-02">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">サイトの表示・改ざんの確認</span>
+                    <span class="c-check__desc">PCとスマートフォンで主要ページを確認する。検索結果やスマホからの訪問時だけ別サイトへ転送する手口もある。Google Search Console の「セキュリティの問題」も確認する。</span>
+                  </span>
+                </label>
+              </li>
+              <li class="c-check">
+                <input class="c-check__input js-check" type="checkbox" id="html-monitor-03" name="html-monitor-03">
+                <label class="c-check__label" for="html-monitor-03">
+                  <span class="c-check__box" aria-hidden="true"></span>
+                  <span class="c-check__body">
+                    <span class="c-check__title">問い合わせフォームの動作確認</span>
+                    <span class="c-check__desc">実際にテスト送信し、管理者通知と自動返信メールが届くか（迷惑メールフォルダも確認）。スパム対策が動作しているか。</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <!-- ==================== 補足・参考情報 ==================== -->
+      <section class="p-note js-reveal" aria-labelledby="note-title">
+        <h2 class="p-note__title" id="note-title">ご利用にあたって</h2>
+        <ul class="p-note__list">
+          <li>本チェックリストの内容は2026年11月時点の情報にもとづきます。PHPのサポート期間やSSL証明書の有効期間などは変わるため、公式情報で最新の状況を確認してください。</li>
+          <li>チェックと点検情報は、お使いのブラウザ（localStorage）にのみ保存されます。別の端末・ブラウザとは共有されません。記録を残す場合は「印刷・PDF保存」をご利用ください。</li>
+          <li>「要対応」となった項目は、対応内容と日付を別途記録しておくと、次回の点検で経過を追えます。</li>
+        </ul>
+
+        <h3 class="p-note__subtitle">参考情報（公式）</h3>
+        <ul class="p-note__links">
+          <li><a class="c-link" href="https://developer.wordpress.org/advanced-administration/security/hardening/" target="_blank" rel="noopener">WordPress.org：Hardening WordPress（セキュリティ強化ガイド）</a></li>
+          <li><a class="c-link" href="https://www.php.net/supported-versions.php" target="_blank" rel="noopener">PHP公式：サポート中のバージョン一覧</a></li>
+          <li><a class="c-link" href="https://support.google.com/a/answer/81126?hl=ja" target="_blank" rel="noopener">Google：メール送信者のガイドライン（SPF・DKIM・DMARC）</a></li>
+          <li><a class="c-link" href="https://support.google.com/webmasters/answer/9044101?hl=ja" target="_blank" rel="noopener">Google Search Console：セキュリティの問題レポート</a></li>
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== フッター ==================== -->
+  <footer class="l-footer">
+    <div class="l-container">
+      <p class="l-footer__text">ホームページ セキュリティ点検チェックリスト</p>
+    </div>
+  </footer>
+</body>
+</html>
