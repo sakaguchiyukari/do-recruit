@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="災害・緊急時の安否確認 回答フォーム">
+  <title>安否確認 回答フォーム</title>
+  <link rel="icon" href="img/favicon-safety.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js" defer></script>
+  <script src="js/common.js" defer></script>
+  <script src="js/answer.js" defer></script>
+</head>
+<body class="page page--answer">
+
+  <!-- ===================== Header ===================== -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <p class="site-header__logo">
+        <img class="site-header__icon" src="img/favicon-safety.svg" alt="" width="28" height="28">
+        <span>安否確認システム</span>
+      </p>
+      <span class="badge badge--demo" data-demo-badge hidden>デモモード</span>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ===================== Event Banner ===================== -->
+    <section class="event-banner js-fade" aria-live="polite">
+      <div class="event-banner__inner">
+        <p class="event-banner__label">現在の安否確認</p>
+        <h1 class="event-banner__title" data-event-title>読み込み中…</h1>
+        <p class="event-banner__meta" data-event-meta></p>
+      </div>
+    </section>
+
+    <!-- ===================== Answer Form ===================== -->
+    <section class="section" id="answer">
+      <div class="container container--narrow">
+
+        <p class="lead js-fade">
+          落ち着いて、わかる範囲で回答してください。<br>
+          <strong>何度でも回答し直せます</strong>（最新の回答が反映されます）。
+        </p>
+
+        <form class="form js-fade" id="answerForm" novalidate>
+
+          <!-- 本人確認 -->
+          <fieldset class="card form__group">
+            <legend class="form__legend"><span class="form__step">1</span>本人確認</legend>
+
+            <div class="form__row form__row--2col">
+              <div class="field">
+                <label class="field__label" for="empId">社員番号<span class="field__req">必須</span></label>
+                <input class="field__input" type="text" id="empId" name="empId"
+                       inputmode="numeric" autocomplete="username"
+                       pattern="[0-9]{4,8}" minlength="4" maxlength="8"
+                       placeholder="例）100123" required>
+                <p class="field__error" data-error-for="empId">4〜8桁の数字で入力してください</p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="pin">確認コード<span class="field__req">必須</span></label>
+                <input class="field__input" type="password" id="pin" name="pin"
+                       inputmode="numeric" autocomplete="current-password"
+                       pattern="[0-9]{4}" minlength="4" maxlength="4"
+                       placeholder="4桁の数字" required>
+                <p class="field__error" data-error-for="pin">4桁の数字で入力してください</p>
+              </div>
+            </div>
+            <p class="form__note">確認コードは事前に配布された4桁の番号です。不明な場合は所属長へ連絡してください。</p>
+          </fieldset>
+
+          <!-- 安否状況 -->
+          <fieldset class="card form__group">
+            <legend class="form__legend"><span class="form__step">2</span>あなたの状況<span class="field__req">必須</span></legend>
+
+            <div class="choice-grid" role="radiogroup">
+              <label class="choice choice--safe">
+                <input class="choice__input" type="radio" name="status" value="safe" required>
+                <span class="choice__body">
+                  <span class="choice__title">無事</span>
+                  <span class="choice__desc">けがはありません</span>
+                </span>
+              </label>
+              <label class="choice choice--minor">
+                <input class="choice__input" type="radio" name="status" value="minor">
+                <span class="choice__body">
+                  <span class="choice__title">軽傷</span>
+                  <span class="choice__desc">自力で行動できます</span>
+                </span>
+              </label>
+              <label class="choice choice--severe">
+                <input class="choice__input" type="radio" name="status" value="severe">
+                <span class="choice__body">
+                  <span class="choice__title">重傷・救助要</span>
+                  <span class="choice__desc">支援が必要です</span>
+                </span>
+              </label>
+            </div>
+            <p class="field__error" data-error-for="status">状況を選択してください</p>
+          </fieldset>
+
+          <!-- 詳細 -->
+          <fieldset class="card form__group">
+            <legend class="form__legend"><span class="form__step">3</span>詳細</legend>
+
+            <div class="form__row form__row--2col">
+              <div class="field">
+                <label class="field__label" for="location">現在地<span class="field__req">必須</span></label>
+                <select class="field__input field__input--select" id="location" name="location" required>
+                  <option value="">選択してください</option>
+                  <option value="home">自宅</option>
+                  <option value="office">勤務先</option>
+                  <option value="shelter">避難所</option>
+                  <option value="moving">移動中</option>
+                  <option value="other">その他</option>
+                </select>
+                <p class="field__error" data-error-for="location">現在地を選択してください</p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="family">家族の状況</label>
+                <select class="field__input field__input--select" id="family" name="family">
+                  <option value="">選択してください</option>
+                  <option value="safe">全員無事</option>
+                  <option value="injured">負傷者あり</option>
+                  <option value="unknown">連絡がつかない家族がいる</option>
+                  <option value="none">該当なし（単身など）</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="field__label" id="workLabel">出社・業務対応<span class="field__req">必須</span></span>
+              <div class="segmented" role="radiogroup" aria-labelledby="workLabel">
+                <label class="segmented__item">
+                  <input class="segmented__input" type="radio" name="work" value="yes" required>
+                  <span class="segmented__label">可能</span>
+                </label>
+                <label class="segmented__item">
+                  <input class="segmented__input" type="radio" name="work" value="remote">
+                  <span class="segmented__label">在宅なら可</span>
+                </label>
+                <label class="segmented__item">
+                  <input class="segmented__input" type="radio" name="work" value="no">
+                  <span class="segmented__label">不可</span>
+                </label>
+              </div>
+              <p class="field__error" data-error-for="work">いずれかを選択してください</p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="comment">連絡事項</label>
+              <textarea class="field__input field__input--textarea" id="comment" name="comment"
+                        rows="3" maxlength="200"
+                        placeholder="例）自宅が一部損壊。明日以降の出社は相談したいです。"></textarea>
+              <p class="field__counter"><span data-counter>0</span> / 200</p>
+            </div>
+          </fieldset>
+
+          <!-- 送信（SPでは画面下に固定） -->
+          <div class="form__submit">
+            <p class="form__message" data-form-message role="alert"></p>
+            <button class="btn btn--primary btn--block btn--lg" type="submit" data-submit>
+              <span class="btn__text">安否を送信する</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- 送信完了 -->
+        <div class="card done" id="doneView" hidden tabindex="-1">
+          <div class="done__icon" aria-hidden="true">✓</div>
+          <h2 class="done__title">回答を受け付けました</h2>
+          <p class="done__text"><span data-done-name></span>さん、ご回答ありがとうございます。<br>状況が変わったら、もう一度回答してください。</p>
+          <p class="done__time" data-done-time></p>
+          <button class="btn btn--ghost" type="button" data-answer-again>回答を修正する</button>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== Footer ===================== -->
+  <footer class="site-footer">
+    <p class="site-footer__text">緊急の救助が必要な場合は、まず 119番 / 110番 へ通報してください。</p>
+  </footer>
+
+</body>
+</html>

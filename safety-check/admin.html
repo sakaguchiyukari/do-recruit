@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>安否確認 管理画面</title>
+  <link rel="icon" href="img/favicon-safety.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js" defer></script>
+  <script src="js/common.js" defer></script>
+  <script src="js/admin.js" defer></script>
+</head>
+<body class="page page--admin">
+
+  <!-- ===================== Header ===================== -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <p class="site-header__logo">
+        <img class="site-header__icon" src="img/favicon-safety.svg" alt="" width="28" height="28">
+        <span>安否確認 管理</span>
+      </p>
+      <div class="site-header__actions">
+        <span class="badge badge--demo" data-demo-badge hidden>デモモード</span>
+        <button class="btn btn--ghost btn--sm" type="button" data-logout hidden>ログアウト</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ===================== Login ===================== -->
+    <section class="section" id="loginView">
+      <div class="container container--narrow">
+        <form class="card login js-fade" id="loginForm">
+          <h1 class="login__title">管理者ログイン</h1>
+          <div class="field">
+            <label class="field__label" for="adminKey">管理キー</label>
+            <input class="field__input" type="password" id="adminKey" name="adminKey"
+                   autocomplete="current-password" minlength="8" maxlength="128"
+                   placeholder="管理キーを入力" required>
+            <p class="field__error" data-error-for="adminKey">8文字以上で入力してください</p>
+          </div>
+          <p class="form__message" data-login-message role="alert"></p>
+          <button class="btn btn--primary btn--block" type="submit">ログイン</button>
+          <p class="form__note" data-demo-hint hidden>デモモード中は任意の8文字以上（例：demo1234）でログインできます。</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===================== Dashboard ===================== -->
+    <div id="dashView" hidden>
+
+      <!-- イベント情報 -->
+      <section class="dash-head">
+        <div class="container">
+          <div class="dash-head__inner">
+            <div>
+              <p class="dash-head__label">実施中の安否確認</p>
+              <h1 class="dash-head__title" data-event-title>—</h1>
+              <p class="dash-head__meta">
+                開始：<span data-event-start>—</span>
+                <span class="dash-head__sep">/</span>
+                最終更新：<span data-updated>—</span>
+              </p>
+            </div>
+            <div class="dash-head__actions">
+              <button class="btn btn--ghost btn--sm" type="button" data-refresh>更新</button>
+              <button class="btn btn--ghost btn--sm" type="button" data-export>CSV出力</button>
+              <button class="btn btn--primary btn--sm" type="button" data-open-event>新しい安否確認を開始</button>
+            </div>
+          </div>
+          <label class="auto-refresh">
+            <input type="checkbox" data-auto-refresh checked>
+            <span>60秒ごとに自動更新</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- 集計カード -->
+      <section class="section section--tight">
+        <div class="container">
+          <div class="stats">
+            <article class="stat stat--rate js-fade">
+              <p class="stat__label">回答率</p>
+              <p class="stat__value"><span data-stat="rate">0</span><small>%</small></p>
+              <div class="progress" aria-hidden="true"><span class="progress__bar" data-progress></span></div>
+              <p class="stat__sub"><span data-stat="answered">0</span> / <span data-stat="total">0</span> 名</p>
+            </article>
+            <button class="stat stat--safe js-fade" type="button" data-filter-status="safe">
+              <span class="stat__label">無事</span>
+              <span class="stat__value" data-stat="safe">0</span>
+            </button>
+            <button class="stat stat--minor js-fade" type="button" data-filter-status="minor">
+              <span class="stat__label">軽傷</span>
+              <span class="stat__value" data-stat="minor">0</span>
+            </button>
+            <button class="stat stat--severe js-fade" type="button" data-filter-status="severe">
+              <span class="stat__label">重傷・救助要</span>
+              <span class="stat__value" data-stat="severe">0</span>
+            </button>
+            <button class="stat stat--none js-fade" type="button" data-filter-status="none">
+              <span class="stat__label">未回答</span>
+              <span class="stat__value" data-stat="none">0</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 部署別 -->
+      <section class="section section--tight">
+        <div class="container">
+          <h2 class="heading js-fade">部署別の回答状況</h2>
+          <div class="dept-grid" data-dept-grid></div>
+        </div>
+      </section>
+
+      <!-- 一覧 -->
+      <section class="section section--tight">
+        <div class="container">
+          <h2 class="heading js-fade">社員一覧</h2>
+
+          <div class="filter card js-fade">
+            <div class="field filter__field filter__field--search">
+              <label class="field__label" for="q">検索</label>
+              <input class="field__input" type="search" id="q" placeholder="氏名・社員番号" maxlength="40">
+            </div>
+            <div class="field filter__field">
+              <label class="field__label" for="fDept">部署</label>
+              <select class="field__input field__input--select" id="fDept">
+                <option value="">すべて</option>
+              </select>
+            </div>
+            <div class="field filter__field">
+              <label class="field__label" for="fStatus">状況</label>
+              <select class="field__input field__input--select" id="fStatus">
+                <option value="">すべて</option>
+                <option value="none">未回答</option>
+                <option value="severe">重傷・救助要</option>
+                <option value="minor">軽傷</option>
+                <option value="safe">無事</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="list-meta"><span data-list-count>0</span> 件</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <thead class="table__head">
+                <tr>
+                  <th scope="col">社員番号</th>
+                  <th scope="col">氏名</th>
+                  <th scope="col">部署</th>
+                  <th scope="col">状況</th>
+                  <th scope="col">現在地</th>
+                  <th scope="col">出社</th>
+                  <th scope="col">家族</th>
+                  <th scope="col">連絡事項</th>
+                  <th scope="col">回答日時</th>
+                </tr>
+              </thead>
+              <tbody class="table__body" data-list></tbody>
+            </table>
+          </div>
+
+          <nav class="pager" aria-label="ページ送り" data-pager></nav>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===================== Event Dialog ===================== -->
+  <dialog class="dialog" id="eventDialog" aria-labelledby="eventDialogTitle">
+    <form class="dialog__body" id="eventForm" method="dialog">
+      <h2 class="dialog__title" id="eventDialogTitle">新しい安否確認を開始</h2>
+      <p class="form__note">開始すると、回答はこの新しい安否確認として集計されます（過去の回答はスプレッドシートに残ります）。</p>
+      <div class="field">
+        <label class="field__label" for="eventTitle">件名<span class="field__req">必須</span></label>
+        <input class="field__input" type="text" id="eventTitle" name="eventTitle"
+               minlength="2" maxlength="60" placeholder="例）2026年11月18日 山形県置賜地方 地震" required>
+        <p class="field__error" data-error-for="eventTitle">2〜60文字で入力してください</p>
+      </div>
+      <div class="dialog__actions">
+        <button class="btn btn--ghost" type="button" data-close-dialog>キャンセル</button>
+        <button class="btn btn--primary" type="submit" value="ok">開始する</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===================== Toast ===================== -->
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
+
+</body>
+</html>
