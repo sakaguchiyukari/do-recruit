@@ -1,0 +1,36 @@
+@use "../global" as *;
+
+// SP固定CTA（ヒーロー通過後に表示 / Booking表示中は隠す）
+.fixed-cta {
+  position: fixed;
+  right: to-rem(16);
+  bottom: calc(#{to-rem(16)} + env(safe-area-inset-bottom));
+  left: to-rem(16);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: to-rem(56);
+  font-family: $font-display;
+  font-size: to-rem(20);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-ink;
+  background-color: $color-accent;
+  border-radius: $radius-pill;
+  box-shadow: $shadow-cta;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(1rem);
+  transition: opacity $duration-fast ease, transform $duration-fast $ease, visibility $duration-fast ease;
+
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  @include mq-up("md") {
+    display: none;
+  }
+}

@@ -1,0 +1,35 @@
+@use "../global" as *;
+
+// MIXカードの並び（SPは横スワイプで縦に伸びすぎないようにする）
+.mix-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 72%;
+  gap: to-rem(20);
+  overflow-x: auto;
+  margin-top: clamp(#{to-rem(40)}, 6vw, #{to-rem(72)});
+  margin-inline: calc(#{$padding-sp} * -1);
+  padding-inline: $padding-sp;
+  padding-block-end: to-rem(8);
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: $padding-sp;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include mq-up("sm") {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: clamp(#{to-rem(32)}, 4vw, #{to-rem(40)}) clamp(#{to-rem(16)}, 3vw, #{to-rem(32)});
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+
+.mix-grid__item {
+  scroll-snap-align: start;
+}

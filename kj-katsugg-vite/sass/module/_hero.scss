@@ -1,0 +1,88 @@
+@use "../global" as *;
+
+// ファーストビュー
+.hero {
+  // 回転中のレコード盤は外接矩形が広がるため、横はみ出しをここで切る
+  overflow: hidden;
+  padding-block: calc(#{$header-height} + clamp(#{to-rem(32)}, 6vw, #{to-rem(64)})) clamp(#{to-rem(48)}, 8vw, #{to-rem(96)});
+
+  @include mq-up("md") {
+    display: grid;
+    align-items: center;
+    min-height: min(100svh, 920px);
+  }
+}
+
+.hero__layout {
+  display: grid;
+  align-items: center;
+  gap: clamp(#{to-rem(40)}, 6vw, #{to-rem(64)});
+
+  @include mq-up("md") {
+    grid-template-columns: 1.25fr 1fr;
+  }
+}
+
+.hero__eyebrow {
+  font-family: $font-mono;
+  font-size: to-rem(12);
+  letter-spacing: 0.04em;
+  color: $color-text-muted;
+}
+
+.hero__title {
+  display: grid;
+  margin-top: to-rem(20);
+  font-family: $font-display;
+  font-size: clamp(#{to-rem(64)}, 13vw, #{to-rem(150)});
+  font-weight: $fw-normal;
+  line-height: 0.9;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+// 「&」だけ軽く崩す：真面目すぎないアクセント
+.hero__title-amp {
+  justify-self: start; // 幅を文字幅に縮め、transformによる横はみ出しを防ぐ
+  font-family: $font-base;
+  font-size: 0.5em;
+  font-weight: $fw-light;
+  font-style: italic;
+  line-height: 1.2;
+  color: $color-accent;
+  transform: translateX(0.3em) rotate(-8deg);
+}
+
+.hero__lead {
+  max-width: 30em;
+  margin-top: clamp(#{to-rem(24)}, 3vw, #{to-rem(32)});
+  font-size: clamp(#{to-rem(15)}, 1.6vw, #{to-rem(17)});
+  color: $color-text-muted;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: to-rem(16) to-rem(28);
+  margin-top: clamp(#{to-rem(28)}, 4vw, #{to-rem(40)});
+}
+
+.hero__visual {
+  justify-self: center;
+  width: min(78vw, 420px);
+
+  @include mq-up("md") {
+    justify-self: end;
+    width: 100%;
+    max-width: 440px;
+  }
+}
+
+.hero__side-note {
+  margin-top: to-rem(16);
+  font-family: $font-mono;
+  font-size: to-rem(12);
+  text-align: center;
+  color: $color-text-muted;
+}

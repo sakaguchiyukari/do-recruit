@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "開発サーバーを起動（npm run dev）",
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "detail": "保存すると画面に即反映。止めるときはターミナルで Ctrl + C"
+    },
+    {
+      "label": "本番用に書き出し（npm run build）",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": [],
+      "detail": "dist/ フォルダに納品用ファイルを書き出す"
+    }
+  ]
+}

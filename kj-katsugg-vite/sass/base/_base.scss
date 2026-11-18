@@ -1,0 +1,52 @@
+/* リキッドレイアウト対応のための設定 */
+@use "../global" as *;
+
+html {
+  // 375px~767px（md未満）
+  font-size: 16px;
+
+  // ~375px
+  @media (max-width: 375px) {
+    font-size: vw(375, 16);
+  }
+
+  // md（768px）以上
+  @include mq-up("md") {
+    font-size: vw(strip-unit($inner), 16);
+  }
+
+  // inner以上
+  @media (min-width: $inner) {
+    font-size: 16px;
+  }
+}
+
+/* サイト共通の土台（本文・リンク・フォーカス） */
+html {
+  scroll-padding-top: $header-height;
+}
+
+body {
+  overflow-x: hidden;
+  font-family: $font-base;
+  font-size: to-rem(15);
+  font-weight: $fw-normal;
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+  color: $color-text;
+  background-color: $color-bg;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid $color-accent;
+  outline-offset: 3px;
+}
+
+::selection {
+  color: $color-bg;
+  background-color: $color-ink;
+}

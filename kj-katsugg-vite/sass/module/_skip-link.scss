@@ -1,0 +1,18 @@
+@use "../global" as *;
+
+// 本文へスキップするリンク（Tabで最初にフォーカスしたときだけ表示）
+.skip-link {
+  position: absolute;
+  top: to-rem(8);
+  left: to-rem(8);
+  z-index: 200;
+  padding: to-rem(12) to-rem(20);
+  color: $color-bg;
+  background-color: $color-ink;
+  border-radius: $radius-sm;
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
+}

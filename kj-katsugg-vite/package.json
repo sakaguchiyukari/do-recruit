@@ -1,0 +1,17 @@
+{
+  "name": "iro-template",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/generate-sass-index.js && node scripts/generate-webp.js && vite",
+    "build": "node scripts/generate-sass-index.js && node scripts/generate-webp.js && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sass": "^1.97.3",
+    "sharp": "^0.34.5",
+    "vite": "^7.3.1",
+    "vite-plugin-image-optimizer": "^2.0.3"
+  }
+}

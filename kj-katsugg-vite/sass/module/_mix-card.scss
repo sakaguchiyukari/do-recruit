@@ -1,0 +1,79 @@
+@use "../global" as *;
+
+// MIX音源カード
+.mix-card__link {
+  display: grid;
+  gap: to-rem(16);
+}
+
+.mix-card__cover {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  border-radius: $radius;
+  background-color: $color-bg-tint;
+}
+
+.mix-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s $ease;
+}
+
+// 再生ボタン
+.mix-card__play {
+  position: absolute;
+  right: to-rem(16);
+  bottom: to-rem(16);
+  display: grid;
+  place-items: center;
+  width: to-rem(52);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: $color-bg;
+  box-shadow: $shadow;
+  transition: transform $duration-fast $ease, background-color $duration-fast ease;
+
+  // 三角形
+  &::before {
+    content: "";
+    margin-inline-start: 3px;
+    border-style: solid;
+    border-width: 7px 0 7px 11px;
+    border-color: transparent transparent transparent $color-ink;
+  }
+}
+
+.mix-card__body {
+  display: grid;
+  gap: to-rem(4);
+}
+
+.mix-card__meta {
+  font-family: $font-mono;
+  font-size: to-rem(12);
+  color: $color-text-muted;
+}
+
+.mix-card__title {
+  font-size: to-rem(18);
+  font-weight: $fw-bold;
+  line-height: 1.4;
+  transition: color $duration-fast ease;
+}
+
+@media (any-hover: hover) {
+  .mix-card__link:hover .mix-card__img {
+    transform: scale(1.05) rotate(-1deg);
+  }
+
+  .mix-card__link:hover .mix-card__play {
+    transform: scale(1.12);
+    background-color: $color-accent;
+  }
+
+  .mix-card__link:hover .mix-card__title {
+    color: $color-accent-dark;
+  }
+}

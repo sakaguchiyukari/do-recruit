@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.webp
+.DS_Store
+
+# AI作業計画（使い捨て・共有しない）
+PLAN.md

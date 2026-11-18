@@ -1,0 +1,18 @@
+@use "../global" as *;
+
+// ジャンルタグの並び
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: to-rem(8);
+  margin-top: to-rem(8);
+}
+
+.tag-list__item {
+  padding: to-rem(5) to-rem(14);
+  font-size: to-rem(12);
+  font-weight: $fw-medium;
+  letter-spacing: 0.04em;
+  border: 1px solid $color-border;
+  border-radius: $radius-pill;
+}

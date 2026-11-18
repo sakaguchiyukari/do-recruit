@@ -1,0 +1,45 @@
+@use "../global" as *;
+
+// ジャンル名が流れる帯
+.marquee {
+  overflow: hidden;
+  padding-block: to-rem(14);
+  color: $color-bg;
+  background-color: $color-ink;
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+
+  @include reduced-motion {
+    animation: none;
+  }
+}
+
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  font-family: $font-display;
+  font-size: clamp(#{to-rem(18)}, 2.4vw, #{to-rem(26)});
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  // 区切りの丸
+  &::after {
+    content: "";
+    width: 0.4em;
+    aspect-ratio: 1;
+    margin-inline: to-rem(24);
+    border-radius: 50%;
+    background-color: $color-accent;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}

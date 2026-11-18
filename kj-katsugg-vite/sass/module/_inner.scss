@@ -1,0 +1,13 @@
+@use "../global" as *;
+
+// コンテンツ幅を制限する共通クラス
+// セクションごとに .about__inner 等を作らずこれを使い回す
+.inner {
+  width: 100%;
+  padding-inline: $padding-sp;
+  margin-inline: auto;
+  @include mq-up("md") {
+    max-width: $inner + $padding-pc * 2;
+    padding-inline: $padding-pc;
+  }
+}

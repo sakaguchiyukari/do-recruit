@@ -1,0 +1,6 @@
+{
+  // サイドバーに「NPM スクリプト」ビューを表示する（dev / build をクリックで実行できる）
+  "npm.enableScriptExplorer": true,
+  // スクリプトをクリックしたときの動作を「実行」にする
+  "npm.scriptExplorerAction": "run"
+}

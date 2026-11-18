@@ -1,0 +1,58 @@
+@use "../global" as *;
+
+// CSSで描画するアナログ盤（画像不要）
+.record {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  // 光の反射 → 溝 の順に重ねる
+  background:
+    conic-gradient(from 30deg, transparent 0 12%, $color-shine 16%, transparent 22% 62%, $color-shine-weak 66%, transparent 72%),
+    repeating-radial-gradient(circle, $color-groove 0 2px, $color-groove-light 2px 4px),
+    $color-ink;
+  box-shadow: $shadow-hover;
+  animation: record-spin 9s linear infinite;
+
+  @include reduced-motion {
+    animation: none;
+  }
+}
+
+.record__label {
+  display: grid;
+  place-items: center;
+  width: 36%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: $color-accent;
+
+  // センターホール
+  &::after {
+    content: "";
+    position: absolute;
+    width: 2.5%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: $color-bg;
+  }
+}
+
+.record__label-text {
+  // 中心より上に寄せる（下側の余白で押し上げる代わりに位置をずらす）
+  transform: translateY(-70%);
+  font-family: $font-display;
+  font-size: clamp(#{to-rem(9)}, 1.3vw, #{to-rem(14)});
+  line-height: 1.05;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: $color-ink;
+}
+
+@keyframes record-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

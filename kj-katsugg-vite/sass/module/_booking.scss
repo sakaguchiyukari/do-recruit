@@ -1,0 +1,23 @@
+@use "../global" as *;
+
+// 出演依頼セクションのレイアウト（見出し＋フォーム）
+.booking {
+  display: grid;
+  gap: clamp(#{to-rem(40)}, 6vw, #{to-rem(72)});
+
+  @include mq-up("lg") {
+    grid-template-columns: 1fr 1.4fr;
+    align-items: start;
+  }
+}
+
+.booking__head {
+  @include mq-up("lg") {
+    position: sticky;
+    top: calc(#{$header-height} + #{to-rem(32)});
+  }
+}
+
+.booking__dm {
+  margin-top: to-rem(8);
+}

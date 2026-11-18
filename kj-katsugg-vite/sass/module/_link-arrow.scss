@@ -1,0 +1,32 @@
+@use "../global" as *;
+
+// テキストリンク＋矢印
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+  font-size: to-rem(14);
+  font-weight: $fw-bold;
+  letter-spacing: 0.04em;
+  transition: color $duration-fast ease;
+
+  &::after {
+    content: "→";
+    transition: transform $duration-fast $ease;
+  }
+}
+
+.link-arrow--invert {
+  color: $color-white;
+}
+
+@media (any-hover: hover) {
+  .link-arrow:hover {
+    color: $color-accent;
+  }
+
+  .link-arrow:hover::after {
+    transform: translateX(4px);
+  }
+}

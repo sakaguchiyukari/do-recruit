@@ -1,0 +1,88 @@
+/* 数値計算関連の関数を使うために必要 (math.divなど)*/
+@use "sass:math";
+@use "sass:map";
+
+// ================================================
+// インナー幅の設定
+// ================================================
+
+// コンテンツのインナー幅
+$inner: 1160px;
+
+// 余白設定
+$padding-pc: 40px;
+$padding-sp: 20px;
+
+// ================================================
+// 色に関する設定（生成り紙 × 墨 × 差し色1色）
+// ================================================
+
+$color-bg: #f1ece2; // 背景（生成り）
+$color-bg-tint: #e8e1d3; // 背景（少し濃い面）
+$color-surface: #faf7f1; // カード面
+$color-ink: #151412; // 墨（暗い面・ボタン）
+$color-ink-soft: #2a2825; // 暗い面の上の面
+$color-ink-line: #3d3a35; // 暗い面の罫線
+$color-text: #1d1c1a; // 本文
+$color-text-muted: #635d54; // 補足テキスト
+$color-border: #d3cabb; // 罫線
+$color-accent: #ff4d1c; // 差し色
+$color-accent-dark: #d93a0d; // 差し色（ホバー）
+$color-white: #f1ece2; // 暗い面の上の文字
+$color-white-muted: #a8a093; // 暗い面の上の補足
+$color-placeholder: #7a7368; // 入力欄のプレースホルダー
+$color-error: #ff8a66; // 暗い面の上のエラー
+$color-groove: #1b1a18; // レコードの溝
+$color-groove-light: #22211e; // レコードの溝（明）
+
+// 透過色
+$color-header-bg: rgba(241, 236, 226, 0.88);
+$color-shine: rgba(255, 255, 255, 0.08);
+$color-shine-weak: rgba(255, 255, 255, 0.06);
+$color-accent-ring: rgba(255, 77, 28, 0.25);
+$color-accent-glow: rgba(255, 77, 28, 0.7);
+
+// ================================================
+// 影・角丸・動き
+// ================================================
+
+$shadow: 0 1px 2px rgba(21, 20, 18, 0.04), 0 12px 32px -12px rgba(21, 20, 18, 0.18);
+$shadow-hover: 0 2px 4px rgba(21, 20, 18, 0.05), 0 24px 48px -16px rgba(21, 20, 18, 0.28);
+$shadow-cta: 0 12px 28px -8px rgba(21, 20, 18, 0.45);
+
+$radius-sm: 8px;
+$radius: 16px;
+$radius-lg: 24px;
+$radius-pill: 999px;
+
+$ease: cubic-bezier(0.22, 1, 0.36, 1);
+$duration: 0.8s; // フェードイン
+$duration-fast: 0.3s; // ホバー
+
+$header-height: 68px;
+
+// ================================================
+// フォントについての設定
+// ================================================
+
+$font-base: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+$font-display: "Anton", "Arial Narrow", "Noto Sans JP", sans-serif; // 英字見出し
+$font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+// フォントウェイト
+$fw-light: 300; // 細い
+$fw-normal: 400; // 通常
+$fw-medium: 500; // 中
+$fw-bold: 700; // 太い
+
+// ================================================
+// メディアクエリとブレークポイントの設定
+// ================================================
+
+// ブレイクポイントの数値を管理
+$breakpoints: (
+  sm: 550,
+  md: 768,
+  lg: 1200,
+  xl: 1400,
+);

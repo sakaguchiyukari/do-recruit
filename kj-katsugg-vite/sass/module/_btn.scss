@@ -1,0 +1,42 @@
+@use "../global" as *;
+
+// ボタン（ピル型）
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: to-rem(52);
+  padding: to-rem(14) to-rem(30);
+  font-size: to-rem(14);
+  font-weight: $fw-bold;
+  letter-spacing: 0.06em;
+  color: $color-bg;
+  background-color: $color-ink;
+  border: 0;
+  border-radius: $radius-pill;
+  transition: transform $duration-fast $ease, background-color $duration-fast ease, box-shadow $duration-fast ease;
+}
+
+.btn--small {
+  min-height: 44px;
+  padding: to-rem(9) to-rem(20);
+  font-size: to-rem(13);
+}
+
+.btn--accent {
+  color: $color-ink;
+  background-color: $color-accent;
+}
+
+@media (any-hover: hover) {
+  .btn:hover {
+    transform: translateY(-2px);
+    background-color: $color-accent-dark;
+    box-shadow: 0 10px 24px -10px $color-accent-glow;
+  }
+
+  .btn--accent:hover {
+    color: $color-white;
+  }
+}

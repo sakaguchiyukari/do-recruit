@@ -1,0 +1,20 @@
+@use "../global" as *;
+
+// プロフィールカードの並び
+.artists {
+  display: grid;
+  gap: clamp(#{to-rem(16)}, 3vw, #{to-rem(32)});
+  margin-top: clamp(#{to-rem(40)}, 6vw, #{to-rem(72)});
+
+  @include mq-up("md") {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+  }
+}
+
+// 2枚目を少し下げて、整列しすぎない余白のリズムをつくる
+.artists__item--offset {
+  @include mq-up("md") {
+    margin-top: clamp(#{to-rem(32)}, 6vw, #{to-rem(80)});
+  }
+}

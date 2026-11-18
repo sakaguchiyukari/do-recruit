@@ -1,0 +1,40 @@
+@use "../global" as *;
+
+// セクション見出し（番号＋英字タイトル＋リード）
+.section-head {
+  display: grid;
+  gap: to-rem(12);
+  max-width: to-rem(760);
+}
+
+.section-head__num {
+  font-family: $font-mono;
+  font-size: to-rem(12);
+  color: $color-accent;
+
+  &::before {
+    content: "No.";
+    margin-inline-end: 0.25em;
+    color: $color-text-muted;
+  }
+}
+
+.section-head__title {
+  font-family: $font-display;
+  font-size: clamp(#{to-rem(48)}, 9vw, #{to-rem(96)});
+  font-weight: $fw-normal;
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.section-head__lead {
+  margin-top: to-rem(8);
+  font-size: clamp(#{to-rem(15)}, 1.6vw, #{to-rem(17)});
+  color: $color-text-muted;
+}
+
+.section-head--invert .section-head__lead,
+.section-head--invert .section-head__num::before {
+  color: $color-white-muted;
+}

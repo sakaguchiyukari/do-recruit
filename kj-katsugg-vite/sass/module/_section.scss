@@ -1,0 +1,15 @@
+@use "../global" as *;
+
+// セクションの外枠（上下余白と背景）
+.section {
+  padding-block: clamp(#{to-rem(72)}, 10vw, #{to-rem(136)});
+}
+
+.section--tint {
+  background-color: $color-bg-tint;
+}
+
+.section--dark {
+  color: $color-white;
+  background-color: $color-ink;
+}

@@ -1,0 +1,83 @@
+@use "../global" as *;
+
+// グローバルナビ（SP：全画面ドロワー / PC：横並び）
+.nav {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  background-color: $color-bg;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity $duration-fast ease, visibility $duration-fast ease;
+
+  &.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @include mq-up("md") {
+    position: static;
+    display: block;
+    background: none;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.nav__list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: to-rem(24);
+
+  @include mq-up("md") {
+    flex-direction: row;
+    gap: to-rem(32);
+  }
+}
+
+.nav__link {
+  position: relative;
+  font-family: $font-display;
+  font-size: clamp(#{to-rem(36)}, 10vw, #{to-rem(52)});
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+
+  @include mq-up("md") {
+    font-family: $font-base;
+    font-size: to-rem(13);
+    font-weight: $fw-bold;
+    letter-spacing: 0.08em;
+    text-transform: none;
+  }
+
+  // 下線が左から伸びるホバー（PCのみ）
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 to-rem(-4);
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform $duration-fast $ease;
+  }
+}
+
+// ドロワー内の Booking ボタンは大きめに
+.nav__cta {
+  margin-top: to-rem(16);
+
+  @include mq-up("md") {
+    margin-top: 0;
+  }
+}
+
+@media (any-hover: hover) {
+  .nav__link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}

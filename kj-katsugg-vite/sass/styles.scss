@@ -1,0 +1,4 @@
+@use "base";
+@use "module";
+// global（変数・関数・mixin）はスタイルを出力しないので、ここでは @use しない。
+// 各パーツの先頭で @use "../global" as *; して使う。

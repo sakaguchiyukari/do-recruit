@@ -1,0 +1,95 @@
+@use "../global" as *;
+
+// 出演スケジュール（罫線区切りのリスト）
+.schedule {
+  margin-top: clamp(#{to-rem(40)}, 6vw, #{to-rem(72)});
+  border-top: 1px solid $color-border;
+}
+
+.schedule__item {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: to-rem(8) to-rem(24);
+  padding-block: clamp(#{to-rem(20)}, 3vw, #{to-rem(28)});
+  border-bottom: 1px solid $color-border;
+
+  @include mq-up("md") {
+    grid-template-columns: to-rem(144) 1fr to-rem(160) auto;
+    gap: to-rem(32);
+  }
+
+  // ホバー時に左から背景がスライドする
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 to-rem(-12);
+    z-index: -1;
+    background-color: $color-surface;
+    border-radius: $radius;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s $ease;
+  }
+}
+
+.schedule__date {
+  display: grid;
+  grid-row: span 2;
+  min-width: to-rem(72);
+
+  @include mq-up("md") {
+    grid-row: auto;
+  }
+}
+
+.schedule__day {
+  font-family: $font-display;
+  font-size: clamp(#{to-rem(40)}, 5vw, #{to-rem(52)});
+  line-height: 1;
+}
+
+.schedule__month {
+  font-family: $font-mono;
+  font-size: to-rem(11);
+  color: $color-text-muted;
+}
+
+.schedule__event {
+  font-size: to-rem(17);
+  font-weight: $fw-bold;
+  line-height: 1.4;
+}
+
+.schedule__venue {
+  font-size: to-rem(13);
+  color: $color-text-muted;
+}
+
+.schedule__dj {
+  grid-column: 2;
+  font-family: $font-mono;
+  font-size: to-rem(13);
+  color: $color-text-muted;
+
+  @include mq-up("md") {
+    grid-column: auto;
+  }
+}
+
+.schedule__link {
+  grid-column: 2;
+  justify-self: start;
+
+  @include mq-up("md") {
+    grid-column: auto;
+  }
+}
+
+@media (any-hover: hover) {
+  .schedule__item:hover::before {
+    transform: scaleX(1);
+  }
+}

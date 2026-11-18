@@ -1,0 +1,6 @@
+@use "../global" as *;
+
+// ドロワー展開中に背面のスクロールを止める（body に付与）
+.is-scroll-locked {
+  overflow: hidden;
+}

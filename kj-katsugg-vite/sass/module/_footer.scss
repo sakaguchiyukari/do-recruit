@@ -1,0 +1,58 @@
+@use "../global" as *;
+
+.footer {
+  padding-block: to-rem(48) to-rem(104);
+  color: $color-white-muted;
+  background-color: $color-ink;
+  border-top: 1px solid $color-ink-soft;
+
+  @include mq-up("md") {
+    padding-block: to-rem(64);
+  }
+}
+
+.footer__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: to-rem(24) to-rem(40);
+}
+
+.footer__logo {
+  font-family: $font-display;
+  font-size: to-rem(24);
+  letter-spacing: 0.02em;
+  color: $color-white;
+}
+
+.footer__logo-amp {
+  color: $color-accent;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: to-rem(8) to-rem(28);
+  font-size: to-rem(13);
+}
+
+.footer__link {
+  transition: color $duration-fast ease;
+}
+
+.footer__copy {
+  width: 100%;
+  font-family: $font-mono;
+  font-size: to-rem(12);
+
+  @include mq-up("md") {
+    width: auto;
+  }
+}
+
+@media (any-hover: hover) {
+  .footer__link:hover {
+    color: $color-accent;
+  }
+}

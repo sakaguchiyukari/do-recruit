@@ -1,0 +1,87 @@
+/*
+ * iro code. リセットCSS 2025（本番用・コメント軽量版）
+ */
+
+/* ボックスモデル */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* マージンリセット */
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, figure, blockquote, dl, dd {
+  margin: 0;
+  padding: 0;
+}
+
+/* HTML基本設定 */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* body基本設定 */
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* リスト */
+ul, ol {
+  list-style: none;
+}
+
+/* 画像・メディア */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 見出し */
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* 段落 */
+p {
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+/* リンク */
+a {
+  text-decoration: none;
+}
+
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* フォーム */
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input[type="submit"],
+input[type="button"],
+label, button, select {
+  cursor: pointer;
+}
+
+/* アクセシビリティ配慮 */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+    interpolate-size: allow-keywords;
+  }
+}

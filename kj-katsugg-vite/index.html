@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- JS有効時のみフェードインの初期状態を適用（JS無効・失敗時にコンテンツが隠れたままにならないため） -->
+  <script>document.documentElement.classList.add('js-enabled');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
+  <title>KJ &amp; KATSUGG | Hip Hop DJ Unit Official Site</title>
+  <meta name="description" content="DJ KJとDJ KATSUGGのオフィシャルサイト。Hip Hopを軸に、R&amp;B・Soulまで行き来する2人のDJのプロフィール、出演スケジュール、MIX、ブッキングの窓口。">
+
+  <!-- OGP（URLは公開時に差し替え） -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="KJ &amp; KATSUGG | Hip Hop DJ Unit">
+  <meta property="og:description" content="Hip Hopを軸に、いい夜をつくる2人のDJ。">
+  <meta property="og:image" content="https://example.com/images/ogp/ogp.jpg">
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:site_name" content="KJ &amp; KATSUGG">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="./images/icon/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="./images/icon/apple-touch-icon.png">
+
+  <!-- Google Fonts（本文：Noto Sans JP / 英字見出し：Anton） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 開発中は .scss を直接読み込み、ビルド時にViteがCSSへ変換して差し替える -->
+  <link rel="stylesheet" href="./sass/styles.scss">
+  <!-- type="module" はViteの決まり（ダブルクリックで開くと動かない。確認は npm run dev） -->
+  <script type="module" src="./js/script.js" defer></script>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ============================================================
+       Header
+       ============================================================ -->
+  <header class="header js-header">
+    <div class="inner header__bar">
+      <a class="header__logo" href="#top" aria-label="KJ &amp; KATSUGG トップへ">
+        <span class="header__logo-mark" aria-hidden="true"></span>
+        KJ <span class="header__logo-amp">&amp;</span> KATSUGG
+      </a>
+
+      <button class="header__toggle js-nav-toggle" type="button" aria-expanded="false" aria-controls="global-nav">
+        <span class="header__toggle-line" aria-hidden="true"></span>
+        <span class="header__toggle-line" aria-hidden="true"></span>
+        <span class="visually-hidden">メニューを開閉</span>
+      </button>
+
+      <nav class="nav js-nav" id="global-nav" aria-label="グローバルナビゲーション">
+        <ul class="nav__list">
+          <li><a class="nav__link js-nav-link" href="#about">About</a></li>
+          <li><a class="nav__link js-nav-link" href="#schedule">Schedule</a></li>
+          <li><a class="nav__link js-nav-link" href="#mix">Mix</a></li>
+          <li class="nav__cta"><a class="btn btn--small js-nav-link" href="#booking">Booking</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============================================================
+         Hero
+         ============================================================ -->
+    <section class="hero js-hero" id="top" aria-labelledby="hero-title">
+      <div class="inner hero__layout">
+        <div class="hero__text">
+          <p class="hero__eyebrow" data-reveal>Hip Hop / R&amp;B / Soul — DJ Unit</p>
+          <h1 class="hero__title" id="hero-title" data-reveal data-delay="1">
+            <span>DJ KJ</span>
+            <span class="hero__title-amp">&amp;</span>
+            <span>DJ KATSUGG</span>
+          </h1>
+          <p class="hero__lead" data-reveal data-delay="2">
+            ちょうどいい音を、ちょうどいい夜に。<br>
+            Hip Hopを軸に、気分で少し寄り道する2人です。
+          </p>
+          <div class="hero__actions" data-reveal data-delay="3">
+            <a class="btn" href="#booking">出演を依頼する</a>
+            <a class="link-arrow" href="#mix">MIXを聴く</a>
+          </div>
+        </div>
+
+        <!-- CSSで描画するレコード盤（画像不要） -->
+        <div class="hero__visual" data-reveal data-delay="2" aria-hidden="true">
+          <div class="record">
+            <div class="record__label">
+              <span class="record__label-text">NICE<br>WONDER</span>
+            </div>
+          </div>
+          <p class="hero__side-note">Side A — 33⅓ RPM</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Marquee（ジャンルの流れる帯）
+         ============================================================ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span class="marquee__item">Boom Bap</span>
+        <span class="marquee__item">90s Hip Hop</span>
+        <span class="marquee__item">R&amp;B</span>
+        <span class="marquee__item">Neo Soul</span>
+        <span class="marquee__item">Japanese Hip Hop</span>
+        <span class="marquee__item">Trap</span>
+        <span class="marquee__item">Funk</span>
+        <!-- ループ用に同じ並びをもう一度 -->
+        <span class="marquee__item">Boom Bap</span>
+        <span class="marquee__item">90s Hip Hop</span>
+        <span class="marquee__item">R&amp;B</span>
+        <span class="marquee__item">Neo Soul</span>
+        <span class="marquee__item">Japanese Hip Hop</span>
+        <span class="marquee__item">Trap</span>
+        <span class="marquee__item">Funk</span>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         About（2人のプロフィール）
+         ============================================================ -->
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="inner">
+        <header class="section-head" data-reveal>
+          <p class="section-head__num">01</p>
+          <h2 class="section-head__title" id="about-title">About</h2>
+          <p class="section-head__lead">
+            同じレコード棚を漁って育った2人。<br>
+            違うクセを持ち寄って、ひとつの夜にまとめます。
+          </p>
+        </header>
+
+        <div class="artists">
+          <!-- DJ KJ -->
+          <article class="artist artists__item" data-reveal>
+            <figure class="artist__photo">
+              <picture>
+                <source srcset="./images/artist/artist-kj.webp" type="image/webp">
+                <img class="artist__img" src="./images/artist/artist-kj.jpg" alt="DJ KJのプロフィール写真" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <div class="artist__body">
+              <p class="artist__role">Selector / Turntablist</p>
+              <h3 class="artist__name">DJ KJ</h3>
+              <p class="artist__text">
+                90sのBoom Bapを土台に、最新のビートまでを地続きでつなぐスタイル。フロアの温度を見ながら、少しずつ上げていくのが得意。
+              </p>
+              <ul class="tag-list" aria-label="主なジャンル">
+                <li class="tag-list__item">Boom Bap</li>
+                <li class="tag-list__item">90s</li>
+                <li class="tag-list__item">Jazzy</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DJ KATSUGG -->
+          <article class="artist artists__item artists__item--offset" data-reveal data-delay="1">
+            <figure class="artist__photo">
+              <picture>
+                <source srcset="./images/artist/artist-katsugg.webp" type="image/webp">
+                <img class="artist__img" src="./images/artist/artist-katsugg.jpg" alt="DJ KATSUGGのプロフィール写真" width="800" height="1000" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <div class="artist__body">
+              <p class="artist__role">Selector / Party Rocker</p>
+              <h3 class="artist__name">DJ KATSUGG</h3>
+              <p class="artist__text">
+                R&amp;BやNeo Soulを混ぜ込みながら、最後はきっちり踊らせる担当。歌モノとビートの間をなめらかに行き来する選曲が持ち味。
+              </p>
+              <ul class="tag-list" aria-label="主なジャンル">
+                <li class="tag-list__item">R&amp;B</li>
+                <li class="tag-list__item">Neo Soul</li>
+                <li class="tag-list__item">Trap</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Schedule（出演予定）
+         ============================================================ -->
+    <section class="section section--tint" id="schedule" aria-labelledby="schedule-title">
+      <div class="inner">
+        <header class="section-head" data-reveal>
+          <p class="section-head__num">02</p>
+          <h2 class="section-head__title" id="schedule-title">Schedule</h2>
+          <p class="section-head__lead">次に会える場所。詳細は各イベントのページをご確認ください。</p>
+        </header>
+
+        <ol class="schedule">
+          <li class="schedule__item" data-reveal>
+            <time class="schedule__date" datetime="2026-12-05">
+              <span class="schedule__day">05</span>
+              <span class="schedule__month">Dec 2026 / Sat</span>
+            </time>
+            <div class="schedule__info">
+              <p class="schedule__event">EVENT NAME 01</p>
+              <p class="schedule__venue">VENUE NAME — City</p>
+            </div>
+            <p class="schedule__dj">KJ / KATSUGG</p>
+            <a class="link-arrow schedule__link" href="#" aria-label="EVENT NAME 01 の詳細を見る">Info</a>
+          </li>
+
+          <li class="schedule__item" data-reveal data-delay="1">
+            <time class="schedule__date" datetime="2026-12-19">
+              <span class="schedule__day">19</span>
+              <span class="schedule__month">Dec 2026 / Sat</span>
+            </time>
+            <div class="schedule__info">
+              <p class="schedule__event">EVENT NAME 02</p>
+              <p class="schedule__venue">VENUE NAME — City</p>
+            </div>
+            <p class="schedule__dj">KJ</p>
+            <a class="link-arrow schedule__link" href="#" aria-label="EVENT NAME 02 の詳細を見る">Info</a>
+          </li>
+
+          <li class="schedule__item" data-reveal data-delay="2">
+            <time class="schedule__date" datetime="2026-12-31">
+              <span class="schedule__day">31</span>
+              <span class="schedule__month">Dec 2026 / Thu</span>
+            </time>
+            <div class="schedule__info">
+              <p class="schedule__event">COUNTDOWN PARTY</p>
+              <p class="schedule__venue">VENUE NAME — City</p>
+            </div>
+            <p class="schedule__dj">KJ / KATSUGG</p>
+            <a class="link-arrow schedule__link" href="#" aria-label="COUNTDOWN PARTY の詳細を見る">Info</a>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Mix（MIX音源）
+         ============================================================ -->
+    <section class="section" id="mix" aria-labelledby="mix-title">
+      <div class="inner">
+        <header class="section-head" data-reveal>
+          <p class="section-head__num">03</p>
+          <h2 class="section-head__title" id="mix-title">Mix</h2>
+          <p class="section-head__lead">作業中にも、移動中にも。気軽に流してください。</p>
+        </header>
+
+        <div class="mix-grid">
+          <article class="mix-card mix-grid__item" data-reveal>
+            <a class="mix-card__link" href="#">
+              <figure class="mix-card__cover">
+                <picture>
+                  <source srcset="./images/mix/mix-01.webp" type="image/webp">
+                  <img class="mix-card__img" src="./images/mix/mix-01.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                </picture>
+                <span class="mix-card__play" aria-hidden="true"></span>
+              </figure>
+              <div class="mix-card__body">
+                <p class="mix-card__meta">Vol.01 — by KJ / 60min</p>
+                <h3 class="mix-card__title">Late Night Boom Bap</h3>
+              </div>
+            </a>
+          </article>
+
+          <article class="mix-card mix-grid__item" data-reveal data-delay="1">
+            <a class="mix-card__link" href="#">
+              <figure class="mix-card__cover">
+                <picture>
+                  <source srcset="./images/mix/mix-02.webp" type="image/webp">
+                  <img class="mix-card__img" src="./images/mix/mix-02.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                </picture>
+                <span class="mix-card__play" aria-hidden="true"></span>
+              </figure>
+              <div class="mix-card__body">
+                <p class="mix-card__meta">Vol.02 — by KATSUGG / 45min</p>
+                <h3 class="mix-card__title">Sunday R&amp;B Drive</h3>
+              </div>
+            </a>
+          </article>
+
+          <article class="mix-card mix-grid__item" data-reveal data-delay="2">
+            <a class="mix-card__link" href="#">
+              <figure class="mix-card__cover">
+                <picture>
+                  <source srcset="./images/mix/mix-03.webp" type="image/webp">
+                  <img class="mix-card__img" src="./images/mix/mix-03.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                </picture>
+                <span class="mix-card__play" aria-hidden="true"></span>
+              </figure>
+              <div class="mix-card__body">
+                <p class="mix-card__meta">Vol.03 — B2B / 90min</p>
+                <h3 class="mix-card__title">Back to Back Session</h3>
+              </div>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Booking（出演依頼フォーム）
+         ※ 静的サイトのため送信先は未確定。action は仮置き。
+         ============================================================ -->
+    <section class="section section--dark" id="booking" aria-labelledby="booking-title">
+      <div class="inner booking">
+        <header class="section-head section-head--invert booking__head" data-reveal>
+          <p class="section-head__num">04</p>
+          <h2 class="section-head__title" id="booking-title">Booking</h2>
+          <p class="section-head__lead">
+            クラブ、バー、ポップアップ、ウェディングの二次会まで。<br>
+            まずは気軽にご相談ください。
+          </p>
+          <a class="link-arrow link-arrow--invert booking__dm" href="https://www.instagram.com/nicewonder096/" target="_blank" rel="noopener noreferrer">Instagram の DM でも受付中</a>
+        </header>
+
+        <form class="form js-form" action="#" method="post" novalidate data-reveal data-delay="1">
+          <div class="form__row">
+            <div class="form__field">
+              <label class="form__label" for="booking-name">お名前 <span class="form__required">必須</span></label>
+              <input class="form__input" type="text" id="booking-name" name="name" placeholder="山田 太郎" autocomplete="name" required maxlength="50">
+              <p class="form__error" id="booking-name-error"></p>
+            </div>
+            <div class="form__field">
+              <label class="form__label" for="booking-email">メールアドレス <span class="form__required">必須</span></label>
+              <input class="form__input" type="email" id="booking-email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email" required maxlength="100">
+              <p class="form__error" id="booking-email-error"></p>
+            </div>
+          </div>
+
+          <div class="form__row">
+            <div class="form__field">
+              <label class="form__label" for="booking-date">開催予定日</label>
+              <input class="form__input" type="date" id="booking-date" name="date" min="2026-01-01">
+            </div>
+            <div class="form__field">
+              <label class="form__label" for="booking-dj">ご希望のDJ <span class="form__required">必須</span></label>
+              <select class="form__input form__select" id="booking-dj" name="dj" required>
+                <option value="">選択してください</option>
+                <option value="both">KJ &amp; KATSUGG（2人で）</option>
+                <option value="kj">DJ KJ</option>
+                <option value="katsugg">DJ KATSUGG</option>
+                <option value="undecided">相談したい</option>
+              </select>
+              <p class="form__error" id="booking-dj-error"></p>
+            </div>
+          </div>
+
+          <div class="form__field">
+            <label class="form__label" for="booking-venue">会場・エリア</label>
+            <input class="form__input" type="text" id="booking-venue" name="venue" placeholder="例：〇〇市のバー／約50名" maxlength="100">
+          </div>
+
+          <div class="form__field">
+            <label class="form__label" for="booking-message">ご依頼内容 <span class="form__required">必須</span></label>
+            <textarea class="form__input form__textarea" id="booking-message" name="message" rows="5" placeholder="イベントの雰囲気、時間帯、ご予算感などをお書きください" required minlength="10" maxlength="1000"></textarea>
+            <p class="form__error" id="booking-message-error"></p>
+          </div>
+
+          <div class="form__field">
+            <label class="form__check" for="booking-agree">
+              <input class="form__checkbox" type="checkbox" id="booking-agree" name="agree" required>
+              <span>入力内容を連絡の目的のみに利用することに同意します</span>
+            </label>
+            <p class="form__error" id="booking-agree-error"></p>
+          </div>
+
+          <button class="btn btn--accent form__submit" type="submit">この内容で送る</button>
+          <p class="form__status js-form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       Footer
+       ============================================================ -->
+  <footer class="footer">
+    <div class="inner footer__body">
+      <p class="footer__logo">KJ <span class="footer__logo-amp">&amp;</span> KATSUGG</p>
+      <ul class="footer__links">
+        <li><a class="footer__link" href="https://www.instagram.com/nicewonder096/" target="_blank" rel="noopener noreferrer">Instagram @nicewonder096</a></li>
+        <li><a class="footer__link" href="#booking">Booking</a></li>
+      </ul>
+      <p class="footer__copy"><small>&copy; 2026 KJ &amp; KATSUGG</small></p>
+    </div>
+  </footer>
+
+  <!-- SP固定CTA（ヒーロー通過後に表示 / Booking表示中は隠す） -->
+  <a class="fixed-cta js-fixed-cta" href="#booking">Booking</a>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+@use "../global" as *;
+
+// スクロールでフェードイン（[data-reveal] を JS が監視して .is-revealed を付与）
+// .js-enabled が付いたときだけ隠す → JS無効・失敗時は常に表示される
+.js-enabled [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition: opacity $duration $ease, transform $duration $ease;
+  transition-delay: calc(var(--delay, 0) * 0.12s);
+
+  @include reduced-motion {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.js-enabled [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+// 連続要素の遅延（data-delay の数値 → --delay）
+[data-delay="1"] {
+  --delay: 1;
+}
+
+[data-delay="2"] {
+  --delay: 2;
+}
+
+[data-delay="3"] {
+  --delay: 3;
+}

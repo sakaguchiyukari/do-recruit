@@ -1,0 +1,67 @@
+@use "../global" as *;
+
+// DJプロフィールカード
+.artist {
+  display: grid;
+  overflow: hidden;
+  background-color: $color-surface;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  transition: transform 0.5s $ease, box-shadow 0.5s $ease;
+}
+
+.artist__photo {
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background-color: $color-bg-tint;
+
+  @include mq-up("sm") {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+.artist__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.05);
+  transition: transform 0.8s $ease, filter 0.6s ease;
+}
+
+.artist__body {
+  display: grid;
+  gap: to-rem(10);
+  padding: clamp(#{to-rem(24)}, 4vw, #{to-rem(36)});
+}
+
+.artist__role {
+  font-family: $font-mono;
+  font-size: to-rem(12);
+  color: $color-text-muted;
+}
+
+.artist__name {
+  font-family: $font-display;
+  font-size: clamp(#{to-rem(30)}, 3.6vw, #{to-rem(40)});
+  font-weight: $fw-normal;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.artist__text {
+  max-width: 36em;
+  color: $color-text-muted;
+}
+
+@media (any-hover: hover) {
+  .artist:hover {
+    transform: translateY(-6px);
+    box-shadow: $shadow-hover;
+  }
+
+  // ホバーで写真にだけ色が戻る
+  .artist:hover .artist__img {
+    filter: grayscale(0%);
+    transform: scale(1.04);
+  }
+}

@@ -1,0 +1,46 @@
+@use "sass:map";
+@use "variables" as *;
+
+// ================================================
+// メディアクエリのミックスイン
+// ================================================
+
+// 「〇〇px以上」のmixin
+@mixin mq-up($size: md) {
+  @media screen and (min-width: #{map.get($breakpoints, $size)}px) {
+    @content;
+  }
+}
+
+// 「〇〇px未満」のmixin
+@mixin mq-down($size) {
+  @media not all and (min-width: #{map.get($breakpoints, $size)}px) {
+    @content;
+  }
+}
+
+// 「動きを減らす」設定のユーザー向け（アニメーション停止に使う）
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+// ================================================
+// ユーティリティクラス
+// ================================================
+
+/* PCとSPの表示非表示の切り替え */
+/*(md)px以上で表示*/
+.pc-only {
+  @include mq-down(md) {
+    display: none;
+  }
+}
+
+/*モバイルのみ表示*/
+.sp-only {
+  @include mq-up(md) {
+    display: none;
+  }
+}
