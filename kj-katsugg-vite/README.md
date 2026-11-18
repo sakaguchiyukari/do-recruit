@@ -27,5 +27,5 @@ npm run preview # dist/ の確認
 | `images/ogp/ogp.jpg` | OGP画像（1200×630） |
 | About のプロフィール文・ジャンルタグ | 仮テキスト |
 | Schedule / Mix の `href="#"` | イベントページ・SoundCloud等のURL |
-| `og:url` / `og:image` | 公開URL（絶対URL） |
+| 公開URL | https://nicewonderkumamoto.com/（og:url / og:image / canonical 設定済み） |
 | レコードのラベル「NICE WONDER」 | Instagram ID からの仮置き |
