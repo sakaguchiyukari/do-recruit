@@ -105,68 +105,6 @@
   };
 
   /* ------------------------------------------------------------------------
-     Form：HTML標準のバリデーションを使い、エラー文言だけ日本語で表示
-     ※ 送信先は未確定。action 確定後に submit 処理を差し替える
-     ------------------------------------------------------------------------ */
-  const initFormValidation = () => {
-    const form = document.querySelector('.js-form');
-    if (!form) return;
-
-    const status = form.querySelector('.js-form-status');
-    const fields = form.querySelectorAll('input[required], select[required], textarea[required]');
-
-    const getMessage = (field) => {
-      const { validity } = field;
-      if (validity.valueMissing) {
-        return field.type === 'checkbox' ? '同意が必要です' : '入力してください';
-      }
-      if (validity.typeMismatch) return '形式が正しくありません（例：you@example.com）';
-      if (validity.tooShort) return `${field.minLength}文字以上で入力してください`;
-      if (validity.tooLong) return `${field.maxLength}文字以内で入力してください`;
-      return '入力内容を確認してください';
-    };
-
-    const validateField = (field) => {
-      const error = form.querySelector(`#${field.id}-error`);
-      const isValid = field.checkValidity();
-      field.setAttribute('aria-invalid', String(!isValid));
-      if (error) {
-        error.textContent = isValid ? '' : getMessage(field);
-        if (!isValid) field.setAttribute('aria-describedby', error.id);
-      }
-      return isValid;
-    };
-
-    // 一度触った項目だけリアルタイムに再判定する
-    fields.forEach((field) => {
-      const eventName = field.type === 'checkbox' || field.tagName === 'SELECT' ? 'change' : 'blur';
-      field.addEventListener(eventName, () => validateField(field));
-      field.addEventListener('input', () => {
-        if (field.getAttribute('aria-invalid') === 'true') validateField(field);
-      });
-    });
-
-    form.addEventListener('submit', (event) => {
-      const results = Array.from(fields).map(validateField);
-      const firstInvalid = Array.from(fields).find((_, i) => !results[i]);
-
-      if (firstInvalid) {
-        event.preventDefault();
-        firstInvalid.focus();
-        if (status) status.textContent = '未入力・誤りのある項目があります。';
-        return;
-      }
-
-      // 送信先が未設定（action="#"）の間はデモ表示にとどめる
-      if (form.getAttribute('action') === '#') {
-        event.preventDefault();
-        if (status) status.textContent = 'ありがとうございます。送信先の設定後に実際に送信されます。';
-        form.reset();
-      }
-    });
-  };
-
-  /* ------------------------------------------------------------------------
      Boot：1機能の失敗でページ全体を壊さない
      ------------------------------------------------------------------------ */
   const boot = () => {
@@ -174,7 +112,6 @@
       ['scroll-reveal', initScrollReveal],
       ['header-state', initHeaderState],
       ['drawer', initDrawer],
-      ['form-validation', initFormValidation],
     ].forEach(([name, init]) => {
       try {
         init();

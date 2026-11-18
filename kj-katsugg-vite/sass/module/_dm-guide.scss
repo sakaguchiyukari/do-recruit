@@ -1,0 +1,56 @@
+@use "../global" as *;
+
+// Instagram DM の案内カード（暗い面の上に置く前提）
+.dm-guide {
+  display: grid;
+  gap: to-rem(24);
+  padding: clamp(#{to-rem(24)}, 4vw, #{to-rem(44)});
+  background-color: $color-ink-soft;
+  border-radius: $radius-lg;
+}
+
+.dm-guide__heading {
+  font-size: to-rem(14);
+  font-weight: $fw-bold;
+  letter-spacing: 0.06em;
+  color: $color-white-muted;
+}
+
+.dm-guide__list {
+  display: grid;
+  border-top: 1px solid $color-ink-line;
+}
+
+.dm-guide__item {
+  display: flex;
+  align-items: baseline;
+  gap: to-rem(16);
+  padding-block: to-rem(16);
+  border-bottom: 1px solid $color-ink-line;
+}
+
+.dm-guide__num {
+  flex-shrink: 0;
+  font-family: $font-display;
+  font-size: to-rem(22);
+  line-height: 1;
+  color: $color-accent;
+}
+
+.dm-guide__text {
+  font-size: to-rem(15);
+  line-height: 1.6;
+}
+
+.dm-guide__button {
+  justify-self: stretch;
+  min-height: to-rem(60);
+  font-size: to-rem(15);
+}
+
+.dm-guide__handle {
+  font-family: $font-mono;
+  font-size: to-rem(12);
+  text-align: center;
+  color: $color-white-muted;
+}

@@ -301,75 +301,38 @@
     </section>
 
     <!-- ============================================================
-         Booking（出演依頼フォーム）
-         ※ 静的サイトのため送信先は未確定。action は仮置き。
+         Booking（Instagram DM のみで受付）
          ============================================================ -->
     <section class="section section--dark" id="booking" aria-labelledby="booking-title">
       <div class="inner booking">
-        <header class="section-head section-head--invert booking__head" data-reveal>
+        <header class="section-head section-head--invert" data-reveal>
           <p class="section-head__num">04</p>
           <h2 class="section-head__title" id="booking-title">Booking</h2>
           <p class="section-head__lead">
             クラブ、バー、ポップアップ、ウェディングの二次会まで。<br>
-            まずは気軽にご相談ください。
+            ご依頼・ご相談は Instagram の DM で受け付けています。
           </p>
-          <a class="link-arrow link-arrow--invert booking__dm" href="https://www.instagram.com/nicewonder096/" target="_blank" rel="noopener noreferrer">Instagram の DM でも受付中</a>
         </header>
 
-        <form class="form js-form" action="#" method="post" novalidate data-reveal data-delay="1">
-          <div class="form__row">
-            <div class="form__field">
-              <label class="form__label" for="booking-name">お名前 <span class="form__required">必須</span></label>
-              <input class="form__input" type="text" id="booking-name" name="name" placeholder="山田 太郎" autocomplete="name" required maxlength="50">
-              <p class="form__error" id="booking-name-error"></p>
-            </div>
-            <div class="form__field">
-              <label class="form__label" for="booking-email">メールアドレス <span class="form__required">必須</span></label>
-              <input class="form__input" type="email" id="booking-email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email" required maxlength="100">
-              <p class="form__error" id="booking-email-error"></p>
-            </div>
-          </div>
-
-          <div class="form__row">
-            <div class="form__field">
-              <label class="form__label" for="booking-date">開催予定日</label>
-              <input class="form__input" type="date" id="booking-date" name="date" min="2026-01-01">
-            </div>
-            <div class="form__field">
-              <label class="form__label" for="booking-dj">ご希望のDJ <span class="form__required">必須</span></label>
-              <select class="form__input form__select" id="booking-dj" name="dj" required>
-                <option value="">選択してください</option>
-                <option value="both">KJ &amp; KATSUGG（2人で）</option>
-                <option value="kj">DJ KJ</option>
-                <option value="katsugg">DJ KATSUGG</option>
-                <option value="undecided">相談したい</option>
-              </select>
-              <p class="form__error" id="booking-dj-error"></p>
-            </div>
-          </div>
-
-          <div class="form__field">
-            <label class="form__label" for="booking-venue">会場・エリア</label>
-            <input class="form__input" type="text" id="booking-venue" name="venue" placeholder="例：〇〇市のバー／約50名" maxlength="100">
-          </div>
-
-          <div class="form__field">
-            <label class="form__label" for="booking-message">ご依頼内容 <span class="form__required">必須</span></label>
-            <textarea class="form__input form__textarea" id="booking-message" name="message" rows="5" placeholder="イベントの雰囲気、時間帯、ご予算感などをお書きください" required minlength="10" maxlength="1000"></textarea>
-            <p class="form__error" id="booking-message-error"></p>
-          </div>
-
-          <div class="form__field">
-            <label class="form__check" for="booking-agree">
-              <input class="form__checkbox" type="checkbox" id="booking-agree" name="agree" required>
-              <span>入力内容を連絡の目的のみに利用することに同意します</span>
-            </label>
-            <p class="form__error" id="booking-agree-error"></p>
-          </div>
-
-          <button class="btn btn--accent form__submit" type="submit">この内容で送る</button>
-          <p class="form__status js-form-status" role="status" aria-live="polite"></p>
-        </form>
+        <div class="dm-guide" data-reveal data-delay="1">
+          <p class="dm-guide__heading">DMで教えてほしいこと</p>
+          <ol class="dm-guide__list">
+            <li class="dm-guide__item">
+              <span class="dm-guide__num" aria-hidden="true">01</span>
+              <span class="dm-guide__text">開催日と時間帯</span>
+            </li>
+            <li class="dm-guide__item">
+              <span class="dm-guide__num" aria-hidden="true">02</span>
+              <span class="dm-guide__text">会場・エリアとおおよその人数</span>
+            </li>
+            <li class="dm-guide__item">
+              <span class="dm-guide__num" aria-hidden="true">03</span>
+              <span class="dm-guide__text">イベントの雰囲気と、ご希望のDJ（2人 / KJ / KATSUGG）</span>
+            </li>
+          </ol>
+          <a class="btn btn--accent dm-guide__button" href="https://ig.me/m/nicewonder096" target="_blank" rel="noopener noreferrer">Instagram で DM を送る</a>
+          <p class="dm-guide__handle">@nicewonder096</p>
+        </div>
       </div>
     </section>
 
