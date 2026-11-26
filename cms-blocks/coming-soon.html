@@ -1,0 +1,672 @@
+<!-- ==========================================================================
+  Coming Soon ブロック（接頭辞：soon-）
+  CMS HTMLブロック用：HTML → CSS → JS の順に1ブロックへ集約
+  ・h1はCMSが出力するため、ブロック内はh2から開始
+  ・写真は不使用（イラストはHTML + CSSで描画）
+========================================================================== -->
+
+<!-- ===== セクション：Coming Soon 本体 ===== -->
+<section class="soon" aria-labelledby="soon-title">
+  <div class="soon__inner">
+
+    <!-- ----- イラスト：芽が育つ植木鉢（装飾のため読み上げ対象外） ----- -->
+    <div class="soon__visual soon-fade" aria-hidden="true">
+      <div class="soon-plant">
+        <span class="soon-plant__halo"></span>
+        <span class="soon-plant__spark soon-plant__spark--1"></span>
+        <span class="soon-plant__spark soon-plant__spark--2"></span>
+        <span class="soon-plant__spark soon-plant__spark--3"></span>
+        <div class="soon-plant__sprout">
+          <span class="soon-plant__stem"></span>
+          <span class="soon-plant__leaf soon-plant__leaf--left"></span>
+          <span class="soon-plant__leaf soon-plant__leaf--right"></span>
+          <span class="soon-plant__bud"></span>
+        </div>
+        <span class="soon-plant__soil"></span>
+        <span class="soon-plant__pot"></span>
+        <span class="soon-plant__shadow"></span>
+      </div>
+    </div>
+
+    <!-- ----- テキスト ----- -->
+    <div class="soon__body">
+      <p class="soon__eyebrow soon-fade">
+        <span class="soon__eyebrow-dot" aria-hidden="true"></span>
+        Coming Soon
+      </p>
+
+      <h2 id="soon-title" class="soon__title soon-fade">
+        ただいま、<br>準備をすすめています。
+      </h2>
+
+      <p class="soon__lead soon-fade">
+        このページは現在制作中です。<br>
+        準備が整い次第、こちらで公開いたします。<br>
+        もうしばらくお待ちください。
+      </p>
+
+      <!-- ----- 進捗ステップ（カードUI） ----- -->
+      <ol class="soon-steps soon-fade" aria-label="公開までの進み具合">
+        <li class="soon-steps__item soon-steps__item--done">
+          <span class="soon-steps__icon" aria-hidden="true"></span>
+          <span class="soon-steps__label">内容の整理</span>
+          <span class="soon-steps__status">完了</span>
+        </li>
+        <li class="soon-steps__item soon-steps__item--current" aria-current="step">
+          <span class="soon-steps__icon" aria-hidden="true"></span>
+          <span class="soon-steps__label">ページ制作</span>
+          <span class="soon-steps__status">
+            進行中<span class="soon-steps__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+          </span>
+        </li>
+        <li class="soon-steps__item">
+          <span class="soon-steps__icon" aria-hidden="true"></span>
+          <span class="soon-steps__label">公開</span>
+          <span class="soon-steps__status">まもなく</span>
+        </li>
+      </ol>
+
+      <!-- ----- CTA（リンク先は仮。運用に合わせて変更） ----- -->
+      <div class="soon__actions soon-fade">
+        <a class="soon-btn soon-btn--primary" href="/">
+          <span class="soon-btn__text">トップページへ戻る</span>
+          <span class="soon-btn__arrow" aria-hidden="true"></span>
+        </a>
+        <a class="soon-btn soon-btn--ghost" href="/contact/">
+          <span class="soon-btn__text">お問い合わせ</span>
+          <span class="soon-btn__arrow" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+/* ==========================================================================
+   ページ背景の上書き（このブロックがあるページのみ）
+   ※ CSS変数はブロック内でしか参照できないため、ここだけ値を直接指定
+========================================================================== */
+html:has(.soon),
+html:has(.soon) body {
+  background-color: #f7f8f9 !important;
+}
+
+/* ==========================================================================
+   ブロック親：CSS変数管理
+========================================================================== */
+.soon {
+  /* --- Color --- */
+  --soon-navy: #0b2545;
+  --soon-navy-soft: #1c3a5e;
+  --soon-blue: #1b6ca8;
+  --soon-blue-pale: #edf4fa;
+  --soon-green: #2e6e4f;
+  --soon-green-light: #8fc4a6;
+  --soon-green-pale: #eef5f1;
+  --soon-clay: #c98a5e;
+  --soon-clay-deep: #a86c44;
+  --soon-soil: #5a4033;
+  --soon-white: #ffffff;
+  --soon-text: #1f2a37;
+  --soon-text-sub: #5b6675;
+  --soon-line: #e3e7ec;
+
+  /* --- Spacing（clampで自然に可変） --- */
+  --soon-pad-block: clamp(3.5rem, 2.5rem + 5vw, 7rem);
+  --soon-pad-inline: clamp(1.25rem, 0.75rem + 2.5vw, 2.5rem);
+  --soon-gap: clamp(2rem, 1rem + 4vw, 4.5rem);
+  --soon-stack: clamp(1rem, 0.8rem + 0.8vw, 1.5rem);
+
+  /* --- Type --- */
+  --soon-fs-eyebrow: clamp(0.75rem, 0.7rem + 0.2vw, 0.8125rem);
+  --soon-fs-title: clamp(1.625rem, 1.2rem + 2vw, 2.5rem);
+  --soon-fs-lead: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --soon-fs-small: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
+
+  /* --- Shape / Motion --- */
+  --soon-radius: 20px;
+  --soon-radius-pill: 999px;
+  --soon-shadow: 0 1px 2px rgb(11 37 69 / 0.04), 0 12px 32px -12px rgb(11 37 69 / 0.16);
+  --soon-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  padding: var(--soon-pad-block) var(--soon-pad-inline);
+  color: var(--soon-text);
+  overflow: hidden;
+}
+
+/* ブロック内の余白だけをリセット（詳細度0なのでBEM側で上書きしやすい） */
+.soon :where(h2, h3, p, ol, ul, li, figure) {
+  margin: 0;
+  padding: 0;
+}
+.soon :where(ol, ul) {
+  list-style: none;
+}
+.soon *,
+.soon *::before,
+.soon *::after {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   レイアウト（SPファースト）
+========================================================================== */
+.soon__inner {
+  display: grid;
+  gap: var(--soon-gap);
+  max-width: 1040px;
+  margin-inline: auto;
+  align-items: center;
+}
+
+.soon__visual {
+  display: grid;
+  place-items: center;
+}
+
+.soon__body {
+  display: grid;
+  gap: var(--soon-stack);
+  max-width: 34rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* タブレット以上：横並び */
+@media (min-width: 768px) {
+  .soon__inner {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+  .soon__body {
+    margin-inline: 0;
+    text-align: left;
+  }
+}
+
+/* ==========================================================================
+   テキスト
+========================================================================== */
+.soon__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-self: center;
+  gap: 0.6em;
+  padding: 0.5em 1.1em;
+  border: 1px solid var(--soon-line);
+  border-radius: var(--soon-radius-pill);
+  background: var(--soon-white);
+  color: var(--soon-green);
+  font-size: var(--soon-fs-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+@media (min-width: 768px) {
+  .soon__eyebrow {
+    justify-self: start;
+  }
+}
+
+/* 点滅するステータスドット */
+.soon__eyebrow-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--soon-green);
+}
+.soon__eyebrow-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--soon-green);
+  animation: soon-ping 2s var(--soon-ease) infinite;
+}
+
+.soon__title {
+  color: var(--soon-navy);
+  font-size: var(--soon-fs-title);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  word-break: auto-phrase; /* 対応ブラウザでは文節単位で改行 */
+}
+
+.soon__lead {
+  color: var(--soon-text-sub);
+  font-size: var(--soon-fs-lead);
+  line-height: 2;
+  letter-spacing: 0.03em;
+}
+
+/* ==========================================================================
+   進捗ステップ（カードUI）
+========================================================================== */
+.soon-steps {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--soon-line);
+  border-radius: var(--soon-radius);
+  background: rgb(255 255 255 / 0.8);
+  box-shadow: var(--soon-shadow);
+  text-align: left;
+}
+
+.soon-steps__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  border-radius: calc(var(--soon-radius) - 8px);
+  font-size: var(--soon-fs-small);
+  transition: background-color 0.3s var(--soon-ease), transform 0.3s var(--soon-ease);
+}
+.soon-steps__item:hover {
+  background: var(--soon-blue-pale);
+  transform: translateX(4px);
+}
+
+/* アイコン：未着手 = 空丸 */
+.soon-steps__icon {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--soon-line);
+  border-radius: 50%;
+}
+
+.soon-steps__label {
+  color: var(--soon-text);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.soon-steps__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--soon-text-sub);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+/* 完了：塗り丸 + チェック */
+.soon-steps__item--done .soon-steps__icon {
+  border-color: var(--soon-green);
+  background: var(--soon-green);
+}
+.soon-steps__item--done .soon-steps__icon::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid var(--soon-white);
+  border-bottom: 2px solid var(--soon-white);
+  transform: rotate(45deg);
+}
+.soon-steps__item--done .soon-steps__status {
+  color: var(--soon-green);
+}
+
+/* 進行中：回転リング */
+.soon-steps__item--current {
+  background: var(--soon-green-pale);
+}
+.soon-steps__item--current .soon-steps__icon {
+  border-color: var(--soon-green-light);
+  border-top-color: var(--soon-green);
+  animation: soon-spin 1.2s linear infinite;
+}
+.soon-steps__item--current .soon-steps__status {
+  color: var(--soon-green);
+  font-weight: 600;
+}
+
+/* 進行中の「…」 */
+.soon-steps__dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.soon-steps__dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: soon-dot 1.4s ease-in-out infinite;
+}
+.soon-steps__dots span:nth-child(2) { animation-delay: 0.2s; }
+.soon-steps__dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* ==========================================================================
+   CTAボタン（SPでは縦積み・全幅で埋もれさせない）
+========================================================================== */
+.soon__actions {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+@media (min-width: 480px) {
+  .soon__actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.soon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  min-height: 56px;
+  padding: 0.9em 1.5em;
+  border: 1.5px solid var(--soon-navy);
+  border-radius: var(--soon-radius-pill);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition:
+    background-color 0.3s var(--soon-ease),
+    color 0.3s var(--soon-ease),
+    transform 0.3s var(--soon-ease),
+    box-shadow 0.3s var(--soon-ease);
+}
+.soon-btn--primary {
+  background: var(--soon-navy);
+  color: var(--soon-white);
+}
+.soon-btn--ghost {
+  background: transparent;
+  color: var(--soon-navy);
+}
+
+/* 矢印（CSS描画） */
+.soon-btn__arrow {
+  position: relative;
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.3s var(--soon-ease);
+}
+.soon-btn__arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* ホバー（マウス操作環境のみ） */
+@media (hover: hover) {
+  .soon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -10px rgb(11 37 69 / 0.45);
+  }
+  .soon-btn--primary:hover {
+    background: var(--soon-navy-soft);
+    border-color: var(--soon-navy-soft);
+  }
+  .soon-btn--ghost:hover {
+    background: var(--soon-navy);
+    color: var(--soon-white);
+  }
+  .soon-btn:hover .soon-btn__arrow {
+    transform: translateX(4px);
+  }
+}
+.soon-btn:focus-visible {
+  outline: 3px solid var(--soon-blue);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   イラスト：植木鉢と芽（HTML + CSSのみ）
+========================================================================== */
+.soon-plant {
+  position: relative;
+  width: clamp(200px, 150px + 16vw, 320px);
+  aspect-ratio: 1 / 1;
+}
+
+/* 背景の光輪 */
+.soon-plant__halo {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, var(--soon-white) 0%, transparent 60%),
+    linear-gradient(160deg, var(--soon-blue-pale), var(--soon-green-pale));
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.8);
+}
+
+/* 鉢 */
+.soon-plant__pot {
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  width: 40%;
+  height: 26%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--soon-clay-deep), var(--soon-clay) 40%, var(--soon-clay-deep));
+  clip-path: polygon(0 0, 100% 0, 86% 100%, 14% 100%);
+}
+/* 鉢のふち */
+.soon-plant__pot::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22%;
+  background: rgb(255 255 255 / 0.18);
+}
+
+/* 土 */
+.soon-plant__soil {
+  position: absolute;
+  left: 50%;
+  bottom: 38%;
+  z-index: 1;
+  width: 36%;
+  height: 5%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--soon-soil);
+}
+
+/* 影 */
+.soon-plant__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 11%;
+  width: 38%;
+  height: 4%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgb(11 37 69 / 0.12);
+  filter: blur(3px);
+}
+
+/* 芽（揺れの基点を根元にする） */
+.soon-plant__sprout {
+  position: absolute;
+  left: 50%;
+  bottom: 40%;
+  z-index: 2;
+  width: 40%;
+  height: 34%;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+  animation: soon-sway 4.5s ease-in-out infinite;
+}
+
+.soon-plant__stem {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 4px;
+  height: 78%;
+  transform: translateX(-50%);
+  border-radius: 4px;
+  background: var(--soon-green);
+}
+
+.soon-plant__leaf {
+  position: absolute;
+  bottom: 42%;
+  width: 42%;
+  height: 30%;
+  background: linear-gradient(135deg, var(--soon-green-light), var(--soon-green));
+}
+.soon-plant__leaf--left {
+  right: 50%;
+  border-radius: 100% 0 100% 0;
+  transform-origin: 100% 100%;
+  animation: soon-leaf-left 4.5s ease-in-out infinite;
+}
+.soon-plant__leaf--right {
+  left: 50%;
+  bottom: 56%;
+  border-radius: 0 100% 0 100%;
+  transform-origin: 0 100%;
+  animation: soon-leaf-right 4.5s ease-in-out infinite;
+}
+
+/* つぼみ */
+.soon-plant__bud {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 14%;
+  aspect-ratio: 1 / 1.2;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(circle at 40% 35%, #f6d9a8, #e0a85e);
+}
+
+/* きらめき（4方向の十字） */
+.soon-plant__spark {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: var(--soon-blue);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  opacity: 0.7;
+  animation: soon-twinkle 3s ease-in-out infinite;
+}
+.soon-plant__spark--1 { top: 18%; left: 20%; }
+.soon-plant__spark--2 { top: 12%; right: 22%; width: 10px; height: 10px; background: var(--soon-green); animation-delay: 1s; }
+.soon-plant__spark--3 { top: 42%; right: 12%; width: 8px; height: 8px; animation-delay: 2s; }
+
+/* ==========================================================================
+   フェードイン（JSが .is-ready を付けたときのみ初期状態を隠す）
+   → JSが動かない環境でも内容は必ず表示される
+========================================================================== */
+.soon.is-ready .soon-fade {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.9s var(--soon-ease), transform 0.9s var(--soon-ease);
+}
+.soon.is-ready .soon-fade.is-visible {
+  opacity: 1;
+  transform: none;
+}
+/* 上から順に少しずつ遅らせて表示 */
+.soon.is-ready .soon__body > .soon-fade:nth-child(2) { transition-delay: 0.08s; }
+.soon.is-ready .soon__body > .soon-fade:nth-child(3) { transition-delay: 0.16s; }
+.soon.is-ready .soon__body > .soon-fade:nth-child(4) { transition-delay: 0.24s; }
+.soon.is-ready .soon__body > .soon-fade:nth-child(5) { transition-delay: 0.32s; }
+
+/* ==========================================================================
+   Keyframes
+========================================================================== */
+@keyframes soon-ping {
+  0%   { transform: scale(1); opacity: 0.6; }
+  80%, 100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes soon-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes soon-dot {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40%           { opacity: 1; transform: translateY(-2px); }
+}
+@keyframes soon-sway {
+  0%, 100% { transform: translateX(-50%) rotate(-2deg); }
+  50%      { transform: translateX(-50%) rotate(2deg); }
+}
+@keyframes soon-leaf-left {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(-6deg); }
+}
+@keyframes soon-leaf-right {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(6deg); }
+}
+@keyframes soon-twinkle {
+  0%, 100% { transform: scale(0.6) rotate(0deg); opacity: 0.2; }
+  50%      { transform: scale(1) rotate(45deg); opacity: 0.85; }
+}
+
+/* ==========================================================================
+   「視差効果を減らす」設定：アニメーション・フェードを停止
+========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .soon *,
+  .soon *::before,
+  .soon *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .soon.is-ready .soon-fade {
+    opacity: 1;
+    transform: none;
+  }
+}
+</style>
+
+<script>
+/* ==========================================================================
+   フェードイン（IntersectionObserver）
+   インラインscriptでは defer が効かないため readyState で実行タイミングを判定
+========================================================================== */
+(() => {
+  const init = () => {
+    const blocks = document.querySelectorAll('.soon');
+    if (!blocks.length) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // 動きを減らす設定 or 非対応ブラウザでは、何もせず常時表示のまま
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        obs.unobserve(entry.target); // 一度表示したら監視を解除
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.15 });
+
+    blocks.forEach((block) => {
+      block.classList.add('is-ready');
+      // 表示の時間差はCSS側（nth-child）で管理
+      block.querySelectorAll('.soon-fade').forEach((el) => observer.observe(el));
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+</script>
