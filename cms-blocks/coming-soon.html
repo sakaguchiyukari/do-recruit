@@ -91,6 +91,8 @@ html:has(.soon) body {
 
   /* --- Shape / Motion --- */
   --soon-radius-pill: 999px;
+  /* 「+」形（腕の太さ = 中央30%）：きらめき・ラベルのアイコンで共通利用 */
+  --soon-plus-shape: polygon(35% 0, 65% 0, 65% 35%, 100% 35%, 100% 65%, 65% 65%, 65% 100%, 35% 100%, 35% 65%, 0 65%, 0 35%, 35% 35%);
   --soon-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   position: relative;
@@ -175,17 +177,19 @@ html:has(.soon) body {
 /* 点滅するステータスドット */
 .soon__eyebrow-dot {
   position: relative;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--soon-green);
+  width: 10px;
+  height: 10px;
 }
+/* 本体と波紋の両方を「+」形にする */
+.soon__eyebrow-dot::before,
 .soon__eyebrow-dot::after {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background: var(--soon-green);
+  background: var(--soon-blue);
+  clip-path: var(--soon-plus-shape);
+}
+.soon__eyebrow-dot::after {
   animation: soon-ping 2s var(--soon-ease) infinite;
 }
 
@@ -334,8 +338,7 @@ html:has(.soon) body {
   width: 14px;
   height: 14px;
   background: var(--soon-blue);
-  /* 「+」形（腕の太さ = 中央30%） */
-  clip-path: polygon(35% 0, 65% 0, 65% 35%, 100% 35%, 100% 65%, 65% 65%, 65% 100%, 35% 100%, 35% 65%, 0 65%, 0 35%, 35% 35%);
+  clip-path: var(--soon-plus-shape);
   opacity: 0.7;
   animation: soon-twinkle 3s ease-in-out infinite;
 }
