@@ -9,22 +9,30 @@
 <section class="soon" aria-labelledby="soon-title">
   <div class="soon__inner">
 
-    <!-- ----- イラスト：芽が育つ植木鉢（装飾のため読み上げ対象外） ----- -->
+    <!-- ----- イラスト：制作中のWebページ（装飾のため読み上げ対象外） ----- -->
     <div class="soon__visual soon-fade" aria-hidden="true">
-      <div class="soon-plant">
-        <span class="soon-plant__halo"></span>
-        <span class="soon-plant__spark soon-plant__spark--1"></span>
-        <span class="soon-plant__spark soon-plant__spark--2"></span>
-        <span class="soon-plant__spark soon-plant__spark--3"></span>
-        <div class="soon-plant__sprout">
-          <span class="soon-plant__stem"></span>
-          <span class="soon-plant__leaf soon-plant__leaf--left"></span>
-          <span class="soon-plant__leaf soon-plant__leaf--right"></span>
-          <span class="soon-plant__bud"></span>
+      <div class="soon-scene">
+        <span class="soon-scene__halo"></span>
+        <span class="soon-scene__spark soon-scene__spark--1"></span>
+        <span class="soon-scene__spark soon-scene__spark--2"></span>
+        <span class="soon-scene__spark soon-scene__spark--3"></span>
+
+        <!-- ブラウザ画面：骨組みだけのページ -->
+        <div class="soon-scene__window">
+          <span class="soon-scene__bar"></span>
+          <div class="soon-scene__page">
+            <span class="soon-scene__media"></span>
+            <span class="soon-scene__line soon-scene__line--l"></span>
+            <span class="soon-scene__line soon-scene__line--m"></span>
+            <span class="soon-scene__line soon-scene__line--s"></span>
+          </div>
+          <!-- 進捗バー -->
+          <span class="soon-scene__progress"></span>
         </div>
-        <span class="soon-plant__soil"></span>
-        <span class="soon-plant__pot"></span>
-        <span class="soon-plant__shadow"></span>
+
+        <!-- 歯車（作業中の表現） -->
+        <span class="soon-scene__gear soon-scene__gear--lg"></span>
+        <span class="soon-scene__gear soon-scene__gear--sm"></span>
       </div>
     </div>
 
@@ -70,9 +78,9 @@ html:has(.soon) body {
   --soon-green: #2e6e4f;
   --soon-green-light: #8fc4a6;
   --soon-green-pale: #eef5f1;
-  --soon-clay: #c98a5e;
-  --soon-clay-deep: #a86c44;
-  --soon-soil: #5a4033;
+  --soon-skeleton: #e6ebf1;        /* 骨組み（読み込み中）の面 */
+  --soon-skeleton-strong: #c9d3de; /* タイトルバーの丸 */
+  --soon-skeleton-shine: #f6f8fb;  /* 流れる光 */
   --soon-white: #ffffff;
   --soon-text: #1f2a37;
   --soon-text-sub: #5b6675;
@@ -174,7 +182,7 @@ html:has(.soon) body {
   }
 }
 
-/* 点滅するステータスドット */
+/* 「+」のステータスアイコン（波紋つき） */
 .soon__eyebrow-dot {
   position: relative;
   width: 10px;
@@ -210,16 +218,17 @@ html:has(.soon) body {
 }
 
 /* ==========================================================================
-   イラスト：植木鉢と芽（HTML + CSSのみ）
+   イラスト：制作中のWebページ（HTML + CSSのみ）
 ========================================================================== */
-.soon-plant {
+.soon-scene {
   position: relative;
-  width: clamp(200px, 150px + 16vw, 320px);
+  width: clamp(220px, 160px + 16vw, 340px);
+  max-width: 100%;
   aspect-ratio: 1 / 1;
 }
 
 /* 背景の光輪 */
-.soon-plant__halo {
+.soon-scene__halo {
   position: absolute;
   inset: 4%;
   border-radius: 50%;
@@ -229,111 +238,112 @@ html:has(.soon) body {
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.8);
 }
 
-/* 鉢 */
-.soon-plant__pot {
+/* --- ブラウザ画面 --- */
+.soon-scene__window {
   position: absolute;
-  left: 50%;
-  bottom: 14%;
-  width: 40%;
-  height: 26%;
-  transform: translateX(-50%);
-  background: linear-gradient(90deg, var(--soon-clay-deep), var(--soon-clay) 40%, var(--soon-clay-deep));
-  clip-path: polygon(0 0, 100% 0, 86% 100%, 14% 100%);
+  top: 24%;
+  left: 13%;
+  z-index: 1;
+  display: grid;
+  width: 66%;
+  border: 1px solid var(--soon-line);
+  border-radius: 10px;
+  background: var(--soon-white);
+  box-shadow: 0 18px 36px -18px rgb(11 37 69 / 0.35);
+  overflow: hidden;
 }
-/* 鉢のふち */
-.soon-plant__pot::before {
+
+/* タイトルバー（3つの丸） */
+.soon-scene__bar {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  padding-inline: 8px;
+  background: var(--soon-blue-pale);
+}
+.soon-scene__bar::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--soon-skeleton-strong);
+  box-shadow: 9px 0 0 var(--soon-skeleton-strong), 18px 0 0 var(--soon-skeleton-strong);
+}
+
+/* ページの骨組み：左に画像枠、右に文章行 */
+.soon-scene__page {
+  display: grid;
+  grid-template-columns: 38% 1fr;
+  grid-template-rows: repeat(3, auto);
+  align-content: center;
+  column-gap: 10%;
+  row-gap: 8px;
+  padding: 12% 10% 10%;
+}
+.soon-scene__media {
+  grid-row: 1 / 4;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+}
+.soon-scene__line {
+  height: 6px;
+  border-radius: 3px;
+}
+.soon-scene__line--l { width: 100%; }
+.soon-scene__line--m { width: 78%; }
+.soon-scene__line--s { width: 52%; }
+
+/* 骨組みのキラッと流れる読み込み表現 */
+.soon-scene__media,
+.soon-scene__line {
+  background: linear-gradient(90deg, var(--soon-skeleton) 0%, var(--soon-skeleton-shine) 50%, var(--soon-skeleton) 100%);
+  background-size: 200% 100%;
+  animation: soon-shimmer 1.8s ease-in-out infinite;
+}
+
+/* 進捗バー（下端） */
+.soon-scene__progress {
+  position: relative;
+  height: 5px;
+  background: var(--soon-skeleton);
+}
+.soon-scene__progress::after {
   content: "";
   position: absolute;
-  inset: 0 0 auto;
-  height: 22%;
-  background: rgb(255 255 255 / 0.18);
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--soon-blue);
+  animation: soon-progress 4s var(--soon-ease) infinite;
 }
 
-/* 土 */
-.soon-plant__soil {
+/* --- 歯車：リング + 歯（conic）を mask で中央くり抜き --- */
+.soon-scene__gear {
   position: absolute;
-  left: 50%;
-  bottom: 38%;
-  z-index: 1;
-  width: 36%;
-  height: 5%;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: var(--soon-soil);
-}
-
-/* 影 */
-.soon-plant__shadow {
-  position: absolute;
-  left: 50%;
-  bottom: 11%;
-  width: 38%;
-  height: 4%;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: rgb(11 37 69 / 0.12);
-  filter: blur(3px);
-}
-
-/* 芽（揺れの基点を根元にする） */
-.soon-plant__sprout {
-  position: absolute;
-  left: 50%;
-  bottom: 40%;
   z-index: 2;
-  width: 40%;
-  height: 34%;
-  transform: translateX(-50%);
-  transform-origin: 50% 100%;
-  animation: soon-sway 4.5s ease-in-out infinite;
+  aspect-ratio: 1 / 1;
+  background:
+    radial-gradient(circle closest-side, transparent 0 22%, var(--soon-gear-color) 23% 70%, transparent 71%),
+    repeating-conic-gradient(var(--soon-gear-color) 0 24deg, transparent 0 45deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 0 22%, #000 23% 100%, transparent 0);
+  mask: radial-gradient(circle closest-side, transparent 0 22%, #000 23% 100%, transparent 0);
 }
-
-.soon-plant__stem {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 4px;
-  height: 78%;
-  transform: translateX(-50%);
-  border-radius: 4px;
-  background: var(--soon-green);
+.soon-scene__gear--lg {
+  --soon-gear-color: var(--soon-navy);
+  right: 11%;
+  bottom: 18%;
+  width: 22%;
+  animation: soon-rotate 8s linear infinite;
 }
-
-.soon-plant__leaf {
-  position: absolute;
-  bottom: 42%;
-  width: 42%;
-  height: 30%;
-  background: linear-gradient(135deg, var(--soon-green-light), var(--soon-green));
-}
-.soon-plant__leaf--left {
-  right: 50%;
-  border-radius: 100% 0 100% 0;
-  transform-origin: 100% 100%;
-  animation: soon-leaf-left 4.5s ease-in-out infinite;
-}
-.soon-plant__leaf--right {
-  left: 50%;
-  bottom: 56%;
-  border-radius: 0 100% 0 100%;
-  transform-origin: 0 100%;
-  animation: soon-leaf-right 4.5s ease-in-out infinite;
-}
-
-/* つぼみ */
-.soon-plant__bud {
-  position: absolute;
-  left: 50%;
-  top: 8%;
-  width: 14%;
-  aspect-ratio: 1 / 1.2;
-  transform: translateX(-50%);
-  border-radius: 50% 50% 45% 45%;
-  background: radial-gradient(circle at 40% 35%, #f6d9a8, #e0a85e);
+.soon-scene__gear--sm {
+  --soon-gear-color: var(--soon-blue);
+  right: 29%;
+  bottom: 13%;
+  width: 13%;
+  animation: soon-rotate 4s linear infinite reverse;
 }
 
 /* きらめき（＋形） */
-.soon-plant__spark {
+.soon-scene__spark {
   position: absolute;
   width: 14px;
   height: 14px;
@@ -342,9 +352,9 @@ html:has(.soon) body {
   opacity: 0.7;
   animation: soon-twinkle 3s ease-in-out infinite;
 }
-.soon-plant__spark--1 { top: 18%; left: 20%; }
-.soon-plant__spark--2 { top: 12%; right: 22%; width: 10px; height: 10px; background: var(--soon-green); animation-delay: 1s; }
-.soon-plant__spark--3 { top: 42%; right: 12%; width: 8px; height: 8px; animation-delay: 2s; }
+.soon-scene__spark--1 { top: 14%; left: 18%; }
+.soon-scene__spark--2 { top: 10%; right: 24%; width: 10px; height: 10px; background: var(--soon-green); animation-delay: 1s; }
+.soon-scene__spark--3 { top: 30%; right: 9%; width: 8px; height: 8px; animation-delay: 2s; }
 
 /* ==========================================================================
    フェードイン（JSが .is-ready を付けたときのみ初期状態を隠す）
@@ -370,17 +380,16 @@ html:has(.soon) body {
   0%   { transform: scale(1); opacity: 0.6; }
   80%, 100% { transform: scale(2.6); opacity: 0; }
 }
-@keyframes soon-sway {
-  0%, 100% { transform: translateX(-50%) rotate(-2deg); }
-  50%      { transform: translateX(-50%) rotate(2deg); }
+@keyframes soon-shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
-@keyframes soon-leaf-left {
-  0%, 100% { transform: rotate(0deg); }
-  50%      { transform: rotate(-6deg); }
+@keyframes soon-progress {
+  0%   { width: 0; }
+  70%, 100% { width: 72%; }
 }
-@keyframes soon-leaf-right {
-  0%, 100% { transform: rotate(0deg); }
-  50%      { transform: rotate(6deg); }
+@keyframes soon-rotate {
+  to { transform: rotate(360deg); }
 }
 @keyframes soon-twinkle {
   0%, 100% { transform: scale(0.6) rotate(0deg); opacity: 0.2; }
