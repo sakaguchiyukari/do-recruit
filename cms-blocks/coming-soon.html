@@ -41,7 +41,7 @@
 
       <p class="soon__lead soon-fade">
         このページは現在制作中です。<br>
-        準備が整い次第、こちらで公開いたします。<br>
+        準備が整い次第、公開いたします。<br>
         もうしばらくお待ちください。
       </p>
     </div>
@@ -328,13 +328,14 @@ html:has(.soon) body {
   background: radial-gradient(circle at 40% 35%, #f6d9a8, #e0a85e);
 }
 
-/* きらめき（4方向の十字） */
+/* きらめき（＋形） */
 .soon-plant__spark {
   position: absolute;
   width: 14px;
   height: 14px;
   background: var(--soon-blue);
-  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  /* 「+」形（腕の太さ = 中央30%） */
+  clip-path: polygon(35% 0, 65% 0, 65% 35%, 100% 35%, 100% 65%, 65% 65%, 65% 100%, 35% 100%, 35% 65%, 0 65%, 0 35%, 35% 35%);
   opacity: 0.7;
   animation: soon-twinkle 3s ease-in-out infinite;
 }
