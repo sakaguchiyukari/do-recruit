@@ -3,6 +3,9 @@
   <meta name="description" content="ドゥ.ヨネザワ企業グループのリファラル採用制度のご案内です。">
   <title>リファラル採用制度のご案内｜ドゥ.ヨネザワ企業グループ</title>
   <style>
+    /* 丸ゴシック（Googleフォント）の読み込み */
+    @import url("https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap");
+
     /* ==========================================================
        カラー・共通設定（ポスターの配色に合わせた値）
        ※ サイト全体に影響しないよう、すべて .referral-wrap の中に限定
@@ -325,7 +328,8 @@
        ========================================================== */
     @media (max-width: 640px) {
       .referral-wrap { background-size: 48px 48px; }
-      .referral-page { width: min(100% - 24px, var(--content-width)); }
+      /* 左右に最低20pxずつの余白を確保 */
+      .referral-page { width: min(100% - 40px, var(--content-width)); }
       .referral-steps { grid-template-columns: 1fr; gap: 14px; }
       .referral-step { min-height: auto; padding: 18px 20px; }
       .referral-button { width: 100%; }
@@ -333,9 +337,9 @@
       .referral-plus { --size: 36px !important; top: 8px !important; }
       .referral-plus:nth-of-type(n+3) { display: none; }
       /* 左上の円は小さくして見出しに重ならない位置へ */
-      .referral-wrap::before { top: -150px; left: -150px; width: 260px; }
+      .referral-wrap::before { top: -160px; left: -170px; width: 240px; }
       .referral-wrap::after { width: 340px; bottom: -140px; right: -160px; }
-      .referral-footer { padding: 22px 12px 36px; font-size: .92rem; }
+      .referral-footer { width: min(100% - 40px, var(--content-width)); padding: 22px 0 36px; font-size: .92rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -386,7 +390,7 @@
     <div class="referral-page__inner">
       <!-- ヒーロー -->
       <header class="referral-hero js-fade">
-        <p class="referral-hero__eyebrow">ドゥ.ヨネザワ企業グループ</p>
+        <p class="referral-hero__eyebrow">社員紹介制度リファラル採用</p>
         <!-- タイトル案（差し替え用）：
              <h1 class="referral-hero__title"><span>紹介</span>でつながる、<br>仲間の輪。</h1>
         -->
