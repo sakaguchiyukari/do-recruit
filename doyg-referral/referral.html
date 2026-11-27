@@ -143,17 +143,29 @@
       font-weight: 900;
       letter-spacing: .08em;
     }
+    /* メインタイトル「リファラル採用」 */
     .referral-hero__title {
       margin: 0;
       color: var(--color-cream);
-      font-size: clamp(2.3rem, 7.5vw, 4.6rem);
+      font-size: clamp(2.6rem, 10.5vw, 6rem);
       font-weight: 900;
-      line-height: 1.25;
+      line-height: 1.15;
       letter-spacing: .04em;
       /* 影はぼかした弱いものだけ（読みやすさ優先） */
       text-shadow: 0 2px 8px rgba(43, 74, 99, .35);
     }
     .referral-hero__title span { color: var(--color-yellow); }
+    /* サブキャッチ「大切な人と一緒にはたらく／という選択肢」 */
+    .referral-hero__catch {
+      margin: clamp(10px, 2vw, 18px) 0 0;
+      color: var(--color-cream);
+      font-size: clamp(1.2rem, 3.8vw, 2rem);
+      font-weight: 900;
+      line-height: 1.5;
+      letter-spacing: .04em;
+      text-shadow: 0 2px 6px rgba(43, 74, 99, .3);
+    }
+    .referral-hero__catch span { color: var(--color-yellow); }
     .referral-hero__visual {
       width: min(100%, 480px);
       aspect-ratio: 4 / 3;
@@ -327,9 +339,15 @@
        スマホ
        ========================================================== */
     @media (max-width: 640px) {
-      .referral-wrap { background-size: 48px 48px; }
-      /* 左右に最低20pxずつの余白を確保 */
-      .referral-page { width: min(100% - 40px, var(--content-width)); }
+      /* 背景の箱を画面の左右から20pxずつ内側に（角丸のカード状） */
+      .referral-wrap {
+        width: calc(var(--page-width, 100vw) - 40px);
+        margin-left: calc(50% - var(--page-width, 100vw) / 2 + 20px);
+        border-radius: 20px;
+        background-size: 48px 48px;
+      }
+      /* 箱の中の文字・カードも左右16pxずつ余白（サイト側の main 指定に負けないよう詳細度を上げる） */
+      .referral-wrap .referral-page { width: min(100% - 32px, var(--content-width)); }
       .referral-steps { grid-template-columns: 1fr; gap: 14px; }
       .referral-step { min-height: auto; padding: 18px 20px; }
       .referral-button { width: 100%; }
@@ -339,7 +357,7 @@
       /* 左上の円は小さくして見出しに重ならない位置へ */
       .referral-wrap::before { top: -160px; left: -170px; width: 240px; }
       .referral-wrap::after { width: 340px; bottom: -140px; right: -160px; }
-      .referral-footer { width: min(100% - 40px, var(--content-width)); padding: 22px 0 36px; font-size: .92rem; }
+      .referral-wrap .referral-footer { width: min(100% - 32px, var(--content-width)); padding: 22px 0 36px; font-size: .92rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -390,11 +408,14 @@
     <div class="referral-page__inner">
       <!-- ヒーロー -->
       <header class="referral-hero js-fade">
-        <p class="referral-hero__eyebrow">社員紹介制度リファラル採用</p>
-        <!-- タイトル案（差し替え用）：
-             <h1 class="referral-hero__title"><span>紹介</span>でつながる、<br>仲間の輪。</h1>
+        <!-- 小見出し -->
+        <p class="referral-hero__eyebrow">社員紹介制度</p>
+        <!-- メインタイトル -->
+        <h1 class="referral-hero__title">リファラル採用</h1>
+        <!-- サブキャッチ（差し替え用の案）：
+             <p class="referral-hero__catch"><span>紹介</span>でつながる、<br>仲間の輪。</p>
         -->
-        <h1 class="referral-hero__title"><span>大切な人</span>と<br>一緒にはたらく<br>という選択肢</h1>
+        <p class="referral-hero__catch"><span>大切な人</span>と一緒にはたらく<br>という選択肢</p>
         <!-- ヒーロー画像（CSS冒頭の --hero-image で指定） -->
         <div class="referral-hero__visual" aria-hidden="true"></div>
         <p class="referral-hero__lead">
