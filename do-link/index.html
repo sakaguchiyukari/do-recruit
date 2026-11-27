@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- JS有効時のみ初期状態を opacity:0 にするためのフラグ（JS無効・失敗時にコンテンツが消えないようにする） -->
+  <script>document.documentElement.classList.add('js-enabled');</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Do.Link｜ドゥ.ヨネザワ企業グループ 社員専用コミュニティサイト</title>
+  <meta name="description" content="Do.Linkは、ドゥ.ヨネザワ企業グループで働く仲間同士がつながり、情報や経験を共有するための社員専用コミュニティサイトです。">
+  <!-- 社内向けサイトのため検索エンジンに載せない（公開範囲が確定したら見直す） -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- OGP（og:image は公開時に 1200×630 の PNG/JPG を用意すること） -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Do.Link｜社員専用コミュニティサイト">
+  <meta property="og:description" content="グループで働く仲間同士が、もっとお互いを知り、つながるための社内コミュニティサイト。">
+  <meta property="og:image" content="https://example.com/assets/img/ogp/ogp-default.png">
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:site_name" content="Do.Link">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/img/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Zen+Maru+Gothic:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer src="assets/js/main.js"></script>
+</head>
+<body>
+  <a class="c-skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ============================================
+       Header
+       ============================================ -->
+  <header class="l-header">
+    <div class="l-header__inner">
+      <a class="l-header__brand" href="./">
+        <span class="l-header__logo" aria-hidden="true">Do.<br>Link</span>
+        <span class="l-header__tagline">ドゥ.ヨネザワ企業グループ 社員専用コミュニティサイト</span>
+        <span class="u-visually-hidden">Do.Link トップページ</span>
+      </a>
+
+      <div class="l-header__actions">
+        <a class="l-header__mypage" href="#mypage">
+          <img class="l-header__avatar" src="assets/img/member/avatar-default.svg" alt="" width="32" height="32">
+          <span class="l-header__mypage-label">マイページ</span>
+        </a>
+        <button class="l-header__toggle js-drawer-toggle" type="button" aria-expanded="false" aria-controls="global-nav">
+          <span class="l-header__toggle-bar" aria-hidden="true"></span>
+          <span class="u-visually-hidden">メニューを開閉する</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ドロワーメニュー -->
+    <nav class="c-drawer js-drawer" id="global-nav" aria-label="グローバルナビゲーション">
+      <ul class="c-drawer__list">
+        <li><a class="c-drawer__link js-drawer-link" href="#community">COMMUNITY<span>新着コミュニティ</span></a></li>
+        <li><a class="c-drawer__link js-drawer-link" href="#topics">TOPICS<span>新着トピックス</span></a></li>
+        <li><a class="c-drawer__link js-drawer-link" href="#group">GROUP<span>新着グループ会社情報</span></a></li>
+        <li><a class="c-drawer__link js-drawer-link" href="#member">MEMBER<span>社員一覧・検索</span></a></li>
+        <li><a class="c-drawer__link js-drawer-link" href="#works">WORKS<span>グループのお仕事紹介</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="l-main" id="main">
+
+    <!-- ============================================
+         Hero（キャッチコピー + イラスト）
+         ============================================ -->
+    <section class="p-hero" aria-labelledby="hero-title">
+      <div class="p-hero__inner">
+        <h1 class="p-hero__catch" id="hero-title">
+          <span class="p-hero__catch-line">つ<span class="p-hero__catch-accent">な</span>がる、</span>
+          <span class="p-hero__catch-line">ひろ<span class="p-hero__catch-accent">が</span>る。</span>
+        </h1>
+
+        <p class="p-hero__badge">
+          <span class="p-hero__badge-dot" aria-hidden="true"></span>
+          社内報・社員紹介・リファラル採用
+        </p>
+
+        <figure class="p-hero__visual">
+          <img src="assets/img/hero/hero-main.svg" alt="" width="720" height="420" fetchpriority="high">
+        </figure>
+      </div>
+
+      <!-- 右端の縦タブ（社員検索への導線） -->
+      <a class="p-hero__side-tab" href="#member">仲間をさがしてみよう</a>
+    </section>
+
+    <!-- ============================================
+         News + CTA（ヒーローに重なるカード）
+         ============================================ -->
+    <section class="p-news" aria-labelledby="news-title">
+      <div class="p-news__card js-reveal">
+        <div class="p-news__body">
+          <h2 class="p-news__title" id="news-title">News<span>お知らせ</span></h2>
+          <ul class="p-news__list">
+            <li>
+              <a class="p-news__item" href="#news-01">
+                <time class="p-news__date" datetime="2026-11-20">2026.11.20</time>
+                <span class="p-news__text">アンケートにご協力ください</span>
+              </a>
+            </li>
+            <li>
+              <a class="p-news__item" href="#news-02">
+                <time class="p-news__date" datetime="2026-11-12">2026.11.12</time>
+                <span class="p-news__text">年末年始の営業日についてのお知らせ</span>
+              </a>
+            </li>
+          </ul>
+          <a class="p-news__more" href="#news">お知らせ一覧を見る</a>
+        </div>
+
+        <!-- 主要CTA（SPでは下部固定バーにも同じ導線を表示） -->
+        <div class="p-news__cta js-cta-sentinel">
+          <a class="c-cta-button" href="#latest">
+            新着はこちら
+            <span class="c-cta-button__icon" aria-hidden="true"></span>
+          </a>
+          <a class="c-cta-button" href="#referral">
+            リファラル採用はこちら
+            <span class="c-cta-button__icon" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         About（NUMBER.01〜03 → モーダル）
+         ============================================ -->
+    <section class="p-about" aria-label="Do.Linkについて">
+      <ul class="p-about__list">
+        <li class="js-reveal">
+          <button class="c-number-card js-modal-open" type="button" data-slide="0" aria-haspopup="dialog" aria-controls="about-modal">
+            <span class="c-number-card__num">NUMBER.01</span>
+            <span class="c-number-card__title">Do.Linkに<br>込めた想い</span>
+            <img class="c-number-card__img" src="assets/img/number/number-01.svg" alt="" width="240" height="180" loading="lazy" decoding="async">
+          </button>
+        </li>
+        <li class="js-reveal">
+          <button class="c-number-card js-modal-open" type="button" data-slide="1" aria-haspopup="dialog" aria-controls="about-modal">
+            <span class="c-number-card__num">NUMBER.02</span>
+            <span class="c-number-card__title">Do.Linkの<br>目指すもの</span>
+            <img class="c-number-card__img" src="assets/img/number/number-02.svg" alt="" width="240" height="180" loading="lazy" decoding="async">
+          </button>
+        </li>
+        <li class="js-reveal">
+          <button class="c-number-card js-modal-open" type="button" data-slide="2" aria-haspopup="dialog" aria-controls="about-modal">
+            <span class="c-number-card__num">NUMBER.03</span>
+            <span class="c-number-card__title">Do.Linkで<br>できること</span>
+            <img class="c-number-card__img" src="assets/img/number/number-03.svg" alt="" width="240" height="180" loading="lazy" decoding="async">
+          </button>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============================================
+         COMMUNITY（新着コミュニティ）
+         ============================================ -->
+    <section class="l-section" id="community" aria-labelledby="community-title">
+      <div class="l-container l-container--narrow">
+        <h2 class="c-section-head js-reveal" id="community-title">
+          <span class="c-section-head__en">COM<span class="c-section-head__accent">M</span><span class="c-section-head__fade">UNITY</span></span>
+          <span class="c-section-head__ja">新着コミュニティ</span>
+        </h2>
+
+        <ul class="p-community__list">
+          <li class="js-reveal">
+            <a class="c-thread" href="#community-01">
+              <span class="c-thread__meta">
+                <time class="c-thread__date" datetime="2026-11-25">2026.11.25</time>
+                <span class="c-tag">グルメ・飲食</span>
+              </span>
+              <span class="c-thread__title">おいしいグルメを教えてください</span>
+              <span class="c-thread__excerpt">米沢駅周辺でランチにおすすめのお店を探しています。ラーメン以外でも大歓迎です。みなさんの行きつけのお店があればぜひ教えてください。</span>
+            </a>
+          </li>
+          <li class="js-reveal">
+            <a class="c-thread" href="#community-02">
+              <span class="c-thread__meta">
+                <time class="c-thread__date" datetime="2026-11-22">2026.11.22</time>
+                <span class="c-tag">イベント・趣味</span>
+              </span>
+              <span class="c-thread__title">週末に参加できるスポーツ仲間を募集しています</span>
+              <span class="c-thread__excerpt">月に1〜2回、フットサルを楽しんでいます。初心者の方も歓迎です。会社や部署を越えて気軽に参加してください。</span>
+            </a>
+          </li>
+          <li class="js-reveal">
+            <a class="c-thread" href="#community-03">
+              <span class="c-thread__meta">
+                <time class="c-thread__date" datetime="2026-11-18">2026.11.18</time>
+                <span class="c-tag">地域・おでかけ</span>
+              </span>
+              <span class="c-thread__title">紅葉がきれいなおでかけスポットはありますか</span>
+              <span class="c-thread__excerpt">家族で出かけられる近場の紅葉スポットを探しています。駐車場の有無など、実際に行った方の感想も聞きたいです。</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="c-more">
+          <a class="c-more__link" href="#community-list">MORE<span class="u-visually-hidden">（コミュニティ一覧へ）</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         TOPICS（新着トピックス／横スクロールカルーセル）
+         ============================================ -->
+    <section class="l-section p-feed p-feed--right" id="topics" aria-labelledby="topics-title">
+      <div class="l-container">
+        <h2 class="c-section-head js-reveal" id="topics-title">
+          <span class="c-section-head__en">TOP<span class="c-section-head__accent">I</span><span class="c-section-head__fade">CS</span></span>
+          <span class="c-section-head__ja">新着トピックス</span>
+        </h2>
+
+        <div class="c-carousel js-carousel">
+          <div class="c-carousel__nav">
+            <button class="c-carousel__btn c-carousel__btn--prev js-carousel-prev" type="button" aria-controls="topics-track">
+              <span class="u-visually-hidden">前のトピックスへ</span>
+            </button>
+            <button class="c-carousel__btn js-carousel-next" type="button" aria-controls="topics-track">
+              <span class="u-visually-hidden">次のトピックスへ</span>
+            </button>
+          </div>
+
+          <ul class="c-carousel__track js-carousel-track" id="topics-track">
+            <li class="c-carousel__slide">
+              <article class="c-post-card">
+                <a class="c-post-card__link" href="#topic-01">
+                  <span class="c-post-card__author">
+                    <img class="c-post-card__avatar" src="assets/img/member/avatar-default.svg" alt="" width="28" height="28" loading="lazy" decoding="async">
+                    グループ広報部
+                  </span>
+                  <img class="c-post-card__img" src="assets/img/topics/topic-01.svg" alt="打ち合わせをする社員の様子" width="640" height="480" loading="lazy" decoding="async">
+                  <h3 class="c-post-card__title">新しいチームでのプロジェクトが始動しました</h3>
+                  <time class="c-post-card__date" datetime="2026-11-24">2026.11.24</time>
+                </a>
+              </article>
+            </li>
+            <li class="c-carousel__slide">
+              <article class="c-post-card">
+                <a class="c-post-card__link" href="#topic-02">
+                  <span class="c-post-card__author">
+                    <img class="c-post-card__avatar" src="assets/img/member/avatar-default.svg" alt="" width="28" height="28" loading="lazy" decoding="async">
+                    総務部
+                  </span>
+                  <img class="c-post-card__img" src="assets/img/topics/topic-02.svg" alt="リニューアルしたオフィスの様子" width="640" height="480" loading="lazy" decoding="async">
+                  <h3 class="c-post-card__title">オフィスのリニューアルが完了しました</h3>
+                  <time class="c-post-card__date" datetime="2026-11-20">2026.11.20</time>
+                </a>
+              </article>
+            </li>
+            <li class="c-carousel__slide">
+              <article class="c-post-card">
+                <a class="c-post-card__link" href="#topic-03">
+                  <span class="c-post-card__author">
+                    <img class="c-post-card__avatar" src="assets/img/member/avatar-default.svg" alt="" width="28" height="28" loading="lazy" decoding="async">
+                    グループ広報部
+                  </span>
+                  <img class="c-post-card__img" src="assets/img/topics/topic-03.svg" alt="新しく完成した施設の外観" width="640" height="480" loading="lazy" decoding="async">
+                  <h3 class="c-post-card__title">新施設のオープン日が決定しました</h3>
+                  <time class="c-post-card__date" datetime="2026-11-15">2026.11.15</time>
+                </a>
+              </article>
+            </li>
+            <li class="c-carousel__slide">
+              <article class="c-post-card">
+                <a class="c-post-card__link" href="#topic-04">
+                  <span class="c-post-card__author">
+                    <img class="c-post-card__avatar" src="assets/img/member/avatar-default.svg" alt="" width="28" height="28" loading="lazy" decoding="async">
+                    人事部
+                  </span>
+                  <img class="c-post-card__img" src="assets/img/topics/topic-04.svg" alt="社内勉強会で話し合う社員" width="640" height="480" loading="lazy" decoding="async">
+                  <h3 class="c-post-card__title">社内勉強会の参加者を募集しています</h3>
+                  <time class="c-post-card__date" datetime="2026-11-10">2026.11.10</time>
+                </a>
+              </article>
+            </li>
+          </ul>
+        </div>
+
+        <div class="c-more">
+          <a class="c-more__link" href="#topics-list">MORE<span class="u-visually-hidden">（トピックス一覧へ）</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         GROUP（新着グループ会社情報／横スクロールカルーセル）
+         ============================================ -->
+    <section class="l-section p-feed p-feed--left" id="group" aria-labelledby="group-title">
+      <div class="l-container">
+        <h2 class="c-section-head js-reveal" id="group-title">
+          <span class="c-section-head__en">GRO<span class="c-section-head__accent">U</span><span class="c-section-head__fade">P</span></span>
+          <span class="c-section-head__ja">新着グループ会社情報</span>
+        </h2>
+
+        <div class="c-carousel js-carousel">
+          <div class="c-carousel__nav">
+            <button class="c-carousel__btn c-carousel__btn--prev js-carousel-prev" type="button" aria-controls="group-track">
+              <span class="u-visually-hidden">前のグループ会社情報へ</span>
+            </button>
+            <button class="c-carousel__btn js-carousel-next" type="button" aria-controls="group-track">
+              <span class="u-visually-hidden">次のグループ会社情報へ</span>
+            </button>
+          </div>
+
+          <ul class="c-carousel__track js-carousel-track" id="group-track">
+            <li class="c-carousel__slide">
+              <article class="c-post-card">
+                <a class="c-post-card__link" href="#group-01">
+                  <span class="c-post-card__author">
+                    <img class="c-post-card__avatar" src="assets/img/member/avatar-default.svg" alt="" width="28" height="28" loading="lazy" decoding="async">
+                    ICT事業部
+                  </span>
+                  <img class="c-post-card__img" src="assets/img/group/group-01.svg" alt="店舗スタッフのミーティング風景" width="640" height="480" loading="lazy" decoding="async">
+                  <h3 class="c-post-card__title">店舗スタッフ向けの研修を実施しました</h3>
+                  <time class="c-post-card__date" datetime="2026-11-21">2026.11.21</time>
+                </a>
+              </article>
+            </li>
+            <li class="c-carousel__slide">
+              <article class="c-post-card">
+                <a class="c-post-card__link" href="#group-02">
+                  <span class="c-post-card__author">
+                    <img class="c-post-card__avatar" src="assets/img/member/avatar-default.svg" alt="" width="28" height="28" loading="lazy" decoding="async">
+                    カーライフ事業部
+                  </span>
+                  <img class="c-post-card__img" src="assets/img/group/group-02.svg" alt="ショールームの店内" width="640" height="480" loading="lazy" decoding="async">
+                  <h3 class="c-post-card__title">ショールームで展示会を開催します</h3>
+                  <time class="c-post-card__date" datetime="2026-11-18">2026.11.18</time>
+                </a>
+              </article>
+            </li>
+            <li class="c-carousel__slide">
+              <article class="c-post-card">
+                <a class="c-post-card__link" href="#group-03">
+                  <span class="c-post-card__author">
+                    <img class="c-post-card__avatar" src="assets/img/member/avatar-default.svg" alt="" width="28" height="28" loading="lazy" decoding="async">
+                    ライフ＆ウェルネス事業部
+                  </span>
+                  <img class="c-post-card__img" src="assets/img/group/group-03.svg" alt="住宅街の外観" width="640" height="480" loading="lazy" decoding="async">
+                  <h3 class="c-post-card__title">地域の皆さまとの交流イベントを行いました</h3>
+                  <time class="c-post-card__date" datetime="2026-11-12">2026.11.12</time>
+                </a>
+              </article>
+            </li>
+            <li class="c-carousel__slide">
+              <article class="c-post-card">
+                <a class="c-post-card__link" href="#group-04">
+                  <span class="c-post-card__author">
+                    <img class="c-post-card__avatar" src="assets/img/member/avatar-default.svg" alt="" width="28" height="28" loading="lazy" decoding="async">
+                    ゴルフ事業部
+                  </span>
+                  <img class="c-post-card__img" src="assets/img/group/group-04.svg" alt="打ち合わせをするスタッフ" width="640" height="480" loading="lazy" decoding="async">
+                  <h3 class="c-post-card__title">冬季営業についてのお知らせ</h3>
+                  <time class="c-post-card__date" datetime="2026-11-05">2026.11.05</time>
+                </a>
+              </article>
+            </li>
+          </ul>
+        </div>
+
+        <div class="c-more">
+          <a class="c-more__link" href="#group-list">MORE<span class="u-visually-hidden">（グループ会社情報一覧へ）</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         MEMBER（社員一覧・検索）
+         ============================================ -->
+    <section class="l-section" id="member" aria-labelledby="member-title">
+      <div class="l-container">
+        <h2 class="c-section-head js-reveal" id="member-title">
+          <span class="c-section-head__en">ME<span class="c-section-head__accent">M</span><span class="c-section-head__fade">BER</span></span>
+          <span class="c-section-head__ja">社員一覧・検索</span>
+        </h2>
+
+        <!-- 社員検索フォーム（action は仮。検索APIの仕様確定後に差し替える） -->
+        <form class="p-member-search js-reveal" action="#member-search" method="get" role="search">
+          <div class="p-member-search__field">
+            <label class="u-visually-hidden" for="member-keyword">名前・部署・趣味で検索</label>
+            <input class="p-member-search__input" id="member-keyword" name="q" type="search"
+                   placeholder="名前・部署・趣味で検索" required minlength="1" maxlength="50" autocomplete="off">
+          </div>
+          <div class="p-member-search__field">
+            <label class="u-visually-hidden" for="member-company">事業で絞り込む</label>
+            <select class="p-member-search__select" id="member-company" name="business">
+              <option value="">すべての事業</option>
+              <option value="ict">インフォメーション＆コミュニケーション</option>
+              <option value="car">カーライフ</option>
+              <option value="golf">ゴルフ</option>
+              <option value="wellness">ライフ＆ウェルネス</option>
+            </select>
+          </div>
+          <button class="p-member-search__submit" type="submit">検索する</button>
+        </form>
+
+        <ul class="p-member__list">
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-01"><img src="assets/img/member/member-01.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 01</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-02"><img src="assets/img/member/member-02.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 02</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-03"><img src="assets/img/member/member-03.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 03</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-04"><img src="assets/img/member/member-04.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 04</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-05"><img src="assets/img/member/member-05.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 05</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-06"><img src="assets/img/member/member-06.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 06</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-07"><img src="assets/img/member/member-07.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 07</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-08"><img src="assets/img/member/member-08.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 08</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-09"><img src="assets/img/member/member-09.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 09</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-10"><img src="assets/img/member/member-10.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 10</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-11"><img src="assets/img/member/member-11.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 11</span></a></li>
+          <li class="js-reveal"><a class="c-avatar-link" href="#member-12"><img src="assets/img/member/member-12.svg" alt="" width="240" height="240" loading="lazy" decoding="async"><span class="c-avatar-link__name">社員 12</span></a></li>
+        </ul>
+
+        <div class="c-more">
+          <a class="c-more__link" href="#member-list">MORE<span class="u-visually-hidden">（社員一覧へ）</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         WORKS（グループのお仕事紹介）
+         ============================================ -->
+    <section class="l-section" id="works" aria-labelledby="works-title">
+      <div class="l-container">
+        <h2 class="c-section-head js-reveal" id="works-title">
+          <span class="c-section-head__en">WO<span class="c-section-head__accent">R</span><span class="c-section-head__fade">KS</span></span>
+          <span class="c-section-head__ja">グループのお仕事紹介</span>
+        </h2>
+
+        <div class="p-works">
+          <!-- インフォメーション＆コミュニケーション事業 -->
+          <section class="c-business c-business--pink js-reveal" aria-labelledby="works-ict">
+            <h3 class="c-business__title" id="works-ict">インフォメーション＆コミュニケーション事業</h3>
+            <ul class="c-business__logos">
+              <li><a class="c-business__logo" href="#works-docomo"><img src="assets/img/works/logo-docomo.svg" alt="ドコモショップ" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-adcom"><img src="assets/img/works/logo-adcom.svg" alt="ADCOM" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-ict-03"><img src="assets/img/works/logo-ict-03.svg" alt="インフォメーション＆コミュニケーション事業 グループ会社3" width="240" height="80" loading="lazy" decoding="async"></a></li>
+            </ul>
+          </section>
+
+          <!-- カーライフ事業 -->
+          <section class="c-business c-business--slate js-reveal" aria-labelledby="works-car">
+            <h3 class="c-business__title" id="works-car">カーライフ事業</h3>
+            <ul class="c-business__logos">
+              <li><a class="c-business__logo" href="#works-bmw"><img src="assets/img/works/logo-bmw.svg" alt="BMW正規ディーラー" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-mobility"><img src="assets/img/works/logo-yonezawa-mobility.svg" alt="YONEZAWA MOBILITY INC." width="240" height="80" loading="lazy" decoding="async"></a></li>
+            </ul>
+          </section>
+
+          <!-- ゴルフ事業 -->
+          <section class="c-business c-business--orange js-reveal" aria-labelledby="works-golf">
+            <h3 class="c-business__title" id="works-golf">ゴルフ事業</h3>
+            <ul class="c-business__logos">
+              <li><a class="c-business__logo" href="#works-golf-01"><img src="assets/img/works/logo-golf-01.svg" alt="ゴルフ事業 グループ会社1" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-golf-02"><img src="assets/img/works/logo-golf-02.svg" alt="ゴルフ事業 グループ会社2" width="240" height="80" loading="lazy" decoding="async"></a></li>
+            </ul>
+          </section>
+
+          <!-- ライフ＆ウェルネス事業 -->
+          <section class="c-business c-business--green js-reveal" aria-labelledby="works-wellness">
+            <h3 class="c-business__title" id="works-wellness">ライフ＆ウェルネス事業</h3>
+            <ul class="c-business__logos">
+              <li><a class="c-business__logo" href="#works-do-plus"><img src="assets/img/works/logo-do-plus-fudosan.svg" alt="Do+不動産" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-image"><img src="assets/img/works/logo-image.svg" alt="image" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-wellness-03"><img src="assets/img/works/logo-wellness-03.svg" alt="ライフ＆ウェルネス事業 グループ会社3" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-wellness-04"><img src="assets/img/works/logo-wellness-04.svg" alt="ライフ＆ウェルネス事業 グループ会社4" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-clinic"><img src="assets/img/works/logo-clinic.svg" alt="ライフ＆ウェルネス事業 クリニック" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-wellness-06"><img src="assets/img/works/logo-wellness-06.svg" alt="ライフ＆ウェルネス事業 グループ会社6" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-curves"><img src="assets/img/works/logo-curves.svg" alt="カーブス" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-wellness-08"><img src="assets/img/works/logo-wellness-08.svg" alt="ライフ＆ウェルネス事業 グループ会社8" width="240" height="80" loading="lazy" decoding="async"></a></li>
+              <li><a class="c-business__logo" href="#works-wellness-09"><img src="assets/img/works/logo-wellness-09.svg" alt="ライフ＆ウェルネス事業 グループ会社9" width="240" height="80" loading="lazy" decoding="async"></a></li>
+            </ul>
+          </section>
+        </div>
+
+        <!-- 特集バナー -->
+        <div class="p-banner js-reveal">
+          <a class="p-banner__link" href="#ceo">
+            <img src="assets/img/banner/banner-ceo.svg" alt="教えて！CEO 特集ページへ" width="480" height="120" loading="lazy" decoding="async">
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================
+       Footer（外部サイトへの導線 + フッターナビ）
+       ============================================ -->
+  <footer class="l-footer">
+    <div class="l-footer__cta js-reveal">
+      <div class="l-footer__message">
+        <p class="l-footer__copy">まいにちに「プラス」をつなごう。</p>
+        <img class="l-footer__illust" src="assets/img/footer/footer-building.svg" alt="" width="260" height="200" loading="lazy" decoding="async">
+      </div>
+      <div class="l-footer__links">
+        <a class="c-link-button" href="https://example.com/" target="_blank" rel="noopener">
+          グループホームページ
+          <span class="c-link-button__icon" aria-hidden="true"></span>
+          <span class="u-visually-hidden">（新しいタブで開きます）</span>
+        </a>
+        <a class="c-link-button" href="https://example.com/recruit/" target="_blank" rel="noopener">
+          グループ採用サイト
+          <span class="c-link-button__icon" aria-hidden="true"></span>
+          <span class="u-visually-hidden">（新しいタブで開きます）</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="l-footer__bottom">
+      <nav aria-label="フッターナビゲーション">
+        <ul class="l-footer__nav">
+          <li><a href="./">トップページ</a></li>
+          <li><a href="#news">お知らせ</a></li>
+          <li><a href="#privacy">プライバシーポリシー</a></li>
+          <li><a href="#contact">お問い合わせ</a></li>
+        </ul>
+      </nav>
+      <p class="l-footer__copyright"><small>&copy; DO YONEZAWA GROUP. All Rights Reserved.</small></p>
+    </div>
+  </footer>
+
+  <!-- ============================================
+       SP固定CTA（ヒーロー下のCTAが画面外に出たら表示）
+       ============================================ -->
+  <div class="p-sp-cta js-sp-cta" aria-hidden="true">
+    <a class="p-sp-cta__link" href="#latest" tabindex="-1">新着はこちら</a>
+    <a class="p-sp-cta__link" href="#referral" tabindex="-1">リファラル採用</a>
+  </div>
+
+  <!-- ============================================
+       About モーダル（NUMBER.01〜03 を1つのダイアログで切り替え）
+       ============================================ -->
+  <dialog class="c-modal js-modal" id="about-modal" aria-labelledby="about-modal-title-0">
+    <div class="c-modal__panel">
+      <button class="c-modal__close js-modal-close" type="button">
+        <span class="c-modal__close-icon" aria-hidden="true"></span>
+        とじる
+      </button>
+
+      <!-- スライド1：込めた想い -->
+      <article class="c-modal__slide js-modal-slide" aria-labelledby="about-modal-title-0">
+        <h2 class="c-modal__title" id="about-modal-title-0">Do.Linkに込めた想い</h2>
+        <img class="c-modal__img" src="assets/img/number/number-01.svg" alt="" width="240" height="180" loading="lazy" decoding="async">
+        <div class="c-modal__body">
+          <p>ドゥ.ヨネザワ企業グループには、12社、約700名の従業員が働いています。それぞれの会社が異なる事業を展開し、さまざまな場所で活躍していますが、会社や部署が違うと、お互いの顔や名前、仕事内容を知る機会が少ないのが現状です。</p>
+          <p>「グループで働く仲間同士、もっとお互いを知り、つながることができたら」。そんな想いから生まれたのが、社内コミュニケーションサイト「Do.Link」です。</p>
+          <p>普段は接点の少ない仲間のことを知り、気軽に情報を共有できる。そんな場所をつくることで、会社の垣根を越えたつながりを育んでいきたいと考えています。</p>
+        </div>
+      </article>
+
+      <!-- スライド2：目指すもの -->
+      <article class="c-modal__slide js-modal-slide" aria-labelledby="about-modal-title-1" hidden>
+        <h2 class="c-modal__title" id="about-modal-title-1">Do.Linkの目指すもの</h2>
+        <img class="c-modal__img" src="assets/img/number/number-02.svg" alt="" width="240" height="180" loading="lazy" decoding="async">
+        <div class="c-modal__body">
+          <p>Do.Linkは、社是である「誠実・創造・躍動」に基づき、社員間の円滑な情報共有とコミュニケーションの促進、そしてグループ全体の知見の蓄積を目指しています。</p>
+          <p>一人ひとりが持つ知識や経験、各社の取り組みを共有することで、お互いへの理解を深め、新たな発想や協力が生まれる環境をつくります。</p>
+          <p>人と人とのつながりが深まることで、困ったときに相談し合える関係や、会社を越えて助け合える関係が育まれていく。そうした一つひとつの積み重ねを、グループ全体の成長と新たな価値の創造につなげていきます。</p>
+        </div>
+      </article>
+
+      <!-- スライド3：できること -->
+      <article class="c-modal__slide js-modal-slide" aria-labelledby="about-modal-title-2" hidden>
+        <h2 class="c-modal__title" id="about-modal-title-2">Do.Linkでできること</h2>
+        <img class="c-modal__img" src="assets/img/number/number-03.svg" alt="" width="240" height="180" loading="lazy" decoding="async">
+        <div class="c-modal__body">
+          <p>Do.Linkでは、グループ内の情報を知るだけでなく、仲間とのつながりを深め、日々の仕事に役立てることができます。</p>
+          <dl class="c-modal__features">
+            <dt>グループ情報の共有</dt>
+            <dd>各社の事業内容や取り組み、日々の活動を知ることで、グループへの理解を深められます。</dd>
+            <dt>重要なお知らせの確認</dt>
+            <dd>グループ内の大切なお知らせや最新情報を確認し、必要な情報を共有できます。</dd>
+            <dt>社内制度・福利厚生の情報共有</dt>
+            <dd>社内制度や福利厚生など、働くうえで役立つ情報を知り、活用につなげることができます。</dd>
+            <dt>社内交流・コミュニケーション</dt>
+            <dd>普段は接点の少ない仲間の顔や仕事を知り、会社や部署の垣根を越えた交流のきっかけをつくれます。</dd>
+          </dl>
+          <p>Do.Linkは、皆さん一人ひとりの参加によって育っていく場所です。情報を見たり、仲間のことを知ったり、経験や知識を共有したりすることで、新しい発見やつながりを広げていきましょう。</p>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- 前後切り替え（スクロール領域の外に置き、見切れを防ぐ） -->
+    <button class="c-modal__nav c-modal__nav--prev js-modal-prev" type="button">
+      <span class="u-visually-hidden">前の項目へ</span>
+    </button>
+    <button class="c-modal__nav c-modal__nav--next js-modal-next" type="button">
+      <span class="u-visually-hidden">次の項目へ</span>
+    </button>
+  </dialog>
+</body>
+</html>
