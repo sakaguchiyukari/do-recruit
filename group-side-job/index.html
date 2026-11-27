@@ -91,6 +91,7 @@
       background: var(--c-bg);
       font-feature-settings: "palt";
       overflow-x: hidden;
+      overflow-x: clip;
       padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* SP固定CTA分 */
     }
 
@@ -275,10 +276,14 @@
       background: var(--c-surface);
       border: 1px solid var(--c-line);
       border-radius: var(--radius-md);
+    }
+
+    /* Modifier：ホバーで浮き上がるカード（01 グループ内副業とは で使用） */
+    .c-card--hover {
       transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
     }
 
-    .c-card:hover {
+    .c-card--hover:hover {
       transform: translateY(-4px);
       border-color: transparent;
       box-shadow: var(--shadow-hover);
@@ -330,6 +335,9 @@
        ========================================================= */
     .p-hero {
       position: relative;
+      width: 100vw;
+      max-width: none;
+      margin-inline: calc(50% - 50vw);
       isolation: isolate;
       overflow: hidden;
       padding-top: var(--sp-xl);
@@ -423,7 +431,7 @@
     }
 
     .p-about__icon svg { width: 26px; height: 26px; }
-    .c-card:hover .p-about__icon { transform: rotate(-8deg) scale(1.06); }
+    .c-card--hover:hover .p-about__icon { transform: rotate(-8deg) scale(1.06); }
 
     .p-about__icon--sky { background: var(--c-sky); }
     .p-about__icon--pink { background: var(--c-pink); }
@@ -942,7 +950,7 @@
 
           <ul class="p-about__grid">
             <li class="js-fade" style="--fade-delay:0s">
-              <article class="c-card">
+              <article class="c-card c-card--hover">
                 <span class="p-about__icon p-about__icon--sky">
                   <svg aria-hidden="true"><use href="#icon-user"/></svg>
                 </span>
@@ -952,7 +960,7 @@
               </article>
             </li>
             <li class="js-fade" style="--fade-delay:.1s">
-              <article class="c-card">
+              <article class="c-card c-card--hover">
                 <span class="p-about__icon p-about__icon--pink">
                   <svg aria-hidden="true"><use href="#icon-team"/></svg>
                 </span>
@@ -962,7 +970,7 @@
               </article>
             </li>
             <li class="js-fade" style="--fade-delay:.2s">
-              <article class="c-card">
+              <article class="c-card c-card--hover">
                 <span class="p-about__icon p-about__icon--yellow">
                   <svg aria-hidden="true"><use href="#icon-network"/></svg>
                 </span>
