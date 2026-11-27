@@ -92,6 +92,7 @@
       background: var(--c-bg);
       font-feature-settings: "palt";
       overflow-x: hidden;
+      padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* SP固定CTA分 */
     }
 
     h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
@@ -386,6 +387,7 @@
        4. Header
        ========================================================= */
     .p-header {
+      display: none;
       position: sticky;
       top: 0;
       z-index: 50;
@@ -482,17 +484,6 @@
       line-height: 1.4;
       letter-spacing: 0.1em;
       color: var(--c-ink);
-    }
-
-    .p-hero__meta {
-      display: flex;
-      gap: 0.6rem;
-      margin-top: var(--sp-sm);
-      font-family: var(--ff-display);
-      font-size: var(--fs-xs);
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      color: var(--c-ink-mute);
     }
 
     .p-hero__actions {
@@ -775,252 +766,56 @@
     }
 
     /* =========================================================
-       9. FAQ
+       9. CTA（募集要項ページへの導線）
        ========================================================= */
-    .p-faq__list {
-      display: grid;
-      gap: var(--sp-sm);
-      margin-top: var(--sp-xl);
-    }
-
-    .p-faq__item {
-      background: var(--c-surface);
-      border: 1px solid var(--c-line);
-      border-radius: var(--radius-md);
-      transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
-    }
-
-    .p-faq__item:hover,
-    .p-faq__item[open] {
-      border-color: transparent;
-      box-shadow: var(--shadow-hover);
-    }
-
-    .p-faq__q {
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-      padding: var(--sp-md);
-      font-weight: 700;
-      cursor: pointer;
-      list-style: none;
-    }
-
-    .p-faq__q::-webkit-details-marker { display: none; }
-
-    .p-faq__q::before {
-      content: "Q";
-      flex-shrink: 0;
-      display: grid;
-      place-items: center;
-      width: 32px;
-      height: 32px;
-      font-family: var(--ff-display);
-      font-weight: 800;
-      color: #fff;
-      background: var(--c-sky);
-      border-radius: 50%;
-    }
-
-    /* 開閉アイコン（＋ → －） */
-    .p-faq__q::after {
-      content: "";
-      flex-shrink: 0;
-      width: 14px;
-      height: 14px;
-      margin-left: auto;
-      background:
-        linear-gradient(var(--c-ink-sub), var(--c-ink-sub)) center / 100% 2px no-repeat,
-        linear-gradient(var(--c-ink-sub), var(--c-ink-sub)) center / 2px 100% no-repeat;
-      transition: transform var(--dur) var(--ease);
-    }
-
-    .p-faq__item[open] .p-faq__q::after {
-      transform: rotate(45deg);
-    }
-
-    .p-faq__a {
-      padding: 0 var(--sp-md) var(--sp-md) calc(var(--sp-md) + 32px + 0.9rem);
-      font-size: var(--fs-sm);
-      color: var(--c-ink-sub);
-    }
-
-    /* =========================================================
-       10. Entry（エントリーフォーム）
-       ========================================================= */
-    .p-entry__form {
-      display: grid;
-      gap: var(--sp-md);
-      margin-top: var(--sp-xl);
-    }
-
-    .p-entry__row {
-      display: grid;
-      gap: var(--sp-md);
-    }
-
-    .p-entry__field {
-      display: grid;
-      gap: 0.4rem;
-      min-width: 0;
-      margin: 0;
-      padding: 0;
-      border: 0;
-    }
-
-    .p-entry__label {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0;
-      font-size: var(--fs-sm);
-      font-weight: 700;
-    }
-
-    .p-entry__badge {
-      padding: 0.05em 0.5em;
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: #fff;
-      background: var(--c-pink);
-      border-radius: 4px;
-    }
-
-    .p-entry__badge--optional {
-      color: var(--c-ink-sub);
-      background: var(--c-bg);
-    }
-
-    .p-entry__input {
-      width: 100%;
-      min-height: 52px;
-      padding: 0.75rem 1rem;
-      font-size: 1rem; /* iOSズーム防止 */
-      background: var(--c-bg);
-      border: 1.5px solid transparent;
-      border-radius: 12px;
-      transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
-      appearance: none;
-    }
-
-    .p-entry__input::placeholder { color: var(--c-ink-mute); }
-
-    .p-entry__input:hover { border-color: var(--c-line); }
-
-    .p-entry__input:focus {
-      outline: none;
-      background: var(--c-surface);
-      border-color: var(--c-sky);
-      box-shadow: 0 0 0 4px rgb(91 180 229 / 0.18);
-    }
-
-    /* 入力後のみエラー表示（:user-invalid） */
-    .p-entry__input:user-invalid {
-      border-color: var(--c-pink);
-      background: #fff7fb;
-    }
-
-    .p-entry__select {
-      background-image: linear-gradient(45deg, transparent 50%, var(--c-ink-sub) 50%), linear-gradient(-45deg, transparent 50%, var(--c-ink-sub) 50%);
-      background-position: calc(100% - 22px) 52%, calc(100% - 16px) 52%;
-      background-size: 6px 6px;
-      background-repeat: no-repeat;
-      padding-right: 2.75rem;
-    }
-
-    .p-entry__textarea {
-      min-height: 140px;
-      resize: vertical;
-    }
-
-    .p-entry__help {
-      font-size: var(--fs-xs);
-      color: var(--c-ink-mute);
-    }
-
-    /* チップ型チェックボックス */
-    .p-entry__chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .p-entry__chip { position: relative; }
-
-    .p-entry__chip input {
-      position: absolute;
-      opacity: 0;
-      inset: 0;
-      cursor: pointer;
-    }
-
-    .p-entry__chip span {
-      display: inline-flex;
-      align-items: center;
-      min-height: 40px;
-      padding: 0.35rem 1rem;
-      font-size: var(--fs-sm);
-      font-weight: 700;
-      color: var(--c-ink-sub);
-      background: var(--c-bg);
-      border: 1.5px solid transparent;
-      border-radius: 999px;
-      transition: all var(--dur) var(--ease);
-    }
-
-    .p-entry__chip:hover span { border-color: var(--c-line); }
-
-    .p-entry__chip input:checked + span {
-      color: var(--c-sky-deep);
-      background: var(--c-sky-pale);
-      border-color: var(--c-sky);
-    }
-
-    .p-entry__chip input:focus-visible + span {
-      outline: 3px solid var(--c-sky);
-      outline-offset: 2px;
-    }
-
-    .p-entry__agree {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
-      font-size: var(--fs-sm);
-      cursor: pointer;
-    }
-
-    .p-entry__agree input {
-      flex-shrink: 0;
-      width: 20px;
-      height: 20px;
-      margin-top: 0.2rem;
-      accent-color: var(--c-pink);
-    }
-
-    .p-entry__submit {
-      display: flex;
-      justify-content: center;
-      margin-top: var(--sp-sm);
-    }
-
-    /* =========================================================
-       11. Footer
-       ========================================================= */
-    .p-footer {
-      padding-block: var(--sp-lg) calc(var(--sp-lg) + 72px);
-      font-size: var(--fs-xs);
-      color: var(--c-ink-mute);
-      text-align: center;
-    }
-
-    .p-footer__inner {
+    .p-cta__box {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
       display: grid;
       justify-items: center;
-      gap: 0.75rem;
+      gap: var(--sp-sm);
+      padding: var(--sp-xl) var(--sp-md) calc(var(--sp-xl) + 2rem);
+      text-align: center;
+      background: var(--c-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+    }
+
+    .p-cta__box > *:not(.c-ribbon) { position: relative; z-index: 1; }
+
+    .p-cta__eyebrow {
+      font-family: var(--ff-display);
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--c-pink);
+    }
+
+    .p-cta__title {
+      font-size: var(--fs-h2);
+      font-weight: 900;
+      line-height: 1.5;
+      letter-spacing: 0.06em;
+    }
+
+    .p-cta__text {
+      max-width: 32em;
+      color: var(--c-ink-sub);
+    }
+
+    .p-cta__box .c-button { margin-top: var(--sp-sm); }
+
+    .p-cta__ribbon {
+      left: -10%;
+      right: -10%;
+      bottom: -30px;
+      height: clamp(70px, 10vw, 120px);
+      opacity: 0.9;
     }
 
     /* =========================================================
-       12. SP固定CTA（スマホでCTAを埋もれさせない）
+       10. SP固定CTA（スマホでCTAを埋もれさせない）
        ========================================================= */
     .p-fixed-cta {
       position: fixed;
@@ -1036,7 +831,7 @@
     }
 
     /* =========================================================
-       13. Fade-in（IntersectionObserver）
+       11. Fade-in（IntersectionObserver）
        JSが有効な環境でのみ初期状態を非表示にする
        ========================================================= */
     @media (scripting: enabled) {
@@ -1054,23 +849,23 @@
     }
 
     /* =========================================================
-       14. Responsive
+       12. Responsive
        ========================================================= */
 
     /* ---------- Tablet (≥ 640px) ---------- */
     @media (min-width: 640px) {
       .p-about__grid { grid-template-columns: repeat(3, 1fr); }
-      .p-entry__row { grid-template-columns: repeat(2, 1fr); }
       .p-rules__ng { grid-template-columns: 10rem 1fr; align-items: start; }
 
     }
 
     /* ---------- PC (≥ 960px) ---------- */
     @media (min-width: 960px) {
+      .p-header { display: block; }
       .p-header__nav { display: block; }
       .p-header__cta { display: inline-flex; min-height: 42px; padding-block: 0.5em; }
       .p-fixed-cta { display: none; }
-      .p-footer { padding-bottom: var(--sp-lg); }
+      body { padding-bottom: 0; }
 
       .p-rules__grid { grid-template-columns: repeat(4, 1fr); }
 
@@ -1244,22 +1039,17 @@
        ========================================================= -->
   <header class="p-header">
     <div class="l-container p-header__inner">
-      <a href="#top" class="c-logo" aria-label="Side Job Deck トップへ">
-        <svg class="c-logo__mark" aria-hidden="true"><use href="#icon-logo"/></svg>
-        DO GROUP
-      </a>
-
       <nav class="p-header__nav" aria-label="ページ内ナビゲーション">
         <ul class="p-header__list">
           <li><a class="p-header__link" href="#about">制度について</a></li>
           <li><a class="p-header__link" href="#flow">参加の流れ</a></li>
           <li><a class="p-header__link" href="#rules">ルール</a></li>
-          <li><a class="p-header__link" href="#faq">よくある質問</a></li>
         </ul>
       </nav>
 
-      <a href="#entry" class="c-button c-button--primary p-header__cta">
-        エントリー
+      <!-- 募集要項（下層ページ）へのリンク：パスは仮 -->
+      <a href="jobs/index.html" class="c-button c-button--primary p-header__cta">
+        募集要項を見る
         <svg class="c-button__icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
       </a>
     </div>
@@ -1285,18 +1075,11 @@
           <span class="p-hero__title-sub">グループ内副業 制度ガイド</span>
         </h1>
 
-        <p class="p-hero__meta js-fade" style="--fade-delay:.2s">
-          <time datetime="2026-11-27">2026.11.27</time>
-          <span aria-hidden="true">|</span>
-          <span>ver.01</span>
-        </p>
-
-        <div class="p-hero__actions js-fade" style="--fade-delay:.3s">
-          <a href="#entry" class="c-button c-button--primary c-button--lg">
-            エントリーする
+        <div class="p-hero__actions js-fade" style="--fade-delay:.2s">
+          <a href="jobs/index.html" class="c-button c-button--primary c-button--lg">
+            募集要項を見る
             <svg class="c-button__icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
           </a>
-          <a href="#about" class="c-button c-button--ghost c-button--lg">制度を知る</a>
         </div>
       </div>
 
@@ -1479,7 +1262,7 @@
                 </div>
                 <!-- 差し替え画像：img/flow-step03-entry.webp -->
                 <figure class="c-thumb" aria-hidden="true"><svg><use href="#icon-image"/></svg></figure>
-                <p class="c-card__text">このページ下部のフォームから応募。希望案件と稼働可能時間を記入します。</p>
+                <p class="c-card__text">募集要項ページから希望の案件を選び、稼働可能時間を記入して応募します。</p>
               </article>
             </li>
 
@@ -1588,140 +1371,20 @@
 
 
     <!-- =========================================================
-         04. FAQ
+         CTA（募集要項ページへ）
          ========================================================= -->
-    <section class="l-section p-faq" id="faq" aria-labelledby="faq-title">
+    <section class="l-section p-cta" aria-labelledby="cta-title">
       <div class="l-container l-container--narrow">
-        <h2 class="c-banner js-fade" id="faq-title">
-          <span class="c-banner__num">04</span>
-          <span class="c-banner__title">よくある質問</span>
-        </h2>
-
-        <div class="p-faq__list">
-          <details class="p-faq__item js-fade">
-            <summary class="p-faq__q">未経験の職種でも応募できますか？</summary>
-            <p class="p-faq__a">はい。案件ごとに「未経験歓迎」の表記があります。必要スキルは募集一覧で確認できます。</p>
-          </details>
-          <details class="p-faq__item js-fade">
-            <summary class="p-faq__q">副業先の評価は本業の評価に影響しますか？</summary>
-            <p class="p-faq__a">本業の人事評価とは切り分けて扱います。ただし本人の希望があれば、成果を面談で共有できます。</p>
-          </details>
-          <details class="p-faq__item js-fade">
-            <summary class="p-faq__q">途中で辞めることはできますか？</summary>
-            <p class="p-faq__a">可能です。受け入れ部署・所属長・人事に相談のうえ、引き継ぎ期間を設けて終了します。</p>
-          </details>
-          <details class="p-faq__item js-fade">
-            <summary class="p-faq__q">リモートでの参加は可能ですか？</summary>
-            <p class="p-faq__a">案件によります。募集一覧の「勤務形態」欄に記載しています。</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- =========================================================
-         05. Entry（エントリーフォーム）
-         ========================================================= -->
-    <section class="l-section p-entry" id="entry" aria-labelledby="entry-title">
-      <div class="l-container l-container--narrow">
-        <div class="c-deck">
-          <h2 class="c-banner js-fade" id="entry-title">
-            <span class="c-banner__num">05</span>
-            <span class="c-banner__title">エントリー</span>
-          </h2>
-
-          <p class="c-lead js-fade">所属長への相談が済んだら、こちらから応募してください。<br>担当者から3営業日以内にご連絡します。</p>
-
-          <!-- action は送信先に合わせて差し替え -->
-          <form class="p-entry__form js-fade" action="#" method="post" autocomplete="on">
-
-            <div class="p-entry__row">
-              <div class="p-entry__field">
-                <label class="p-entry__label" for="entry-name">氏名 <span class="p-entry__badge">必須</span></label>
-                <input class="p-entry__input" type="text" id="entry-name" name="name"
-                       placeholder="例）米沢 花子" autocomplete="name"
-                       required minlength="2" maxlength="40">
-              </div>
-
-              <div class="p-entry__field">
-                <label class="p-entry__label" for="entry-employee-id">社員番号 <span class="p-entry__badge">必須</span></label>
-                <input class="p-entry__input" type="text" id="entry-employee-id" name="employee_id"
-                       placeholder="例）A123456" inputmode="latin"
-                       required pattern="[A-Za-z][0-9]{6}" maxlength="7"
-                       aria-describedby="entry-employee-id-help"
-                       title="英字1文字＋数字6桁で入力してください">
-                <p class="p-entry__help" id="entry-employee-id-help">英字1文字＋数字6桁</p>
-              </div>
-            </div>
-
-            <div class="p-entry__row">
-              <div class="p-entry__field">
-                <label class="p-entry__label" for="entry-company">所属会社 <span class="p-entry__badge">必須</span></label>
-                <select class="p-entry__input p-entry__select" id="entry-company" name="company" required>
-                  <option value="" disabled selected>選択してください</option>
-                  <option value="company-a">グループ会社A</option>
-                  <option value="company-b">グループ会社B</option>
-                  <option value="company-c">グループ会社C</option>
-                </select>
-              </div>
-
-              <div class="p-entry__field">
-                <label class="p-entry__label" for="entry-email">社用メールアドレス <span class="p-entry__badge">必須</span></label>
-                <input class="p-entry__input" type="email" id="entry-email" name="email"
-                       placeholder="例）hanako@example.co.jp" autocomplete="email"
-                       required maxlength="100">
-              </div>
-            </div>
-
-            <fieldset class="p-entry__field">
-              <legend class="p-entry__label">興味のある分野 <span class="p-entry__badge p-entry__badge--optional">任意</span></legend>
-              <div class="p-entry__chips">
-                <label class="p-entry__chip"><input type="checkbox" name="field[]" value="design"><span>デザイン</span></label>
-                <label class="p-entry__chip"><input type="checkbox" name="field[]" value="marketing"><span>マーケティング</span></label>
-                <label class="p-entry__chip"><input type="checkbox" name="field[]" value="engineering"><span>開発・IT</span></label>
-                <label class="p-entry__chip"><input type="checkbox" name="field[]" value="sales"><span>営業・企画</span></label>
-                <label class="p-entry__chip"><input type="checkbox" name="field[]" value="backoffice"><span>バックオフィス</span></label>
-              </div>
-            </fieldset>
-
-            <div class="p-entry__row">
-              <div class="p-entry__field">
-                <label class="p-entry__label" for="entry-hours">月の稼働可能時間 <span class="p-entry__badge">必須</span></label>
-                <input class="p-entry__input" type="number" id="entry-hours" name="hours"
-                       placeholder="例）10" inputmode="numeric"
-                       required min="1" max="20" step="1"
-                       aria-describedby="entry-hours-help">
-                <p class="p-entry__help" id="entry-hours-help">1〜20時間で入力（上限20h/月）</p>
-              </div>
-
-              <div class="p-entry__field">
-                <label class="p-entry__label" for="entry-start">参加希望時期 <span class="p-entry__badge p-entry__badge--optional">任意</span></label>
-                <input class="p-entry__input" type="month" id="entry-start" name="start_month"
-                       min="2026-12">
-              </div>
-            </div>
-
-            <div class="p-entry__field">
-              <label class="p-entry__label" for="entry-message">志望動機・ひとこと <span class="p-entry__badge p-entry__badge--optional">任意</span></label>
-              <textarea class="p-entry__input p-entry__textarea" id="entry-message" name="message"
-                        placeholder="挑戦してみたいこと、活かせる経験などをご記入ください" maxlength="800"></textarea>
-            </div>
-
-            <label class="p-entry__agree">
-              <input type="checkbox" name="agree" value="1" required>
-              <span>所属長の承認を得ており、制度のルールに同意します</span>
-            </label>
-
-            <div class="p-entry__submit">
-              <button type="submit" class="c-button c-button--primary c-button--lg">
-                この内容でエントリーする
-                <svg class="c-button__icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
-              </button>
-            </div>
-          </form>
-
-          <div class="c-ribbon c-deck__ribbon" aria-hidden="true"><svg><use href="#ribbon"/></svg></div>
-          <p class="c-deck__foot" aria-hidden="true"><span>05</span><span>Side Job Deck</span></p>
+        <div class="p-cta__box js-fade">
+          <p class="p-cta__eyebrow">OPEN POSITIONS</p>
+          <h2 class="p-cta__title" id="cta-title">募集中の案件を見てみよう</h2>
+          <p class="p-cta__text">業務内容・必要スキル・稼働時間は、案件ごとに募集要項ページにまとめています。</p>
+          <!-- 募集要項（下層ページ）へのリンク：パスは仮 -->
+          <a href="jobs/index.html" class="c-button c-button--primary c-button--lg">
+            募集要項を見る
+            <svg class="c-button__icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
+          </a>
+          <div class="c-ribbon p-cta__ribbon" aria-hidden="true"><svg><use href="#ribbon"/></svg></div>
         </div>
       </div>
     </section>
@@ -1730,26 +1393,11 @@
 
 
   <!-- =========================================================
-       Footer
-       ========================================================= -->
-  <footer class="p-footer">
-    <div class="l-container p-footer__inner">
-      <span class="c-logo">
-        <svg class="c-logo__mark" aria-hidden="true"><use href="#icon-logo"/></svg>
-        DO GROUP
-      </span>
-      <p>お問い合わせ：人事部 グループ内副業担当</p>
-      <p><small>&copy; 2026 DO GROUP</small></p>
-    </div>
-  </footer>
-
-
-  <!-- =========================================================
        SP固定CTA
        ========================================================= -->
   <div class="p-fixed-cta">
-    <a href="#entry" class="c-button c-button--primary c-button--block">
-      エントリーする
+    <a href="jobs/index.html" class="c-button c-button--primary c-button--block">
+      募集要項を見る
       <svg class="c-button__icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
     </a>
   </div>
