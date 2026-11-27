@@ -339,15 +339,14 @@
        スマホ
        ========================================================== */
     @media (max-width: 640px) {
-      /* 背景の箱を画面の左右から20pxずつ内側に（角丸のカード状） */
+      /* 水色の背景は画面いっぱいのまま、中身の左右に20pxずつ余白
+         （サイト側の main 指定に左右されないよう、外側の箱の padding で確保） */
       .referral-wrap {
-        width: calc(var(--page-width, 100vw) - 40px);
-        margin-left: calc(50% - var(--page-width, 100vw) / 2 + 20px);
-        border-radius: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
         background-size: 48px 48px;
       }
-      /* 箱の中の文字・カードも左右16pxずつ余白（サイト側の main 指定に負けないよう詳細度を上げる） */
-      .referral-wrap .referral-page { width: min(100% - 32px, var(--content-width)); }
+      .referral-wrap .referral-page { width: 100%; max-width: var(--content-width); }
       .referral-steps { grid-template-columns: 1fr; gap: 14px; }
       .referral-step { min-height: auto; padding: 18px 20px; }
       .referral-button { width: 100%; }
@@ -357,7 +356,7 @@
       /* 左上の円は小さくして見出しに重ならない位置へ */
       .referral-wrap::before { top: -160px; left: -170px; width: 240px; }
       .referral-wrap::after { width: 340px; bottom: -140px; right: -160px; }
-      .referral-wrap .referral-footer { width: min(100% - 32px, var(--content-width)); padding: 22px 0 36px; font-size: .92rem; }
+      .referral-wrap .referral-footer { width: 100%; padding: 22px 0 36px; font-size: .92rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
