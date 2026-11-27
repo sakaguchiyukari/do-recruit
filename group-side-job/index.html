@@ -3,825 +3,741 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Side Job Deck｜グループ内副業ガイド</title>
-  <meta name="description" content="グループ会社間で挑戦できる「グループ内副業」制度の概要・参加の流れ・ルール・エントリー方法をまとめたガイドです。">
-  <meta name="theme-color" content="#5bb4e5">
-
-  <!-- Fonts -->
+  <title>Side Job Deck｜グループ内副業 制度ガイド</title>
+  <meta name="description" content="グループ内副業制度の概要・参加の流れ・ルールをまとめたガイドです。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
 
   <style>
-    /* =========================================================
-       0. Design Tokens
-       ========================================================= */
-    :root {
-      /* Color */
-      --c-ink: #26282c;
-      --c-ink-sub: #5d626b;
-      --c-ink-mute: #9aa0a9;
-      --c-line: #e3e8ee;
-      --c-bg: #f5f8fb;
-      --c-surface: #ffffff;
+  /* ====================
+     1. 変数
+  ==================== */
+  :root {
+    /* カラー */
+    --c-ink: #26282c;
+    --c-ink-sub: #5d626b;
+    --c-ink-mute: #9aa0a9;
+    --c-line: #e3e8ee;
+    --c-bg: #f5f8fb;
+    --c-white: #fff;
+    --c-sky: #5bb4e5;
+    --c-sky-deep: #2f8fcf;
+    --c-sky-pale: #e7f4fc;
+    --c-pink: #ec5a9f;
+    --c-pink-pale: #fff7fb;
+    --c-magenta: #c9378b;
+    --c-yellow: #f7c548;
+    --g-brand: linear-gradient(120deg, var(--c-sky), var(--c-pink));
 
-      --c-sky: #5bb4e5;
-      --c-sky-deep: #2f8fcf;
-      --c-sky-pale: #e7f4fc;
-      --c-pink: #ec5a9f;
-      --c-magenta: #c9378b;
-      --c-yellow: #f7c548;
-      --c-orange: #f39a4a;
-      --c-skin: #f6d5c3;
+    /* フォント */
+    --ff-base: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    --ff-en: "Outfit", var(--ff-base);
+    --fs-xs: 0.75rem;
+    --fs-sm: 0.875rem;
+    --fs-base: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+    --fs-lg: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    --fs-h3: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+    --fs-h2: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
+    --fs-hero: clamp(3rem, 1.6rem + 7vw, 7.5rem);
 
-      --g-brand: linear-gradient(120deg, var(--c-sky) 0%, var(--c-pink) 100%);
+    /* 余白 */
+    --sp-xs: 0.5rem;
+    --sp-sm: clamp(0.75rem, 0.65rem + 0.4vw, 1rem);
+    --sp-md: clamp(1rem, 0.8rem + 0.9vw, 1.5rem);
+    --sp-lg: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+    --sp-xl: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
+    --sp-section: clamp(3.5rem, 2.4rem + 4.5vw, 7rem);
+    --gutter: clamp(1rem, 0.6rem + 2vw, 2rem);
 
-      /* Typography */
-      --ff-base: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", sans-serif;
-      --ff-display: "Outfit", var(--ff-base);
-      --fs-xs: 0.75rem;
-      --fs-sm: 0.875rem;
-      --fs-base: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
-      --fs-lg: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
-      --fs-h3: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
-      --fs-h2: clamp(1.25rem, 1.1rem + 0.8vw, 1.75rem);
-      --fs-hero: clamp(3rem, 1.6rem + 7vw, 7.5rem);
+    /* レイアウト */
+    --w-content: 1120px;
+    --w-narrow: 760px;
+    --radius-md: 18px;
+    --radius-lg: 28px;
 
-      /* Spacing（clampで自然に可変） */
-      --sp-2xs: 0.25rem;
-      --sp-xs: 0.5rem;
-      --sp-sm: clamp(0.75rem, 0.65rem + 0.4vw, 1rem);
-      --sp-md: clamp(1rem, 0.8rem + 0.9vw, 1.5rem);
-      --sp-lg: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
-      --sp-xl: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
-      --sp-section: clamp(3.5rem, 2.4rem + 4.5vw, 7rem);
-      --gutter: clamp(1rem, 0.6rem + 2vw, 2rem);
+    /* 効果 */
+    --shadow-card: 0 1px 2px rgb(38 40 44 / 0.04), 0 8px 24px -12px rgb(38 40 44 / 0.12);
+    --shadow-hover: 0 18px 40px -16px rgb(47 143 207 / 0.35);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur: 0.35s;
+  }
 
-      /* Layout */
-      --w-content: 1120px;
-      --w-narrow: 760px;
-      --radius-sm: 10px;
-      --radius-md: 18px;
-      --radius-lg: 28px;
+  /* ====================
+     2. ベース
+  ==================== */
+  *, *::before, *::after { box-sizing: border-box; }
 
-      /* Effect */
-      --shadow-card: 0 1px 2px rgb(38 40 44 / 0.04), 0 8px 24px -12px rgb(38 40 44 / 0.12);
-      --shadow-hover: 0 2px 4px rgb(38 40 44 / 0.05), 0 18px 40px -16px rgb(47 143 207 / 0.35);
-      --ease: cubic-bezier(0.22, 1, 0.36, 1);
-      --dur: 0.35s;
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* SP固定CTA分 */
+    font-family: var(--ff-base);
+    font-size: var(--fs-base);
+    line-height: 1.8;
+    color: var(--c-ink);
+    background: var(--c-bg);
+    font-feature-settings: "palt";
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  h1, h2, h3, p, ul, ol { margin: 0; }
+  ul, ol { padding: 0; list-style: none; }
+  svg { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+
+  :focus-visible {
+    outline: 3px solid var(--c-sky);
+    outline-offset: 3px;
+  }
+
+  .u-pc { display: none; }
+
+  /* ====================
+     3. レイアウト
+  ==================== */
+  .l-container {
+    width: min(100% - var(--gutter) * 2, var(--w-content));
+    margin-inline: auto;
+  }
+
+  .l-container--narrow {
+    width: min(100% - var(--gutter) * 2, var(--w-narrow));
+  }
+
+  .l-section { padding-top: var(--sp-section); }
+  .l-section:last-of-type { padding-bottom: var(--sp-section); }
+
+  /* ====================
+     4. 共通パーツ
+  ==================== */
+
+  /* ---------- ボタン ---------- */
+  .c-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    min-height: 48px;
+    padding: 0.75em 1.6em;
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--c-white);
+    background: var(--g-brand);
+    border-radius: 999px;
+    box-shadow: 0 10px 24px -10px rgb(236 90 159 / 0.6);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+
+  .c-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px -12px rgb(236 90 159 / 0.7);
+  }
+
+  .c-button__icon {
+    width: 1.1em;
+    height: 1.1em;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .c-button:hover .c-button__icon { transform: translateX(4px); }
+
+  .c-button--lg {
+    min-height: 56px;
+    padding-inline: 2.2em;
+    font-size: var(--fs-base);
+  }
+
+  .c-button--block { width: 100%; }
+
+  /* ---------- リボン（SVG） ---------- */
+  .c-ribbon {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .c-ribbon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ---------- 見出しバナー（矢羽型） ---------- */
+  .c-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75em;
+    min-height: 52px;
+    padding: 0.5rem 3rem 0.5rem 1.5rem;
+    color: var(--c-white);
+    background: linear-gradient(90deg, var(--c-sky-pale), var(--c-sky) 22%);
+    clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 50%, calc(100% - 26px) 100%, 0 100%);
+  }
+
+  .c-banner__num {
+    font-family: var(--ff-en);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    opacity: 0.85;
+  }
+
+  .c-banner__title {
+    font-size: var(--fs-h2);
+    font-weight: 900;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+  }
+
+  .c-banner__sub {
+    display: inline-block;
+    font-family: var(--ff-en);
+    font-size: 0.8em;
+    white-space: nowrap;
+  }
+
+  /* ---------- リード文 ---------- */
+  .c-lead {
+    max-width: 40em;
+    margin: var(--sp-lg) auto 0;
+    font-size: var(--fs-lg);
+    line-height: 1.9;
+    text-align: center;
+    color: var(--c-ink-sub);
+  }
+
+  .c-lead strong {
+    color: var(--c-ink);
+    background: linear-gradient(transparent 62%, rgb(247 197 72 / 0.55) 62%);
+  }
+
+  /* ---------- パネル（スライド風の白枠） ---------- */
+  .c-panel {
+    padding: var(--sp-xl) clamp(1rem, 0.4rem + 3vw, 3.5rem);
+    background: var(--c-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* ---------- カード ---------- */
+  .c-card {
+    height: 100%;
+    padding: var(--sp-md);
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-md);
+  }
+
+  /* ホバーで浮くカード（01 のみ使用） */
+  .c-card--hover {
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+
+  .c-card--hover:hover {
+    transform: translateY(-4px);
+    border-color: transparent;
+    box-shadow: var(--shadow-hover);
+  }
+
+  .c-card__label {
+    font-family: var(--ff-en);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--c-sky-deep);
+  }
+
+  .c-card__title {
+    margin-top: 0.2rem;
+    font-size: var(--fs-h3);
+    font-weight: 900;
+    line-height: 1.45;
+  }
+
+  .c-card__text {
+    margin-top: 0.6rem;
+    font-size: var(--fs-sm);
+    color: var(--c-ink-sub);
+  }
+
+  /* ---------- タグ・注記 ---------- */
+  .c-tag {
+    display: inline-block;
+    margin-top: 0.6rem;
+    padding: 0.15em 0.75em;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--c-ink-sub);
+    background: var(--c-bg);
+    border-radius: 6px;
+  }
+
+  .c-note {
+    margin-top: var(--sp-md);
+    font-size: var(--fs-xs);
+    text-align: center;
+    color: var(--c-ink-mute);
+  }
+
+  /* ====================
+     5. ヒーロー
+  ==================== */
+  .p-hero {
+    position: relative;
+    width: 100vw;
+    margin-inline: calc(50% - 50vw); /* 親の幅を超えて画面いっぱいに */
+    padding-top: var(--sp-xl);
+    overflow: hidden;
+    background:
+      radial-gradient(60% 50% at 85% 10%, rgb(91 180 229 / 0.12), transparent 70%),
+      var(--c-white);
+  }
+
+  .p-hero__inner {
+    position: relative;
+    z-index: 2;
+  }
+
+  .p-hero__title {
+    font-family: var(--ff-en);
+    font-size: var(--fs-hero);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: #3a3d42;
+  }
+
+  .p-hero__sub {
+    display: block;
+    margin-top: var(--sp-md);
+    font-family: var(--ff-base);
+    font-size: clamp(1.125rem, 0.95rem + 0.9vw, 1.75rem);
+    font-weight: 900;
+    line-height: 1.4;
+    letter-spacing: 0.1em;
+    color: var(--c-ink);
+  }
+
+  .p-hero__actions { margin-top: var(--sp-lg); }
+
+  /* イラスト領域：下に余白を取りリボンが切れないようにする */
+  .p-hero__visual {
+    position: relative;
+    height: clamp(240px, 26vw + 120px, 440px);
+    margin-bottom: var(--sp-md);
+  }
+
+  .p-hero__ribbon {
+    inset: 0 -4%;
+  }
+
+  .p-hero__people {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* ====================
+     6. 01 グループ内副業とは
+  ==================== */
+  .p-about__list {
+    display: grid;
+    gap: var(--sp-md);
+    margin-top: var(--sp-xl);
+  }
+
+  .p-about__icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: var(--sp-sm);
+    color: var(--c-white);
+    border-radius: 16px;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .p-about__icon svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .c-card--hover:hover .p-about__icon { transform: rotate(-8deg) scale(1.06); }
+
+  .p-about__icon--sky { background: var(--c-sky); }
+  .p-about__icon--pink { background: var(--c-pink); }
+  .p-about__icon--yellow { background: var(--c-yellow); color: var(--c-ink); }
+
+  /* ====================
+     7. 02 参加までの流れ（タイムライン）
+     SP：縦の軸 / PC：横の軸に上下互い違い
+  ==================== */
+  .p-flow { --axis-gap: 6.5rem; }
+
+  .p-flow__list {
+    position: relative;
+    display: grid;
+    gap: var(--sp-lg);
+    margin-top: var(--sp-xl);
+    padding-left: 2.25rem;
+  }
+
+  /* 軸の線 */
+  .p-flow__list::before {
+    content: "";
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.6rem;
+    width: 3px;
+    background: linear-gradient(var(--c-sky), var(--c-pink));
+    border-radius: 3px;
+  }
+
+  .p-flow__item { position: relative; }
+
+  /* ステップ番号 */
+  .p-flow__step {
+    margin-bottom: 0.6rem;
+    font-family: var(--ff-en);
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  /* SPの軸上のドット */
+  .p-flow__step::before {
+    content: "";
+    position: absolute;
+    top: 0.1rem;
+    left: calc(-2.25rem + 0.6rem - 6px);
+    width: 15px;
+    height: 15px;
+    background: var(--c-white);
+    border: 4px solid var(--c-pink);
+    border-radius: 50%;
+  }
+
+  .p-flow__card { height: auto; }
+
+  .p-flow__label {
+    font-family: var(--ff-en);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--c-ink-sub);
+  }
+
+  .p-flow__card .c-card__title {
+    padding-left: 0.65rem;
+    border-left: 4px solid var(--c-pink);
+  }
+
+  /* ====================
+     8. 03 ルールと条件
+  ==================== */
+  .p-rules__list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-sm);
+    margin-top: var(--sp-xl);
+  }
+
+  .p-rules__label {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--c-ink-sub);
+  }
+
+  .p-rules__value {
+    margin-block: 0.3rem;
+    font-family: var(--ff-en);
+    font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: transparent;
+    background: var(--g-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .p-rules__value small {
+    margin-left: 0.15em;
+    font-family: var(--ff-base);
+    font-size: 0.42em;
+    font-weight: 900;
+  }
+
+  .p-rules__desc {
+    font-size: var(--fs-sm);
+    color: var(--c-ink-sub);
+  }
+
+  .p-rules__ng {
+    display: grid;
+    gap: var(--sp-sm);
+    margin-top: var(--sp-lg);
+    padding: var(--sp-md);
+    background: var(--c-pink-pale);
+    border-radius: var(--radius-md);
+  }
+
+  .p-rules__ng-title {
+    font-size: var(--fs-base);
+    font-weight: 900;
+    color: var(--c-magenta);
+  }
+
+  .p-rules__ng-list {
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--fs-sm);
+    color: var(--c-ink-sub);
+  }
+
+  .p-rules__ng-list li {
+    position: relative;
+    padding-left: 1.4em;
+  }
+
+  .p-rules__ng-list li::before {
+    content: "";
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 0.7em;
+    height: 2px;
+    background: var(--c-pink);
+  }
+
+  /* ====================
+     9. 募集要項への導線
+  ==================== */
+  .p-cta__box {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--sp-sm);
+    padding: var(--sp-xl) var(--sp-md) calc(var(--sp-xl) + 2rem);
+    overflow: hidden;
+    text-align: center;
+    background: var(--c-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  .p-cta__box > *:not(.c-ribbon) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .p-cta__en {
+    font-family: var(--ff-en);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--c-pink);
+  }
+
+  .p-cta__title {
+    font-size: var(--fs-h2);
+    font-weight: 900;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+  }
+
+  .p-cta__text {
+    max-width: 32em;
+    color: var(--c-ink-sub);
+  }
+
+  .p-cta__box .c-button { margin-top: var(--sp-sm); }
+
+  .p-cta__ribbon {
+    right: -10%;
+    bottom: -30px;
+    left: -10%;
+    height: clamp(70px, 10vw, 120px);
+  }
+
+  /* SP固定CTA */
+  .p-fixed-cta {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 60;
+    padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+    background: rgb(255 255 255 / 0.9);
+    border-top: 1px solid var(--c-line);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* ====================
+     10. フェードイン（JS有効時のみ）
+  ==================== */
+  @media (scripting: enabled) {
+    .js-fade {
+      opacity: 0;
+      translate: 0 24px;
+      transition: opacity 0.8s var(--ease), translate 0.8s var(--ease);
+      transition-delay: var(--delay, 0s);
     }
 
-    /* =========================================================
-       1. Base / Reset
-       ========================================================= */
-    *, *::before, *::after { box-sizing: border-box; }
-
-    html {
-      -webkit-text-size-adjust: 100%;
-      scroll-behavior: smooth;
-      scroll-padding-top: 1rem;
+    .js-fade.is-visible {
+      opacity: 1;
+      translate: 0 0;
     }
+  }
 
-    body {
-      margin: 0;
-      font-family: var(--ff-base);
-      font-size: var(--fs-base);
-      line-height: 1.8;
-      color: var(--c-ink);
-      background: var(--c-bg);
-      font-feature-settings: "palt";
-      overflow-x: hidden;
-      overflow-x: clip;
-      padding-bottom: calc(80px + env(safe-area-inset-bottom)); /* SP固定CTA分 */
-    }
+  /* ====================
+     11. レスポンシブ
+  ==================== */
 
-    h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
-    ul, ol { padding: 0; list-style: none; }
-    img, svg { display: block; max-width: 100%; height: auto; }
-    a { color: inherit; text-decoration: none; }
-    button, input, select, textarea { font: inherit; color: inherit; }
+  /* ---------- タブレット（640px〜） ---------- */
+  @media (min-width: 640px) {
+    .p-about__list { grid-template-columns: repeat(3, 1fr); }
 
-    :focus-visible {
-      outline: 3px solid var(--c-sky);
-      outline-offset: 3px;
-      border-radius: 6px;
-    }
-
-    /* PCのみ改行 */
-    .u-pc { display: none; }
-    @media (min-width: 960px) { .u-pc { display: inline; } }
-
-    .u-visually-hidden {
-      position: absolute !important;
-      width: 1px; height: 1px;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      white-space: nowrap;
-    }
-
-    /* =========================================================
-       2. Layout Utilities
-       ========================================================= */
-    .l-container {
-      width: min(100% - var(--gutter) * 2, var(--w-content));
-      margin-inline: auto;
-    }
-
-    .l-container--narrow { width: min(100% - var(--gutter) * 2, var(--w-narrow)); }
-
-    .l-section { padding-block: var(--sp-section) 0; }
-    .l-section:last-of-type { padding-bottom: var(--sp-section); }
-
-    /* =========================================================
-       3. Components
-       ========================================================= */
-
-    /* ---------- 3-1. Button ---------- */
-    .c-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6em;
-      min-height: 48px;
-      padding: 0.75em 1.6em;
-      font-weight: 700;
-      font-size: var(--fs-sm);
-      letter-spacing: 0.04em;
-      border: 0;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease);
-    }
-
-    .c-button__icon {
-      width: 1.1em;
-      height: 1.1em;
-      transition: transform var(--dur) var(--ease);
-    }
-
-    .c-button:hover .c-button__icon { transform: translateX(4px); }
-
-    .c-button--primary {
-      color: #fff;
-      background: var(--g-brand);
-      box-shadow: 0 10px 24px -10px rgb(236 90 159 / 0.6);
-    }
-
-    .c-button--primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 30px -12px rgb(236 90 159 / 0.7);
-    }
-
-    .c-button--ghost {
-      color: var(--c-ink);
-      background: var(--c-surface);
-      box-shadow: inset 0 0 0 1.5px var(--c-line);
-    }
-
-    .c-button--ghost:hover {
-      transform: translateY(-2px);
-      box-shadow: inset 0 0 0 1.5px var(--c-sky);
-    }
-
-    .c-button--lg {
-      min-height: 56px;
-      padding-inline: 2.2em;
-      font-size: var(--fs-base);
-    }
-
-    .c-button--block { width: 100%; }
-
-    /* ---------- 3-3. Ribbon（参考デザインの多色リボン） ---------- */
-    .c-ribbon {
-      position: absolute;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .c-ribbon svg { width: 100%; height: 100%; }
-
-    /* ---------- 3-4. Section Banner（矢羽バナー見出し） ---------- */
-    .c-banner {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75em;
-      min-height: 52px;
-      padding: 0.5rem 3rem 0.5rem 1.5rem;
-      color: #fff;
-      background: linear-gradient(90deg, var(--c-sky-pale) 0%, var(--c-sky) 22%, var(--c-sky) 100%);
-      clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 50%, calc(100% - 26px) 100%, 0 100%);
-      border-radius: 4px 0 0 4px;
-    }
-
-    .c-banner__num {
-      font-family: var(--ff-display);
-      font-weight: 700;
-      font-size: var(--fs-sm);
-      letter-spacing: 0.12em;
-      opacity: 0.85;
-    }
-
-    .c-banner__title {
-      font-size: var(--fs-h2);
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      line-height: 1.3;
-    }
-
-    .c-banner__range {
-      display: inline-block;
-      white-space: nowrap;
-      font-family: var(--ff-display);
-      font-weight: 700;
-      font-size: 0.8em;
-      letter-spacing: 0.04em;
-      opacity: 0.9;
-    }
-
-    /* ---------- 3-5. Section Lead ---------- */
-    .c-lead {
-      max-width: 40em;
-      margin: var(--sp-lg) auto 0;
-      text-align: center;
-      color: var(--c-ink-sub);
-      font-size: var(--fs-lg);
-      line-height: 1.9;
-    }
-
-    .c-lead strong {
-      color: var(--c-ink);
-      background: linear-gradient(transparent 62%, rgb(247 197 72 / 0.55) 62%);
-    }
-
-    /* ---------- 3-6. Deck Panel（スライド風パネル） ---------- */
-    .c-deck {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      padding: var(--sp-xl) clamp(1rem, 0.4rem + 3vw, 3.5rem) var(--sp-xl);
-      background: var(--c-surface);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-card);
-    }
-
-    .c-deck > * { position: relative; z-index: 1; }
-
-    /* ---------- 3-7. Card ---------- */
-    .c-card {
-      position: relative;
-      height: 100%;
-      padding: var(--sp-md);
-      background: var(--c-surface);
-      border: 1px solid var(--c-line);
-      border-radius: var(--radius-md);
-    }
-
-    /* Modifier：ホバーで浮き上がるカード（01 グループ内副業とは で使用） */
-    .c-card--hover {
-      transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
-    }
-
-    .c-card--hover:hover {
-      transform: translateY(-4px);
-      border-color: transparent;
-      box-shadow: var(--shadow-hover);
-    }
-
-    .c-card__eyebrow {
-      font-family: var(--ff-display);
-      font-size: var(--fs-xs);
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: var(--c-sky-deep);
-    }
-
-    .c-card__title {
-      margin-top: 0.2rem;
-      font-size: var(--fs-h3);
-      font-weight: 900;
-      line-height: 1.45;
-      letter-spacing: 0.03em;
-    }
-
-    .c-card__text {
-      margin-top: 0.6rem;
-      font-size: var(--fs-sm);
-      line-height: 1.85;
-      color: var(--c-ink-sub);
-    }
-
-    /* ---------- 3-8. Tag ---------- */
-    .c-tag {
-      display: inline-block;
-      padding: 0.15em 0.75em;
-      font-size: var(--fs-xs);
-      font-weight: 700;
-      color: var(--c-ink-sub);
-      background: var(--c-bg);
-      border-radius: 6px;
-    }
-
-    .c-note {
-      margin-top: var(--sp-md);
-      font-size: var(--fs-xs);
-      color: var(--c-ink-mute);
-      text-align: center;
-    }
-
-    /* =========================================================
-       5. Hero（表紙）
-       ========================================================= */
-    .p-hero {
-      position: relative;
-      width: 100vw;
-      max-width: none;
-      margin-inline: calc(50% - 50vw);
-      isolation: isolate;
-      overflow: hidden;
-      padding-top: var(--sp-xl);
-      background:
-        radial-gradient(60% 50% at 85% 10%, rgb(91 180 229 / 0.12), transparent 70%),
-        var(--c-surface);
-    }
-
-    .p-hero__inner {
-      position: relative;
-      z-index: 2;
-    }
-
-    .p-hero__title {
-      font-family: var(--ff-display);
-      font-size: var(--fs-hero);
-      font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -0.02em;
-      color: #3a3d42;
-    }
-
-    .p-hero__title-sub {
-      display: block;
-      margin-top: var(--sp-md);
-      font-family: var(--ff-base);
-      font-size: clamp(1.125rem, 0.95rem + 0.9vw, 1.75rem);
-      font-weight: 900;
-      line-height: 1.4;
-      letter-spacing: 0.1em;
-      color: var(--c-ink);
-    }
-
-    .p-hero__actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: var(--sp-lg);
-    }
-
-    /* イラスト＋リボン領域 */
-    .p-hero__visual {
-      position: relative;
-      z-index: 1;
-      margin-top: clamp(-1rem, 2vw - 3rem, -0.5rem);
-      height: clamp(240px, 26vw + 120px, 440px);
-    }
-
-    .p-hero__ribbon {
-      left: -4%;
-      right: -4%;
-      bottom: 0;
-      height: 100%;
-    }
-
-    .p-hero__people {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* 人物の軽い揺れ */
-    .p-hero__person { animation: bob 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
-    .p-hero__person:nth-of-type(2n) { animation-delay: -1.2s; }
-    .p-hero__person:nth-of-type(3n) { animation-delay: -2.1s; }
-
-    @keyframes bob {
-      0%, 100% { translate: 0 0; }
-      50% { translate: 0 -6px; }
-    }
-
-    /* =========================================================
-       6. About（グループ内副業とは）
-       ========================================================= */
-    .p-about__grid {
-      display: grid;
-      gap: var(--sp-md);
-      margin-top: var(--sp-xl);
-    }
-
-    .p-about__icon {
-      display: grid;
-      place-items: center;
-      width: 52px;
-      height: 52px;
-      margin-bottom: var(--sp-sm);
-      border-radius: 16px;
-      color: #fff;
-      transition: transform var(--dur) var(--ease);
-    }
-
-    .p-about__icon svg { width: 26px; height: 26px; }
-    .c-card--hover:hover .p-about__icon { transform: rotate(-8deg) scale(1.06); }
-
-    .p-about__icon--sky { background: var(--c-sky); }
-    .p-about__icon--pink { background: var(--c-pink); }
-    .p-about__icon--yellow { background: var(--c-yellow); color: var(--c-ink); }
-
-    /* =========================================================
-       7. Flow（参考デザインのタイムライン）
-       ========================================================= */
-    .p-flow { --axis-gap: 6.5rem; }
-
-    .p-flow__list {
-      position: relative;
-      display: grid;
-      gap: var(--sp-lg);
-      margin-top: var(--sp-xl);
-      padding-left: 2.25rem;
-    }
-
-    /* SP：縦の軸 */
-    .p-flow__list::before {
-      content: "";
-      position: absolute;
-      top: 0.5rem;
-      bottom: 0.5rem;
-      left: 0.6rem;
-      width: 3px;
-      border-radius: 3px;
-      background: linear-gradient(var(--c-sky), var(--c-pink));
-    }
-
-    .p-flow__item { position: relative; }
-
-    /* 軸上のステップラベル */
-    .p-flow__marker {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.6rem;
-      font-family: var(--ff-display);
-    }
-
-    .p-flow__marker::before {
-      content: "";
-      position: absolute;
-      left: calc(-2.25rem + 0.6rem - 6px);
-      top: 0.55rem;
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: var(--c-surface);
-      border: 4px solid var(--c-pink);
-    }
-
-    .p-flow__step {
-      font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      line-height: 1;
-    }
-
-    /* 内容に合わせた高さにする（c-cardのheight:100%を解除） */
-    .p-flow__card { height: auto; }
-
-    .p-flow__date {
-      display: block;
-      font-family: var(--ff-display);
-      font-weight: 700;
-      font-size: var(--fs-sm);
-      color: var(--c-ink-sub);
-    }
-
-    .p-flow__card .c-card__title {
-      padding-left: 0.65rem;
-      border-left: 4px solid var(--c-pink);
-    }
-
-    .p-flow__card .c-tag { margin-top: 0.6rem; }
-
-    /* =========================================================
-       8. Rules（ルール・条件）
-       ========================================================= */
-    .p-rules__grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--sp-sm);
-      margin-top: var(--sp-xl);
-    }
-
-    .p-rules__item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .p-rules__label {
-      font-size: var(--fs-sm);
-      font-weight: 700;
-      color: var(--c-ink-sub);
-    }
-
-    .p-rules__value {
-      font-family: var(--ff-display);
-      font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
-      font-weight: 800;
-      line-height: 1.1;
-      background: var(--g-brand);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .p-rules__value small {
-      margin-left: 0.15em;
-      font-family: var(--ff-base);
-      font-size: 0.42em;
-      font-weight: 900;
-    }
-
-    .p-rules__desc {
-      font-size: var(--fs-sm);
-      line-height: 1.8;
-      color: var(--c-ink-sub);
-    }
-
-    /* NG事項 */
     .p-rules__ng {
-      display: grid;
-      gap: var(--sp-sm);
-      margin-top: var(--sp-lg);
-      padding: var(--sp-md) var(--sp-md);
-      background: #fff7fb;
-      border-radius: var(--radius-md);
+      grid-template-columns: 10rem 1fr;
+      align-items: start;
+    }
+  }
+
+  /* ---------- PC（960px〜） ---------- */
+  @media (min-width: 960px) {
+    body { padding-bottom: 0; }
+    .u-pc { display: inline; }
+    .p-fixed-cta { display: none; }
+    .p-rules__list { grid-template-columns: repeat(4, 1fr); }
+
+    /* タイムライン：上段＝奇数 / 中段＝軸 / 下段＝偶数 */
+    .p-flow__list {
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: auto var(--axis-gap) auto;
+      column-gap: var(--sp-md);
+      row-gap: 0;
+      padding-left: 0;
     }
 
-    .p-rules__ng-title {
-      font-weight: 900;
-      color: var(--c-magenta);
-    }
-
-    .p-rules__ng-list {
-      display: grid;
-      gap: 0.4rem;
-      font-size: var(--fs-sm);
-      color: var(--c-ink-sub);
-    }
-
-    .p-rules__ng-list li {
+    .p-flow__list::before {
       position: relative;
-      padding-left: 1.4em;
+      inset: auto;
+      grid-row: 2;
+      grid-column: 1 / -1;
+      align-self: center;
+      width: auto;
+      height: 3px;
+      margin-inline: calc(var(--sp-md) * -1);
+      background: linear-gradient(90deg, var(--c-sky), var(--c-pink));
     }
 
-    .p-rules__ng-list li::before {
+    .p-flow__item:nth-child(1) { grid-area: 1 / 1 / 2 / 3; }
+    .p-flow__item:nth-child(2) { grid-area: 3 / 2 / 4 / 4; }
+    .p-flow__item:nth-child(3) { grid-area: 1 / 3 / 2 / 5; }
+    .p-flow__item:nth-child(4) { grid-area: 3 / 4 / 4 / 6; }
+    .p-flow__item:nth-child(5) { grid-area: 1 / 5 / 2 / 7; }
+    .p-flow__item:nth-child(odd) { align-self: end; }
+    .p-flow__item:nth-child(even) { align-self: start; }
+
+    /* 番号を軸の上に配置 */
+    .p-flow__step {
+      position: absolute;
+      left: 50%;
+      z-index: 2;
+      margin: 0;
+      padding: 0.35rem 0.9rem;
+      background: var(--c-white);
+      border-radius: 999px;
+      box-shadow: 0 0 0 1px var(--c-line);
+      translate: -50% 0;
+    }
+
+    .p-flow__step::before { display: none; }
+
+    .p-flow__item:nth-child(odd) .p-flow__step {
+      top: calc(100% + var(--axis-gap) / 2);
+      transform: translateY(-50%);
+    }
+
+    .p-flow__item:nth-child(even) .p-flow__step {
+      bottom: calc(100% + var(--axis-gap) / 2);
+      transform: translateY(50%);
+    }
+
+    /* カードと軸をつなぐ点線 */
+    .p-flow__item::after {
       content: "";
       position: absolute;
-      left: 0;
-      top: 0.62em;
-      width: 0.7em;
-      height: 2px;
-      background: var(--c-pink);
-      border-radius: 2px;
+      left: 50%;
+      height: calc(var(--axis-gap) / 2 - 1.1rem);
+      border-left: 2px dotted var(--c-pink);
     }
 
-    /* =========================================================
-       9. CTA（募集要項ページへの導線）
-       ========================================================= */
-    .p-cta__box {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      display: grid;
-      justify-items: center;
-      gap: var(--sp-sm);
-      padding: var(--sp-xl) var(--sp-md) calc(var(--sp-xl) + 2rem);
-      text-align: center;
-      background: var(--c-surface);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-card);
+    .p-flow__item:nth-child(odd)::after { top: 100%; }
+    .p-flow__item:nth-child(even)::after { bottom: 100%; }
+  }
+
+  /* ---------- 動きを減らす設定 ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+
+    *, *::before, *::after { transition-duration: 0.01ms !important; }
+
+    .js-fade {
+      opacity: 1 !important;
+      translate: none !important;
     }
-
-    .p-cta__box > *:not(.c-ribbon) { position: relative; z-index: 1; }
-
-    .p-cta__eyebrow {
-      font-family: var(--ff-display);
-      font-size: var(--fs-xs);
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      color: var(--c-pink);
-    }
-
-    .p-cta__title {
-      font-size: var(--fs-h2);
-      font-weight: 900;
-      line-height: 1.5;
-      letter-spacing: 0.06em;
-    }
-
-    .p-cta__text {
-      max-width: 32em;
-      color: var(--c-ink-sub);
-    }
-
-    .p-cta__box .c-button { margin-top: var(--sp-sm); }
-
-    .p-cta__ribbon {
-      left: -10%;
-      right: -10%;
-      bottom: -30px;
-      height: clamp(70px, 10vw, 120px);
-      opacity: 0.9;
-    }
-
-    /* =========================================================
-       10. SP固定CTA（スマホでCTAを埋もれさせない）
-       ========================================================= */
-    .p-fixed-cta {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 60;
-      padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
-      background: rgb(255 255 255 / 0.9);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid var(--c-line);
-    }
-
-    /* =========================================================
-       11. Fade-in（IntersectionObserver）
-       JSが有効な環境でのみ初期状態を非表示にする
-       ========================================================= */
-    @media (scripting: enabled) {
-      .js-fade {
-        opacity: 0;
-        translate: 0 24px;
-        transition: opacity 0.8s var(--ease), translate 0.8s var(--ease);
-        transition-delay: var(--fade-delay, 0s);
-      }
-
-      .js-fade.is-visible {
-        opacity: 1;
-        translate: 0 0;
-      }
-    }
-
-    /* =========================================================
-       12. Responsive
-       ========================================================= */
-
-    /* ---------- Tablet (≥ 640px) ---------- */
-    @media (min-width: 640px) {
-      .p-about__grid { grid-template-columns: repeat(3, 1fr); }
-      .p-rules__ng { grid-template-columns: 10rem 1fr; align-items: start; }
-
-    }
-
-    /* ---------- PC (≥ 960px) ---------- */
-    @media (min-width: 960px) {
-      .p-fixed-cta { display: none; }
-      body { padding-bottom: 0; }
-
-      .p-rules__grid { grid-template-columns: repeat(4, 1fr); }
-
-      /* 横型タイムライン：上段＝奇数 / 下段＝偶数 */
-      .p-flow__list {
-        grid-template-columns: repeat(6, 1fr);
-        grid-template-rows: auto var(--axis-gap) auto;
-        column-gap: var(--sp-md);
-        row-gap: 0;
-        padding-left: 0;
-      }
-
-      .p-flow__list::before {
-        top: auto;
-        bottom: auto;
-        left: auto;
-        right: auto;
-        margin-inline: calc(var(--sp-md) * -1);
-        grid-row: 2;
-        grid-column: 1 / -1;
-        align-self: center;
-        position: relative;
-        width: auto;
-        height: 3px;
-        background: linear-gradient(90deg, var(--c-sky), var(--c-pink));
-      }
-
-      .p-flow__item:nth-child(1) { grid-column: 1 / 3; grid-row: 1; }
-      .p-flow__item:nth-child(2) { grid-column: 2 / 4; grid-row: 3; }
-      .p-flow__item:nth-child(3) { grid-column: 3 / 5; grid-row: 1; }
-      .p-flow__item:nth-child(4) { grid-column: 4 / 6; grid-row: 3; }
-      .p-flow__item:nth-child(5) { grid-column: 5 / 7; grid-row: 1; }
-
-      .p-flow__item:nth-child(odd) { align-self: end; }
-      .p-flow__item:nth-child(even) { align-self: start; }
-
-      /* ラベルを軸上へ配置 */
-      .p-flow__marker {
-        position: absolute;
-        left: 50%;
-        z-index: 2;
-        margin: 0;
-        padding: 0.35rem 0.9rem;
-        background: var(--c-surface);
-        border-radius: 999px;
-        box-shadow: 0 0 0 1px var(--c-line);
-        translate: -50% 0;
-        white-space: nowrap;
-      }
-
-      .p-flow__item:nth-child(odd) .p-flow__marker { top: calc(100% + var(--axis-gap) / 2); transform: translateY(-50%); }
-      .p-flow__item:nth-child(even) .p-flow__marker { bottom: calc(100% + var(--axis-gap) / 2); transform: translateY(50%); }
-
-      .p-flow__marker::before { display: none; }
-
-      /* カードと軸をつなぐ点線＋ドット */
-      .p-flow__item::after {
-        content: "";
-        position: absolute;
-        left: 50%;
-        width: 0;
-        height: calc(var(--axis-gap) / 2 - 1.1rem);
-        border-left: 2px dotted var(--c-pink);
-      }
-
-      .p-flow__item:nth-child(odd)::after { top: 100%; }
-      .p-flow__item:nth-child(even)::after { bottom: 100%; }
-
-    }
-
-    /* ---------- Reduced Motion ---------- */
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after {
-        animation: none !important;
-        transition-duration: 0.01ms !important;
-      }
-      .js-fade { opacity: 1 !important; translate: none !important; }
-    }
+  }
   </style>
 
-  <!-- フェードイン用JS（module は defer と同じタイミングで実行される） -->
+  <!-- フェードイン（type="module" は defer と同じタイミングで実行） -->
   <script type="module" defer>
-    /**
-     * IntersectionObserver によるフェードイン
-     * .js-fade 要素が画面に入ったら .is-visible を付与
-     */
-    const fadeTargets = document.querySelectorAll('.js-fade');
+    const targets = document.querySelectorAll('.js-fade');
 
     if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries, obs) => {
+      const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           entry.target.classList.add('is-visible');
-          obs.unobserve(entry.target); // 一度表示したら監視解除
+          observer.unobserve(entry.target);
         });
-      }, {
-        rootMargin: '0px 0px -10% 0px',
-        threshold: 0.12
-      });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
 
-      fadeTargets.forEach((el) => observer.observe(el));
+      targets.forEach((el) => observer.observe(el));
     } else {
-      // 非対応ブラウザは即表示
-      fadeTargets.forEach((el) => el.classList.add('is-visible'));
+      targets.forEach((el) => el.classList.add('is-visible'));
     }
   </script>
 </head>
 
 <body>
 
-  <!-- =========================================================
-       SVG Sprite（リボン・ロゴ・アイコンを再利用）
-       ========================================================= -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <!-- ====================
+       SVG部品（<use href="#id"> で呼び出し）
+  ==================== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <linearGradient id="grad-logo" x1="0" y1="0" x2="1" y2="1">
+      <linearGradient id="grad-brand" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#5bb4e5"/>
         <stop offset="1" stop-color="#ec5a9f"/>
       </linearGradient>
     </defs>
 
-    <!-- ロゴマーク：ずらした2つの角丸（仮デザイン） -->
-    <!-- 多色リボン -->
-    <symbol id="ribbon" viewBox="0 0 1200 360" preserveAspectRatio="none">
-      <path d="M-20 250 C 260 150, 520 330, 820 220 S 1120 60, 1220 40"  fill="none" stroke="#f7c548" stroke-width="34" stroke-linecap="round"/>
-      <path d="M-20 290 C 280 190, 540 370, 840 250 S 1130 110, 1220 90" fill="none" stroke="#5bb4e5" stroke-width="44" stroke-linecap="round"/>
-      <path d="M-20 330 C 300 230, 560 400, 860 290 S 1140 160, 1220 150" fill="none" stroke="#ec5a9f" stroke-width="40" stroke-linecap="round"/>
-      <path d="M-20 360 C 320 270, 580 430, 880 330 S 1150 210, 1220 210" fill="none" stroke="#c9378b" stroke-width="18" stroke-linecap="round"/>
-      <path d="M-20 274 C 270 172, 530 352, 830 238 S 1125 88, 1220 68" fill="none" stroke="#fff" stroke-width="3" opacity="0.7"/>
+    <!-- リボン：下端まで収まるよう高さ400で描画 -->
+    <symbol id="ribbon" viewBox="0 0 1200 400" preserveAspectRatio="none">
+      <g fill="none" stroke-linecap="round">
+        <path d="M-20 250 C260 150 520 330 820 220 S1120 60 1220 40" stroke="#f7c548" stroke-width="34"/>
+        <path d="M-20 290 C280 190 540 370 840 250 S1130 110 1220 90" stroke="#5bb4e5" stroke-width="44"/>
+        <path d="M-20 330 C300 230 560 400 860 290 S1140 160 1220 150" stroke="#ec5a9f" stroke-width="40"/>
+        <path d="M-20 360 C320 270 580 430 880 330 S1150 210 1220 210" stroke="#c9378b" stroke-width="18"/>
+        <path d="M-20 274 C270 172 530 352 830 238 S1125 88 1220 68" stroke="#fff" stroke-width="3" opacity="0.7"/>
+      </g>
     </symbol>
 
     <symbol id="icon-arrow" viewBox="0 0 24 24">
@@ -829,115 +745,129 @@
     </symbol>
 
     <symbol id="icon-user" viewBox="0 0 24 24">
-      <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
-      <path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>
+      </g>
     </symbol>
 
     <symbol id="icon-team" viewBox="0 0 24 24">
-      <circle cx="8" cy="9" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
-      <circle cx="17" cy="8" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
-      <path d="M2.5 19c1-3.2 3.1-5 5.5-5s4.5 1.8 5.5 5M14 14.5c.9-.6 1.9-.9 3-.9 2.1 0 3.7 1.5 4.5 4.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="8" cy="9" r="3"/>
+        <circle cx="17" cy="8" r="2.5"/>
+        <path d="M2.5 19c1-3.2 3.1-5 5.5-5s4.5 1.8 5.5 5M14 14.5c.9-.6 1.9-.9 3-.9 2.1 0 3.7 1.5 4.5 4.4"/>
+      </g>
     </symbol>
 
     <symbol id="icon-network" viewBox="0 0 24 24">
-      <circle cx="12" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
-      <circle cx="5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
-      <circle cx="19" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
-      <path d="M10.8 7.2 6.3 15.8M13.2 7.2l4.5 8.6M7.5 18h9" fill="none" stroke="currentColor" stroke-width="2"/>
+      <g fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="5" r="2.5"/>
+        <circle cx="5" cy="18" r="2.5"/>
+        <circle cx="19" cy="18" r="2.5"/>
+        <path d="M10.8 7.2 6.3 15.8M13.2 7.2l4.5 8.6M7.5 18h9"/>
+      </g>
     </symbol>
-
   </svg>
 
 
-  <main id="top">
+  <main>
 
-    <!-- =========================================================
-         Hero（表紙）
-         ========================================================= -->
+    <!-- ====================
+         ヒーロー
+    ==================== -->
     <section class="p-hero" aria-labelledby="hero-title">
       <div class="l-container p-hero__inner">
-        <h1 class="p-hero__title js-fade" id="hero-title" style="--fade-delay:.1s">
+        <h1 class="p-hero__title js-fade" id="hero-title">
           Side Job Deck
-          <span class="p-hero__title-sub">グループ内副業 制度ガイド</span>
+          <span class="p-hero__sub">グループ内副業 制度ガイド</span>
         </h1>
 
-        <div class="p-hero__actions js-fade" style="--fade-delay:.2s">
-          <a href="jobs/index.html" class="c-button c-button--primary c-button--lg">
+        <div class="p-hero__actions js-fade" style="--delay:.15s">
+          <!-- 募集要項ページへのリンク（パスは仮） -->
+          <a href="jobs/index.html" class="c-button c-button--lg">
             募集要項を見る
             <svg class="c-button__icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
           </a>
         </div>
       </div>
 
-      <!-- イラスト：リボン上を走る人たち（SVGで描画 / 差し替え時は img/hero-illust.svg 想定） -->
+      <!-- イラスト（リボン＋人物） -->
       <div class="p-hero__visual" aria-hidden="true">
         <div class="c-ribbon p-hero__ribbon">
           <svg><use href="#ribbon"/></svg>
         </div>
 
-        <svg class="p-hero__people" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax meet">
-          <!-- 人物1：指さし -->
-          <g class="p-hero__person" transform="translate(150 270)">
-            <path d="M-6 0 l-10 46 M8 0 l14 44" stroke="#26282c" stroke-width="8" stroke-linecap="round"/>
-            <path d="M-18 -60 h36 l8 62 h-52z" fill="#ec5a9f"/>
-            <path d="M14 -52 l40 -14 M-14 -50 l-20 30" stroke="#ec5a9f" stroke-width="9" stroke-linecap="round"/>
-            <circle cx="0" cy="-76" r="15" fill="#f6d5c3"/>
-            <path d="M-15 -80 a15 15 0 0 1 30 -2 q-14 -4 -30 2z" fill="#26282c"/>
+        <!-- viewBoxを上に40広げて旗が切れないようにしている -->
+        <svg class="p-hero__people" viewBox="0 -40 1200 440" preserveAspectRatio="xMidYMax meet">
+          <g stroke-linecap="round">
+            <!-- 人物1 -->
+            <g transform="translate(150 270)">
+              <path d="M-6 0l-10 46M8 0l14 44" stroke="#26282c" stroke-width="8"/>
+              <path d="M-18-60h36l8 62h-52z" fill="#ec5a9f"/>
+              <path d="M14-52l40-14M-14-50l-20 30" stroke="#ec5a9f" stroke-width="9"/>
+              <circle cy="-76" r="15" fill="#f6d5c3"/>
+              <path d="M-15-80a15 15 0 0 1 30-2q-14-4-30 2z" fill="#26282c"/>
+            </g>
+
+            <!-- 人物2 -->
+            <g transform="translate(330 215) rotate(-6)">
+              <path d="M-8 0l-20 30M8 0l24 22" stroke="#2f8fcf" stroke-width="8"/>
+              <path d="M-16-56h32l6 58h-44z" fill="#f7c548"/>
+              <path d="M-14-50l-26-30M14-50l28-30" stroke="#f7c548" stroke-width="9"/>
+              <circle cy="-72" r="14" fill="#f6d5c3"/>
+              <path d="M-14-76a14 14 0 0 1 28 0l-4-6-10 4-10-4z" fill="#26282c"/>
+            </g>
+
+            <!-- 人物3 -->
+            <g transform="translate(520 245) rotate(8)">
+              <path d="M-6 0l-24 34M6 0l18 40" stroke="#26282c" stroke-width="8"/>
+              <path d="M-16-56h32l6 58h-44z" fill="#5bb4e5"/>
+              <path d="M-14-48l-30 10M14-50l26-20" stroke="#5bb4e5" stroke-width="9"/>
+              <circle cy="-72" r="14" fill="#f6d5c3"/>
+              <path d="M-14-74a14 14 0 0 1 28-2q4 10-2 14q-2-12-26-12z" fill="#c9378b"/>
+            </g>
+
+            <!-- 人物4 -->
+            <g transform="translate(720 205) rotate(-4)">
+              <path d="M-6 0l-8 44M8 0l18 38" stroke="#c9378b" stroke-width="8"/>
+              <path d="M-17-58h34l7 60h-48z" fill="#f39a4a"/>
+              <path d="M-14-50l-24 26M14-52l18-40" stroke="#f39a4a" stroke-width="9"/>
+              <circle cy="-74" r="14" fill="#f6d5c3"/>
+              <path d="M-14-78a14 14 0 0 1 28 0z" fill="#26282c"/>
+            </g>
+
+            <!-- 人物5（旗） -->
+            <g transform="translate(960 150) rotate(-10)">
+              <path d="M28-150v150" stroke="#26282c" stroke-width="5"/>
+              <path d="M30-150q40 6 70-4q-8 26 2 48q-34 10-72 2z" fill="#fff" stroke="#26282c" stroke-width="3"/>
+              <rect x="48" y="-136" width="22" height="22" rx="6" fill="none" stroke="url(#grad-brand)" stroke-width="5"/>
+              <path d="M-6 0l-22 30M8 0l22 32" stroke="#2f8fcf" stroke-width="8"/>
+              <path d="M-17-58h34l7 60h-48z" fill="#ec5a9f"/>
+              <path d="M14-50l14-50M-14-50l-28 10" stroke="#ec5a9f" stroke-width="9"/>
+              <circle cy="-74" r="14" fill="#f6d5c3"/>
+              <path d="M-14-76a14 14 0 0 1 28 0l-6-4-8 4-8-4z" fill="#26282c"/>
+            </g>
           </g>
-          <!-- 人物2：ジャンプ -->
-          <g class="p-hero__person" transform="translate(330 215) rotate(-6)">
-            <path d="M-8 0 l-20 30 M8 0 l24 22" stroke="#2f8fcf" stroke-width="8" stroke-linecap="round"/>
-            <path d="M-16 -56 h32 l6 58 h-44z" fill="#f7c548"/>
-            <path d="M-14 -50 l-26 -30 M14 -50 l28 -30" stroke="#f7c548" stroke-width="9" stroke-linecap="round"/>
-            <circle cx="0" cy="-72" r="14" fill="#f6d5c3"/>
-            <path d="M-14 -76 a14 14 0 0 1 28 0 l-4 -6 -10 4 -10 -4z" fill="#26282c"/>
-          </g>
-          <!-- 人物3：走る -->
-          <g class="p-hero__person" transform="translate(520 245) rotate(8)">
-            <path d="M-6 0 l-24 34 M6 0 l18 40" stroke="#26282c" stroke-width="8" stroke-linecap="round"/>
-            <path d="M-16 -56 h32 l6 58 h-44z" fill="#5bb4e5"/>
-            <path d="M-14 -48 l-30 10 M14 -50 l26 -20" stroke="#5bb4e5" stroke-width="9" stroke-linecap="round"/>
-            <circle cx="0" cy="-72" r="14" fill="#f6d5c3"/>
-            <path d="M-14 -74 a14 14 0 0 1 28 -2 q4 10 -2 14 q-2 -12 -26 -12z" fill="#c9378b"/>
-          </g>
-          <!-- 人物4：手を振る -->
-          <g class="p-hero__person" transform="translate(720 205) rotate(-4)">
-            <path d="M-6 0 l-8 44 M8 0 l18 38" stroke="#c9378b" stroke-width="8" stroke-linecap="round"/>
-            <path d="M-17 -58 h34 l7 60 h-48z" fill="#f39a4a"/>
-            <path d="M-14 -50 l-24 26 M14 -52 l18 -40" stroke="#f39a4a" stroke-width="9" stroke-linecap="round"/>
-            <circle cx="0" cy="-74" r="14" fill="#f6d5c3"/>
-            <path d="M-14 -78 a14 14 0 0 1 28 0z" fill="#26282c"/>
-          </g>
-          <!-- 人物5：旗を掲げる -->
-          <g class="p-hero__person" transform="translate(960 150) rotate(-10)">
-            <path d="M28 -150 v150" stroke="#26282c" stroke-width="5" stroke-linecap="round"/>
-            <path d="M30 -150 q40 6 70 -4 q-8 26 2 48 q-34 10 -72 2z" fill="#fff" stroke="#26282c" stroke-width="3"/>
-            <rect x="48" y="-136" width="22" height="22" rx="6" fill="none" stroke="url(#grad-logo)" stroke-width="5"/>
-            <path d="M-6 0 l-22 30 M8 0 l22 32" stroke="#2f8fcf" stroke-width="8" stroke-linecap="round"/>
-            <path d="M-17 -58 h34 l7 60 h-48z" fill="#ec5a9f"/>
-            <path d="M14 -50 l14 -50 M-14 -50 l-28 10" stroke="#ec5a9f" stroke-width="9" stroke-linecap="round"/>
-            <circle cx="0" cy="-74" r="14" fill="#f6d5c3"/>
-            <path d="M-14 -76 a14 14 0 0 1 28 0 l-6 -4 -8 4 -8 -4z" fill="#26282c"/>
-          </g>
-          <!-- 装飾：紙吹雪 -->
+
+          <!-- 紙吹雪 -->
           <g opacity="0.85">
+            <circle cx="250" cy="120" r="4" fill="#c9378b"/>
             <circle cx="420" cy="80" r="6" fill="#f7c548"/>
             <circle cx="860" cy="60" r="5" fill="#5bb4e5"/>
             <rect x="620" y="70" width="12" height="5" rx="2" fill="#ec5a9f" transform="rotate(30 626 72)"/>
             <rect x="1080" y="110" width="12" height="5" rx="2" fill="#f7c548" transform="rotate(-20 1086 112)"/>
-            <circle cx="250" cy="120" r="4" fill="#c9378b"/>
           </g>
         </svg>
       </div>
     </section>
 
 
-    <!-- =========================================================
-         01. About（グループ内副業とは）
-         ========================================================= -->
-    <section class="l-section p-about" id="about" aria-labelledby="about-title">
+    <!-- ====================
+         01 グループ内副業とは
+    ==================== -->
+    <section class="l-section" id="about" aria-labelledby="about-title">
       <div class="l-container">
-        <div class="c-deck">
+        <div class="c-panel">
           <h2 class="c-banner js-fade" id="about-title">
             <span class="c-banner__num">01</span>
             <span class="c-banner__title">グループ内副業とは</span>
@@ -948,33 +878,27 @@
             社内にいながら、新しいスキルと人とのつながりを得られます。
           </p>
 
-          <ul class="p-about__grid">
-            <li class="js-fade" style="--fade-delay:0s">
+          <ul class="p-about__list">
+            <li class="js-fade">
               <article class="c-card c-card--hover">
-                <span class="p-about__icon p-about__icon--sky">
-                  <svg aria-hidden="true"><use href="#icon-user"/></svg>
-                </span>
-                <p class="c-card__eyebrow">FOR YOU</p>
+                <span class="p-about__icon p-about__icon--sky"><svg aria-hidden="true"><use href="#icon-user"/></svg></span>
+                <p class="c-card__label">FOR YOU</p>
                 <h3 class="c-card__title">本業では得にくい<br>経験を積める</h3>
                 <p class="c-card__text">職種や業界を越えたプロジェクトに関わり、キャリアの選択肢を広げられます。</p>
               </article>
             </li>
-            <li class="js-fade" style="--fade-delay:.1s">
+            <li class="js-fade" style="--delay:.1s">
               <article class="c-card c-card--hover">
-                <span class="p-about__icon p-about__icon--pink">
-                  <svg aria-hidden="true"><use href="#icon-team"/></svg>
-                </span>
-                <p class="c-card__eyebrow">FOR TEAM</p>
+                <span class="p-about__icon p-about__icon--pink"><svg aria-hidden="true"><use href="#icon-team"/></svg></span>
+                <p class="c-card__label">FOR TEAM</p>
                 <h3 class="c-card__title">必要なときに<br>社内の力を借りられる</h3>
                 <p class="c-card__text">受け入れ部署は、グループ内の人材にスポットで業務を依頼できます。</p>
               </article>
             </li>
-            <li class="js-fade" style="--fade-delay:.2s">
+            <li class="js-fade" style="--delay:.2s">
               <article class="c-card c-card--hover">
-                <span class="p-about__icon p-about__icon--yellow">
-                  <svg aria-hidden="true"><use href="#icon-network"/></svg>
-                </span>
-                <p class="c-card__eyebrow">FOR GROUP</p>
+                <span class="p-about__icon p-about__icon--yellow"><svg aria-hidden="true"><use href="#icon-network"/></svg></span>
+                <p class="c-card__label">FOR GROUP</p>
                 <h3 class="c-card__title">会社の垣根を越えた<br>つながりが生まれる</h3>
                 <p class="c-card__text">ノウハウや人の行き来が増え、グループ全体の連携が強くなります。</p>
               </article>
@@ -985,86 +909,61 @@
     </section>
 
 
-    <!-- =========================================================
-         02. Flow（参加までの流れ：参考デザインのタイムライン）
-         ========================================================= -->
+    <!-- ====================
+         02 参加までの流れ
+    ==================== -->
     <section class="l-section p-flow" id="flow" aria-labelledby="flow-title">
       <div class="l-container">
-        <div class="c-deck">
+        <div class="c-panel">
           <h2 class="c-banner js-fade" id="flow-title">
             <span class="c-banner__num">02</span>
-            <span class="c-banner__title">参加までの流れ <span class="c-banner__range">STEP 1–5</span></span>
+            <span class="c-banner__title">参加までの流れ <span class="c-banner__sub">STEP 1–5</span></span>
           </h2>
 
           <ol class="p-flow__list">
-            <!-- STEP 1 -->
-            <li class="p-flow__item js-fade" style="--fade-delay:0s">
-              <p class="p-flow__marker">
-                <span class="p-flow__step">01</span>
-              </p>
+            <li class="p-flow__item js-fade">
+              <p class="p-flow__step">01</p>
               <article class="c-card p-flow__card">
-                <div>
-                  <span class="p-flow__date">Check</span>
-                  <h3 class="c-card__title">募集案件を確認</h3>
-                </div>
+                <span class="p-flow__label">Check</span>
+                <h3 class="c-card__title">募集案件を確認</h3>
                 <p class="c-card__text">社内ポータルの募集一覧から、興味のある案件・必要スキル・想定稼働を確認します。</p>
               </article>
             </li>
 
-            <!-- STEP 2 -->
-            <li class="p-flow__item js-fade" style="--fade-delay:.1s">
-              <p class="p-flow__marker">
-                <span class="p-flow__step">02</span>
-              </p>
+            <li class="p-flow__item js-fade" style="--delay:.1s">
+              <p class="p-flow__step">02</p>
               <article class="c-card p-flow__card">
-                <div>
-                  <span class="p-flow__date">Talk</span>
-                  <h3 class="c-card__title">上長へ事前相談</h3>
-                </div>
+                <span class="p-flow__label">Talk</span>
+                <h3 class="c-card__title">上長へ事前相談</h3>
                 <p class="c-card__text">本業への影響がないか、稼働時間の調整を含めて所属長と話し合います。</p>
                 <span class="c-tag">所属長の承認が必要</span>
               </article>
             </li>
 
-            <!-- STEP 3 -->
-            <li class="p-flow__item js-fade" style="--fade-delay:.2s">
-              <p class="p-flow__marker">
-                <span class="p-flow__step">03</span>
-              </p>
+            <li class="p-flow__item js-fade" style="--delay:.2s">
+              <p class="p-flow__step">03</p>
               <article class="c-card p-flow__card">
-                <div>
-                  <span class="p-flow__date">Entry</span>
-                  <h3 class="c-card__title">エントリー</h3>
-                </div>
+                <span class="p-flow__label">Entry</span>
+                <h3 class="c-card__title">エントリー</h3>
                 <p class="c-card__text">募集要項ページから希望の案件を選び、稼働可能時間を記入して応募します。</p>
               </article>
             </li>
 
-            <!-- STEP 4 -->
-            <li class="p-flow__item js-fade" style="--fade-delay:.3s">
-              <p class="p-flow__marker">
-                <span class="p-flow__step">04</span>
-              </p>
+            <li class="p-flow__item js-fade" style="--delay:.3s">
+              <p class="p-flow__step">04</p>
               <article class="c-card p-flow__card">
-                <div>
-                  <span class="p-flow__date">Matching</span>
-                  <h3 class="c-card__title">面談・マッチング</h3>
-                </div>
+                <span class="p-flow__label">Matching</span>
+                <h3 class="c-card__title">面談・マッチング</h3>
                 <p class="c-card__text">受け入れ部署とカジュアルに面談。業務範囲・期間・報酬を確認します。</p>
                 <span class="c-tag">オンライン面談OK</span>
               </article>
             </li>
 
-            <!-- STEP 5 -->
-            <li class="p-flow__item js-fade" style="--fade-delay:.4s">
-              <p class="p-flow__marker">
-                <span class="p-flow__step">05</span>
-              </p>
+            <li class="p-flow__item js-fade" style="--delay:.4s">
+              <p class="p-flow__step">05</p>
               <article class="c-card p-flow__card">
-                <div>
-                  <span class="p-flow__date">Start</span>
-                  <h3 class="c-card__title">業務スタート</h3>
-                </div>
+                <span class="p-flow__label">Start</span>
+                <h3 class="c-card__title">業務スタート</h3>
                 <p class="c-card__text">契約締結後、副業スタート。月1回の振り返りで稼働状況を共有します。</p>
               </article>
             </li>
@@ -1074,46 +973,37 @@
     </section>
 
 
-    <!-- =========================================================
-         03. Rules（ルール・条件）
-         ※数値はすべて仮。社内規程に合わせて差し替えてください
-         ========================================================= -->
-    <section class="l-section p-rules" id="rules" aria-labelledby="rules-title">
+    <!-- ====================
+         03 ルールと条件（数値は仮）
+    ==================== -->
+    <section class="l-section" id="rules" aria-labelledby="rules-title">
       <div class="l-container">
-        <div class="c-deck">
+        <div class="c-panel">
           <h2 class="c-banner js-fade" id="rules-title">
             <span class="c-banner__num">03</span>
             <span class="c-banner__title">ルールと条件</span>
           </h2>
 
-          <ul class="p-rules__grid">
-            <li class="js-fade" style="--fade-delay:0s">
-              <article class="c-card p-rules__item">
-                <h3 class="p-rules__label">対象者（勤続）</h3>
-                <p class="p-rules__value">1年<small>以上</small></p>
-                <p class="p-rules__desc">正社員・契約社員が対象。試用期間中は対象外です。</p>
-              </article>
+          <ul class="p-rules__list">
+            <li class="c-card js-fade">
+              <h3 class="p-rules__label">対象者（勤続）</h3>
+              <p class="p-rules__value">1年<small>以上</small></p>
+              <p class="p-rules__desc">正社員・契約社員が対象。試用期間中は対象外です。</p>
             </li>
-            <li class="js-fade" style="--fade-delay:.08s">
-              <article class="c-card p-rules__item">
-                <h3 class="p-rules__label">稼働上限</h3>
-                <p class="p-rules__value">20h<small>/月</small></p>
-                <p class="p-rules__desc">本業の所定労働時間を含めた総労働時間で管理します。</p>
-              </article>
+            <li class="c-card js-fade" style="--delay:.08s">
+              <h3 class="p-rules__label">稼働上限</h3>
+              <p class="p-rules__value">20h<small>/月</small></p>
+              <p class="p-rules__desc">本業の所定労働時間を含めた総労働時間で管理します。</p>
             </li>
-            <li class="js-fade" style="--fade-delay:.16s">
-              <article class="c-card p-rules__item">
-                <h3 class="p-rules__label">契約期間</h3>
-                <p class="p-rules__value">3ヶ月<small>単位</small></p>
-                <p class="p-rules__desc">双方合意のうえで更新可能。途中終了の相談もできます。</p>
-              </article>
+            <li class="c-card js-fade" style="--delay:.16s">
+              <h3 class="p-rules__label">契約期間</h3>
+              <p class="p-rules__value">3ヶ月<small>単位</small></p>
+              <p class="p-rules__desc">双方合意のうえで更新可能。途中終了の相談もできます。</p>
             </li>
-            <li class="js-fade" style="--fade-delay:.24s">
-              <article class="c-card p-rules__item">
-                <h3 class="p-rules__label">報酬</h3>
-                <p class="p-rules__value">時給<small>制</small></p>
-                <p class="p-rules__desc">案件ごとに設定。本業の給与とあわせて支給します。</p>
-              </article>
+            <li class="c-card js-fade" style="--delay:.24s">
+              <h3 class="p-rules__label">報酬</h3>
+              <p class="p-rules__value">時給<small>制</small></p>
+              <p class="p-rules__desc">案件ごとに設定。本業の給与とあわせて支給します。</p>
             </li>
           </ul>
 
@@ -1132,21 +1022,22 @@
     </section>
 
 
-    <!-- =========================================================
-         CTA（募集要項ページへ）
-         ========================================================= -->
-    <section class="l-section p-cta" aria-labelledby="cta-title">
+    <!-- ====================
+         募集要項への導線
+    ==================== -->
+    <section class="l-section" aria-labelledby="cta-title">
       <div class="l-container l-container--narrow">
         <div class="p-cta__box js-fade">
-          <p class="p-cta__eyebrow">OPEN POSITIONS</p>
+          <p class="p-cta__en">OPEN POSITIONS</p>
           <h2 class="p-cta__title" id="cta-title">募集中の案件を見てみよう</h2>
           <p class="p-cta__text">業務内容・必要スキル・稼働時間は、案件ごとに募集要項ページにまとめています。</p>
-          <!-- 募集要項（下層ページ）へのリンク：パスは仮 -->
-          <a href="jobs/index.html" class="c-button c-button--primary c-button--lg">
+          <a href="jobs/index.html" class="c-button c-button--lg">
             募集要項を見る
             <svg class="c-button__icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
           </a>
-          <div class="c-ribbon p-cta__ribbon" aria-hidden="true"><svg><use href="#ribbon"/></svg></div>
+          <div class="c-ribbon p-cta__ribbon" aria-hidden="true">
+            <svg><use href="#ribbon"/></svg>
+          </div>
         </div>
       </div>
     </section>
@@ -1154,11 +1045,11 @@
   </main>
 
 
-  <!-- =========================================================
-       SP固定CTA
-       ========================================================= -->
+  <!-- ====================
+       SP固定CTA（PCでは非表示）
+  ==================== -->
   <div class="p-fixed-cta">
-    <a href="jobs/index.html" class="c-button c-button--primary c-button--block">
+    <a href="jobs/index.html" class="c-button c-button--block">
       募集要項を見る
       <svg class="c-button__icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
     </a>
