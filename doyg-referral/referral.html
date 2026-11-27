@@ -5,8 +5,9 @@
   <style>
     /* ==========================================================
        カラー・共通設定（ポスターの配色に合わせた値）
+       ※ サイト全体に影響しないよう、すべて .referral-wrap の中に限定
        ========================================================== */
-    :root {
+    .referral-wrap {
       --color-sky: #5bc9e4;          /* 背景の水色 */
       --color-grid: rgba(30, 130, 185, .28); /* 方眼の線 */
       --color-blue: #0a7dc6;         /* 見出しの青 */
@@ -23,22 +24,24 @@
       --color-white: #fff;
       --content-width: 920px;
       --radius-card: 22px;
+      /* 丸ゴシック優先（端末に無い場合は通常のゴシック） */
+      --font-base: "Zen Maru Gothic", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN", "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
       /* ヒーロー画像（URLを差し替えるときはここだけ変更） */
       --hero-image: url("https://do-link.jp/assets/mediadata/yLTlzEjN1UrFVYJf3C6nAOpu4XMsab2g");
     }
 
-    * { box-sizing: border-box; }
-    /* 背景の円がはみ出しても横スクロールさせない（clip 非対応ブラウザは hidden） */
-    html,
-    body {
-      overflow-x: hidden;
-      overflow-x: clip;
-    }
-    html { scroll-behavior: smooth; }
-    body {
+    .referral-wrap,
+    .referral-wrap *,
+    .referral-wrap *::before,
+    .referral-wrap *::after { box-sizing: border-box; }
+
+    /* ページ全体の箱：背景・方眼・円はこの中だけに表示 */
+    .referral-wrap {
       position: relative;
       isolation: isolate;
-      margin: 0;
+      /* 円がはみ出しても横スクロールさせない（clip 非対応ブラウザは hidden） */
+      overflow: hidden;
+      overflow: clip;
       color: var(--color-text);
       /* 水色の背景＋方眼紙 */
       background-color: var(--color-sky);
@@ -46,28 +49,29 @@
         linear-gradient(var(--color-grid) 1px, transparent 1px),
         linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
       background-size: 72px 72px;
-      font-family: "Zen Maru Gothic", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      font-family: var(--font-base);
       line-height: 1.8;
     }
-    a { color: inherit; }
+    /* :where() で優先度を0にし、ボタンなどの文字色を上書きしない */
+    :where(.referral-wrap) a { color: inherit; }
 
     /* ---------- 背景の大きな円（左上・右下） ---------- */
-    body::before,
-    body::after {
+    .referral-wrap::before,
+    .referral-wrap::after {
       content: "";
       position: absolute;
       z-index: -1;
       border-radius: 50%;
       pointer-events: none;
     }
-    body::before {
+    .referral-wrap::before {
       top: clamp(-60px, -4vw, -20px);
       left: clamp(-260px, -22vw, -120px);
       width: clamp(300px, 46vw, 560px);
       aspect-ratio: 1;
       background: linear-gradient(90deg, var(--color-circle-a), var(--color-circle-b));
     }
-    body::after {
+    .referral-wrap::after {
       bottom: clamp(-200px, -14vw, -80px);
       right: clamp(-260px, -20vw, -100px);
       width: clamp(320px, 56vw, 720px);
@@ -137,8 +141,8 @@
       font-weight: 900;
       line-height: 1.25;
       letter-spacing: .04em;
-      /* ポスターのような立体的な影 */
-      text-shadow: 4px 4px 0 var(--color-navy);
+      /* 影はぼかした弱いものだけ（読みやすさ優先） */
+      text-shadow: 0 2px 8px rgba(43, 74, 99, .35);
     }
     .referral-hero__title span { color: var(--color-yellow); }
     .referral-hero__visual {
@@ -166,12 +170,11 @@
       align-items: center;
       gap: 14px;
       margin: 0 0 22px;
-      color: var(--color-cream);
+      color: var(--color-navy);
       font-size: clamp(1.5rem, 4vw, 2.1rem);
       font-weight: 900;
       line-height: 1.4;
       letter-spacing: .04em;
-      text-shadow: 3px 3px 0 var(--color-navy);
     }
     /* 見出し頭の小さな＋マーク */
     .referral-section__title::before {
@@ -182,7 +185,6 @@
       background:
         linear-gradient(var(--color-orange), var(--color-orange)) center / 100% 32% no-repeat,
         linear-gradient(var(--color-orange), var(--color-orange)) center / 32% 100% no-repeat;
-      filter: drop-shadow(2px 2px 0 var(--color-navy));
     }
 
     /* ---------- カード ---------- */
@@ -297,17 +299,15 @@
       width: min(100% - 32px, var(--content-width));
       margin: 0 auto;
       padding: 28px 20px 48px;
-      color: var(--color-cream);
+      color: var(--color-navy);
       text-align: center;
       font-weight: 900;
-      text-shadow: 2px 2px 0 var(--color-navy);
     }
     .referral-footer p { margin: 0; font-size: 1.1rem; }
     .referral-footer small {
       display: block;
       margin-top: 8px;
       font-weight: 700;
-      text-shadow: 0 1px 2px rgba(43, 74, 99, .5);
     }
 
     /* ---------- フェードイン ---------- */
@@ -318,7 +318,7 @@
        スマホ
        ========================================================== */
     @media (max-width: 640px) {
-      body { background-size: 48px 48px; }
+      .referral-wrap { background-size: 48px 48px; }
       .referral-page { width: min(100% - 24px, var(--content-width)); }
       .referral-steps { grid-template-columns: 1fr; gap: 14px; }
       .referral-step { min-height: auto; padding: 18px 20px; }
@@ -327,14 +327,13 @@
       .referral-plus { --size: 36px !important; top: 8px !important; }
       .referral-plus:nth-of-type(n+3) { display: none; }
       /* 左上の円は小さくして見出しに重ならない位置へ */
-      body::before { top: -150px; left: -150px; width: 260px; }
-      body::after { width: 340px; bottom: -140px; right: -160px; }
+      .referral-wrap::before { top: -150px; left: -150px; width: 260px; }
+      .referral-wrap::after { width: 340px; bottom: -140px; right: -160px; }
       .referral-footer { padding: 22px 12px 36px; font-size: .92rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { transition-duration: .01ms !important; }
+      .referral-wrap *, .referral-wrap *::before, .referral-wrap *::after { transition-duration: .01ms !important; }
       .js-fade { opacity: 1; transform: none; }
     }
   </style>
@@ -359,6 +358,7 @@
   </script>
 
 
+  <div class="referral-wrap">
   <main class="referral-page">
     <!-- 装飾の＋マーク（位置・色・大きさは style の変数で調整） -->
     <span class="referral-plus referral-plus--blue" style="--size:72px;--rotate:22deg;top:90px;left:2%;" aria-hidden="true"></span>
@@ -373,7 +373,7 @@
       <header class="referral-hero js-fade">
         <p class="referral-hero__eyebrow">ドゥ.ヨネザワ企業グループ</p>
         <h1 class="referral-hero__title"><span>紹介</span>でつながる、<br>仲間の輪。</h1>
-        <!-- ヒーロー画像（:root の --hero-image で指定） -->
+        <!-- ヒーロー画像（CSS冒頭の --hero-image で指定） -->
         <div class="referral-hero__visual" aria-hidden="true"></div>
         <p class="referral-hero__lead">
           あなたの身近にいる「一緒に働きたい人」を、グループの仲間として紹介してみませんか？<br>
@@ -461,3 +461,4 @@
     <p>ドゥ.ヨネザワ企業グループ<br>リファラル採用制度</p>
     <small>制度や応募方法については、各社の担当者へお問い合わせください。</small>
   </footer>
+  </div><!-- /.referral-wrap -->
