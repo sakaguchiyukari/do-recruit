@@ -35,8 +35,14 @@
     .referral-wrap *::before,
     .referral-wrap *::after { box-sizing: border-box; }
 
-    /* ページ全体の箱：背景・方眼・円はこの中だけに表示 */
+    /* ページ全体の箱：背景・方眼・円はこの中だけに表示
+       本文欄より外に広げ、画面の左右いっぱいに表示する
+       （--page-width はスクロールバーを除いた画面幅。JSで設定、無い場合は 100vw） */
     .referral-wrap {
+      width: var(--page-width, 100vw);
+      max-width: none;
+      margin-left: calc(50% - var(--page-width, 100vw) / 2);
+      margin-right: 0;
       position: relative;
       isolation: isolate;
       /* 円がはみ出しても横スクロールさせない（clip 非対応ブラウザは hidden） */
@@ -338,8 +344,17 @@
     }
   </style>
   <script defer="">
+    // 背景を画面いっぱいに広げるため、スクロールバーを除いた画面幅をCSS変数に渡す
+    const setPageWidth = () => {
+      document.querySelectorAll(".referral-wrap").forEach((wrap) => {
+        wrap.style.setProperty("--page-width", `${document.documentElement.clientWidth}px`);
+      });
+    };
+    window.addEventListener("resize", setPageWidth);
+
     // スクロール時に各セクションを表示
     document.addEventListener("DOMContentLoaded", () => {
+      setPageWidth();
       const targets = document.querySelectorAll(".js-fade");
       if (!("IntersectionObserver" in window)) {
         targets.forEach((target) => target.classList.add("is-visible"));
@@ -372,7 +387,10 @@
       <!-- ヒーロー -->
       <header class="referral-hero js-fade">
         <p class="referral-hero__eyebrow">ドゥ.ヨネザワ企業グループ</p>
-        <h1 class="referral-hero__title"><span>紹介</span>でつながる、<br>仲間の輪。</h1>
+        <!-- タイトル案（差し替え用）：
+             <h1 class="referral-hero__title"><span>紹介</span>でつながる、<br>仲間の輪。</h1>
+        -->
+        <h1 class="referral-hero__title"><span>大切な人</span>と<br>一緒にはたらく<br>という選択肢</h1>
         <!-- ヒーロー画像（CSS冒頭の --hero-image で指定） -->
         <div class="referral-hero__visual" aria-hidden="true"></div>
         <p class="referral-hero__lead">
