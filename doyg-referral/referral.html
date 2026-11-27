@@ -1,0 +1,463 @@
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ドゥ.ヨネザワ企業グループのリファラル採用制度のご案内です。">
+  <title>リファラル採用制度のご案内｜ドゥ.ヨネザワ企業グループ</title>
+  <style>
+    /* ==========================================================
+       カラー・共通設定（ポスターの配色に合わせた値）
+       ========================================================== */
+    :root {
+      --color-sky: #5bc9e4;          /* 背景の水色 */
+      --color-grid: rgba(30, 130, 185, .28); /* 方眼の線 */
+      --color-blue: #0a7dc6;         /* 見出しの青 */
+      --color-navy: #2b4a63;         /* 文字の影・本文 */
+      --color-circle-a: #95aecc;     /* 円グラデーション（明） */
+      --color-circle-b: #405da8;     /* 円グラデーション（暗） */
+      --color-plus-blue: #4498d3;    /* ＋マーク（青） */
+      --color-plus-white: #f2f2f2;   /* ＋マーク（白） */
+      --color-cream: #fffbed;        /* タイトル文字・カード背景 */
+      --color-orange: #ff761e;       /* ボタン */
+      --color-orange-dark: #d85a08;  /* ボタンの影 */
+      --color-yellow: #ffd21c;
+      --color-text: #3d4a55;
+      --color-white: #fff;
+      --content-width: 920px;
+      --radius-card: 22px;
+      /* ヒーロー画像（URLを差し替えるときはここだけ変更） */
+      --hero-image: url("https://do-link.jp/assets/mediadata/yLTlzEjN1UrFVYJf3C6nAOpu4XMsab2g");
+    }
+
+    * { box-sizing: border-box; }
+    /* 背景の円がはみ出しても横スクロールさせない（clip 非対応ブラウザは hidden） */
+    html,
+    body {
+      overflow-x: hidden;
+      overflow-x: clip;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      position: relative;
+      isolation: isolate;
+      margin: 0;
+      color: var(--color-text);
+      /* 水色の背景＋方眼紙 */
+      background-color: var(--color-sky);
+      background-image:
+        linear-gradient(var(--color-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+      background-size: 72px 72px;
+      font-family: "Zen Maru Gothic", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      line-height: 1.8;
+    }
+    a { color: inherit; }
+
+    /* ---------- 背景の大きな円（左上・右下） ---------- */
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::before {
+      top: clamp(-60px, -4vw, -20px);
+      left: clamp(-260px, -22vw, -120px);
+      width: clamp(300px, 46vw, 560px);
+      aspect-ratio: 1;
+      background: linear-gradient(90deg, var(--color-circle-a), var(--color-circle-b));
+    }
+    body::after {
+      bottom: clamp(-200px, -14vw, -80px);
+      right: clamp(-260px, -20vw, -100px);
+      width: clamp(320px, 56vw, 720px);
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, var(--color-circle-a) 0%, #487cb8 40%, var(--color-circle-b) 100%);
+    }
+
+    /* ==========================================================
+       ＋マーク（装飾）
+       ========================================================== */
+    .referral-plus {
+      position: absolute;
+      z-index: 0;
+      width: var(--size, 64px);
+      aspect-ratio: 1;
+      pointer-events: none;
+      transform: rotate(var(--rotate, 20deg));
+      filter: drop-shadow(0 4px 0 rgba(0, 0, 0, .12));
+    }
+    .referral-plus::before,
+    .referral-plus::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      border-radius: 999px;
+      background: var(--plus-color, var(--color-plus-white));
+    }
+    .referral-plus::before { width: 100%; height: 32%; }
+    .referral-plus::after  { width: 32%; height: 100%; }
+    .referral-plus--blue  { --plus-color: var(--color-plus-blue); }
+    .referral-plus--white { --plus-color: var(--color-plus-white); }
+
+    /* ==========================================================
+       ページ本体
+       ========================================================== */
+    .referral-page {
+      position: relative;
+      width: min(100% - 32px, var(--content-width));
+      margin: 0 auto;
+      padding: clamp(40px, 8vw, 96px) 0 clamp(24px, 5vw, 48px);
+    }
+    .referral-page__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    /* ---------- ヒーロー ---------- */
+    .referral-hero {
+      position: relative;
+      text-align: center;
+    }
+    .referral-hero__eyebrow {
+      display: inline-block;
+      margin: 0 0 6px;
+      color: var(--color-blue);
+      font-size: clamp(1.3rem, 4.2vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+    .referral-hero__title {
+      margin: 0;
+      color: var(--color-cream);
+      font-size: clamp(2.3rem, 7.5vw, 4.6rem);
+      font-weight: 900;
+      line-height: 1.25;
+      letter-spacing: .04em;
+      /* ポスターのような立体的な影 */
+      text-shadow: 4px 4px 0 var(--color-navy);
+    }
+    .referral-hero__title span { color: var(--color-yellow); }
+    .referral-hero__visual {
+      width: min(100%, 480px);
+      aspect-ratio: 4 / 3;
+      margin: clamp(20px, 4vw, 36px) auto 0;
+      background-image: var(--hero-image);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+    .referral-hero__lead {
+      max-width: 40em;
+      margin: clamp(16px, 3vw, 28px) auto 0;
+      color: var(--color-cream);
+      font-size: clamp(.98rem, 2.2vw, 1.15rem);
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(43, 74, 99, .45);
+    }
+
+    /* ---------- セクション見出し ---------- */
+    .referral-section { margin-top: clamp(48px, 8vw, 80px); }
+    .referral-section__title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 22px;
+      color: var(--color-cream);
+      font-size: clamp(1.5rem, 4vw, 2.1rem);
+      font-weight: 900;
+      line-height: 1.4;
+      letter-spacing: .04em;
+      text-shadow: 3px 3px 0 var(--color-navy);
+    }
+    /* 見出し頭の小さな＋マーク */
+    .referral-section__title::before {
+      content: "";
+      flex: 0 0 auto;
+      width: .9em;
+      aspect-ratio: 1;
+      background:
+        linear-gradient(var(--color-orange), var(--color-orange)) center / 100% 32% no-repeat,
+        linear-gradient(var(--color-orange), var(--color-orange)) center / 32% 100% no-repeat;
+      filter: drop-shadow(2px 2px 0 var(--color-navy));
+    }
+
+    /* ---------- カード ---------- */
+    .referral-card {
+      padding: clamp(22px, 4vw, 36px);
+      background: var(--color-cream);
+      border-radius: var(--radius-card);
+      box-shadow: 0 8px 0 rgba(43, 74, 99, .18);
+    }
+    .referral-card p { margin: 0; }
+    .referral-card p + p { margin-top: 12px; }
+
+    /* ---------- STEP ---------- */
+    .referral-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      counter-reset: step;
+    }
+    .referral-step {
+      position: relative;
+      min-height: 170px;
+      padding: 24px 20px;
+      background: var(--color-white);
+      border-radius: var(--radius-card);
+      box-shadow: 0 8px 0 rgba(43, 74, 99, .18);
+      counter-increment: step;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .referral-step:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 0 rgba(43, 74, 99, .18);
+    }
+    .referral-step::before {
+      content: "STEP 0" counter(step);
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 2px 12px;
+      border-radius: 999px;
+      background: var(--color-sky);
+      color: var(--color-white);
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+    .referral-step__title {
+      margin: 0 0 8px;
+      color: var(--color-blue);
+      font-size: 1.1rem;
+      font-weight: 900;
+    }
+    .referral-step__text { margin: 0; font-size: .92rem; }
+
+    /* ---------- 注意事項 ---------- */
+    .referral-note {
+      position: relative;
+      padding: clamp(36px, 5vw, 44px) clamp(20px, 4vw, 34px) clamp(22px, 4vw, 30px);
+      background: var(--color-cream);
+      border: 3px solid var(--color-navy);
+      border-radius: var(--radius-card);
+      box-shadow: 6px 6px 0 var(--color-navy);
+    }
+    .referral-note__title {
+      position: absolute;
+      top: 0;
+      left: clamp(16px, 4vw, 30px);
+      transform: translateY(-50%);
+      margin: 0;
+      padding: 6px 20px;
+      border-radius: 999px;
+      background: var(--color-orange);
+      color: var(--color-white);
+      font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+    .referral-note__title span { color: var(--color-yellow); }
+    .referral-note ul { margin: 0; padding-left: 1.35em; }
+    .referral-note li::marker { color: var(--color-orange); }
+    .referral-note li + li { margin-top: 6px; }
+
+    /* ---------- ボタン（ポスターのオレンジのピル型） ---------- */
+    .referral-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 60px;
+      margin-top: 22px;
+      padding: 14px 36px;
+      color: var(--color-white);
+      background: var(--color-orange);
+      border: 0;
+      border-radius: 999px;
+      box-shadow: 0 6px 0 var(--color-orange-dark);
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .referral-button:hover {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 var(--color-orange-dark);
+    }
+    .referral-button::after { content: "→"; font-size: 1.2em; }
+
+    /* ---------- フッター ---------- */
+    .referral-footer {
+      position: relative;
+      z-index: 1;
+      width: min(100% - 32px, var(--content-width));
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+      color: var(--color-cream);
+      text-align: center;
+      font-weight: 900;
+      text-shadow: 2px 2px 0 var(--color-navy);
+    }
+    .referral-footer p { margin: 0; font-size: 1.1rem; }
+    .referral-footer small {
+      display: block;
+      margin-top: 8px;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(43, 74, 99, .5);
+    }
+
+    /* ---------- フェードイン ---------- */
+    .js-fade { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s ease; }
+    .js-fade.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ==========================================================
+       スマホ
+       ========================================================== */
+    @media (max-width: 640px) {
+      body { background-size: 48px 48px; }
+      .referral-page { width: min(100% - 24px, var(--content-width)); }
+      .referral-steps { grid-template-columns: 1fr; gap: 14px; }
+      .referral-step { min-height: auto; padding: 18px 20px; }
+      .referral-button { width: 100%; }
+      /* ＋マークは文字に重ならないよう、上の2つだけ小さく表示 */
+      .referral-plus { --size: 36px !important; top: 8px !important; }
+      .referral-plus:nth-of-type(n+3) { display: none; }
+      /* 左上の円は小さくして見出しに重ならない位置へ */
+      body::before { top: -150px; left: -150px; width: 260px; }
+      body::after { width: 340px; bottom: -140px; right: -160px; }
+      .referral-footer { padding: 22px 12px 36px; font-size: .92rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+      .js-fade { opacity: 1; transform: none; }
+    }
+  </style>
+  <script defer="">
+    // スクロール時に各セクションを表示
+    document.addEventListener("DOMContentLoaded", () => {
+      const targets = document.querySelectorAll(".js-fade");
+      if (!("IntersectionObserver" in window)) {
+        targets.forEach((target) => target.classList.add("is-visible"));
+        return;
+      }
+      const observer = new IntersectionObserver((entries, currentObserver) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            currentObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      targets.forEach((target) => observer.observe(target));
+    });
+  </script>
+
+
+  <main class="referral-page">
+    <!-- 装飾の＋マーク（位置・色・大きさは style の変数で調整） -->
+    <span class="referral-plus referral-plus--blue" style="--size:72px;--rotate:22deg;top:90px;left:2%;" aria-hidden="true"></span>
+    <span class="referral-plus referral-plus--white" style="--size:80px;--rotate:-12deg;top:40px;right:2%;" aria-hidden="true"></span>
+    <span class="referral-plus referral-plus--blue" style="--size:60px;--rotate:30deg;top:330px;right:6%;" aria-hidden="true"></span>
+    <span class="referral-plus referral-plus--white" style="--size:56px;--rotate:14deg;top:470px;left:6%;" aria-hidden="true"></span>
+    <span class="referral-plus referral-plus--blue" style="--size:54px;--rotate:-18deg;top:720px;left:12%;" aria-hidden="true"></span>
+    <span class="referral-plus referral-plus--white" style="--size:64px;--rotate:36deg;top:640px;right:10%;" aria-hidden="true"></span>
+
+    <div class="referral-page__inner">
+      <!-- ヒーロー -->
+      <header class="referral-hero js-fade">
+        <p class="referral-hero__eyebrow">ドゥ.ヨネザワ企業グループ</p>
+        <h1 class="referral-hero__title"><span>紹介</span>でつながる、<br>仲間の輪。</h1>
+        <!-- ヒーロー画像（:root の --hero-image で指定） -->
+        <div class="referral-hero__visual" aria-hidden="true"></div>
+        <p class="referral-hero__lead">
+          あなたの身近にいる「一緒に働きたい人」を、グループの仲間として紹介してみませんか？<br>
+          リファラル採用制度は、社員からの紹介を通じて新しい仲間との出会いをつくる制度です。
+        </p>
+      </header>
+
+      <!-- 制度概要 -->
+      <section class="referral-section js-fade" aria-labelledby="referral-about">
+        <h2 class="referral-section__title" id="referral-about">リファラル採用制度とは？</h2>
+        <div class="referral-card">
+          <p>
+            ドゥ.ヨネザワ企業グループでは、社員からの紹介による採用を行っています。
+            紹介によって採用された方が一定期間勤務された場合、紹介者には条件に応じた報奨金（インセンティブ）が支払われます。
+          </p>
+          <p>
+            報奨金の発生条件・金額・支払いのタイミングは、会社や求人によって異なります。
+            対象となる求人や詳細は、各社の求人票掲載ぺージよりご確認ください。
+          </p>
+        </div>
+      </section>
+
+      <!-- 応募の流れ -->
+      <section class="referral-section js-fade" aria-labelledby="referral-flow">
+        <h2 class="referral-section__title" id="referral-flow">紹介・応募の流れ</h2>
+        <div class="referral-steps">
+          <article class="referral-step">
+            <h3 class="referral-step__title">紹介する方を決める</h3>
+            <p class="referral-step__text">各社の求人内容や応募資格を確認し、条件に合う方をご紹介ください。</p>
+          </article>
+          <article class="referral-step">
+            <h3 class="referral-step__title">書類を準備する</h3>
+            <p class="referral-step__text">紹介シートと履歴書をご用意ください。記入漏れがないかご確認ください。</p>
+          </article>
+          <article class="referral-step">
+            <h3 class="referral-step__title">担当者へ提出する</h3>
+            <p class="referral-step__text">各社の担当者へ、メールまたは郵送でご提出ください。提出先は各社担当者にご確認ください。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 各社求人票 -->
+      <section class="referral-section js-fade" aria-labelledby="referral-jobs">
+        <h2 class="referral-section__title" id="referral-jobs">各社の求人票一覧</h2>
+        <div class="referral-card">
+          <p>
+            ご紹介の前に、各社の求人内容・応募資格をご確認ください。
+            最新の求人票は下記の一覧からご覧いただけます。
+          </p>
+          <!-- 実際の求人票一覧URLに差し替えてください -->
+          <a class="referral-button" href="https://do-link.jp/event/event/search?mase_event_search%5Bkeyword%5D=&amp;mase_event_search%5Bcategory%5D=EC002&amp;mase_event_search%5BdateFrom%5D%5Byear%5D=&amp;mase_event_search%5BdateFrom%5D%5Bmonth%5D=&amp;mase_event_search%5BdateFrom%5D%5Bday%5D=&amp;mase_event_search%5BdateTo%5D%5Byear%5D=&amp;mase_event_search%5BdateTo%5D%5Bmonth%5D=&amp;mase_event_search%5BdateTo%5D%5Bday%5D=&amp;mase_event_search%5BsortType%5D=new&amp;mase_event_search%5Bsearch%5D=" target="_blank" rel="noopener noreferrer">各社の求人票一覧を見る</a>
+        </div>
+      </section>
+
+      <!-- 注意事項 -->
+      <section class="referral-section js-fade" aria-labelledby="referral-caution">
+        <div class="referral-note">
+          <h2 class="referral-note__title" id="referral-caution"><span>!</span> 紹介時の注意事項</h2>
+          <ul>
+            <li>記入不備や求人内容に沿わない紹介の場合は、対象外となることがあります。</li>
+            <li>各社の応募資格・年齢など、求人票に記載された条件に沿った方をご紹介ください。</li>
+            <li>不正な紹介や、報奨金を目的とした不適切な紹介は認められません。</li>
+            <li>他の紹介制度との重複など、判断が必要な場合は事務局から確認の連絡をすることがあります。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 紹介シート -->
+      <section class="referral-section js-fade" aria-labelledby="referral-sheet">
+        <h2 class="referral-section__title" id="referral-sheet">紹介シートのダウンロード</h2>
+        <div class="referral-card">
+          <p>
+            紹介シートは、各社の担当者にお声がけいただくか、下記リンクからダウンロードできます。
+            紹介シートと履歴書をご記入のうえ、各社の担当者へご提出ください。
+          </p>
+          <!-- 実際の紹介シートURLに差し替えてください -->
+          <a class="referral-button" href="https://docs.google.com/document/d/1nuhSwtXanF9_MbTenc0sThB4jUX9HVQq/edit?usp=sharing&amp;ouid=116998912259071991653&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener noreferrer">紹介シートをダウンロード</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- フッター -->
+  <footer class="referral-footer">
+    <p>ドゥ.ヨネザワ企業グループ<br>リファラル採用制度</p>
+    <small>制度や応募方法については、各社の担当者へお問い合わせください。</small>
+  </footer>
