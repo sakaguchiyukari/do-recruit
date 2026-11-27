@@ -522,7 +522,8 @@
     display: grid;
     justify-items: center;
     gap: var(--sp-sm);
-    padding: var(--sp-xl) var(--sp-md) calc(var(--sp-xl) + 2rem);
+    --cta-ribbon-h: clamp(70px, 10vw, 120px);
+    padding: var(--sp-xl) var(--sp-md) calc(var(--sp-xl) + var(--cta-ribbon-h));
     overflow: hidden;
     text-align: center;
     background: var(--c-white);
@@ -557,11 +558,12 @@
 
   .p-cta__box .c-button { margin-top: var(--sp-sm); }
 
+  /* リボンを枠内に収める（下端が切れないよう bottom を正の値に） */
   .p-cta__ribbon {
     right: -10%;
-    bottom: -30px;
+    bottom: 0.75rem;
     left: -10%;
-    height: clamp(70px, 10vw, 120px);
+    height: var(--cta-ribbon-h);
   }
 
   /* SP固定CTA */
